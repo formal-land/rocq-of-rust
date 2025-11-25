@@ -4,7 +4,6 @@ Require Import RocqOfRust.simulate.M.
 Require Import RocqOfRust.lib.simulate.lib.
 Require Import core.links.array.
 Require Import examples.default.examples.custom.links.loops_free.
-Require Import Lia.
 
 Definition max2 (a b : U32.t) : U32.t :=
   if a.(Integer.value) <? b.(Integer.value) then
@@ -162,7 +161,6 @@ Proof.
   - destruct (a1.(Integer.value) =? b1.(Integer.value)) eqn:Heq1; cbn; apply Run.Pure.
   - apply Run.Pure.
 Qed.
-
 Global Opaque run_eq2.
 
 Definition eq_pair (x y : U32.t * U32.t) : bool :=
@@ -191,7 +189,6 @@ Proof.
     destruct (x1.(Integer.value) =? y1.(Integer.value))
   ).
 Qed.
-
 Global Opaque run_eq_pair.
 
 Definition min3 (a b c : U32.t) : U32.t :=
@@ -215,6 +212,4 @@ Proof.
     destruct (_ <? _)
   ).
 Qed.
-
 Global Opaque run_min3.
-
