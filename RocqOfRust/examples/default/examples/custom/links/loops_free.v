@@ -2,6 +2,7 @@ Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import core.links.array.
 Require Import examples.default.examples.custom.loops_free.
+Require Import CoqOfRust.links.array.
 
 Instance run_max2 (a b : U32.t) : Run.Trait max2 [] [] [φ a; φ b] U32.t.
 Proof.
