@@ -22,14 +22,14 @@ Proof.
   run_symbolic.
 Defined.
 
-Instance run_get_or_zero (xs : Array.t U32.t 4) (i : Usize.t) :
+Instance run_get_or_zero (xs : array.t U32.t 4) (i : Usize.t) :
   Run.Trait get_or_zero [] [] [φ xs; φ i] U32.t.
 Proof.
   constructor.
   run_symbolic.
 Defined.
 
-Instance run_eq2 (a b : Array.t U32.t 2) : Run.Trait eq2 [] [] [φ a; φ b] bool.
+Instance run_eq2 (a b : array.t U32.t 2) : Run.Trait eq2 [] [] [φ a; φ b] bool.
 Proof.
   constructor.
   run_symbolic.
