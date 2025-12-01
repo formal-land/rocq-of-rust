@@ -4,7 +4,7 @@ use crate::path::*;
 use crate::pattern::*;
 use crate::render::*;
 use crate::thir_ty::*;
-use crate::ty::CoqType;
+use crate::ty::RocqType;
 use rustc_hir::def::DefKind;
 use rustc_middle::mir::{BinOp, UnOp};
 use rustc_middle::thir;
@@ -12,7 +12,7 @@ use rustc_middle::thir::{AdtExpr, LogicalOp};
 use rustc_middle::ty::{Const, ConstKind, TyKind};
 use std::rc::Rc;
 
-fn path_and_ty_of_bin_op(bin_op: &BinOp, ty_lhs: Rc<CoqType>) -> (&'static str, Rc<CoqType>) {
+fn path_and_ty_of_bin_op(bin_op: &BinOp, ty_lhs: Rc<RocqType>) -> (&'static str, Rc<RocqType>) {
     match bin_op {
         BinOp::Add => ("BinOp.Wrap.add", ty_lhs),
         BinOp::Sub => ("BinOp.Wrap.sub", ty_lhs),
@@ -24,18 +24,18 @@ fn path_and_ty_of_bin_op(bin_op: &BinOp, ty_lhs: Rc<CoqType>) -> (&'static str, 
         BinOp::BitOr => ("BinOp.Wrap.bit_or", ty_lhs),
         BinOp::Shl => ("BinOp.Wrap.shl", ty_lhs),
         BinOp::Shr => ("BinOp.Wrap.shr", ty_lhs),
-        BinOp::Eq => ("BinOp.eq", CoqType::path(&["bool"])),
-        BinOp::Ne => ("BinOp.ne", CoqType::path(&["bool"])),
-        BinOp::Lt => ("BinOp.lt", CoqType::path(&["bool"])),
-        BinOp::Le => ("BinOp.le", CoqType::path(&["bool"])),
-        BinOp::Ge => ("BinOp.ge", CoqType::path(&["bool"])),
-        BinOp::Gt => ("BinOp.gt", CoqType::path(&["bool"])),
+        BinOp::Eq => ("BinOp.eq", RocqType::path(&["bool"])),
+        BinOp::Ne => ("BinOp.ne", RocqType::path(&["bool"])),
+        BinOp::Lt => ("BinOp.lt", RocqType::path(&["bool"])),
+        BinOp::Le => ("BinOp.le", RocqType::path(&["bool"])),
+        BinOp::Ge => ("BinOp.ge", RocqType::path(&["bool"])),
+        BinOp::Gt => ("BinOp.gt", RocqType::path(&["bool"])),
         BinOp::Offset => ("BinOp.Pure.offset", ty_lhs),
         _ => todo!(),
     }
 }
 
-pub(crate) fn allocate_bindings(bindings: &[(String, Rc<CoqType>)], body: Rc<Expr>) -> Rc<Expr> {
+pub(crate) fn allocate_bindings(bindings: &[(String, Rc<RocqType>)], body: Rc<Expr>) -> Rc<Expr> {
     bindings.iter().rfold(body, |body, (name, ty)| {
         Rc::new(Expr::Let {
             name: Some(name.clone()),
@@ -178,7 +178,7 @@ fn build_inner_match(
                 }),
                 [first_pattern, ..] => {
                     let free_vars = first_pattern.get_free_vars();
-                    let free_vars_ty = Rc::new(CoqType::Tuple {
+                    let free_vars_ty = Rc::new(RocqType::Tuple {
                         tys: free_vars.iter().map(|(_, ty)| ty.clone()).collect(),
                     });
 
@@ -358,7 +358,7 @@ fn build_inner_match(
         })
 }
 
-pub(crate) fn build_match(ty: Rc<CoqType>, scrutinee: Rc<Expr>, arms: Vec<MatchArm>) -> Rc<Expr> {
+pub(crate) fn build_match(ty: Rc<RocqType>, scrutinee: Rc<Expr>, arms: Vec<MatchArm>) -> Rc<Expr> {
     Rc::new(Expr::Match {
         ty,
         scrutinee,
@@ -506,14 +506,14 @@ pub(crate) fn compile_expr<'a>(
                 &thir.exprs.get(*value).unwrap().ty,
             );
             let value = compile_expr(env, generics, thir, value);
-            let ty = Rc::new(CoqType::Application {
-                func: Rc::new(CoqType::Path {
+            let ty = Rc::new(RocqType::Application {
+                func: Rc::new(RocqType::Path {
                     path: Path::new(&["alloc", "boxed", "Box"]),
                 }),
                 consts: vec![],
                 tys: vec![
                     value_ty,
-                    Rc::new(CoqType::Path {
+                    Rc::new(RocqType::Path {
                         path: Path::new(&["alloc", "alloc", "Global"]),
                     }),
                 ],
@@ -800,12 +800,12 @@ pub(crate) fn compile_expr<'a>(
         }
         thir::ExprKind::VarRef { id } => {
             let name =
-                to_valid_coq_name(IsValue::Yes, env.tcx.hir().opt_name(id.0).unwrap().as_str());
+                to_valid_rocq_name(IsValue::Yes, env.tcx.hir().opt_name(id.0).unwrap().as_str());
 
             Rc::new(Expr::LocalVar(name))
         }
         thir::ExprKind::UpvarRef { var_hir_id, .. } => {
-            let name = to_valid_coq_name(
+            let name = to_valid_rocq_name(
                 IsValue::Yes,
                 env.tcx.hir().opt_name(var_hir_id.0).unwrap().as_str(),
             );
@@ -900,7 +900,7 @@ pub(crate) fn compile_expr<'a>(
         }
         thir::ExprKind::Adt(adt_expr) => {
             let (arg_consts, arg_tys) = match ty.as_ref() {
-                CoqType::Application {
+                RocqType::Application {
                     func: _,
                     consts,
                     tys,
@@ -920,7 +920,7 @@ pub(crate) fn compile_expr<'a>(
                 .iter()
                 .map(|field| {
                     (
-                        to_valid_coq_name(
+                        to_valid_rocq_name(
                             IsValue::No,
                             variant.fields.get(field.name).unwrap().name.as_str(),
                         ),
@@ -973,7 +973,7 @@ pub(crate) fn compile_expr<'a>(
         thir::ExprKind::Closure(closure) => {
             let rustc_middle::thir::ClosureExpr { closure_id, .. } = closure.as_ref();
             let result = apply_on_thir(env, closure_id, |thir, body_id| {
-                let args: Vec<(Rc<Pattern>, Rc<CoqType>)> = thir
+                let args: Vec<(Rc<Pattern>, Rc<RocqType>)> = thir
                     .params
                     .iter()
                     .filter_map(|param| match &param.pat {
@@ -990,7 +990,7 @@ pub(crate) fn compile_expr<'a>(
                     })
                     .collect();
                 let args = if args.is_empty() {
-                    vec![(Rc::new(Pattern::Wild), CoqType::unit())]
+                    vec![(Rc::new(Pattern::Wild), RocqType::unit())]
                 } else {
                     args
                 };
@@ -1028,7 +1028,7 @@ pub(crate) fn compile_expr<'a>(
 
             match result {
                 Ok(expr) => expr,
-                Err(error) => Rc::new(Expr::Comment(error, Expr::tt())).alloc(CoqType::unit()),
+                Err(error) => Rc::new(Expr::Comment(error, Expr::tt())).alloc(RocqType::unit()),
             }
         }
         thir::ExprKind::Literal { lit, neg } => match lit.node {
@@ -1220,7 +1220,7 @@ pub(crate) fn compile_expr<'a>(
                             let parent_symbol = env.tcx.def_key(parent).get_opt_name().unwrap();
 
                             Rc::new(Expr::GetAssociatedFunction {
-                                ty: CoqType::var("Self"),
+                                ty: RocqType::var("Self"),
                                 func: format!("{}.{}", symbol.unwrap(), parent_symbol),
                                 generic_consts: vec![],
                                 generic_tys: vec![],
@@ -1291,7 +1291,7 @@ pub(crate) fn compile_expr<'a>(
             }
         }
         thir::ExprKind::ConstParam { param, .. } => {
-            let name = to_valid_coq_name(IsValue::No, param.name.as_str());
+            let name = to_valid_rocq_name(IsValue::No, param.name.as_str());
 
             Expr::local_var(name.as_str()).alloc(ty)
         }
@@ -1344,7 +1344,7 @@ fn compile_stmts<'a>(
             let expr = thir.exprs.get(*expr_id).unwrap();
             compile_type(env, &expr.span, generics, &expr.ty)
         }
-        None => CoqType::unit(),
+        None => RocqType::unit(),
     };
 
     stmt_ids.iter().rev().fold(
@@ -1448,7 +1448,7 @@ fn compile_block<'a>(
 pub(crate) fn compile_const(env: &Env, span: &rustc_span::Span, const_: &Const) -> Rc<Expr> {
     match &const_.kind() {
         ConstKind::Param(param) => {
-            let name = to_valid_coq_name(IsValue::No, param.name.as_str());
+            let name = to_valid_rocq_name(IsValue::No, param.name.as_str());
 
             Expr::local_var(name.as_str())
         }

@@ -18,7 +18,6 @@ extern crate rustc_span;
 extern crate rustc_type_ir;
 
 pub mod callbacks;
-pub mod coq;
 pub mod core;
 pub mod env;
 pub mod expression;
@@ -27,6 +26,7 @@ pub mod options;
 pub mod path;
 pub mod pattern;
 pub mod render;
+pub mod rocq;
 pub mod thir_expression;
 pub mod thir_pattern;
 pub mod thir_ty;

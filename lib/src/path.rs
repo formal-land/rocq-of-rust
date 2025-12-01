@@ -129,7 +129,7 @@ pub(crate) enum IsValue {
     No,
 }
 
-pub(crate) fn to_valid_coq_name(is_value: IsValue, str: &str) -> String {
+pub(crate) fn to_valid_rocq_name(is_value: IsValue, str: &str) -> String {
     if str == "_" {
         return "underscore".to_string();
     }

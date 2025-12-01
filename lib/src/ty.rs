@@ -1,12 +1,12 @@
-use crate::coq;
 use crate::env::*;
 use crate::expression::*;
 use crate::path::*;
+use crate::rocq;
 use serde::Serialize;
 use std::rc::Rc;
 
 #[derive(Debug, Eq, PartialEq, Serialize)]
-pub(crate) enum CoqType {
+pub(crate) enum RocqType {
     Var {
         name: String,
     },
@@ -14,18 +14,18 @@ pub(crate) enum CoqType {
         path: Rc<Path>,
     },
     Application {
-        func: Rc<CoqType>,
+        func: Rc<RocqType>,
         consts: Vec<Rc<Expr>>,
-        tys: Vec<Rc<CoqType>>,
+        tys: Vec<Rc<RocqType>>,
     },
     Function {
         /// We group together the arguments that are called together, as this
         /// will be useful for the monadic translation of types later.
-        args: Vec<Rc<CoqType>>,
-        ret: Rc<CoqType>,
+        args: Vec<Rc<RocqType>>,
+        ret: Rc<RocqType>,
     },
     Tuple {
-        tys: Vec<Rc<CoqType>>,
+        tys: Vec<Rc<RocqType>>,
     },
     // TODO: add the type parameters for the traits
     Dyn {
@@ -34,47 +34,47 @@ pub(crate) enum CoqType {
     AssociatedInTrait {
         trait_name: Rc<Path>,
         const_args: Vec<Rc<Expr>>,
-        ty_args: Vec<Rc<CoqType>>,
-        self_ty: Rc<CoqType>,
+        ty_args: Vec<Rc<RocqType>>,
+        self_ty: Rc<RocqType>,
         name: String,
     },
     AssociatedUnknown,
     Infer,
 }
 
-impl CoqType {
-    pub(crate) fn var(name: &str) -> Rc<CoqType> {
-        Rc::new(CoqType::Var {
+impl RocqType {
+    pub(crate) fn var(name: &str) -> Rc<RocqType> {
+        Rc::new(RocqType::Var {
             name: name.to_string(),
         })
     }
 
-    pub(crate) fn path(segments: &[&str]) -> Rc<CoqType> {
-        Rc::new(CoqType::Path {
+    pub(crate) fn path(segments: &[&str]) -> Rc<RocqType> {
+        Rc::new(RocqType::Path {
             path: Path::new(segments),
         })
     }
 
-    pub(crate) fn unit() -> Rc<CoqType> {
-        Rc::new(CoqType::Tuple { tys: vec![] })
+    pub(crate) fn unit() -> Rc<RocqType> {
+        Rc::new(RocqType::Tuple { tys: vec![] })
     }
 
-    pub(crate) fn make_ref(mutbl: &rustc_hir::Mutability, ty: Rc<CoqType>) -> Rc<CoqType> {
+    pub(crate) fn make_ref(mutbl: &rustc_hir::Mutability, ty: Rc<RocqType>) -> Rc<RocqType> {
         let ptr_name = match mutbl {
             rustc_hir::Mutability::Mut => "&mut",
             rustc_hir::Mutability::Not => "&",
         };
 
-        Rc::new(CoqType::Application {
-            func: CoqType::path(&[ptr_name]),
+        Rc::new(RocqType::Application {
+            func: RocqType::path(&[ptr_name]),
             consts: vec![],
             tys: vec![ty],
         })
     }
 
-    pub(crate) fn match_ref(self: Rc<CoqType>) -> Option<(String, Rc<CoqType>)> {
-        if let CoqType::Application { func, consts, tys } = &*self {
-            if let CoqType::Path { path, .. } = &**func {
+    pub(crate) fn match_ref(self: Rc<RocqType>) -> Option<(String, Rc<RocqType>)> {
+        if let RocqType::Application { func, consts, tys } = &*self {
+            if let RocqType::Path { path, .. } = &**func {
                 let Path { segments } = path.as_ref();
                 if segments.len() == 1 && consts.is_empty() && tys.len() == 1 {
                     let name = segments.first().unwrap();
@@ -93,7 +93,7 @@ pub(crate) fn compile_type<'a>(
     env: &Env<'a>,
     local_def_id: &rustc_hir::def_id::LocalDefId,
     ty: &rustc_hir::Ty<'a>,
-) -> Rc<CoqType> {
+) -> Rc<RocqType> {
     let generics = env.tcx.generics_of(*local_def_id);
     let item_ctxt = rustc_hir_analysis::collect::ItemCtxt::new(env.tcx, *local_def_id);
     let span = &ty.span;
@@ -106,9 +106,9 @@ pub(crate) fn compile_fn_ret_ty<'a>(
     env: &Env<'a>,
     local_def_id: &rustc_hir::def_id::LocalDefId,
     fn_ret_ty: &rustc_hir::FnRetTy<'a>,
-) -> Rc<CoqType> {
+) -> Rc<RocqType> {
     match fn_ret_ty {
-        rustc_hir::FnRetTy::DefaultReturn(_) => CoqType::unit(),
+        rustc_hir::FnRetTy::DefaultReturn(_) => RocqType::unit(),
         rustc_hir::FnRetTy::Return(ty) => compile_type(env, local_def_id, ty),
     }
 }
@@ -118,10 +118,10 @@ pub(crate) fn compile_fn_decl<'a>(
     env: &Env<'a>,
     local_def_id: &rustc_hir::def_id::LocalDefId,
     fn_decl: &rustc_hir::FnDecl<'a>,
-) -> Rc<CoqType> {
+) -> Rc<RocqType> {
     let ret = compile_fn_ret_ty(env, local_def_id, &fn_decl.output);
 
-    Rc::new(CoqType::Function {
+    Rc::new(RocqType::Function {
         args: fn_decl
             .inputs
             .iter()
@@ -136,7 +136,7 @@ pub(crate) fn compile_path_ty_params<'a>(
     env: &Env<'a>,
     local_def_id: &rustc_hir::def_id::LocalDefId,
     path: &rustc_hir::Path<'a>,
-) -> Vec<Rc<CoqType>> {
+) -> Vec<Rc<RocqType>> {
     match path.segments.last().unwrap().args {
         Some(args) => args
             .args
@@ -150,71 +150,71 @@ pub(crate) fn compile_path_ty_params<'a>(
     }
 }
 
-impl CoqType {
-    pub(crate) fn to_coq(&self) -> Rc<coq::Expression> {
+impl RocqType {
+    pub(crate) fn to_rocq(&self) -> Rc<rocq::Expression> {
         match self {
-            CoqType::Var { name } => coq::Expression::just_name(name),
-            CoqType::Path { path } => coq::Expression::just_name("Ty.path")
-                .apply(Rc::new(coq::Expression::String(path.to_string()))),
-            CoqType::Application { func, consts, tys } => {
+            RocqType::Var { name } => rocq::Expression::just_name(name),
+            RocqType::Path { path } => rocq::Expression::just_name("Ty.path")
+                .apply(Rc::new(rocq::Expression::String(path.to_string()))),
+            RocqType::Application { func, consts, tys } => {
                 if consts.is_empty() && tys.is_empty() {
-                    func.to_coq()
+                    func.to_rocq()
                 } else {
-                    coq::Expression::just_name("Ty.apply").apply_many(&[
-                        func.to_coq(),
-                        Rc::new(coq::Expression::List {
-                            exprs: consts.iter().map(|const_| const_.to_coq()).collect(),
+                    rocq::Expression::just_name("Ty.apply").apply_many(&[
+                        func.to_rocq(),
+                        Rc::new(rocq::Expression::List {
+                            exprs: consts.iter().map(|const_| const_.to_rocq()).collect(),
                         }),
-                        Rc::new(coq::Expression::List {
-                            exprs: tys.iter().map(|ty| ty.to_coq()).collect(),
+                        Rc::new(rocq::Expression::List {
+                            exprs: tys.iter().map(|ty| ty.to_rocq()).collect(),
                         }),
                     ])
                 }
             }
-            CoqType::Function { args, ret } => coq::Expression::just_name("Ty.function")
+            RocqType::Function { args, ret } => rocq::Expression::just_name("Ty.function")
                 .apply_many(&[
-                    Rc::new(coq::Expression::List {
-                        exprs: args.iter().map(|arg| arg.to_coq()).collect(),
+                    Rc::new(rocq::Expression::List {
+                        exprs: args.iter().map(|arg| arg.to_rocq()).collect(),
                     }),
-                    ret.to_coq(),
+                    ret.to_rocq(),
                 ]),
-            CoqType::Tuple { tys } => {
-                coq::Expression::just_name("Ty.tuple").apply(Rc::new(coq::Expression::List {
-                    exprs: tys.iter().map(|ty| ty.to_coq()).collect(),
+            RocqType::Tuple { tys } => {
+                rocq::Expression::just_name("Ty.tuple").apply(Rc::new(rocq::Expression::List {
+                    exprs: tys.iter().map(|ty| ty.to_rocq()).collect(),
                 }))
             }
-            CoqType::Dyn { traits } => {
-                coq::Expression::just_name("Ty.dyn").apply(Rc::new(coq::Expression::List {
+            RocqType::Dyn { traits } => {
+                rocq::Expression::just_name("Ty.dyn").apply(Rc::new(rocq::Expression::List {
                     exprs: traits
                         .iter()
                         .map(|trait_name| {
-                            Rc::new(coq::Expression::Tuple(vec![
-                                Rc::new(coq::Expression::String(trait_name.to_string())),
-                                Rc::new(coq::Expression::List { exprs: vec![] }),
+                            Rc::new(rocq::Expression::Tuple(vec![
+                                Rc::new(rocq::Expression::String(trait_name.to_string())),
+                                Rc::new(rocq::Expression::List { exprs: vec![] }),
                             ]))
                         })
                         .collect(),
                 }))
             }
-            CoqType::AssociatedInTrait {
+            RocqType::AssociatedInTrait {
                 trait_name,
                 const_args,
                 ty_args,
                 self_ty,
                 name,
-            } => coq::Expression::just_name("Ty.associated_in_trait").apply_many(&[
-                Rc::new(coq::Expression::String(trait_name.to_string())),
-                Rc::new(coq::Expression::List {
-                    exprs: const_args.iter().map(|const_| const_.to_coq()).collect(),
+            } => rocq::Expression::just_name("Ty.associated_in_trait").apply_many(&[
+                Rc::new(rocq::Expression::String(trait_name.to_string())),
+                Rc::new(rocq::Expression::List {
+                    exprs: const_args.iter().map(|const_| const_.to_rocq()).collect(),
                 }),
-                Rc::new(coq::Expression::List {
-                    exprs: ty_args.iter().map(|ty| ty.to_coq()).collect(),
+                Rc::new(rocq::Expression::List {
+                    exprs: ty_args.iter().map(|ty| ty.to_rocq()).collect(),
                 }),
-                self_ty.to_coq(),
-                Rc::new(coq::Expression::String(name.clone())),
+                self_ty.to_rocq(),
+                Rc::new(rocq::Expression::String(name.clone())),
             ]),
-            CoqType::AssociatedUnknown => coq::Expression::just_name("Ty.associated_unknown"),
-            CoqType::Infer => Rc::new(coq::Expression::Wild),
+            RocqType::AssociatedUnknown => rocq::Expression::just_name("Ty.associated_unknown"),
+            RocqType::Infer => Rc::new(rocq::Expression::Wild),
         }
     }
 
@@ -223,11 +223,11 @@ impl CoqType {
     /// merge multiple modules with the same name.
     pub(crate) fn to_name(&self) -> String {
         match self {
-            CoqType::Var { name } => name.clone(),
-            CoqType::Path { path, .. } => {
+            RocqType::Var { name } => name.clone(),
+            RocqType::Path { path, .. } => {
                 path.to_name().replace('&', "ref_").replace('*', "pointer_")
             }
-            CoqType::Application { func, consts, tys } => {
+            RocqType::Application { func, consts, tys } => {
                 let mut name = func.to_name();
                 for const_ in consts {
                     name.push('_');
@@ -239,7 +239,7 @@ impl CoqType {
                 }
                 name
             }
-            CoqType::Function { args, ret } => {
+            RocqType::Function { args, ret } => {
                 let mut name = "".to_string();
                 for arg in args {
                     name.push_str(&arg.to_name());
@@ -248,7 +248,7 @@ impl CoqType {
                 name.push_str(&ret.to_name());
                 name
             }
-            CoqType::Tuple { tys } => {
+            RocqType::Tuple { tys } => {
                 let mut name = "Tuple_".to_string();
                 for ty in tys {
                     name.push_str(&ty.to_name());
@@ -256,7 +256,7 @@ impl CoqType {
                 }
                 name
             }
-            CoqType::Dyn { traits } => {
+            RocqType::Dyn { traits } => {
                 let mut name = "Dyn".to_string();
                 for trait_ in traits {
                     name.push('_');
@@ -264,7 +264,7 @@ impl CoqType {
                 }
                 name
             }
-            CoqType::AssociatedInTrait {
+            RocqType::AssociatedInTrait {
                 trait_name,
                 const_args,
                 ty_args,
@@ -288,8 +288,8 @@ impl CoqType {
                     name
                 )
             }
-            CoqType::AssociatedUnknown => "associated_unknown_type".to_string(),
-            CoqType::Infer => "inferred_type".to_string(),
+            RocqType::AssociatedUnknown => "associated_unknown_type".to_string(),
+            RocqType::Infer => "inferred_type".to_string(),
         }
     }
 }

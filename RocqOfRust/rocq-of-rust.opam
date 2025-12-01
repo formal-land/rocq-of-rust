@@ -1,0 +1,25 @@
+opam-version: "2.0"
+name: "rocq-of-rust"
+version: "0.1"
+synopsis: "Rocq of Rust"
+description: """
+Formal verification for Rust by translation to the proof system Rocq
+"""
+maintainer: "Guillaume Claret <dev@clarus.me>"
+authors: [
+  "Formal Land <contact@formal.land>"
+]
+license: "MIT"
+homepage: "https://formal.land/docs/rocq-of-rust/introduction"
+bug-reports: "https://github.com/formal-land/rocq-of-rust/issues"
+dev-repo: "git+https://github.com/formal-land/rocq-of-rust.git"
+depends: [
+  "coq" {>= "8.20.0" & < "8.21"}
+  "coq-hammer"
+  "coq-coqutil" {>= "0.0.5"}
+  "coq-smpl"
+  "ocaml" {>= "4.08"}
+]
+build: [
+  [make]
+]

@@ -1,0 +1,3 @@
+.Makefile.d
+*RocqMakefile*
+__pycache__/

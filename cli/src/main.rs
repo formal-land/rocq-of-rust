@@ -1,6 +1,6 @@
 #![feature(rustc_private)]
 
-extern crate coq_of_rust_lib;
+extern crate rocq_of_rust_lib;
 
 use std::path::{Path, PathBuf};
 
@@ -16,7 +16,7 @@ struct Translate {
     #[arg(long, value_name = "axiomatize", default_value_t = false)]
     axiomatize: bool,
     /// Output path where to place the translation
-    #[arg(long, value_name = "output_path", value_parser = is_valid_path, default_value = "coq_translation")]
+    #[arg(long, value_name = "output_path", value_parser = is_valid_path, default_value = "rocq_translation")]
     output_path: PathBuf,
 }
 
@@ -31,7 +31,7 @@ fn is_valid_path(path: &str) -> Result<PathBuf, String> {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Translate rust files to coq files
+    /// Translate rust files to Rocq files
     Translate(Translate),
 }
 
@@ -47,7 +47,7 @@ struct Cli {
 }
 
 fn main() {
-    use coq_of_rust_lib::core;
+    use rocq_of_rust_lib::core;
     let cli = Cli::parse();
 
     match cli.command {

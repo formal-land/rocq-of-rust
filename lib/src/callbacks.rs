@@ -5,17 +5,17 @@ use rustc_interface::{interface::Compiler, Queries};
 use std::fs::File;
 use std::io::Write;
 
-pub struct ToCoq {
+pub struct ToRocq {
     opts: Options,
 }
 
-impl ToCoq {
+impl ToRocq {
     pub fn new(opts: Options) -> Self {
-        ToCoq { opts }
+        ToRocq { opts }
     }
 }
 
-fn get_index_coq_file_content(file_names: Vec<String>) -> String {
+fn get_index_rocq_file_content(file_names: Vec<String>) -> String {
     let mut index_content = String::new();
 
     for file_name in file_names {
@@ -28,7 +28,7 @@ fn get_index_coq_file_content(file_names: Vec<String>) -> String {
     index_content
 }
 
-impl Callbacks for ToCoq {
+impl Callbacks for ToRocq {
     fn after_expansion<'tcx>(
         &mut self,
         compiler: &Compiler,
@@ -55,25 +55,27 @@ impl Callbacks for ToCoq {
         });
 
         let mut file = File::create(format!("{crate_name}.v")).unwrap();
-        let index_content = get_index_coq_file_content(translation.keys().cloned().collect());
+        let index_content = get_index_rocq_file_content(translation.keys().cloned().collect());
 
         file.write_all(index_content.as_bytes()).unwrap();
 
-        for (file_name, (coq_translation, json_translation)) in translation {
-            let coq_file_name = file_name.replace(".rs", ".v");
-            println!("Writing to {coq_file_name:}");
+        for (file_name, (rocq_translation, json_translation)) in translation {
+            let rocq_file_name = file_name.replace(".rs", ".v");
+            println!("Writing to {rocq_file_name:}");
 
-            let file = File::create(coq_file_name.clone());
+            let file = File::create(rocq_file_name.clone());
 
             // For some of the files we cannot create the output as the path is not accessible,
             // especially for files corresponding to part of the standard library that appear
             // sometimes in the translation.
             if file.is_err() {
-                println!("Failed to create {coq_file_name:}");
+                println!("Failed to create {rocq_file_name:}");
                 continue;
             }
 
-            file.unwrap().write_all(coq_translation.as_bytes()).unwrap();
+            file.unwrap()
+                .write_all(rocq_translation.as_bytes())
+                .unwrap();
 
             if with_json {
                 let json_file_name = file_name.replace(".rs", ".json");

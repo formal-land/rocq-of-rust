@@ -13,7 +13,7 @@ pub(crate) enum Pattern {
     Wild,
     Binding {
         name: String,
-        ty: Rc<CoqType>,
+        ty: Rc<RocqType>,
         is_with_ref: bool,
         pattern: Option<Rc<Pattern>>,
     },
@@ -39,8 +39,8 @@ impl Pattern {
             rustc_hir::PatKind::Wild => Rc::new(Pattern::Wild),
             rustc_hir::PatKind::Binding(binding_annotation, _, ident, sub_pattern) => {
                 Rc::new(Pattern::Binding {
-                    name: to_valid_coq_name(IsValue::Yes, ident.as_str()),
-                    ty: CoqType::path(&[
+                    name: to_valid_rocq_name(IsValue::Yes, ident.as_str()),
+                    ty: RocqType::path(&[
                         "Type for variables in patterns in function parameters is not handled",
                     ]),
                     is_with_ref: matches!(
@@ -106,7 +106,7 @@ impl Pattern {
 
     /// We return a vector, and we know that each variable of this vector is unique
     /// as we can only bound a variable once in a pattern.
-    pub(crate) fn get_free_vars(&self) -> Vec<(String, Rc<CoqType>)> {
+    pub(crate) fn get_free_vars(&self) -> Vec<(String, Rc<RocqType>)> {
         match self {
             Pattern::Wild => vec![],
             Pattern::Binding {

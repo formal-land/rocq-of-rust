@@ -23,7 +23,7 @@ pub(crate) fn compile_pattern<'a>(
             subpattern,
             is_primary: _,
         } => {
-            let name = to_valid_coq_name(IsValue::Yes, name.as_str());
+            let name = to_valid_rocq_name(IsValue::Yes, name.as_str());
             let ty = crate::thir_ty::compile_type(env, &pat.span, generics, ty);
             let rustc_ast::ast::BindingMode(by_ref, _) = mode;
             let is_with_ref = matches!(by_ref, rustc_ast::ast::ByRef::Yes(_));
