@@ -139,6 +139,28 @@ Module SimulateM.
     | Call stack_in run_f k => Call stack_in run_f (fun output_stack => let_ (k output_stack) e2)
     end.
 
+  Notation "'let*s' x ':=' X 'in' Y" :=
+    (let_ X (fun x => Y))
+    (at level 200, x pattern, X at level 100, Y at level 200).
+
+  Definition read {R : Set} {Stack : Stack.t} {A : Set} `{Link A}
+      (stack : Stack.to_Set Stack)
+      (ref_core : Ref.Core.t A) :
+      t (Output.t R A) :=
+    match ref_core with
+    | Ref.Core.Immediate value =>
+      match value with
+      | Some value => Pure (Output.Success value)
+      | None => Pure (Output.Exception Output.Exception.BreakMatch)
+      end
+    | Ref.Core.Mutable _ _ _ _ _ =>
+      GetCanAccess Stack ref_core (fun H_can_access =>
+      match Stack.CanAccess.read H_can_access stack with
+      | Some value => Pure (Output.Success value)
+      | None => Pure (Output.Exception Output.Exception.BreakMatch)
+      end)
+    end.
+
   Parameter TodoLoop : forall {A : Set}, t A.
 
   Fixpoint eval {R Output : Set} {Stack : Stack.t}
@@ -158,29 +180,15 @@ Module SimulateM.
         exact (eval _ _ _ (k (Ref.Core.Immediate (Some value))) stack).
       }
       { (* StateRead *)
-        refine (
-          let immediate_value :=
-            match ref_core with
-            | Ref.Core.Immediate immediate_value => Some immediate_value
-            | _ => None
-            end in
-          _
+        exact (
+          let_ (read stack ref_core) (fun value =>
+          match value with
+          | Output.Success value =>
+            eval _ _ _ (k value) stack
+          | Output.Exception exception =>
+            Pure (Output.Exception exception, stack)
+          end)
         ).
-        destruct immediate_value as [value|].
-        { (* Immediate *)
-          destruct value as [value|].
-          { exact (eval _ _ _ (k value) stack). }
-          { exact (Pure (Output.Exception Output.Exception.BreakMatch, stack)). }
-        }
-        { (* Mutable *)
-          refine (
-            GetCanAccess Stack ref_core (fun H_access =>
-            _)
-          ).
-          destruct (Stack.CanAccess.read H_access stack) as [value|].
-          { exact (eval _ _ _ (k value) stack). }
-          { exact (Pure (Output.Exception Output.Exception.BreakMatch, stack)). }
-        }
       }
       { (* StateWrite *)
         refine (
@@ -268,7 +276,9 @@ Module SimulateM.
       Stack.to_Set Stack ->
       t (Output.t Output Output * Stack.to_Set Stack) :=
     eval (links.M.evaluate run.(Run.run_f)).
+  Arguments eval_f _ _ _ _ _ _ _ _ _ /.
 End SimulateM.
+Export (notations) SimulateM.
 
 Module Run.
   Reserved Notation "{{ e 🌲 value }}".
@@ -295,7 +305,7 @@ Module Run.
 
   where "{{ e 🌲 value }}" := (t value e).
 End Run.
-Export Run.
+Export (notations) Run.
 
 Ltac get_can_access :=
   unshelve eapply Run.GetCanAccess; [

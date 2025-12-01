@@ -40,3 +40,7 @@ pub fn min3(a: u32, b: u32, c: u32) -> u32 {
   let m = if a < b { a } else { b };
   if m < c { m } else { c }
 }
+
+pub fn choose_ref<'a>(choice: bool, a: &'a u32, b: &'a u32) -> u32 {
+  if choice { *a } else { *b }
+}

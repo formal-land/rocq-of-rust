@@ -95,7 +95,7 @@ Definition get_or_zero (xs : array.t U32.t {| Integer.value := 4 |}) (i : Usize.
   end.
 
 Lemma get_or_zero_eq
-    (xs : array.t U32.t {| Integer.value := 4 |}) (i : Usize.t)
+    (xs : array.t U32.t 4) (i : Usize.t)
     (H_i : 0 <= i.(Integer.value)) :
   let ref_xs := make_ref 0 in
   let stack := (xs, tt) in
@@ -227,3 +227,33 @@ Proof.
   }
 Qed.
 Global Opaque run_min3.
+
+Definition choose_ref (choice : bool) (a b : U32.t) : U32.t :=
+  if choice then
+    a
+  else
+    b.
+
+Lemma choose_ref_eq (choice : bool) (a b : U32.t) :
+  let stack := (a, (b, tt)) in
+  let ref_a := make_ref 0 in
+  let ref_b := make_ref 1 in
+  {{
+    SimulateM.eval_f (Stack := [_; _]) (run_choose_ref choice ref_a ref_b) stack 🌲
+    (Output.Success (choose_ref choice a b), stack)
+  }}.
+Proof.
+  unfold choose_ref; cbn.
+  eapply Run.Call; cbn. {
+    apply Run.Pure.
+  }
+  cbn.
+  destruct choice; cbn.
+  { get_can_access.
+    apply Run.Pure.
+  }
+  { get_can_access.
+    apply Run.Pure.
+  }
+Qed.
+Global Opaque run_choose_ref.

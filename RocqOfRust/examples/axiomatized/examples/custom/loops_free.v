@@ -36,3 +36,8 @@ Parameter min3 : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
 
 Global Instance Instance_IsFunction_min3 : M.IsFunction.C "loops_free::min3" min3.
 Admitted.
+
+Parameter choose_ref : (list Value.t) -> (list Ty.t) -> (list Value.t) -> M.
+
+Global Instance Instance_IsFunction_choose_ref : M.IsFunction.C "loops_free::choose_ref" choose_ref.
+Admitted.
