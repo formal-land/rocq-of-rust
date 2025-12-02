@@ -1,20 +1,20 @@
 # Proof
 
-In this guide, we present how to prove Rust programs translated in Coq by `coq-of-rust`. We list some recipes and conventions that are useful for us, but this may evolve in the future as we gain more experience. Do not hesitate to propose changes or improvements, and to update this document accordingly.
+In this guide, we present how to prove Rust programs translated in Rocq by `rocq-of-rust`. We list some recipes and conventions that are useful for us, but this may evolve in the future as we gain more experience. Do not hesitate to propose changes or improvements, and to update this document accordingly.
 
 ## Simulations
 
-The first step is to rewrite the generated Coq code, that is something around five times larger than the original Rust code, to an idiomatic Coq version called a simulation. The simulation should have around the same size as the original Rust code. This step is there to make the proof manageable. We should not use dependent types to write the simulations as this makes the code too complex.
+The first step is to rewrite the generated Rocq code, that is something around five times larger than the original Rust code, to an idiomatic Rocq version called a simulation. The simulation should have around the same size as the original Rust code. This step is there to make the proof manageable. We should not use dependent types to write the simulations as this makes the code too complex.
 
 We organize our developments as follows:
 
-- `source_file.v`: the translation of some Rust source file `source_file.rs` to Coq
+- `source_file.v`: the translation of some Rust source file `source_file.rs` to Rocq
 - `simulations/source_file.v`: the simulations of `source_file.v`
 - `proofs/source_file.v`: the proofs of `source_file.v` using the simulations in `simulations/source_file.v`
 
 That way we separate the computational part from the proof part.
 
-In the file [CoqOfRust/simulations/M.v](/CoqOfRust/simulations/M.v) we define the monads:
+In the file [RocqOfRust/simulations/M.v](/RocqOfRust/simulations/M.v) we define the monads:
 
 - `Error`
 - `StateError`
@@ -37,7 +37,7 @@ This states how to go from a type `A` used in the simulation to a value of type 
 
 This conversion is necessary, as in the translated Rust code all the types of values are collapsed in a single type `Value.t`. When writing our statements to say that our simulations are equal to the original Rust code, we always convert from the simulations values to untyped values using the projection `φ` (we never go the other way around).
 
-Having a typeclass is useful to avoid having to precise which conversion we use when calling the projection `φ`. The downside is that, in order to avoid confusion, we have to make sure that these conversions are unique and create one different Coq type for each Rust type.
+Having a typeclass is useful to avoid having to precise which conversion we use when calling the projection `φ`. The downside is that, in order to avoid confusion, we have to make sure that these conversions are unique and create one different Rocq type for each Rust type.
 
 We also add the definitions for the instances of `ToValue` for each types in the `simulations/` folders.
 
@@ -45,7 +45,7 @@ We also add the definitions for the instances of `ToValue` for each types in the
 
 Once we have defined our simulations, we need to make sure that they behave as the translated code. This is especially important as the source Rust code may evolve, and we need a reliable way to know which simulations should be changed.
 
-In [CoqOfRust/proofs/M.v](/CoqOfRust/proofs/M.v) we have a predicate to express that, is a certain environment `env` and from an initial state `state`, the translated code `e` is evaluated to the value `v` and returns the new state `state'`:
+In [RocqOfRust/proofs/M.v](/RocqOfRust/proofs/M.v) we have a predicate to express that, is a certain environment `env` and from an initial state `state`, the translated code `e` is evaluated to the value `v` and returns the new state `state'`:
 
 ```coq
 {{ env , state | e ⇓ v | state' }}
@@ -80,7 +80,7 @@ To prove the equality of the simulation we can use:
 
 Showing that a simulation is equal is not obvious, and we need to make a few choices in the proof. In particular:
 
-- We have to find, in the generated Coq code, the name for the functions, associated functions or trait instances that are called in the Rust code (the name resolution is done at this point).
+- We have to find, in the generated Rocq code, the name for the functions, associated functions or trait instances that are called in the Rust code (the name resolution is done at this point).
 - We have to decide how to allocate the memory.
 
 ## Allocating the memory
@@ -96,7 +96,7 @@ When verifying the equality of a simulation, we have a choice to make when alloc
 
 ## Simulations of the traits
 
-The simulations for the traits are particular because we loose all the trait constraints (the `where` clauses) in the translation to Coq. We have to add these constraints back in some ways, as additional hypothesis in our lemma of equality of the simulations. These additional hypothesis are necessary to find the trait instances when encountering the calls to `M.get_trait_method` in the translated code.
+The simulations for the traits are particular because we loose all the trait constraints (the `where` clauses) in the translation to Rocq. We have to add these constraints back in some ways, as additional hypothesis in our lemma of equality of the simulations. These additional hypothesis are necessary to find the trait instances when encountering the calls to `M.get_trait_method` in the translated code.
 
 We proceed in two steps.
 
@@ -180,7 +180,7 @@ Qed.
 
 For the specifications and the proofs of our properties, we are directly working on the simulations and not on the original translated code.
 
-The simulations are either purely functional programs, or monadic programs in the error monad (to represent the `panic` calls that can happen at a lot of places in Rust) or the state monad. We use proof techniques that already exist in Coq to express specifications and proofs.
+The simulations are either purely functional programs, or monadic programs in the error monad (to represent the `panic` calls that can happen at a lot of places in Rust) or the state monad. We use proof techniques that already exist in Rocq to express specifications and proofs.
 
 We have a few conventions and tools. For data types that need it, we define an invariant named `Valid.t`. For example, if we have a type `Foo` in the original Rust code, we would will the predicate:
 
@@ -195,10 +195,10 @@ End Foo.
 
 so that the name of the invariant is `Foo.Valid.t`. We can then use this invariant in the specifications of the functions that manipulate `Foo.t` values.
 
-We use the Coq option `Primitive Projections` to have a simpler representation of the record projections. We have a notation for record updates, compatible with primitive projections, defined in [CoqOfRust/RecordUpdate.v](/CoqOfRust/RecordUpdate.v) that is:
+We use the Rocq option `Primitive Projections` to have a simpler representation of the record projections. We have a notation for record updates, compatible with primitive projections, defined in [RocqOfRust/RecordUpdate.v](/RocqOfRust/RecordUpdate.v) that is:
 
 ```coq
 storage <| field_name := new_value |>
 ```
 
-To automate the simple parts of the proofs, we use the [CoqHammer](https://coqhammer.github.io/) plugin with the tactic `best`. We use the tactic `lia` for arithmetic reasoning, including with modulo arithmetic.
+To automate the simple parts of the proofs, we use the [RocqHammer](https://coqhammer.github.io/) plugin with the tactic `best`. We use the tactic `lia` for arithmetic reasoning, including with modulo arithmetic.

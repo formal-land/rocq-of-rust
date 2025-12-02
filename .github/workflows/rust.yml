@@ -32,7 +32,7 @@ jobs:
             rustup toolchain install nightly-2024-12-07-x86_64-unknown-linux-gnu
             cargo --version
             sudo ln -s `which python3` /usr/bin/python
-            opam install -y --deps-only CoqOfRust/coq-of-rust.opam
+            opam install -y --deps-only RocqOfRust/rocq-of-rust.opam
           endGroup
           startGroup "Build"
             sudo chown -R $(whoami) .
@@ -58,13 +58,13 @@ jobs:
           endGroup
           # We disable for now this translation as this makes a panic!
           # startGroup "Translate Ink! library"
-          #   cd CoqOfRust
+          #   cd RocqOfRust
           #   ./generate_ink_example.sh
           #   cd ..
           # endGroup
           # Generate markdown with progress on links for instructions
           startGroup "Generate markdown with progress on links for instructions"
-            cd CoqOfRust/revm/revm_interpreter/instructions/links
+            cd RocqOfRust/revm/revm_interpreter/instructions/links
             python count_admitted.py > progress_on_links.md
             cd ../../../../..
           endGroup
@@ -79,8 +79,8 @@ jobs:
             cp ../../../../rust-toolchain ./
             time cargo build
             touch src/lib.rs
-            time cargo coq-of-rust
-            rsync -rcv src/ ../../../../CoqOfRust/alloc/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            time cargo rocq-of-rust
+            rsync -rcv src/ ../../../../RocqOfRust/alloc/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ../../../..
           endGroup
           startGroup "Translate the core library"
@@ -89,10 +89,10 @@ jobs:
             time cargo build
             touch src/lib.rs
             export RUST_MIN_STACK=800000000
-            time cargo coq-of-rust
+            time cargo rocq-of-rust
             sed -i 's/Module Impl_core_default_Default_where_core_default_Default_T_for_array_expr_T./(* Module Impl_core_default_Default_where_core_default_Default_T_for_array_expr_T./' src/array/mod.v
             sed -i 's/End Impl_core_default_Default_where_core_default_Default_T_for_array_expr_T./End Impl_core_default_Default_where_core_default_Default_T_for_array_expr_T. *)/' src/array/mod.v
-            rsync -rcv src/ ../../../../CoqOfRust/core/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            rsync -rcv src/ ../../../../RocqOfRust/core/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ../../../..
           endGroup
           startGroup "Save space"
@@ -110,74 +110,74 @@ jobs:
             # We compile each library twice to avoid errors. TODO: investigate why this is needed
             # bytecode
             cd bytecode
-            cargo coq-of-rust
+            cargo rocq-of-rust
             touch src/lib.rs
-            cargo coq-of-rust --with-json
-            rsync -rcv src/ ../../../../CoqOfRust/revm/revm_bytecode/ --include='*/' --include='*.v' --include='*.rs' --include='*.json' --exclude='*'
+            cargo rocq-of-rust --with-json
+            rsync -rcv src/ ../../../../RocqOfRust/revm/revm_bytecode/ --include='*/' --include='*.v' --include='*.rs' --include='*.json' --exclude='*'
             cd ..
             # context/interface
             cd context/interface
-            cargo coq-of-rust
+            cargo rocq-of-rust
             touch src/lib.rs
-            cargo coq-of-rust --with-json
-            rsync -rcv src/ ../../../../../CoqOfRust/revm/revm_context_interface/ --include='*/' --include='*.v' --include='*.rs' --include='*.json' --exclude='*'
+            cargo rocq-of-rust --with-json
+            rsync -rcv src/ ../../../../../RocqOfRust/revm/revm_context_interface/ --include='*/' --include='*.v' --include='*.rs' --include='*.json' --exclude='*'
             cd ../..
             # interpreter
             cd interpreter
-            cargo coq-of-rust
+            cargo rocq-of-rust
             touch src/lib.rs
-            cargo coq-of-rust --with-json
-            rsync -rcv src/ ../../../../CoqOfRust/revm/revm_interpreter/ --include='*/' --include='*.v' --include='*.rs' --include='*.json' --exclude='*'
+            cargo rocq-of-rust --with-json
+            rsync -rcv src/ ../../../../RocqOfRust/revm/revm_interpreter/ --include='*/' --include='*.v' --include='*.rs' --include='*.json' --exclude='*'
             cd ..
             # precompile
             cd precompile
-            cargo coq-of-rust
+            cargo rocq-of-rust
             touch src/lib.rs
-            cargo coq-of-rust --with-json
-            rsync -rcv src/ ../../../../CoqOfRust/revm/revm_precompile/ --include='*/' --include='*.v' --include='*.rs' --include='*.json' --exclude='*'
+            cargo rocq-of-rust --with-json
+            rsync -rcv src/ ../../../../RocqOfRust/revm/revm_precompile/ --include='*/' --include='*.v' --include='*.rs' --include='*.json' --exclude='*'
             cd ..
             # primitives
             cd primitives
-            cargo coq-of-rust
+            cargo rocq-of-rust
             touch src/lib.rs
-            cargo coq-of-rust --with-json
-            rsync -rcv src/ ../../../../CoqOfRust/revm/revm_primitives/ --include='*/' --include='*.v' --include='*.rs' --include='*.json' --exclude='*'
+            cargo rocq-of-rust --with-json
+            rsync -rcv src/ ../../../../RocqOfRust/revm/revm_primitives/ --include='*/' --include='*.v' --include='*.rs' --include='*.json' --exclude='*'
             cd ..
             # specification
             cd specification
-            cargo coq-of-rust
+            cargo rocq-of-rust
             touch src/lib.rs
-            cargo coq-of-rust --with-json
-            rsync -rcv src/ ../../../../CoqOfRust/revm/revm_specification/ --include='*/' --include='*.v' --include='*.rs' --include='*.json' --exclude='*'
+            cargo rocq-of-rust --with-json
+            rsync -rcv src/ ../../../../RocqOfRust/revm/revm_specification/ --include='*/' --include='*.v' --include='*.rs' --include='*.json' --exclude='*'
             cd ..
             cd ../../..
           endGroup
           startGroup "Translate ruint"
             cd third-party/uint
             cp ../../rust-toolchain ./
-            cargo coq-of-rust
+            cargo rocq-of-rust
             touch src/lib.rs
-            cargo coq-of-rust
-            rsync -rcv src/ ../../CoqOfRust/ruint/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            cargo rocq-of-rust
+            rsync -rcv src/ ../../RocqOfRust/ruint/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ../..
           endGroup
           startGroup "Translate alloy-core"
             cd third-party/alloy-rs-core/crates/primitives
             cp ../../../../rust-toolchain ./
-            cargo coq-of-rust
+            cargo rocq-of-rust
             touch src/lib.rs
-            cargo coq-of-rust
-            rsync -rcv src/ ../../../../CoqOfRust/alloy_primitives/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            cargo rocq-of-rust
+            rsync -rcv src/ ../../../../RocqOfRust/alloy_primitives/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ../../../..
           endGroup
           startGroup "Translate bytes"
             cd third-party/bytes
             cp ../../rust-toolchain ./
             grep -q workspace Cargo.toml || echo '[workspace]' >> Cargo.toml
-            cargo coq-of-rust
+            cargo rocq-of-rust
             touch src/lib.rs
-            cargo coq-of-rust
-            rsync -rcv src/ ../../CoqOfRust/bytes/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            cargo rocq-of-rust
+            rsync -rcv src/ ../../RocqOfRust/bytes/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ../..
           endGroup
           startGroup "Translate Move Sui"
@@ -186,52 +186,52 @@ jobs:
             cd crates
             # move-abstract-stack
             cd move-abstract-stack
-            cargo coq-of-rust
+            cargo rocq-of-rust
             touch src/lib.rs
-            cargo coq-of-rust
-            rsync -rcv src/ ../../../../CoqOfRust/move_sui/translations/move_abstract_stack/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            cargo rocq-of-rust
+            rsync -rcv src/ ../../../../RocqOfRust/move_sui/translations/move_abstract_stack/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ..
             # move-binary-format
             cd move-binary-format
-            cargo coq-of-rust
+            cargo rocq-of-rust
             touch src/lib.rs
-            cargo coq-of-rust
-            rsync -rcv src/ ../../../../CoqOfRust/move_sui/translations/move_binary_format/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            cargo rocq-of-rust
+            rsync -rcv src/ ../../../../RocqOfRust/move_sui/translations/move_binary_format/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ..
             # move-bytecode-verifier
             cd move-bytecode-verifier
-            cargo coq-of-rust
+            cargo rocq-of-rust
             touch src/lib.rs
-            cargo coq-of-rust
-            rsync -rcv src/ ../../../../CoqOfRust/move_sui/translations/move_bytecode_verifier/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            cargo rocq-of-rust
+            rsync -rcv src/ ../../../../RocqOfRust/move_sui/translations/move_bytecode_verifier/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ..
             # move-bytecode-verifier-meter
             cd move-bytecode-verifier-meter
-            cargo coq-of-rust
+            cargo rocq-of-rust
             touch src/lib.rs
-            cargo coq-of-rust
-            rsync -rcv src/ ../../../../CoqOfRust/move_sui/translations/move_bytecode_verifier_meter/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            cargo rocq-of-rust
+            rsync -rcv src/ ../../../../RocqOfRust/move_sui/translations/move_bytecode_verifier_meter/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ..
             # move-core-types
             cd move-core-types
-            cargo coq-of-rust
+            cargo rocq-of-rust
             touch src/lib.rs
-            cargo coq-of-rust
-            rsync -rcv src/ ../../../../CoqOfRust/move_sui/translations/move_core_types/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            cargo rocq-of-rust
+            rsync -rcv src/ ../../../../RocqOfRust/move_sui/translations/move_core_types/ --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ..
             cd ../../..
           endGroup
           startGroup "Translate Pinocchio"
             cd third-party/anza-xyz-pinocchio/sdk/pinocchio
             cp ../../../../rust-toolchain ./
-            cargo coq-of-rust
+            cargo rocq-of-rust
             touch src/lib.rs
-            cargo coq-of-rust
-            rsync -rcv ./src/ ../../../../CoqOfRust/pinocchio --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            cargo rocq-of-rust
+            rsync -rcv ./src/ ../../../../RocqOfRust/pinocchio --include='*/' --include='*.v' --include='*.rs' --exclude='*'
             cd ../../../..
           endGroup
           startGroup "Generate Rocq files from Python"
-            cd CoqOfRust
+            cd RocqOfRust
             make generate
             cd ..
           endGroup
@@ -248,8 +248,8 @@ jobs:
             done
             cd ..
           endGroup
-          startGroup "Compile Coq translations"
-            cd CoqOfRust
+          startGroup "Compile Rocq translations"
+            cd RocqOfRust
             python ./make_and_detect_warnings.py
             cd ..
           endGroup

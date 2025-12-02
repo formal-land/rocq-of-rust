@@ -8,7 +8,7 @@ use rustc_type_ir::TyKind;
 use std::rc::Rc;
 
 pub(crate) fn compile_generic_param(env: &Env, def_id: DefId) -> String {
-    to_valid_coq_name(
+    to_valid_rocq_name(
         IsValue::No,
         compile_def_id(env, def_id).segments.last().unwrap(),
     )
@@ -20,7 +20,7 @@ fn compile_poly_fn_sig<'a>(
     generics: &'a rustc_middle::ty::Generics,
     sig: &rustc_middle::ty::PolyFnSig<'a>,
     from_closure: bool,
-) -> Rc<CoqType> {
+) -> Rc<RocqType> {
     let sig = sig.skip_binder();
     let args = sig
         .inputs()
@@ -29,7 +29,7 @@ fn compile_poly_fn_sig<'a>(
         .collect::<Vec<_>>();
     let args = if from_closure {
         if let Some(arg) = args.first() {
-            if let CoqType::Tuple { tys } = arg.as_ref() {
+            if let RocqType::Tuple { tys } = arg.as_ref() {
                 tys.to_vec()
             } else {
                 panic!("Expected a tuple for the first argument of a closure");
@@ -42,7 +42,7 @@ fn compile_poly_fn_sig<'a>(
     };
     let ret = compile_type(env, span, generics, &sig.output());
 
-    Rc::new(CoqType::Function { args, ret })
+    Rc::new(RocqType::Function { args, ret })
 }
 
 /// The [generics] parameter is the list of generic types available in the
@@ -55,10 +55,10 @@ pub(crate) fn compile_type<'a>(
     span: &rustc_span::Span,
     generics: &'a rustc_middle::ty::Generics,
     ty: &rustc_middle::ty::Ty<'a>,
-) -> Rc<CoqType> {
+) -> Rc<RocqType> {
     match ty.kind() {
         TyKind::Bool | TyKind::Char | TyKind::Int(_) | TyKind::Uint(_) | TyKind::Float(_) => {
-            CoqType::path(&[&ty.to_string()])
+            RocqType::path(&[&ty.to_string()])
         }
         TyKind::Adt(adt_def, substs) => {
             let path = compile_def_id(env, adt_def.did());
@@ -76,23 +76,23 @@ pub(crate) fn compile_type<'a>(
                     _ => None,
                 })
                 .collect();
-            Rc::new(CoqType::Application {
-                func: Rc::new(CoqType::Path { path }),
+            Rc::new(RocqType::Application {
+                func: Rc::new(RocqType::Path { path }),
                 consts,
                 tys,
             })
         }
-        TyKind::Foreign(def_id) => Rc::new(CoqType::Path {
+        TyKind::Foreign(def_id) => Rc::new(RocqType::Path {
             path: compile_def_id(env, *def_id),
         }),
-        TyKind::Str => CoqType::path(&["str"]),
-        TyKind::Array(ty, const_) => Rc::new(CoqType::Application {
-            func: CoqType::path(&["array"]),
+        TyKind::Str => RocqType::path(&["str"]),
+        TyKind::Array(ty, const_) => Rc::new(RocqType::Application {
+            func: RocqType::path(&["array"]),
             consts: vec![compile_const(env, span, const_)],
             tys: vec![compile_type(env, span, generics, ty)],
         }),
-        TyKind::Slice(ty) => Rc::new(CoqType::Application {
-            func: CoqType::path(&["slice"]),
+        TyKind::Slice(ty) => Rc::new(RocqType::Application {
+            func: RocqType::path(&["slice"]),
             consts: vec![],
             tys: vec![compile_type(env, span, generics, ty)],
         }),
@@ -102,14 +102,14 @@ pub(crate) fn compile_type<'a>(
                 rustc_hir::Mutability::Not => "*const",
             };
 
-            Rc::new(CoqType::Application {
-                func: CoqType::path(&[ptr_name]),
+            Rc::new(RocqType::Application {
+                func: RocqType::path(&[ptr_name]),
                 consts: vec![],
                 tys: vec![compile_type(env, span, generics, ty)],
             })
         }
         TyKind::Ref(_, ty, mutbl) => {
-            CoqType::make_ref(mutbl, compile_type(env, span, generics, ty))
+            RocqType::make_ref(mutbl, compile_type(env, span, generics, ty))
         }
         TyKind::FnPtr(fn_sig, fn_header) => {
             compile_poly_fn_sig(env, span, generics, &fn_sig.with(*fn_header), false)
@@ -139,7 +139,7 @@ pub(crate) fn compile_type<'a>(
                 )
                 .collect();
 
-            Rc::new(CoqType::Dyn { traits })
+            Rc::new(RocqType::Dyn { traits })
         }
         TyKind::FnDef(_, _) => {
             let fn_sig = ty.fn_sig(env.tcx);
@@ -153,8 +153,8 @@ pub(crate) fn compile_type<'a>(
         }
         // Generator(DefId, &'tcx List<GenericArg<'tcx>>, Movability),
         // GeneratorWitness(DefId, &'tcx List<GenericArg<'tcx>>),
-        TyKind::Never => CoqType::path(&["never"]),
-        TyKind::Tuple(tys) => Rc::new(CoqType::Tuple {
+        TyKind::Never => RocqType::path(&["never"]),
+        TyKind::Tuple(tys) => Rc::new(RocqType::Tuple {
             tys: tys
                 .iter()
                 .map(|ty| compile_type(env, span, generics, &ty))
@@ -191,7 +191,7 @@ pub(crate) fn compile_type<'a>(
                     .collect();
                 let path = compile_def_id(env, alias_ty.def_id);
 
-                Rc::new(CoqType::AssociatedInTrait {
+                Rc::new(RocqType::AssociatedInTrait {
                     trait_name,
                     const_args,
                     ty_args,
@@ -199,21 +199,21 @@ pub(crate) fn compile_type<'a>(
                     name: path.segments.last().unwrap().clone(),
                 })
             }
-            _ => Rc::new(CoqType::AssociatedUnknown),
+            _ => Rc::new(RocqType::AssociatedUnknown),
         },
         TyKind::Param(param) => {
             if generics.has_self && param.index == 0 {
-                return CoqType::var("Self");
+                return RocqType::var("Self");
             }
 
             let type_param = generics.type_param(*param, env.tcx);
 
-            CoqType::var(compile_generic_param(env, type_param.def_id).as_ref())
+            RocqType::var(compile_generic_param(env, type_param.def_id).as_ref())
         }
         // Bound(DebruijnIndex, BoundTy),
         // Placeholder(Placeholder<BoundTy>),
-        TyKind::Infer(_) => Rc::new(CoqType::Infer),
-        TyKind::Error(error) => CoqType::var(&format!("error: {error:#?}")),
-        _ => CoqType::var(&format!("type {:#?} not yet handled", ty.kind())),
+        TyKind::Infer(_) => Rc::new(RocqType::Infer),
+        TyKind::Error(error) => RocqType::var(&format!("error: {error:#?}")),
+        _ => RocqType::var(&format!("type {:#?} not yet handled", ty.kind())),
     }
 }

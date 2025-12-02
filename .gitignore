@@ -17,7 +17,7 @@
 # vscode specific
 .vscode
 
-# Coq compilation files
+# Rocq compilation files
 *.aux
 *.glob
 *.vo

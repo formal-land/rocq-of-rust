@@ -1,15 +1,15 @@
-# <img src="logo.png" alt= "logo" width="120px" height="120px" style="vertical-align: middle;"> <span style="vertical-align: middle;">coq-of-rust</span>
+# <img src="logo.png" alt= "logo" width="120px" height="120px" style="vertical-align: middle;"> <span style="vertical-align: middle;">rocq-of-rust</span>
 
 > Formal verification tool for Rust: check 100% of execution cases of your programs 🦀 to make super safe applications! ✈️ 🚀 ⚕️ 🏦
 
 Even if Rust's type system prevents many mistakes, including memory errors, the code is still not immune to vulnerabilities, such as unexpected panics or wrongly implemented business rules.
 
-The way to go further is to **mathematically** prove that it implements its specification for all inputs: this is named "formal verification" and what `coq-of-rust` proposes! This is the strongest way to look for bugs or vulnerabilities, even for code that needs to be safe against state-level actors 🧚.
+The way to go further is to **mathematically** prove that it implements its specification for all inputs: this is named "formal verification" and what `rocq-of-rust` proposes! This is the strongest way to look for bugs or vulnerabilities, even for code that needs to be safe against state-level actors 🧚.
 
 | We propose formal verification as a service, including designing the specification and the proofs.<br /><br />**➡️ [Get started 🦸](https://n25o5qrzcx2.typeform.com/to/UPZq4O6U) ⬅️** |
 | --- |
 
-_The development of `coq-of-rust` was mainly funded by the&nbsp;[Aleph Zero Foundation](https://alephzero.org/). We thank them for their support!_
+_The development of `rocq-of-rust` was mainly funded by the&nbsp;[Aleph Zero Foundation](https://alephzero.org/). We thank them for their support!_
 
 ## Table of Contents
 
@@ -23,7 +23,7 @@ _The development of `coq-of-rust` was mainly funded by the&nbsp;[Aleph Zero Foun
 - [Contributing](#contributing)
 
 ## Example
-At the heart of `coq-of-rust` is the translation of Rust programs to the [proof system Coq 🐓](https://coq.inria.fr/). Once some Rust code is translated to Coq, it can then be verified using standard proof techniques.
+At the heart of `rocq-of-rust` is the translation of Rust programs to the [proof system Rocq 🐓](https://rocq-prover.org/). Once some Rust code is translated to Rocq, it can then be verified using standard proof techniques.
 
 Here is an example of a Rust function:
 ```rust
@@ -31,7 +31,7 @@ fn add_one(x: u32) -> u32 {
     x + 1
 }
 ```
-Running `coq-of-rust`, it translates in Coq to:
+Running `rocq-of-rust`, it translates in Rocq to:
 ```coq
 Definition add_one (τ : list Ty.t) (α : list Value.t) : M :=
   match τ, α with
@@ -42,15 +42,15 @@ Definition add_one (τ : list Ty.t) (α : list Value.t) : M :=
   | _, _ => M.impossible
   end.
 ```
-Functions such as&nbsp;`BinOp.Panic.add` are part of the standard library for Rust in Coq that we provide. We can then express and verify specifications on the code in Coq.
+Functions such as&nbsp;`BinOp.Panic.add` are part of the standard library for Rust in Rocq that we provide. We can then express and verify specifications on the code in Rocq.
 
 ## Workflow
 
-Here is the typical workflow of usage for `coq-of-rust`:
+Here is the typical workflow of usage for `rocq-of-rust`:
 
 ```mermaid
 graph TB
-    R[Rust code 🦀] -- coq-of-rust --> T[Translated code 🐓]
+    R[Rust code 🦀] -- rocq-of-rust --> T[Translated code 🐓]
     T -- name resolutions --> L[Linked code 🐓]
     L -- refinement --> S[Simulations 🐓]
     S --> P
@@ -58,7 +58,7 @@ graph TB
     P -.-> X[100% reliable code! 🦄]
 ```
 
-We start by generating an automatic translation of the Rust we verify to Coq code with `coq-of-rust`. The translation is originally verbose. We go through two semi-automated refinement steps, links and simulations, that gradually make the code more amenable to formal verification.
+We start by generating an automatic translation of the Rust we verify to Rocq code with `rocq-of-rust`. The translation is originally verbose. We go through two semi-automated refinement steps, links and simulations, that gradually make the code more amenable to formal verification.
 
 Finally, we write the **specifications** and **prove** that our Rust program fulfills them **with any possible user input 🔥**.
 
@@ -80,16 +80,16 @@ The type system of Rust already offers strong guarantees to avoid bugs that exis
 
 With formal verification, we cover all cases (code 100% bug-free!). We replace the tests with mathematical reasoning on code. You can view it as an extension of the type system but without restrictions on the expressivity.
 
-The tool `coq-of-rust` translates Rust programs to the battle-tested formal verification system Coq to make Rust programs 100% safe&nbsp;🚀.
+The tool `rocq-of-rust` translates Rust programs to the battle-tested formal verification system Rocq to make Rust programs 100% safe&nbsp;🚀.
 
 ## Prerequisites
 
 - Rust
-- Coq (see [coq-of-rust.opam](./CoqOfRust/coq-of-rust.opam))
+- Rocq (see [rocq-of-rust.opam](./RocqOfRust/rocq-of-rust.opam))
 
 ## Installation and User Guide
 
-The [build tutorial](./docs/BUILD.md) provides detailed instructions on building and installing `coq-of-rust`, while the [user tutorial](./docs/GUIDE.md) provides an introduction to the `coq-of-rust` command line interface and the list of supported options.
+The [build tutorial](./docs/BUILD.md) provides detailed instructions on building and installing `rocq-of-rust`, while the [user tutorial](./docs/GUIDE.md) provides an introduction to the `rocq-of-rust` command line interface and the list of supported options.
 
 ## Language features
 The translation works at the level of the [THIR](https://rustc-dev-guide.rust-lang.org/thir.html) intermediate representation of Rust.
@@ -112,8 +112,8 @@ For formal verification services on your Rust code base, contact us at [&#099;&#
 
 Here are other projects working on formal verification for Rust:
 
-- [Aeneas](https://github.com/AeneasVerif/aeneas): Translation from MIR to purely functional Coq/F* code. Automatically put the code in a functional form. See their paper [Aeneas: Rust verification by functional translation](https://dl.acm.org/doi/abs/10.1145/3547647).
-- [Hacspec v2](https://github.com/hacspec/hacspec-v2): Translation from THIR to Coq/F* code
+- [Aeneas](https://github.com/AeneasVerif/aeneas): Translation from MIR to purely functional Rocq/F* code. Automatically put the code in a functional form. See their paper [Aeneas: Rust verification by functional translation](https://dl.acm.org/doi/abs/10.1145/3547647).
+- [Hacspec v2](https://github.com/hacspec/hacspec-v2): Translation from THIR to Rocq/F* code
 - [Creusot](https://github.com/xldenis/creusot): Translation from MIR to Why3 (and then SMT solvers)
 - [Verus](https://github.com/verus-lang/verus): Automatic verification for Rust with annotations
 - [Kani](https://github.com/model-checking/kani): Model-checking with [CBMC](https://github.com/diffblue/cbmc)
@@ -121,4 +121,4 @@ Here are other projects working on formal verification for Rust:
 ## Contributing
 This is all open-source software.
 
-Open some pull requests or issues to contribute to this project. All contributions are welcome! This project is open-source under license AGPL for the Rust code (the translator) and MIT for the Coq libraries. There is a bit of code taken from the [Creusot](https://github.com/xldenis/creusot) project to make the Cargo command `coq-of-rust` and run the translation in the same context as Cargo.
+Open some pull requests or issues to contribute to this project. All contributions are welcome! This project is open-source under license AGPL for the Rust code (the translator) and MIT for the Rocq libraries. There is a bit of code taken from the [Creusot](https://github.com/xldenis/creusot) project to make the Cargo command `rocq-of-rust` and run the translation in the same context as Cargo.

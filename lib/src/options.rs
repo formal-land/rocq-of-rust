@@ -2,7 +2,7 @@ use clap::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Parser, Serialize, Deserialize)]
-pub struct CoqOfRustArgs {
+pub struct RocqOfRustArgs {
     /// Axiomatize the definitions
     #[arg(long)]
     axiomatize: bool,
@@ -10,7 +10,7 @@ pub struct CoqOfRustArgs {
     #[arg(long)]
     with_json: bool,
     /// Path to a configuration file
-    #[arg(long, default_value = "coq-of-rust-config.json")]
+    #[arg(long, default_value = "rocq-of-rust-config.json")]
     configuration_file: String,
     /// Generate the reoder section of configuration file in the stdout
     #[arg(long)]
@@ -20,7 +20,7 @@ pub struct CoqOfRustArgs {
 #[derive(Parser)]
 pub struct Args {
     #[clap(flatten)]
-    pub coq_of_rust: CoqOfRustArgs,
+    pub rocq_of_rust: RocqOfRustArgs,
     #[clap(last = true)]
     pub rust_flags: Vec<String>,
 }
@@ -33,13 +33,13 @@ pub struct Options {
 }
 
 impl Options {
-    pub fn from_args(coq_of_rust: CoqOfRustArgs) -> Self {
-        let cargo_coq_of_rust = std::env::var("CARGO_COQ_OF_RUST").is_ok();
+    pub fn from_args(rocq_of_rust: RocqOfRustArgs) -> Self {
+        let cargo_rocq_of_rust = std::env::var("CARGO_ROCQ_OF_RUST").is_ok();
 
         Options {
-            in_cargo: cargo_coq_of_rust,
-            axiomatize: coq_of_rust.axiomatize,
-            with_json: coq_of_rust.with_json,
+            in_cargo: cargo_rocq_of_rust,
+            axiomatize: rocq_of_rust.axiomatize,
+            with_json: rocq_of_rust.with_json,
         }
     }
 }

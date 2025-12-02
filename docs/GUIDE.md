@@ -1,13 +1,13 @@
 # User Tutorial
 
-This tutorial provides some examples and tips for using `coq-of-rust`
+This tutorial provides some examples and tips for using `rocq-of-rust`
 as well as a list of supported command line options and their
 description. The first part of the tutorial describes the cargo plugin
-version of `coq-of-rust`, while the second part describes the
+version of `rocq-of-rust`, while the second part describes the
 standalone executable version. Note that this two versions of
-`coq-of-rust` support different sets of command line options. See our
+`rocq-of-rust` support different sets of command line options. See our
 [build tutorial](./BUILD.md) for instructions on how to build either
-of those versions of `coq-of-rust`.
+of those versions of `rocq-of-rust`.
 
 ## Table of Contents
 
@@ -24,10 +24,10 @@ of those versions of `coq-of-rust`.
 
 ### Example
 
-In any Rust project, generate a `Crate.v` file with the Coq
+In any Rust project, generate a `Crate.v` file with the Rocq
 translation of the crate using this command:
 ```sh
-cargo coq-of-rust
+cargo rocq-of-rust
 ```
 
 ### Tips
@@ -40,7 +40,7 @@ the translation of.
 
 ### Interface
 
-Usage: `cargo coq-of-rust [OPTIONS] [-- <RUST_FLAGS>...]`
+Usage: `cargo rocq-of-rust [OPTIONS] [-- <RUST_FLAGS>...]`
 
 Arguments:
   `[RUST_FLAGS]...`
@@ -56,22 +56,22 @@ Options:
 ### Example
 
 The following command can be used to translate one of the
-`coq-of-rust` test examples:
+`rocq-of-rust` test examples:
 ```sh
-./coq-of-rust translate --path examples/rust_book/hello_world/hello_world.rs
+./rocq-of-rust translate --path examples/rust_book/hello_world/hello_world.rs
 ```
 
 ### Tips
 
-Using `coq-of-rust` as a standalone executable is intended for testing
+Using `rocq-of-rust` as a standalone executable is intended for testing
 purposes. We generally recommend to use the cargo plugin instead.
 
 ### Interface
 
-Usage: `coq-of-rust [OPTIONS] <COMMAND>`
+Usage: `rocq-of-rust [OPTIONS] <COMMAND>`
 
 Commands:
-- `translate` Translate rust files to coq files
+- `translate` Translate rust files to rocq files
 - `help`      Print this message or the help of the given subcommand(s)
 
 Options:
@@ -81,10 +81,10 @@ Options:
 
 #### Translate subcommand
 
-Usage: `coq-of-rust translate [OPTIONS] --path <PATH>`
+Usage: `rocq-of-rust translate [OPTIONS] --path <PATH>`
 
 Options:
 - `-p`, `--path <PATH>`           Sets a path to rust file
 - `--axiomatize`                  Axiomatize the definitions
-- `--output-path <output_path>`   Output path where to place the translation `[default: coq_translation]`
+- `--output-path <output_path>`   Output path where to place the translation `[default: rocq_translation]`
 - `-h`, `--help`                  Print help

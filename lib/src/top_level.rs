@@ -1,9 +1,9 @@
-use crate::coq;
 use crate::env::*;
 use crate::expression::*;
 use crate::header::*;
 use crate::path::*;
 use crate::pattern::*;
+use crate::rocq;
 use crate::ty::*;
 use itertools::Itertools;
 use rustc_ast::ast::{AttrArgs, AttrKind};
@@ -31,12 +31,12 @@ struct HirFnDeclAndBody<'a> {
     body: Option<&'a rustc_hir::Body<'a>>,
 }
 
-type FnArgs = Vec<(String, Rc<CoqType>, Option<Rc<Pattern>>)>;
+type FnArgs = Vec<(String, Rc<RocqType>, Option<Rc<Pattern>>)>;
 
 #[derive(Debug, Serialize)]
 struct FnSigAndBody {
     args: Option<FnArgs>,
-    ret_ty: Option<Rc<CoqType>>,
+    ret_ty: Option<Rc<RocqType>>,
     body: Option<Rc<Expr>>,
 }
 
@@ -48,7 +48,7 @@ enum TraitItem {
         #[allow(dead_code)]
         ty_params: Vec<String>,
         #[allow(dead_code)]
-        ty: Rc<CoqType>,
+        ty: Rc<RocqType>,
     },
     DefinitionWithDefault(Rc<FunDefinition>),
     Type(),
@@ -65,21 +65,21 @@ struct FunDefinition {
 #[derive(Debug, Serialize)]
 enum ImplItemKind {
     Const {
-        ty: Rc<CoqType>,
+        ty: Rc<RocqType>,
         body: Option<Rc<Expr>>,
     },
     Definition {
         definition: Rc<FunDefinition>,
     },
     Type {
-        ty: Rc<CoqType>,
+        ty: Rc<RocqType>,
     },
 }
 
 #[derive(Debug, Serialize)]
 struct WherePredicate {
     bound: Rc<TraitBound>,
-    ty: Rc<CoqType>,
+    ty: Rc<RocqType>,
 }
 
 #[derive(Debug, Serialize)]
@@ -88,12 +88,12 @@ struct TraitBound {
     ty_params: Vec<(String, Rc<TraitTyParamValue>)>,
 }
 
-type TraitTyParamValue = FieldWithDefault<Rc<CoqType>>;
+type TraitTyParamValue = FieldWithDefault<Rc<RocqType>>;
 
 #[derive(Debug, Serialize)]
 pub(crate) enum VariantItem {
-    Struct { fields: Vec<(String, Rc<CoqType>)> },
-    Tuple { tys: Vec<Rc<CoqType>> },
+    Struct { fields: Vec<(String, Rc<RocqType>)> },
+    Tuple { tys: Vec<Rc<RocqType>> },
 }
 
 /// The value for a field that may have a default value
@@ -132,7 +132,7 @@ struct TypeEnumVariant {
     discriminant: u128,
 }
 
-/// Representation of top-level hir [Item]s in coq-of-rust
+/// Representation of top-level hir [Item]s in rocq-of-rust
 /// See https://doc.rust-lang.org/reference/items.html
 #[derive(Debug, Serialize)]
 enum TopLevelItem {
@@ -152,7 +152,7 @@ enum TopLevelItem {
         path: Rc<Path>,
         const_params: Vec<String>,
         ty_params: Vec<String>,
-        ty: Rc<CoqType>,
+        ty: Rc<RocqType>,
     },
     TypeEnum {
         name: String,
@@ -166,7 +166,7 @@ enum TopLevelItem {
         name: String,
         const_params: Vec<String>,
         ty_params: Vec<String>,
-        fields: Vec<Rc<CoqType>>,
+        fields: Vec<Rc<RocqType>>,
     },
     TypeForeign {
         name: String,
@@ -178,7 +178,7 @@ enum TopLevelItem {
     Impl {
         generic_consts: Vec<String>,
         generic_tys: Vec<String>,
-        self_ty: Rc<CoqType>,
+        self_ty: Rc<RocqType>,
         items: Vec<Rc<ImplItem>>,
     },
     Trait {
@@ -192,10 +192,10 @@ enum TopLevelItem {
         generic_consts: Vec<String>,
         generic_tys: Vec<String>,
         predicates: Vec<Rc<WherePredicate>>,
-        self_ty: Rc<CoqType>,
+        self_ty: Rc<RocqType>,
         of_trait: Rc<Path>,
         trait_const_params: Vec<Rc<Expr>>,
-        trait_ty_params: Vec<Rc<CoqType>>,
+        trait_ty_params: Vec<Rc<RocqType>>,
         items: Vec<Rc<TraitImplItem>>,
     },
     Error {
@@ -208,7 +208,7 @@ struct TypeStructStruct {
     name: String,
     const_params: Vec<String>,
     ty_params: Vec<String>,
-    fields: Vec<(String, Rc<CoqType>)>,
+    fields: Vec<(String, Rc<RocqType>)>,
 }
 
 #[derive(Debug, Serialize)]
@@ -318,7 +318,7 @@ fn check_lint_attribute_axiom<'a, Item: Into<rustc_hir::OwnerNode<'a>>>(
     env: &Env,
     item: Item,
 ) -> bool {
-    check_lint_attribute(env, item, "coq_axiom")
+    check_lint_attribute(env, item, "rocq_axiom")
 }
 
 fn get_item_ids_for_parent(env: &Env, expected_parent: rustc_hir::def_id::DefId) -> Vec<ItemId> {
@@ -342,7 +342,7 @@ fn compile_top_level_item_without_local_items<'a>(
         ItemKind::Static(..) | ItemKind::Const(..) | ItemKind::Fn(..) => IsValue::Yes,
         _ => IsValue::No,
     };
-    let name = to_valid_coq_name(is_value, item.ident.name.as_str());
+    let name = to_valid_rocq_name(is_value, item.ident.name.as_str());
     let path = compile_def_id(env, item.owner_id.to_def_id());
 
     match &item.kind {
@@ -414,7 +414,7 @@ fn compile_top_level_item_without_local_items<'a>(
                     }
                     rustc_hir::ForeignItemKind::Type => IsValue::No,
                 };
-                let name = to_valid_coq_name(is_value, item.ident.name.as_str());
+                let name = to_valid_rocq_name(is_value, item.ident.name.as_str());
                 let path = Path::concat(&[path.clone(), Path::new(&[name.clone()])]);
 
                 match &foreign_item.kind {
@@ -545,7 +545,7 @@ fn compile_top_level_item_without_local_items<'a>(
                         .iter()
                         .map(|field| {
                             (
-                                to_valid_coq_name(IsValue::No, field.ident.name.as_str()),
+                                to_valid_rocq_name(IsValue::No, field.ident.name.as_str()),
                                 compile_type(env, &item.owner_id.def_id, field.ty),
                             )
                         })
@@ -601,7 +601,7 @@ fn compile_top_level_item_without_local_items<'a>(
                             TraitItem::Type() => IsValue::No,
                         };
 
-                        (to_valid_coq_name(is_value, item.ident.name.as_str()), body)
+                        (to_valid_rocq_name(is_value, item.ident.name.as_str()), body)
                     })
                     .collect(),
             })]
@@ -631,7 +631,7 @@ fn compile_top_level_item_without_local_items<'a>(
                         .associated_items(trait_ref.trait_def_id().unwrap())
                         .in_definition_order()
                         .filter(|item| item.defaultness(env.tcx).has_value())
-                        .map(|item| to_valid_coq_name(IsValue::Yes, item.name.as_str()))
+                        .map(|item| to_valid_rocq_name(IsValue::Yes, item.name.as_str()))
                         .collect();
                     let items: Vec<Rc<TraitImplItem>> = items
                         .iter()
@@ -713,7 +713,7 @@ fn compile_top_level_item_without_local_items<'a>(
     }
 }
 
-/// [compile_top_level_item] compiles hir [Item]s into coq-of-rust (optional)
+/// [compile_top_level_item] compiles hir [Item]s into rocq-of-rust (optional)
 /// items.
 /// - See https://doc.rust-lang.org/stable/nightly-rustc/rustc_hir/struct.Item.html
 ///   and the doc for [TopLevelItem]
@@ -747,7 +747,7 @@ fn compile_top_level_item<'a>(env: &Env<'a>, item: &'a Item) -> Vec<Rc<TopLevelI
             vec![]
         } else {
             vec![Rc::new(TopLevelItem::Module {
-                name: to_valid_coq_name(IsValue::No, item.ident.as_str()),
+                name: to_valid_rocq_name(IsValue::No, item.ident.as_str()),
                 body: Rc::new(TopLevel(local_items)),
             })]
         },
@@ -850,7 +850,7 @@ fn compile_impl_item<'a>(env: &Env<'a>, item: &'a rustc_hir::ImplItem) -> Rc<Imp
         rustc_hir::ImplItemKind::Type(..) => IsValue::No,
     };
     let source_name = item.ident.name.as_str().to_string();
-    let name = to_valid_coq_name(is_value, source_name.as_str());
+    let name = to_valid_rocq_name(is_value, source_name.as_str());
     let snippet = Snippet::of_span(env, &item.span);
     let kind = match &item.kind {
         rustc_hir::ImplItemKind::Const(ty, body_id) => {
@@ -897,13 +897,13 @@ fn compile_function_body(
     args: Option<&FnArgs>,
     body: &rustc_hir::Body,
     is_axiom: bool,
-    ret_ty: Option<Rc<CoqType>>,
+    ret_ty: Option<Rc<RocqType>>,
 ) -> Option<Rc<Expr>> {
     if env.axiomatize || is_axiom {
         return None;
     }
 
-    let ret_ty = ret_ty.unwrap_or_else(|| CoqType::path(&["Expected ret_ty"]));
+    let ret_ty = ret_ty.unwrap_or_else(|| RocqType::path(&["Expected ret_ty"]));
 
     let body_without_bindings = compile_hir_id(env, body.value.hir_id).read();
 
@@ -984,7 +984,7 @@ fn get_arg_names<'a>(
         .enumerate()
         .map(|(index, param)| match param.pat.kind {
             PatKind::Binding(rustc_hir::BindingMode(rustc_hir::ByRef::No, _), _, ident, None) => {
-                (to_valid_coq_name(IsValue::Yes, ident.name.as_str()), None)
+                (to_valid_rocq_name(IsValue::Yes, ident.name.as_str()), None)
             }
             _ => (
                 format!("β{}", index),
@@ -1000,7 +1000,7 @@ fn get_const_params(env: &Env, generics: &rustc_hir::Generics) -> Vec<String> {
         .params
         .iter()
         .filter_map(|param| match param.kind {
-            GenericParamKind::Const { .. } => Some(to_valid_coq_name(
+            GenericParamKind::Const { .. } => Some(to_valid_rocq_name(
                 IsValue::No,
                 &crate::thir_ty::compile_generic_param(env, param.def_id.to_def_id()),
             )),
@@ -1016,7 +1016,7 @@ fn get_ty_params(env: &Env, generics: &rustc_hir::Generics) -> Vec<String> {
         .iter()
         .filter_map(|param| match param.kind {
             // we ignore lifetimes
-            GenericParamKind::Type { .. } => Some(to_valid_coq_name(
+            GenericParamKind::Type { .. } => Some(to_valid_rocq_name(
                 IsValue::No,
                 &crate::thir_ty::compile_generic_param(env, param.def_id.to_def_id()),
             )),
@@ -1055,7 +1055,7 @@ fn get_where_predicates<'a>(
 }
 
 /// converts a trait bound to a where predicate
-fn trait_bound_to_where_predicate(bound: Rc<TraitBound>, ty: Rc<CoqType>) -> Rc<WherePredicate> {
+fn trait_bound_to_where_predicate(bound: Rc<TraitBound>, ty: Rc<RocqType>) -> Rc<WherePredicate> {
     Rc::new(WherePredicate { bound, ty })
 }
 
@@ -1099,7 +1099,7 @@ fn get_ty_params_with_default_status<'a>(
 /// and the information about required and default type parameters
 /// and returns a list that combines them
 pub(crate) fn add_default_status_to_ty_params(
-    ty_params: &[Rc<CoqType>],
+    ty_params: &[Rc<RocqType>],
     names_and_default_status: &[(String, bool)],
 ) -> Vec<(String, Rc<TraitTyParamValue>)> {
     ty_params
@@ -1114,7 +1114,7 @@ pub(crate) fn add_default_status_to_ty_params(
 /// compiles a type parameter
 fn compile_ty_param_value(
     name: &str,
-    ty: Option<Rc<CoqType>>,
+    ty: Option<Rc<RocqType>>,
     has_default: &bool,
 ) -> (String, Rc<TraitTyParamValue>) {
     let name = name.to_string();
@@ -1256,21 +1256,21 @@ impl DynNameGen {
         full_name
     }
 
-    fn make_dyn_parm(&mut self, arg: Rc<CoqType>) -> Rc<CoqType> {
+    fn make_dyn_parm(&mut self, arg: Rc<RocqType>) -> Rc<RocqType> {
         if let Some((name, arg)) = arg.clone().match_ref() {
             let ct = self.make_dyn_parm(arg);
-            Rc::new(CoqType::Application {
-                func: CoqType::path(&[&name]),
+            Rc::new(RocqType::Application {
+                func: RocqType::path(&[&name]),
                 consts: vec![],
                 tys: vec![ct],
             })
-        } else if let CoqType::Dyn { traits } = arg.as_ref() {
+        } else if let RocqType::Dyn { traits } = arg.as_ref() {
             // We suppose `dyn` is only associated with one trait so we can directly extract the first element
             if let Some(trait_) = traits.first() {
                 let dy_name = self.next(trait_.clone());
-                CoqType::var(dy_name.as_ref())
+                RocqType::var(dy_name.as_ref())
             } else {
-                Rc::new(CoqType::Dyn {
+                Rc::new(RocqType::Dyn {
                     traits: traits.clone(),
                 })
             }
@@ -1317,94 +1317,98 @@ impl FunDefinition {
     /// come from above, for example from the generics of the enclosing `impl`.
     /// The [with_extra_self_ty] is to add an extra `Self` parameter, for
     /// the default implementation of provided methods in traits.
-    fn to_coq<'a>(
+    fn to_rocq<'a>(
         &'a self,
         name: String,
         snippet: &'a Option<Rc<Snippet>>,
         generic_consts: Vec<String>,
         generic_tys: Vec<String>,
         with_extra_self_ty: bool,
-    ) -> Vec<Rc<coq::TopLevelItem>> {
+    ) -> Vec<Rc<rocq::TopLevelItem>> {
         let generics = [generic_consts.clone(), generic_tys.clone()].concat();
 
         [
             match snippet {
-                Some(snippet) => vec![snippet.to_coq()],
+                Some(snippet) => vec![snippet.to_rocq()],
                 None => vec![],
             },
             match &self.signature_and_body.body {
-                None => vec![Rc::new(coq::TopLevelItem::Definition(
-                    coq::Definition::new(
+                None => vec![Rc::new(rocq::TopLevelItem::Definition(
+                    rocq::Definition::new(
                         &name,
-                        Rc::new(coq::DefinitionKind::Assumption {
-                            ty: Rc::new(coq::Expression::PiType {
-                                args: coq::ArgDecl::of_const_ty_params(
+                        Rc::new(rocq::DefinitionKind::Assumption {
+                            ty: Rc::new(rocq::Expression::PiType {
+                                args: rocq::ArgDecl::of_const_ty_params(
                                     &generic_consts,
                                     &generic_tys,
-                                    coq::ArgSpecKind::Explicit,
+                                    rocq::ArgSpecKind::Explicit,
                                 ),
-                                image: Rc::new(coq::Expression::FunctionType {
+                                image: Rc::new(rocq::Expression::FunctionType {
                                     domains: vec![
-                                        coq::Expression::just_name("list")
-                                            .apply(coq::Expression::just_name("Value.t")),
-                                        coq::Expression::just_name("list")
-                                            .apply(coq::Expression::just_name("Ty.t")),
-                                        coq::Expression::just_name("list")
-                                            .apply(coq::Expression::just_name("Value.t")),
+                                        rocq::Expression::just_name("list")
+                                            .apply(rocq::Expression::just_name("Value.t")),
+                                        rocq::Expression::just_name("list")
+                                            .apply(rocq::Expression::just_name("Ty.t")),
+                                        rocq::Expression::just_name("list")
+                                            .apply(rocq::Expression::just_name("Value.t")),
                                     ],
-                                    image: coq::Expression::just_name("M"),
+                                    image: rocq::Expression::just_name("M"),
                                 }),
                             }),
                         }),
                     ),
                 ))],
                 Some(body) => {
-                    let body = Rc::new(coq::Expression::Match {
+                    let body = Rc::new(rocq::Expression::Match {
                         scrutinees: vec![
-                            coq::Expression::just_name("ε"),
-                            coq::Expression::just_name("τ"),
-                            coq::Expression::just_name("α"),
+                            rocq::Expression::just_name("ε"),
+                            rocq::Expression::just_name("τ"),
+                            rocq::Expression::just_name("α"),
                         ],
                         arms: vec![
                             (
                                 vec![
-                                    Rc::new(coq::Expression::List {
+                                    Rc::new(rocq::Expression::List {
                                         exprs: self
                                             .const_params
                                             .iter()
                                             .map(|const_param| {
-                                                coq::Expression::name_pattern(const_param)
+                                                rocq::Expression::name_pattern(const_param)
                                             })
                                             .collect(),
                                     }),
-                                    Rc::new(coq::Expression::List {
+                                    Rc::new(rocq::Expression::List {
                                         exprs: self
                                             .ty_params
                                             .iter()
-                                            .map(|ty_param| coq::Expression::name_pattern(ty_param))
+                                            .map(|ty_param| {
+                                                rocq::Expression::name_pattern(ty_param)
+                                            })
                                             .collect(),
                                     }),
-                                    Rc::new(coq::Expression::List {
+                                    Rc::new(rocq::Expression::List {
                                         exprs: self
                                             .signature_and_body
                                             .args
                                             .as_ref()
                                             .unwrap_or(&vec![])
                                             .iter()
-                                            .map(|(name, _, _)| coq::Expression::name_pattern(name))
+                                            .map(|(name, _, _)| {
+                                                rocq::Expression::name_pattern(name)
+                                            })
                                             .collect(),
                                     }),
                                 ],
-                                coq::Expression::monadic(body.to_coq()),
+                                rocq::Expression::monadic(body.to_rocq()),
                             ),
                             (
                                 vec![
-                                    Rc::new(coq::Expression::Wild),
-                                    Rc::new(coq::Expression::Wild),
-                                    Rc::new(coq::Expression::Wild),
+                                    Rc::new(rocq::Expression::Wild),
+                                    Rc::new(rocq::Expression::Wild),
+                                    Rc::new(rocq::Expression::Wild),
                                 ],
-                                coq::Expression::just_name("M.impossible").apply(Rc::new(
-                                    coq::Expression::String(
+                                rocq::Expression::just_name("M.impossible").apply(Rc::new(
+                                    rocq::Expression::String(
                                         "wrong number of arguments".to_string(),
                                     ),
                                 )),
@@ -1412,12 +1416,12 @@ impl FunDefinition {
                         ],
                     });
 
-                    vec![Rc::new(coq::TopLevelItem::Definition(
-                        coq::Definition::new(
+                    vec![Rc::new(rocq::TopLevelItem::Definition(
+                        rocq::Definition::new(
                             &name,
-                            Rc::new(coq::DefinitionKind::Alias {
+                            Rc::new(rocq::DefinitionKind::Alias {
                                 args: [
-                                    coq::ArgDecl::of_const_ty_params(
+                                    rocq::ArgDecl::of_const_ty_params(
                                         &generic_consts,
                                         &[
                                             generic_tys.clone(),
@@ -1428,22 +1432,22 @@ impl FunDefinition {
                                             },
                                         ]
                                         .concat(),
-                                        coq::ArgSpecKind::Explicit,
+                                        rocq::ArgSpecKind::Explicit,
                                     ),
-                                    coq::ArgDecl::polymorphic_function_params(),
+                                    rocq::ArgDecl::polymorphic_function_params(),
                                 ]
                                 .concat(),
-                                ty: Some(coq::Expression::just_name("M")),
+                                ty: Some(rocq::Expression::just_name("M")),
                                 body: if !generics.is_empty() && !with_extra_self_ty {
-                                    Rc::new(coq::Expression::Let {
+                                    Rc::new(rocq::Expression::Let {
                                         suffix: "".to_string(),
                                         name: Some("Self".to_string()),
-                                        ty: Some(coq::Expression::just_name("Ty.t")),
-                                        init: coq::Expression::just_name("Self").apply_many(
+                                        ty: Some(rocq::Expression::just_name("Ty.t")),
+                                        init: rocq::Expression::just_name("Self").apply_many(
                                             &generics
                                                 .iter()
                                                 .map(|generic_ty| {
-                                                    coq::Expression::just_name(generic_ty)
+                                                    rocq::Expression::just_name(generic_ty)
                                                 })
                                                 .collect_vec(),
                                         ),
@@ -1480,58 +1484,58 @@ impl ImplItemKind {
         }
     }
 
-    fn to_coq<'a>(
+    fn to_rocq<'a>(
         &'a self,
         name: &'a str,
         generic_consts: Vec<String>,
         generic_tys: Vec<String>,
-    ) -> Vec<Rc<coq::TopLevelItem>> {
+    ) -> Vec<Rc<rocq::TopLevelItem>> {
         let definition_name = self.to_definition_name(name.to_string());
         let generics = [generic_consts.clone(), generic_tys.clone()].concat();
 
         match self {
             ImplItemKind::Const { ty, body } => vec![
-                Rc::new(coq::TopLevelItem::Comment(vec![ty.to_coq()])),
+                Rc::new(rocq::TopLevelItem::Comment(vec![ty.to_rocq()])),
                 match body {
-                    None => Rc::new(coq::TopLevelItem::Definition(coq::Definition::new(
+                    None => Rc::new(rocq::TopLevelItem::Definition(rocq::Definition::new(
                         &definition_name,
-                        Rc::new(coq::DefinitionKind::Assumption {
-                            ty: Rc::new(coq::Expression::PiType {
-                                args: coq::ArgDecl::of_const_ty_params(
+                        Rc::new(rocq::DefinitionKind::Assumption {
+                            ty: Rc::new(rocq::Expression::PiType {
+                                args: rocq::ArgDecl::of_const_ty_params(
                                     &generic_consts,
                                     &generic_tys,
-                                    coq::ArgSpecKind::Explicit,
+                                    rocq::ArgSpecKind::Explicit,
                                 ),
-                                image: coq::Expression::just_name("Value.t"),
+                                image: rocq::Expression::just_name("Value.t"),
                             }),
                         }),
                     ))),
                     Some(body) => {
-                        let body = coq::Expression::monadic(body.to_coq());
+                        let body = rocq::Expression::monadic(body.to_rocq());
 
-                        Rc::new(coq::TopLevelItem::Definition(coq::Definition::new(
+                        Rc::new(rocq::TopLevelItem::Definition(rocq::Definition::new(
                             &definition_name,
-                            Rc::new(coq::DefinitionKind::Alias {
+                            Rc::new(rocq::DefinitionKind::Alias {
                                 args: [
-                                    coq::ArgDecl::of_const_ty_params(
+                                    rocq::ArgDecl::of_const_ty_params(
                                         &generic_consts,
                                         &generic_tys,
-                                        coq::ArgSpecKind::Explicit,
+                                        rocq::ArgSpecKind::Explicit,
                                     ),
-                                    coq::ArgDecl::polymorphic_function_params(),
+                                    rocq::ArgDecl::polymorphic_function_params(),
                                 ]
                                 .concat(),
-                                ty: Some(coq::Expression::just_name("M")),
+                                ty: Some(rocq::Expression::just_name("M")),
                                 body: if !generics.is_empty() {
-                                    Rc::new(coq::Expression::Let {
+                                    Rc::new(rocq::Expression::Let {
                                         suffix: "".to_string(),
                                         name: Some("Self".to_string()),
-                                        ty: Some(coq::Expression::just_name("Ty.t")),
-                                        init: coq::Expression::just_name("Self").apply_many(
+                                        ty: Some(rocq::Expression::just_name("Ty.t")),
+                                        init: rocq::Expression::just_name("Self").apply_many(
                                             &generics
                                                 .iter()
                                                 .map(|generic_ty| {
-                                                    coq::Expression::just_name(generic_ty)
+                                                    rocq::Expression::just_name(generic_ty)
                                                 })
                                                 .collect_vec(),
                                         ),
@@ -1546,20 +1550,20 @@ impl ImplItemKind {
                 },
             ],
             ImplItemKind::Definition { definition, .. } => {
-                definition.to_coq(definition_name, &None, generic_consts, generic_tys, false)
+                definition.to_rocq(definition_name, &None, generic_consts, generic_tys, false)
             }
             ImplItemKind::Type { ty } => {
-                vec![Rc::new(coq::TopLevelItem::Definition(
-                    coq::Definition::new(
+                vec![Rc::new(rocq::TopLevelItem::Definition(
+                    rocq::Definition::new(
                         &definition_name,
-                        Rc::new(coq::DefinitionKind::Alias {
-                            args: coq::ArgDecl::of_const_ty_params(
+                        Rc::new(rocq::DefinitionKind::Alias {
+                            args: rocq::ArgDecl::of_const_ty_params(
                                 &generic_consts,
                                 &generic_tys,
-                                coq::ArgSpecKind::Explicit,
+                                rocq::ArgSpecKind::Explicit,
                             ),
-                            ty: Some(coq::Expression::just_name("Ty.t")),
-                            body: ty.to_coq(),
+                            ty: Some(rocq::Expression::just_name("Ty.t")),
+                            body: ty.to_rocq(),
                         }),
                     ),
                 ))]
@@ -1609,20 +1613,20 @@ impl Snippet {
         Some(Rc::new(Snippet(snippet)))
     }
 
-    fn to_coq(&self) -> Rc<coq::TopLevelItem> {
+    fn to_rocq(&self) -> Rc<rocq::TopLevelItem> {
         let nb_quotes = self
             .0
             .iter()
             .map(|line| line.chars().filter(|c| *c == '"').count())
             .sum::<usize>();
 
-        Rc::new(coq::TopLevelItem::Comment(
+        Rc::new(rocq::TopLevelItem::Comment(
             [
                 self.0
                     .iter()
-                    // We do this replace to avoid messing up with the Coq comments
+                    // We do this replace to avoid messing up with the Rocq comments
                     .map(|line| {
-                        Rc::new(coq::Expression::Message(
+                        Rc::new(rocq::Expression::Message(
                             line.replace("(*", "( *").replace("*)", "* )"),
                         ))
                     })
@@ -1630,7 +1634,7 @@ impl Snippet {
                 if nb_quotes % 2 == 0 {
                     vec![]
                 } else {
-                    vec![Rc::new(coq::Expression::Message("\"".to_string()))]
+                    vec![Rc::new(rocq::Expression::Message("\"".to_string()))]
                 },
             ]
             .concat(),
@@ -1639,24 +1643,24 @@ impl Snippet {
 }
 
 impl VariantItem {
-    fn to_coq(&self) -> Rc<coq::Expression> {
+    fn to_rocq(&self) -> Rc<rocq::Expression> {
         match self {
             VariantItem::Struct { fields } => {
-                coq::Expression::just_name("StructRecord").apply(Rc::new(coq::Expression::List {
+                rocq::Expression::just_name("StructRecord").apply(Rc::new(rocq::Expression::List {
                     exprs: fields
                         .iter()
                         .map(|(name, ty)| {
-                            Rc::new(coq::Expression::Tuple(vec![
-                                Rc::new(coq::Expression::String(name.to_string())),
-                                ty.to_coq(),
+                            Rc::new(rocq::Expression::Tuple(vec![
+                                Rc::new(rocq::Expression::String(name.to_string())),
+                                ty.to_rocq(),
                             ]))
                         })
                         .collect(),
                 }))
             }
             VariantItem::Tuple { tys } => {
-                coq::Expression::just_name("StructTuple").apply(Rc::new(coq::Expression::List {
-                    exprs: tys.iter().map(|ty| ty.to_coq()).collect(),
+                rocq::Expression::just_name("StructTuple").apply(Rc::new(rocq::Expression::List {
+                    exprs: tys.iter().map(|ty| ty.to_rocq()).collect(),
                 }))
             }
         }
@@ -1664,24 +1668,24 @@ impl VariantItem {
 }
 
 impl TypeEnumVariant {
-    fn to_coq(&self) -> Rc<coq::Expression> {
+    fn to_rocq(&self) -> Rc<rocq::Expression> {
         let Self {
             name,
             item,
             discriminant: _,
         } = self;
 
-        Rc::new(coq::Expression::Record {
+        Rc::new(rocq::Expression::Record {
             fields: vec![
-                Rc::new(coq::Field {
+                Rc::new(rocq::Field {
                     name: "name".to_string(),
                     args: vec![],
-                    body: Rc::new(coq::Expression::String(name.to_string())),
+                    body: Rc::new(rocq::Expression::String(name.to_string())),
                 }),
-                Rc::new(coq::Field {
+                Rc::new(rocq::Field {
                     name: "item".to_string(),
                     args: vec![],
-                    body: item.to_coq(),
+                    body: item.to_rocq(),
                 }),
             ],
         })
@@ -1689,47 +1693,47 @@ impl TypeEnumVariant {
 }
 
 impl TypeStructStruct {
-    fn to_coq(&self) -> Rc<coq::Expression> {
-        coq::Expression::just_name("StructRecord").apply(Rc::new(coq::Expression::Record {
+    fn to_rocq(&self) -> Rc<rocq::Expression> {
+        rocq::Expression::just_name("StructRecord").apply(Rc::new(rocq::Expression::Record {
             fields: vec![
-                Rc::new(coq::Field {
+                Rc::new(rocq::Field {
                     name: "name".to_string(),
                     args: vec![],
-                    body: Rc::new(coq::Expression::String(self.name.to_string())),
+                    body: Rc::new(rocq::Expression::String(self.name.to_string())),
                 }),
-                Rc::new(coq::Field {
+                Rc::new(rocq::Field {
                     name: "const_params".to_string(),
                     args: vec![],
-                    body: Rc::new(coq::Expression::List {
+                    body: Rc::new(rocq::Expression::List {
                         exprs: self
                             .const_params
                             .iter()
-                            .map(|name| Rc::new(coq::Expression::String(name.to_string())))
+                            .map(|name| Rc::new(rocq::Expression::String(name.to_string())))
                             .collect(),
                     }),
                 }),
-                Rc::new(coq::Field {
+                Rc::new(rocq::Field {
                     name: "ty_params".to_string(),
                     args: vec![],
-                    body: Rc::new(coq::Expression::List {
+                    body: Rc::new(rocq::Expression::List {
                         exprs: self
                             .ty_params
                             .iter()
-                            .map(|name| Rc::new(coq::Expression::String(name.to_string())))
+                            .map(|name| Rc::new(rocq::Expression::String(name.to_string())))
                             .collect(),
                     }),
                 }),
-                Rc::new(coq::Field {
+                Rc::new(rocq::Field {
                     name: "fields".to_string(),
                     args: vec![],
-                    body: Rc::new(coq::Expression::List {
+                    body: Rc::new(rocq::Expression::List {
                         exprs: self
                             .fields
                             .iter()
                             .map(|(name, ty)| {
-                                Rc::new(coq::Expression::Tuple(vec![
-                                    Rc::new(coq::Expression::String(name.to_string())),
-                                    ty.to_coq(),
+                                Rc::new(rocq::Expression::Tuple(vec![
+                                    Rc::new(rocq::Expression::String(name.to_string())),
+                                    ty.to_rocq(),
                                 ]))
                             })
                             .collect(),
@@ -1742,44 +1746,44 @@ impl TypeStructStruct {
 
 impl TopLevelItem {
     #[allow(clippy::format_collect)]
-    fn to_coq(&self) -> Vec<Rc<coq::TopLevelItem>> {
+    fn to_rocq(&self) -> Vec<Rc<rocq::TopLevelItem>> {
         match self {
             TopLevelItem::Const { name, path, value } => vec![
                 match value {
-                    None => Rc::new(coq::TopLevelItem::Definition(coq::Definition::new(
+                    None => Rc::new(rocq::TopLevelItem::Definition(rocq::Definition::new(
                         name,
-                        Rc::new(coq::DefinitionKind::Assumption {
-                            ty: coq::Expression::just_name("PolymorphicFunction.t"),
+                        Rc::new(rocq::DefinitionKind::Assumption {
+                            ty: rocq::Expression::just_name("PolymorphicFunction.t"),
                         }),
                     ))),
-                    Some(value) => Rc::new(coq::TopLevelItem::Definition(coq::Definition::new(
+                    Some(value) => Rc::new(rocq::TopLevelItem::Definition(rocq::Definition::new(
                         name,
-                        Rc::new(coq::DefinitionKind::Alias {
-                            args: coq::ArgDecl::polymorphic_function_params(),
-                            ty: Some(coq::Expression::just_name("M")),
-                            body: coq::Expression::monadic(value.to_coq()),
+                        Rc::new(rocq::DefinitionKind::Alias {
+                            args: rocq::ArgDecl::polymorphic_function_params(),
+                            ty: Some(rocq::Expression::just_name("M")),
+                            body: rocq::Expression::monadic(value.to_rocq()),
                         }),
                     ))),
                 },
-                Rc::new(coq::TopLevelItem::Line),
-                Rc::new(coq::TopLevelItem::Definition(coq::Definition::new(
+                Rc::new(rocq::TopLevelItem::Line),
+                Rc::new(rocq::TopLevelItem::Definition(rocq::Definition::new(
                     &format!("Instance_IsConstant_{name}"),
-                    Rc::new(coq::DefinitionKind::AdmittedInstance {
+                    Rc::new(rocq::DefinitionKind::AdmittedInstance {
                         locality: "Global".to_string(),
-                        ty: coq::Expression::just_name("M.IsFunction.C").apply_many(&[
-                            Rc::new(coq::Expression::String(path.to_string())),
-                            coq::Expression::just_name(name),
+                        ty: rocq::Expression::just_name("M.IsFunction.C").apply_many(&[
+                            Rc::new(rocq::Expression::String(path.to_string())),
+                            rocq::Expression::just_name(name),
                         ]),
                     }),
                 ))),
                 if value.is_some() {
-                    Rc::new(coq::TopLevelItem::Hint {
+                    Rc::new(rocq::TopLevelItem::Hint {
                         kind: "Global Typeclasses Opaque".to_string(),
                         name: name.to_string(),
                         database: None,
                     })
                 } else {
-                    Rc::new(coq::TopLevelItem::Empty)
+                    Rc::new(rocq::TopLevelItem::Empty)
                 },
             ],
             TopLevelItem::Definition {
@@ -1788,35 +1792,35 @@ impl TopLevelItem {
                 snippet,
                 definition,
             } => [
-                definition.to_coq(name.to_string(), snippet, vec![], vec![], false),
+                definition.to_rocq(name.to_string(), snippet, vec![], vec![], false),
                 vec![
-                    Rc::new(coq::TopLevelItem::Line),
-                    Rc::new(coq::TopLevelItem::Definition(coq::Definition::new(
+                    Rc::new(rocq::TopLevelItem::Line),
+                    Rc::new(rocq::TopLevelItem::Definition(rocq::Definition::new(
                         &format!("Instance_IsFunction_{name}"),
-                        Rc::new(coq::DefinitionKind::AdmittedInstance {
+                        Rc::new(rocq::DefinitionKind::AdmittedInstance {
                             locality: "Global".to_string(),
-                            ty: coq::Expression::just_name("M.IsFunction.C").apply_many(&[
-                                Rc::new(coq::Expression::String(path.to_string())),
-                                coq::Expression::just_name(name),
+                            ty: rocq::Expression::just_name("M.IsFunction.C").apply_many(&[
+                                Rc::new(rocq::Expression::String(path.to_string())),
+                                rocq::Expression::just_name(name),
                             ]),
                         }),
                     ))),
                     if definition.signature_and_body.body.is_some() {
-                        Rc::new(coq::TopLevelItem::Hint {
+                        Rc::new(rocq::TopLevelItem::Hint {
                             kind: "Global Typeclasses Opaque".to_string(),
                             name: name.to_string(),
                             database: None,
                         })
                     } else {
-                        Rc::new(coq::TopLevelItem::Empty)
+                        Rc::new(rocq::TopLevelItem::Empty)
                     },
                 ],
             ]
             .concat(),
             TopLevelItem::Module { name, body } => {
-                vec![Rc::new(coq::TopLevelItem::Module(coq::Module::new(
+                vec![Rc::new(rocq::TopLevelItem::Module(rocq::Module::new(
                     name,
-                    body.to_coq(),
+                    body.to_rocq(),
                 )))]
             }
             TopLevelItem::TypeAlias {
@@ -1825,30 +1829,30 @@ impl TopLevelItem {
                 ty,
                 const_params,
                 ty_params,
-            } => vec![Rc::new(coq::TopLevelItem::Definition(
-                coq::Definition::new(
+            } => vec![Rc::new(rocq::TopLevelItem::Definition(
+                rocq::Definition::new(
                     name,
-                    Rc::new(coq::DefinitionKind::Axiom {
-                        ty: Rc::new(coq::Expression::PiType {
-                            args: coq::ArgDecl::of_const_ty_params(
+                    Rc::new(rocq::DefinitionKind::Axiom {
+                        ty: Rc::new(rocq::Expression::PiType {
+                            args: rocq::ArgDecl::of_const_ty_params(
                                 const_params,
                                 ty_params,
-                                coq::ArgSpecKind::Explicit,
+                                rocq::ArgSpecKind::Explicit,
                             ),
-                            image: Rc::new(coq::Expression::Equality {
-                                lhs: CoqType::Application {
-                                    func: Rc::new(CoqType::Path { path: path.clone() }),
+                            image: Rc::new(rocq::Expression::Equality {
+                                lhs: RocqType::Application {
+                                    func: Rc::new(RocqType::Path { path: path.clone() }),
                                     consts: const_params
                                         .iter()
                                         .map(|const_param| Expr::local_var(const_param))
                                         .collect(),
                                     tys: ty_params
                                         .iter()
-                                        .map(|ty_param| CoqType::var(ty_param))
+                                        .map(|ty_param| RocqType::var(ty_param))
                                         .collect(),
                                 }
-                                .to_coq(),
-                                rhs: ty.to_coq(),
+                                .to_rocq(),
+                                rhs: ty.to_rocq(),
                             }),
                         }),
                     }),
@@ -1862,61 +1866,61 @@ impl TopLevelItem {
                 variants,
             } => [
                 vec![
-                    Rc::new(coq::TopLevelItem::Comment(vec![
-                        Rc::new(coq::Expression::Message(format!("Enum {name}"))),
-                        Rc::new(coq::Expression::Record {
+                    Rc::new(rocq::TopLevelItem::Comment(vec![
+                        Rc::new(rocq::Expression::Message(format!("Enum {name}"))),
+                        Rc::new(rocq::Expression::Record {
                             fields: vec![
-                                Rc::new(coq::Field {
+                                Rc::new(rocq::Field {
                                     name: "const_params".to_string(),
                                     args: vec![],
-                                    body: Rc::new(coq::Expression::List {
+                                    body: Rc::new(rocq::Expression::List {
                                         exprs: const_params
                                             .iter()
                                             .map(|name| {
-                                                Rc::new(coq::Expression::String(name.to_string()))
+                                                Rc::new(rocq::Expression::String(name.to_string()))
                                             })
                                             .collect(),
                                     }),
                                 }),
-                                Rc::new(coq::Field {
+                                Rc::new(rocq::Field {
                                     name: "ty_params".to_string(),
                                     args: vec![],
-                                    body: Rc::new(coq::Expression::List {
+                                    body: Rc::new(rocq::Expression::List {
                                         exprs: ty_params
                                             .iter()
                                             .map(|name| {
-                                                Rc::new(coq::Expression::String(name.to_string()))
+                                                Rc::new(rocq::Expression::String(name.to_string()))
                                             })
                                             .collect(),
                                     }),
                                 }),
-                                Rc::new(coq::Field {
+                                Rc::new(rocq::Field {
                                     name: "variants".to_string(),
                                     args: vec![],
-                                    body: Rc::new(coq::Expression::List {
+                                    body: Rc::new(rocq::Expression::List {
                                         exprs: variants
                                             .iter()
-                                            .map(|variant| variant.to_coq())
+                                            .map(|variant| variant.to_rocq())
                                             .collect(),
                                     }),
                                 }),
                             ],
                         }),
                     ])),
-                    Rc::new(coq::TopLevelItem::Line),
+                    Rc::new(rocq::TopLevelItem::Line),
                 ],
                 variants
                     .iter()
                     .map(|variant| {
-                        Rc::new(coq::TopLevelItem::Definition(coq::Definition::new(
+                        Rc::new(rocq::TopLevelItem::Definition(rocq::Definition::new(
                             &format!("IsDiscriminant_{name}_{}", variant.name),
-                            Rc::new(coq::DefinitionKind::Axiom {
-                                ty: coq::Expression::just_name("M.IsDiscriminant").apply_many(&[
-                                    Rc::new(coq::Expression::String(format!(
+                            Rc::new(rocq::DefinitionKind::Axiom {
+                                ty: rocq::Expression::just_name("M.IsDiscriminant").apply_many(&[
+                                    Rc::new(rocq::Expression::String(format!(
                                         "{path}::{}",
                                         variant.name
                                     ))),
-                                    Rc::new(coq::Expression::U128(variant.discriminant)),
+                                    Rc::new(rocq::Expression::U128(variant.discriminant)),
                                 ]),
                             }),
                         )))
@@ -1925,54 +1929,60 @@ impl TopLevelItem {
             ]
             .concat(),
             TopLevelItem::TypeStructStruct(tss) => {
-                vec![Rc::new(coq::TopLevelItem::Comment(vec![tss.to_coq()]))]
+                vec![Rc::new(rocq::TopLevelItem::Comment(vec![tss.to_rocq()]))]
             }
             TopLevelItem::TypeStructTuple {
                 name,
                 const_params,
                 ty_params,
                 fields,
-            } => vec![Rc::new(coq::TopLevelItem::Comment(vec![
-                coq::Expression::just_name("StructTuple").apply(Rc::new(coq::Expression::Record {
-                    fields: vec![
-                        Rc::new(coq::Field {
-                            name: "name".to_string(),
-                            args: vec![],
-                            body: Rc::new(coq::Expression::String(name.to_string())),
-                        }),
-                        Rc::new(coq::Field {
-                            name: "const_params".to_string(),
-                            args: vec![],
-                            body: Rc::new(coq::Expression::List {
-                                exprs: const_params
-                                    .iter()
-                                    .map(|name| Rc::new(coq::Expression::String(name.to_string())))
-                                    .collect(),
+            } => vec![Rc::new(rocq::TopLevelItem::Comment(vec![
+                rocq::Expression::just_name("StructTuple").apply(Rc::new(
+                    rocq::Expression::Record {
+                        fields: vec![
+                            Rc::new(rocq::Field {
+                                name: "name".to_string(),
+                                args: vec![],
+                                body: Rc::new(rocq::Expression::String(name.to_string())),
                             }),
-                        }),
-                        Rc::new(coq::Field {
-                            name: "ty_params".to_string(),
-                            args: vec![],
-                            body: Rc::new(coq::Expression::List {
-                                exprs: ty_params
-                                    .iter()
-                                    .map(|name| Rc::new(coq::Expression::String(name.to_string())))
-                                    .collect(),
+                            Rc::new(rocq::Field {
+                                name: "const_params".to_string(),
+                                args: vec![],
+                                body: Rc::new(rocq::Expression::List {
+                                    exprs: const_params
+                                        .iter()
+                                        .map(|name| {
+                                            Rc::new(rocq::Expression::String(name.to_string()))
+                                        })
+                                        .collect(),
+                                }),
                             }),
-                        }),
-                        Rc::new(coq::Field {
-                            name: "fields".to_string(),
-                            args: vec![],
-                            body: Rc::new(coq::Expression::List {
-                                exprs: fields.iter().map(|ty| ty.to_coq()).collect(),
+                            Rc::new(rocq::Field {
+                                name: "ty_params".to_string(),
+                                args: vec![],
+                                body: Rc::new(rocq::Expression::List {
+                                    exprs: ty_params
+                                        .iter()
+                                        .map(|name| {
+                                            Rc::new(rocq::Expression::String(name.to_string()))
+                                        })
+                                        .collect(),
+                                }),
                             }),
-                        }),
-                    ],
-                })),
+                            Rc::new(rocq::Field {
+                                name: "fields".to_string(),
+                                args: vec![],
+                                body: Rc::new(rocq::Expression::List {
+                                    exprs: fields.iter().map(|ty| ty.to_rocq()).collect(),
+                                }),
+                            }),
+                        ],
+                    },
+                )),
             ]))],
             TopLevelItem::TypeForeign { name } => {
-                vec![Rc::new(coq::TopLevelItem::Comment(vec![Rc::new(
-                    coq::Expression::Message(format!("Foreign type '{name}'")),
+                vec![Rc::new(rocq::TopLevelItem::Comment(vec![Rc::new(
+                    rocq::Expression::Message(format!("Foreign type '{name}'")),
                 )]))]
             }
             TopLevelItem::Impl {
@@ -1983,7 +1993,7 @@ impl TopLevelItem {
             } => {
                 let module_name = format!("Impl_{}", self_ty.to_name());
                 let generics: Vec<String> = [generic_consts.clone(), generic_tys.clone()].concat();
-                let items_coq = items
+                let items_rocq = items
                     .iter()
                     .flat_map(|item| {
                         let ImplItem {
@@ -2004,25 +2014,25 @@ impl TopLevelItem {
                             }
                         };
                         [
-                            vec![Rc::new(coq::TopLevelItem::Line)],
+                            vec![Rc::new(rocq::TopLevelItem::Line)],
                             match snippet {
                                 None => vec![],
-                                Some(snippet) => vec![snippet.to_coq()],
+                                Some(snippet) => vec![snippet.to_rocq()],
                             },
-                            kind.to_coq(name, generic_consts.clone(), generic_tys.clone()),
+                            kind.to_rocq(name, generic_consts.clone(), generic_tys.clone()),
                             vec![
-                                Rc::new(coq::TopLevelItem::Line),
-                                Rc::new(coq::TopLevelItem::Definition(coq::Definition::new(
+                                Rc::new(rocq::TopLevelItem::Line),
+                                Rc::new(rocq::TopLevelItem::Definition(rocq::Definition::new(
                                     &axiom_name,
-                                    Rc::new(coq::DefinitionKind::AdmittedInstance {
+                                    Rc::new(rocq::DefinitionKind::AdmittedInstance {
                                         locality: "Global".to_string(),
-                                        ty: Rc::new(coq::Expression::PiType {
-                                            args: coq::ArgDecl::of_const_ty_params(
+                                        ty: Rc::new(rocq::Expression::PiType {
+                                            args: rocq::ArgDecl::of_const_ty_params(
                                                 generic_consts,
                                                 generic_tys,
-                                                coq::ArgSpecKind::Explicit,
+                                                rocq::ArgSpecKind::Explicit,
                                             ),
-                                            image: coq::Expression::just_name(
+                                            image: rocq::Expression::just_name(
                                                 match kind.as_ref() {
                                                     ImplItemKind::Const { .. } => {
                                                         "M.IsAssociatedFunction.C"
@@ -2036,22 +2046,22 @@ impl TopLevelItem {
                                                 },
                                             )
                                             .apply_many(&[
-                                                coq::Expression::just_name("Self").apply_many(
+                                                rocq::Expression::just_name("Self").apply_many(
                                                     &generics
                                                         .iter()
                                                         .map(|generic| {
-                                                            coq::Expression::just_name(generic)
+                                                            rocq::Expression::just_name(generic)
                                                         })
                                                         .collect_vec(),
                                                 ),
-                                                Rc::new(coq::Expression::String(
+                                                Rc::new(rocq::Expression::String(
                                                     source_name.to_string(),
                                                 )),
-                                                coq::Expression::just_name(name).apply_many(
+                                                rocq::Expression::just_name(name).apply_many(
                                                     &generics
                                                         .iter()
                                                         .map(|generic| {
-                                                            coq::Expression::just_name(generic)
+                                                            rocq::Expression::just_name(generic)
                                                         })
                                                         .collect_vec(),
                                                 ),
@@ -2060,13 +2070,13 @@ impl TopLevelItem {
                                     }),
                                 ))),
                                 if kind.is_definition() {
-                                    Rc::new(coq::TopLevelItem::Hint {
+                                    Rc::new(rocq::TopLevelItem::Hint {
                                         kind: "Global Typeclasses Opaque".to_string(),
                                         name: name.clone(),
                                         database: None,
                                     })
                                 } else {
-                                    Rc::new(coq::TopLevelItem::Empty)
+                                    Rc::new(rocq::TopLevelItem::Empty)
                                 },
                             ],
                         ]
@@ -2074,24 +2084,24 @@ impl TopLevelItem {
                     })
                     .collect_vec();
 
-                vec![Rc::new(coq::TopLevelItem::Module(coq::Module::new(
+                vec![Rc::new(rocq::TopLevelItem::Module(rocq::Module::new(
                     &module_name,
-                    coq::TopLevel::concat(&[
-                        coq::TopLevel::new(&[Rc::new(coq::TopLevelItem::Definition(
-                            coq::Definition::new(
+                    rocq::TopLevel::concat(&[
+                        rocq::TopLevel::new(&[Rc::new(rocq::TopLevelItem::Definition(
+                            rocq::Definition::new(
                                 "Self",
-                                Rc::new(coq::DefinitionKind::Alias {
-                                    args: coq::ArgDecl::of_const_ty_params(
+                                Rc::new(rocq::DefinitionKind::Alias {
+                                    args: rocq::ArgDecl::of_const_ty_params(
                                         generic_consts,
                                         generic_tys,
-                                        coq::ArgSpecKind::Explicit,
+                                        rocq::ArgSpecKind::Explicit,
                                     ),
-                                    ty: Some(coq::Expression::just_name("Ty.t")),
-                                    body: self_ty.to_coq(),
+                                    ty: Some(rocq::Expression::just_name("Ty.t")),
+                                    body: self_ty.to_rocq(),
                                 }),
                             ),
                         ))]),
-                        coq::TopLevel::new(&items_coq),
+                        rocq::TopLevel::new(&items_rocq),
                     ]),
                 )))]
             }
@@ -2105,15 +2115,15 @@ impl TopLevelItem {
                 let params = [const_params.clone(), ty_params.clone()].concat();
 
                 vec![
-                    Rc::new(coq::TopLevelItem::Comment(vec![Rc::new(coq::Expression::Message("Trait".to_string()))])),
-                    Rc::new(coq::TopLevelItem::Module(coq::Module::new(
+                    Rc::new(rocq::TopLevelItem::Comment(vec![Rc::new(rocq::Expression::Message("Trait".to_string()))])),
+                    Rc::new(rocq::TopLevelItem::Module(rocq::Module::new(
                         name,
-                        coq::TopLevel::new(
+                        rocq::TopLevel::new(
                             &body
                                 .iter()
                                 .flat_map(|(name, item)| match item.as_ref() {
                                     TraitItem::DefinitionWithDefault(fun_definition) => [
-                                        fun_definition.to_coq(
+                                        fun_definition.to_rocq(
                                             name.to_string(),
                                             &None,
                                             const_params.clone(),
@@ -2121,28 +2131,28 @@ impl TopLevelItem {
                                             true,
                                         ),
                                         vec![
-                                            Rc::new(coq::TopLevelItem::Line),
-                                            Rc::new(coq::TopLevelItem::Definition(coq::Definition::new(
+                                            Rc::new(rocq::TopLevelItem::Line),
+                                            Rc::new(rocq::TopLevelItem::Definition(rocq::Definition::new(
                                             &format!("ProvidedMethod_{name}"),
-                                            Rc::new(coq::DefinitionKind::Axiom {
-                                                ty: Rc::new(coq::Expression::PiType {
-                                                    args: coq::ArgDecl::of_const_ty_params(
+                                            Rc::new(rocq::DefinitionKind::Axiom {
+                                                ty: Rc::new(rocq::Expression::PiType {
+                                                    args: rocq::ArgDecl::of_const_ty_params(
                                                         const_params,
                                                         ty_params,
-                                                        coq::ArgSpecKind::Explicit,
+                                                        rocq::ArgSpecKind::Explicit,
                                                     ),
-                                                    image: coq::Expression::just_name(
+                                                    image: rocq::Expression::just_name(
                                                         "M.IsProvidedMethod",
                                                     )
                                                     .apply_many(&[
-                                                        Rc::new(coq::Expression::String(path.to_string())),
-                                                        Rc::new(coq::Expression::String(name.to_string())),
-                                                        coq::Expression::just_name(name)
+                                                        Rc::new(rocq::Expression::String(path.to_string())),
+                                                        Rc::new(rocq::Expression::String(name.to_string())),
+                                                        rocq::Expression::just_name(name)
                                                             .apply_many(
                                                                 &params
                                                                     .iter()
                                                                     .map(|param| {
-                                                                        coq::Expression::just_name(
+                                                                        rocq::Expression::just_name(
                                                                             param,
                                                                         )
                                                                     })
@@ -2208,25 +2218,25 @@ impl TopLevelItem {
                         .join(""),
                     self_ty.to_name()
                 );
-                let items_coq = items
+                let items_rocq = items
                     .iter()
                     .filter_map(|item| {
                         Into::<Option<&ImplItemKind>>::into(item.kind.as_ref()).map(|kind| {
-                            Rc::new(coq::Expression::Tuple(vec![
-                                Rc::new(coq::Expression::String(item.name.to_string())),
-                                coq::Expression::just_name(match kind {
+                            Rc::new(rocq::Expression::Tuple(vec![
+                                Rc::new(rocq::Expression::String(item.name.to_string())),
+                                rocq::Expression::just_name(match kind {
                                     ImplItemKind::Const { .. } => "InstanceField.Method",
                                     ImplItemKind::Definition { .. } => "InstanceField.Method",
                                     ImplItemKind::Type { .. } => "InstanceField.Ty",
                                 })
                                 .apply(
-                                    coq::Expression::just_name(
+                                    rocq::Expression::just_name(
                                         &kind.to_definition_name(item.name.to_string()),
                                     )
                                     .apply_many(
                                         &generics
                                             .iter()
-                                            .map(|generic| coq::Expression::just_name(generic))
+                                            .map(|generic| rocq::Expression::just_name(generic))
                                             .collect_vec(),
                                     ),
                                 ),
@@ -2235,24 +2245,24 @@ impl TopLevelItem {
                     })
                     .collect_vec();
 
-                vec![Rc::new(coq::TopLevelItem::Module(coq::Module::new(
+                vec![Rc::new(rocq::TopLevelItem::Module(rocq::Module::new(
                     &module_name,
-                    coq::TopLevel::new(
+                    rocq::TopLevel::new(
                         &[
                             vec![
-                                Rc::new(coq::TopLevelItem::Definition(coq::Definition::new(
+                                Rc::new(rocq::TopLevelItem::Definition(rocq::Definition::new(
                                     "Self",
-                                    Rc::new(coq::DefinitionKind::Alias {
-                                        args: coq::ArgDecl::of_const_ty_params(
+                                    Rc::new(rocq::DefinitionKind::Alias {
+                                        args: rocq::ArgDecl::of_const_ty_params(
                                             generic_consts,
                                             generic_tys,
-                                            coq::ArgSpecKind::Explicit,
+                                            rocq::ArgSpecKind::Explicit,
                                         ),
-                                        ty: Some(coq::Expression::just_name("Ty.t")),
-                                        body: self_ty.to_coq(),
+                                        ty: Some(rocq::Expression::just_name("Ty.t")),
+                                        body: self_ty.to_rocq(),
                                     }),
                                 ))),
-                                Rc::new(coq::TopLevelItem::Line),
+                                Rc::new(rocq::TopLevelItem::Line),
                             ],
                             items
                                 .iter()
@@ -2262,65 +2272,65 @@ impl TopLevelItem {
                                             [
                                                 match &item.snippet {
                                                     None => vec![],
-                                                    Some(snippet) => vec![snippet.to_coq()],
+                                                    Some(snippet) => vec![snippet.to_rocq()],
                                                 },
-                                                kind.to_coq(
+                                                kind.to_rocq(
                                                     item.name.as_str(),
                                                     generic_consts.clone(),
                                                     generic_tys.clone(),
                                                 ),
-                                                vec![Rc::new(coq::TopLevelItem::Line)],
+                                                vec![Rc::new(rocq::TopLevelItem::Line)],
                                             ]
                                             .concat()
                                         },
                                     )
                                 })
                                 .concat(),
-                            vec![Rc::new(coq::TopLevelItem::Definition(
-                                coq::Definition::new(
+                            vec![Rc::new(rocq::TopLevelItem::Definition(
+                                rocq::Definition::new(
                                     "Implements",
-                                    Rc::new(coq::DefinitionKind::Axiom {
-                                        ty: Rc::new(coq::Expression::PiType {
-                                            args: coq::ArgDecl::of_const_ty_params(
+                                    Rc::new(rocq::DefinitionKind::Axiom {
+                                        ty: Rc::new(rocq::Expression::PiType {
+                                            args: rocq::ArgDecl::of_const_ty_params(
                                                 generic_consts,
                                                 generic_tys,
-                                                coq::ArgSpecKind::Explicit,
+                                                rocq::ArgSpecKind::Explicit,
                                             ),
-                                            image: coq::Expression::just_name("M.IsTraitInstance")
+                                            image: rocq::Expression::just_name("M.IsTraitInstance")
                                                 .apply_many(&[
-                                                    Rc::new(coq::Expression::String(
+                                                    Rc::new(rocq::Expression::String(
                                                         of_trait.to_string(),
                                                     )),
-                                                    Rc::new(coq::Expression::Comment(
+                                                    Rc::new(rocq::Expression::Comment(
                                                         "Trait polymorphic consts".to_string(),
-                                                        Rc::new(coq::Expression::List {
+                                                        Rc::new(rocq::Expression::List {
                                                             exprs: trait_const_params
                                                                 .iter()
-                                                                .map(|const_| const_.to_coq())
+                                                                .map(|const_| const_.to_rocq())
                                                                 .collect(),
                                                         }),
                                                     )),
-                                                    Rc::new(coq::Expression::Comment(
+                                                    Rc::new(rocq::Expression::Comment(
                                                         "Trait polymorphic types".to_string(),
-                                                        Rc::new(coq::Expression::List {
+                                                        Rc::new(rocq::Expression::List {
                                                             exprs: trait_ty_params
                                                                 .iter()
-                                                                .map(|ty| ty.to_coq())
+                                                                .map(|ty| ty.to_rocq())
                                                                 .collect(),
                                                         }),
                                                     )),
-                                                    coq::Expression::just_name("Self").apply_many(
+                                                    rocq::Expression::just_name("Self").apply_many(
                                                         &generics
                                                             .iter()
                                                             .map(|generic| {
-                                                                coq::Expression::just_name(generic)
+                                                                rocq::Expression::just_name(generic)
                                                             })
                                                             .collect_vec(),
                                                     ),
-                                                    Rc::new(coq::Expression::Comment(
+                                                    Rc::new(rocq::Expression::Comment(
                                                         "Instance".to_string(),
-                                                        Rc::new(coq::Expression::List {
-                                                            exprs: items_coq,
+                                                        Rc::new(rocq::Expression::List {
+                                                            exprs: items_rocq,
                                                         }),
                                                     )),
                                                 ]),
@@ -2333,20 +2343,20 @@ impl TopLevelItem {
                     ),
                 )))]
             }
-            TopLevelItem::Error { message } => vec![Rc::new(coq::TopLevelItem::Comment(vec![
-                coq::Expression::just_name("Error")
-                    .apply(Rc::new(coq::Expression::Message(message.clone()))),
+            TopLevelItem::Error { message } => vec![Rc::new(rocq::TopLevelItem::Comment(vec![
+                rocq::Expression::just_name("Error")
+                    .apply(Rc::new(rocq::Expression::Message(message.clone()))),
             ]))],
         }
     }
 }
 
 impl TopLevel {
-    fn to_coq(&self) -> Rc<coq::TopLevel> {
-        coq::TopLevel::new(
+    fn to_rocq(&self) -> Rc<rocq::TopLevel> {
+        rocq::TopLevel::new(
             &itertools::Itertools::intersperse(
-                self.0.iter().map(|item| item.item.to_coq()),
-                vec![Rc::new(coq::TopLevelItem::Line)],
+                self.0.iter().map(|item| item.item.to_rocq()),
+                vec![Rc::new(rocq::TopLevelItem::Line)],
             )
             .flatten()
             .collect_vec(),
@@ -2355,7 +2365,7 @@ impl TopLevel {
 
     pub fn to_pretty(&self, width: usize) -> String {
         let mut w = Vec::new();
-        self.to_coq()
+        self.to_rocq()
             .to_doc(&pretty::Arena::new())
             .render(width, &mut w)
             .unwrap();

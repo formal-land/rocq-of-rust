@@ -16,7 +16,7 @@ pub struct CliOptions {
 
 pub const LINE_WIDTH: usize = 80;
 
-fn change_to_coq_extension(path: &path::Path) -> PathBuf {
+fn change_to_rocq_extension(path: &path::Path) -> PathBuf {
     let mut new_path = path.to_path_buf();
     new_path.set_extension("v");
     new_path
@@ -52,10 +52,10 @@ pub fn run(opts: CliOptions) {
     let unique_folder_name = format!("{}/{}/", basic_folder_name, src_folder.to_str().unwrap(),);
     let dst_folder = path::Path::new(&unique_folder_name);
     if src_path.is_file() {
-        let translation = create_translation_to_coq(&opts);
+        let translation = create_translation_to_rocq(&opts);
 
         let path_to_write = dst_folder.join(
-            change_to_coq_extension(src_path)
+            change_to_rocq_extension(src_path)
                 .file_name()
                 .unwrap()
                 .to_str()
@@ -85,10 +85,10 @@ pub fn run(opts: CliOptions) {
                 {
                     continue;
                 }
-                // if the entry is a file, create a Coq version of it and write it to the destination directory
-                let translation = create_translation_to_coq(&opts);
+                // if the entry is a file, create a Rocq version of it and write it to the destination directory
+                let translation = create_translation_to_rocq(&opts);
                 write_if_changed(
-                    dst_folder.join(change_to_coq_extension(relative_path)),
+                    dst_folder.join(change_to_rocq_extension(relative_path)),
                     translation,
                 )
                 .unwrap();
@@ -97,7 +97,7 @@ pub fn run(opts: CliOptions) {
     }
 }
 
-fn create_translation_to_coq(opts: &CliOptions) -> String {
+fn create_translation_to_rocq(opts: &CliOptions) -> String {
     let input_file_name: PathBuf = PathBuf::from(&opts.path);
     let filename = input_file_name.clone();
     let out = process::Command::new("rustc")
@@ -155,7 +155,7 @@ fn create_translation_to_coq(opts: &CliOptions) -> String {
     );
 
     match translation.iter().next() {
-        Some((_, (coq_translation, _json_translation))) => coq_translation.clone(),
+        Some((_, (rocq_translation, _json_translation))) => rocq_translation.clone(),
         None => {
             eprintln!("No result from the compiler");
 

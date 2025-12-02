@@ -27,7 +27,7 @@ def compile_with_option(file: str, output_path: str, is_axiomatized: bool):
 
     # Translate the file, and save the error output if any
     command = (
-        "cargo run --quiet --bin coq-of-rust -- translate --path "
+        "cargo run --quiet --bin rocq-of-rust -- translate --path "
         + file
         + " "
         + ("--axiomatize " if is_axiomatized else "")
@@ -50,8 +50,8 @@ def compile_with_option(file: str, output_path: str, is_axiomatized: bool):
 def compile(index, file):
     print()
     print(f"Translating file {index + 1}/{len(rs_files)}: {file}")
-    compile_with_option(file, "CoqOfRust/examples/default/", False)
-    compile_with_option(file, "CoqOfRust/examples/axiomatized/", True)
+    compile_with_option(file, "RocqOfRust/examples/default/", False)
+    compile_with_option(file, "RocqOfRust/examples/axiomatized/", True)
 
 
 # run in parallel
