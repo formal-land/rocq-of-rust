@@ -368,3 +368,6 @@ Module RefStub.
       Ref.t kind_target Sub_A :=
     {| Ref.core := apply_core ref.(Ref.core) stub |}.
 End RefStub.
+
+(* This makes reasoning about arrays simpler, as now [cbn] works through [Z.to_nat]. *)
+Arguments Pos.to_nat _ /.
