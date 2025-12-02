@@ -37,10 +37,10 @@ Definition abs_i32 (x : I32.t) : I32.t :=
   else
     x.
 
-Lemma abs_i32_eq (x : I32.t) :
+Lemma abs_i32_eq {Stack : Stack.t} (stack : Stack.to_Set Stack) (x : I32.t) :
   {{
-    SimulateM.eval_f (run_abs_i32 x) tt 🌲
-    (Output.Success (abs_i32 x), tt)
+    SimulateM.eval_f (run_abs_i32 x) stack 🌲
+    (Output.Success (abs_i32 x), stack)
   }}.
 Proof.
   unfold abs_i32; cbn.
@@ -48,7 +48,7 @@ Proof.
   eapply Run.Call. { apply Run.Pure. } cbn.
   destruct (_ <? 0); cbn.
   { eapply Run.Call. { apply Run.Pure. } cbn.
-    destruct (_ =? (-(2 ^ 31))); cbn; apply Run.Pure.
+    destruct (_ =? _); cbn; apply Run.Pure.
   }
   { apply Run.Pure. }
 Qed.
@@ -129,8 +129,8 @@ Qed.
 Global Opaque run_get_or_zero.
 
 Definition eq2 (a b : array.t U32.t {| Integer.value := 2 |}) : bool :=
-  let '(x1, x0) := ArrayPairs.to_tuple_rev a.(array.value) in
-  let '(y1, y0) := ArrayPairs.to_tuple_rev b.(array.value) in
+  let '(tt, x1, x0) := ArrayPairs.to_tuple_rev a.(array.value) in
+  let '(tt, y1, y0) := ArrayPairs.to_tuple_rev b.(array.value) in
   if (x0.(Integer.value) =? y0.(Integer.value)) &&
      (x1.(Integer.value) =? y1.(Integer.value))
   then true
@@ -148,18 +148,19 @@ Lemma eq2_eq
 Proof.
   destruct a as [[a0 [a1 []]]].
   destruct b as [[b0 [b1 []]]].
-
   unfold eq2; cbn.
-
-  eapply Run.Call. { apply Run.Pure. } cbn.
-  eapply Run.Call. { apply Run.Pure. } cbn.
-
   progress repeat get_can_access.
   cbn.
-
-  destruct (a0.(Integer.value) =? b0.(Integer.value)) eqn:Heq0; cbn.
-  - destruct (a1.(Integer.value) =? b1.(Integer.value)) eqn:Heq1; cbn; apply Run.Pure.
-  - apply Run.Pure.
+  eapply Run.Call. { apply Run.Pure. } cbn.
+  destruct (_ =? _); cbn.
+  { progress repeat get_can_access.
+    eapply Run.Call. { apply Run.Pure. } cbn.
+    eapply Run.Call. { apply Run.Pure. } cbn.
+    destruct (_ =? _); cbn; apply Run.Pure.
+  }
+  { eapply Run.Call. { apply Run.Pure. } cbn.
+    apply Run.Pure.
+  }
 Qed.
 Global Opaque run_eq2.
 
@@ -179,15 +180,15 @@ Lemma eq_pair_eq (x y : U32.t * U32.t) :
 Proof.
   destruct x as [x0 x1]; destruct y as [y0 y1].
   unfold eq_pair; cbn.
-
-  repeat (
-    cbn ||
-    get_can_access ||
-    eapply Run.Call ||
-    apply Run.Pure ||
-    destruct (x0.(Integer.value) =? y0.(Integer.value)) ||
-    destruct (x1.(Integer.value) =? y1.(Integer.value))
-  ).
+  eapply Run.Call. { apply Run.Pure. } cbn.
+  destruct (_ =? _); cbn.
+  { eapply Run.Call. { apply Run.Pure. } cbn.
+    eapply Run.Call. { apply Run.Pure. } cbn.
+    destruct (_ =? _); cbn; apply Run.Pure.
+  }
+  { eapply Run.Call. { apply Run.Pure. } cbn.
+    apply Run.Pure.
+  }
 Qed.
 Global Opaque run_eq_pair.
 
@@ -201,15 +202,28 @@ Lemma min3_eq (a b c : U32.t) :
     (Output.Success (min3 a b c), tt)
   }}.
 Proof.
-  unfold min3.
-
-  repeat (
-    cbn ||
-    get_can_access ||
-    eapply Run.Call ||
-    apply Run.Pure ||
-    destruct (a.(Integer.value) <? b.(Integer.value)) ||
-    destruct (_ <? _)
-  ).
+  destruct a as [a]; destruct b as [b]; destruct c as [c].
+  unfold min3; cbn.
+  eapply Run.Call. { apply Run.Pure. } cbn.
+  eapply Run.Call. { apply Run.Pure. } cbn.
+  destruct (a <? b); cbn.
+  { get_can_access.
+    eapply Run.Call. { apply Run.Pure. } cbn.
+    eapply Run.Call. { apply Run.Pure. } cbn.
+    destruct (a <? c); cbn.
+    { get_can_access.
+      apply Run.Pure.
+    }
+    { apply Run.Pure. }
+  }
+  { get_can_access.
+    eapply Run.Call. { apply Run.Pure. } cbn.
+    eapply Run.Call. { apply Run.Pure. } cbn.
+    destruct (b <? c); cbn.
+    { get_can_access.
+      apply Run.Pure.
+    }
+    { apply Run.Pure. }
+  }
 Qed.
 Global Opaque run_min3.
