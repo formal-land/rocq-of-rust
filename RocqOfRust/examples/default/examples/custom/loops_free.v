@@ -383,3 +383,34 @@ Definition min3 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
 Global Instance Instance_IsFunction_min3 : M.IsFunction.C "loops_free::min3" min3.
 Admitted.
 Global Typeclasses Opaque min3.
+
+(*
+pub fn choose_ref<'a>(choice: bool, a: &'a u32, b: &'a u32) -> u32 {
+  if choice { *a } else { *b }
+}
+*)
+Definition choose_ref (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+  match ε, τ, α with
+  | [], [], [ choice; a; b ] =>
+    ltac:(M.monadic
+      (let choice := M.alloc (| Ty.path "bool", choice |) in
+      let a := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], a |) in
+      let b := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], b |) in
+      M.match_operator (|
+        Ty.path "u32",
+        M.alloc (| Ty.tuple [], Value.Tuple [] |),
+        [
+          fun γ =>
+            ltac:(M.monadic
+              (let γ := M.use choice in
+              let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
+              M.read (| M.deref (| M.read (| a |) |) |)));
+          fun γ => ltac:(M.monadic (M.read (| M.deref (| M.read (| b |) |) |)))
+        ]
+      |)))
+  | _, _, _ => M.impossible "wrong number of arguments"
+  end.
+
+Global Instance Instance_IsFunction_choose_ref : M.IsFunction.C "loops_free::choose_ref" choose_ref.
+Admitted.
+Global Typeclasses Opaque choose_ref.

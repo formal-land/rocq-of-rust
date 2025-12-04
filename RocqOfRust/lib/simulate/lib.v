@@ -172,5 +172,8 @@ Notation "a '%is' b" := (BinOp.Saturating.rem a b) (at level 40, left associativ
 Notation "a '<<is' b" := (BinOp.Saturating.shl a b) (at level 40, left associativity).
 Notation "a '>>is' b" := (BinOp.Saturating.shr a b) (at level 40, left associativity).
 
+(* Projection *)
+Notation "i[ x ]" := (Integer.value x) (at level 0, left associativity).
+
 #[warnings="-uniform-inheritance"]
 Coercion Integer_of_Z {kind : IntegerKind.t} (z : Z) : Integer.t kind := {| Integer.value := z |}.

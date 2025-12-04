@@ -58,3 +58,11 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+
+(* pub fn choose_ref<'a>(choice: bool, a: &'a u32, b: &'a u32) -> &'a u32 *)
+Instance run_choose_ref (choice : bool) (a b : Ref.t Pointer.Kind.Ref U32.t) :
+  Run.Trait choose_ref [] [] [φ choice; φ a; φ b] U32.t.
+Proof.
+  constructor.
+  run_symbolic.
+Defined.

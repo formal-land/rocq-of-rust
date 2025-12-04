@@ -8,18 +8,18 @@ Module Impl_Uint.
     forall {BITS LIMBS : Usize.t} (self : Self BITS LIMBS),
     bool.
 
-  Lemma is_zero_eq
-      (BITS LIMBS : Usize.t) (self : Self BITS LIMBS) :
-    let ref_self := make_ref 0 in
-    let stack := (self, tt) in
-    {{
-      SimulateM.eval_f (Stack := [_])
-        (Impl_Uint.run_is_zero BITS LIMBS ref_self)
-        stack 🌲
-      (
-        Output.Success (is_zero self),
-        stack
-      )
-    }}.
+  Lemma is_zero_like {Stack : Stack.t} {BITS LIMBS : Usize.t}
+      (stack : Stack.to_Set Stack)
+      (ref_self : Ref.t Pointer.Kind.Ref (Self BITS LIMBS)) :
+    SimulateM.eval_f (Stack := Stack)
+      (Impl_Uint.run_is_zero BITS LIMBS ref_self)
+      stack =
+    let*s self := SimulateM.read stack ref_self.(Ref.core) in
+    match self with
+    | Output.Success value =>
+      SimulateM.Pure (Output.Success (is_zero value), stack)
+    | Output.Exception exception =>
+      SimulateM.Pure (Output.Exception exception, stack)
+    end.
   Admitted.
 End Impl_Uint.

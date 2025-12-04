@@ -175,7 +175,7 @@ Lemma add_eq
 Proof.
   intros.
   destruct InterpreterTypesEq as [[] []].
-  Time cbn.
+  cbn.
   gas_macro_eq H gas set_instruction_result.
   popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result.
   get_can_access.
@@ -184,7 +184,8 @@ Proof.
   }
   get_can_access.
   apply Run.Pure.
-Time Qed.
+Qed.
+Global Opaque run_add.
 
 Lemma mul_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -232,6 +233,7 @@ Proof.
   get_can_access.
   apply Run.Pure.
 Qed.
+Global Opaque run_mul.
 
 Lemma sub_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -279,6 +281,7 @@ Proof.
   get_can_access.
   apply Run.Pure.
 Qed.
+Global Opaque run_sub.
 
 Lemma div_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -303,14 +306,15 @@ Lemma div_eq
         popn_top_macro interpreter {| Integer.value := 1 |} (fun arr top interpreter =>
           let '{| ArrayPair.x := op1 |} := arr.(array.value) in
           let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
-          interpreter
-          (* let stack :=
-            top.(RefStub.injection)
-              interpreter.(Interpreter.stack)
-              (if Impl_Uint.is_zero op2 then op2
-               else Impl_Uint.wrapping_div op1 op2) in
-          interpreter
-            <| Interpreter.stack := stack |> *)
+          if Impl_Uint.is_zero op2 then
+            interpreter
+          else
+            let stack :=
+              top.(RefStub.injection)
+                interpreter.(Interpreter.stack)
+                (Impl_Uint.wrapping_div op1 op2) in
+            interpreter
+              <| Interpreter.stack := stack |>
         )),
         (_host, tt)
       )
@@ -322,6 +326,41 @@ Proof.
   cbn.
   gas_macro_eq H gas set_instruction_result.
   popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result.
-  eapply Run.Call. {
+  Arguments Pos.to_nat _ /.
+  cbn.
+  eapply Run.Call; cbn. {
+    match goal with
+    | |- context[cmp.Impl_Uint.run_is_zero ?BITS ?LIMBS _] =>
+      let H := fresh "H" in
+      epose proof (H := Impl_Uint.is_zero_like
+        _
+        (BITS := BITS) (LIMBS := LIMBS)
+      );
+      cbn in H;
+      rewrite H; clear H
+    end.
     cbn.
-Admitted.
+    get_can_access.
+    apply Run.Pure.
+  }
+  cbn.
+  eapply Run.Call; cbn. {
+    apply Run.Pure.
+  }
+  cbn.
+  eapply Run.Call; cbn. {
+    apply Run.Pure.
+  }
+  cbn.
+  destruct Impl_Uint.is_zero; cbn.
+  { apply Run.Pure. }
+  { progress repeat get_can_access.
+    eapply Run.Call; cbn. {
+      apply (Impl_Uint.wrapping_div_eq (Stack := [_; _; _])).
+    }
+    cbn.
+    progress repeat get_can_access.
+    apply Run.Pure.
+  }
+Qed.
+Global Opaque run_div.

@@ -21,4 +21,5 @@ Module Impl_Uint.
       )
     }}.
   Admitted.
+  Global Opaque Impl_Uint.run_wrapping_div.
 End Impl_Uint.

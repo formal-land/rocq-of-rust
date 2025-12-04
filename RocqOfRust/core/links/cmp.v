@@ -373,10 +373,28 @@ Module Impl_PartialEq_for_Ref.
   Definition Self (A B : Set) `{Link A} `{Link B} : Set :=  
   Ref.t Pointer.Kind.Ref A.
 
-  Instance run 
+  Instance run
     (A B : Set) `{Link A} `{Link B} 
     : PartialEq.Run (Ref.t Pointer.Kind.Ref A) (Ref.t Pointer.Kind.Ref B).
   Admitted.
 End Impl_PartialEq_for_Ref.
-
 Export Impl_PartialEq_for_Ref.
+
+Module Impl_PartialOrd_for_U32.
+  Definition Self : Set := U32.t.
+
+  Instance run : PartialOrd.Run Self Self.
+  Admitted.
+End Impl_PartialOrd_for_U32.
+Export (hints) Impl_PartialOrd_for_U32.
+
+Module Impl_PartialOrd_for_Ref.
+  Definition Self (A : Set) `{Link A} : Set :=
+    Ref.t Pointer.Kind.Ref A.
+
+  Instance run (A B : Set) `{Link A} `{Link B}
+    {run_PartialOrd_for_A : PartialOrd.Run A B} :
+    PartialOrd.Run (Ref.t Pointer.Kind.Ref A) (Ref.t Pointer.Kind.Ref B).
+  Admitted.
+End Impl_PartialOrd_for_Ref.
+Export (hints) Impl_PartialOrd_for_Ref.
