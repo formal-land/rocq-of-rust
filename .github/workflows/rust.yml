@@ -250,6 +250,6 @@ jobs:
           endGroup
           startGroup "Compile Rocq translations"
             cd RocqOfRust
-            python ./make_and_detect_warnings.py
+            make -j3
             cd ..
           endGroup
