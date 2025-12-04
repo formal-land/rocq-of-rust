@@ -24,7 +24,7 @@ jobs:
       run: df -h
     - uses: coq-community/docker-coq-action@v1
       with:
-        custom_image: coqorg/coq:8.20-ocaml-4.14-flambda
+        custom_image: rocq/rocq-prover:9.0-native-flambda
         custom_script: |
           startGroup "Install dependencies"
             curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y

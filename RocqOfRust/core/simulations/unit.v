@@ -1,4 +1,4 @@
-Require Import Coq.Strings.String.
+Require Import Stdlib.Strings.String.
 Require Import RocqOfRust.simulations.M.
 Require Import core.simulations.eq.
 

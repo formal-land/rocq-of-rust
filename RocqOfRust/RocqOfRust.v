@@ -23,9 +23,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 *)
 
-Require Export Coq.Strings.Ascii.
-Require Export Coq.Strings.PrimString.
-Require Export Coq.ZArith.ZArith.
+Require Export Stdlib.Strings.Ascii.
+Require Export Stdlib.Strings.PrimString.
+Require Export Stdlib.ZArith.ZArith.
 Require Export RocqOfRust.RecordUpdate.
 Require Export RocqOfRust.lib.lib.
 

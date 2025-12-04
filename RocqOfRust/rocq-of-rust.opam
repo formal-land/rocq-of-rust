@@ -14,11 +14,11 @@ homepage: "https://formal.land/docs/rocq-of-rust/introduction"
 bug-reports: "https://github.com/formal-land/rocq-of-rust/issues"
 dev-repo: "git+https://github.com/formal-land/rocq-of-rust.git"
 depends: [
-  "coq" {>= "8.20.0" & < "8.21"}
+  "coq-coqutil"
   "coq-hammer"
-  "coq-coqutil" {>= "0.0.5"}
-  "coq-smpl"
-  "ocaml" {>= "4.08"}
+  "rocq-core" {>= "9.0" & < "9.1"}
+  "rocq-smpl"
+  "rocq-stdlib"
 ]
 build: [
   [make]

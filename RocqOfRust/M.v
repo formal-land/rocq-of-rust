@@ -1,9 +1,9 @@
 (** * The definition of a Rust monad. *)
-Require Export Coq.Strings.PrimString.
-Require Export Coq.ZArith.ZArith.
+Require Export Stdlib.Strings.PrimString.
+Require Export Stdlib.ZArith.ZArith.
 
 (* Proof libraries that we can use everywhere. *)
-Require Export Lia.
+From Stdlib Require Export Lia.
 From Hammer Require Export Tactics.
 Require Export smpl.Smpl.
 Require Export coqutil.Datatypes.List.
