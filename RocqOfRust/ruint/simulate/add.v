@@ -8,11 +8,10 @@ Module Impl_Uint.
     forall {BITS LIMBS : Usize.t} (x1 x2 : lib.Uint.t BITS LIMBS),
     lib.Uint.t BITS LIMBS.
 
-  Lemma wrapping_add_eq
-      {Stack : Stack.t} (stack : Stack.to_Set Stack)
+  Lemma wrapping_add_eq (stack : Stack.t)
       (BITS LIMBS : Usize.t) (x1 x2 : lib.Uint.t BITS LIMBS) :
     {{
-      SimulateM.eval_f (Stack := Stack)
+      SimulateM.eval_f
         (Impl_Uint.run_wrapping_add BITS LIMBS x1 x2)
         stack 🌲
       (
@@ -26,11 +25,10 @@ Module Impl_Uint.
     forall {BITS LIMBS : Usize.t} (x1 x2 : lib.Uint.t BITS LIMBS),
     lib.Uint.t BITS LIMBS.
 
-  Lemma wrapping_sub_eq
-      {Stack : Stack.t} (stack : Stack.to_Set Stack)
+  Lemma wrapping_sub_eq (stack : Stack.t)
       (BITS LIMBS : Usize.t) (x1 x2 : lib.Uint.t BITS LIMBS) :
     {{
-      SimulateM.eval_f (Stack := Stack)
+      SimulateM.eval_f
         (Impl_Uint.run_wrapping_sub BITS LIMBS x1 x2)
         stack 🌲
       (

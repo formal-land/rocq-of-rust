@@ -9,10 +9,10 @@ Module Impl_Uint.
     lib.Uint.t BITS LIMBS.
 
   Lemma wrapping_div_eq
-      {Stack : Stack.t} (stack : Stack.to_Set Stack)
+      (stack : Stack.t)
       (BITS LIMBS : Usize.t) (x1 x2 : lib.Uint.t BITS LIMBS) :
     {{
-      SimulateM.eval_f (Stack := Stack)
+      SimulateM.eval_f
         (Impl_Uint.run_wrapping_div BITS LIMBS x1 x2)
         stack 🌲
       (

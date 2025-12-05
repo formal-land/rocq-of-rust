@@ -74,12 +74,7 @@ Ltac gas_macro_eq H gas set_instruction_result :=
       apply Run.Pure
     |];
     eapply Run.Call; [
-      epose proof (set_instruction_result [H]
-        _
-        _
-        instruction_result.InstructionResult.OutOfGas
-      ) as H_set_instruction_result;
-      apply H_set_instruction_result
+      apply (set_instruction_result _ _ instruction_result.InstructionResult.OutOfGas)
     |];
     apply Run.Pure
   ].
@@ -129,12 +124,11 @@ Ltac popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result :=
   destruct IInterpreterTypes.(InterpreterTypes.Stack).(Stack.popn_top) as [[[? ?]|] ?];
   [|
     eapply Run.Call; [
-      epose proof (set_instruction_result [H; unit]
+      apply (set_instruction_result
         _
         _
         instruction_result.InstructionResult.StackUnderflow
-      ) as H_set_instruction_result;
-      apply H_set_instruction_result
+      )
     |];
     apply Run.Pure
   ].
@@ -152,12 +146,12 @@ Lemma add_eq
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref 1 in
   {{
-    SimulateM.eval_f (Stack := [_; _])
+    SimulateM.eval_f
       (run_add run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
-      (interpreter, (_host, tt)) 🌲
+      ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
-      (
+      [
         gas_macro interpreter constants.VERYLOW (fun interpreter =>
         popn_top_macro interpreter {| Integer.value := 1 |} (fun arr top interpreter =>
           let '{| ArrayPair.x := op1 |} := arr.(array.value) in
@@ -167,9 +161,9 @@ Lemma add_eq
               interpreter.(Interpreter.stack) (Impl_Uint.wrapping_add op1 op2) in
           interpreter
             <| Interpreter.stack := stack |>
-        )),
-        (_host, tt)
-      )
+        ));
+        _host
+      ]%stack
     )
   }}.
 Proof.
@@ -200,12 +194,12 @@ Lemma mul_eq
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref 1 in
   {{
-    SimulateM.eval_f (Stack := [_; _])
+    SimulateM.eval_f
       (run_mul run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
-      (interpreter, (_host, tt)) 🌲
+      ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
-      (
+      [
         gas_macro interpreter constants.LOW (fun interpreter =>
         popn_top_macro interpreter {| Integer.value := 1 |} (fun arr top interpreter =>
           let '{| ArrayPair.x := op1 |} := arr.(array.value) in
@@ -215,9 +209,9 @@ Lemma mul_eq
               interpreter.(Interpreter.stack) (Impl_Uint.wrapping_mul op1 op2) in
           interpreter
             <| Interpreter.stack := stack |>
-        )),
-        (_host, tt)
-      )
+        ));
+        _host
+      ]%stack
     )
   }}.
 Proof.
@@ -248,12 +242,12 @@ Lemma sub_eq
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref 1 in
   {{
-    SimulateM.eval_f (Stack := [_; _])
+    SimulateM.eval_f
       (run_sub run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
-      (interpreter, (_host, tt)) 🌲
+      ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
-      (
+      [
         gas_macro interpreter constants.VERYLOW (fun interpreter =>
         popn_top_macro interpreter {| Integer.value := 1 |} (fun arr top interpreter =>
           let '{| ArrayPair.x := op1 |} := arr.(array.value) in
@@ -263,9 +257,9 @@ Lemma sub_eq
               interpreter.(Interpreter.stack) (Impl_Uint.wrapping_sub op1 op2) in
           interpreter
             <| Interpreter.stack := stack |>
-        )),
-        (_host, tt)
-      )
+        ));
+        _host
+      ]%stack
     )
   }}.
 Proof.
@@ -296,12 +290,12 @@ Lemma div_eq
   let ref_interpreter := make_ref 0 in
   let ref_host := make_ref 1 in
   {{
-    SimulateM.eval_f (Stack := [_; _])
+    SimulateM.eval_f
       (run_div run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
-      (interpreter, (_host, tt)) 🌲
+      ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
-      (
+      [
         gas_macro interpreter constants.LOW (fun interpreter =>
         popn_top_macro interpreter {| Integer.value := 1 |} (fun arr top interpreter =>
           let '{| ArrayPair.x := op1 |} := arr.(array.value) in
@@ -315,9 +309,9 @@ Lemma div_eq
                 (Impl_Uint.wrapping_div op1 op2) in
             interpreter
               <| Interpreter.stack := stack |>
-        )),
-        (_host, tt)
-      )
+        ));
+        _host
+      ]%stack
     )
   }}.
 Proof.
@@ -328,16 +322,12 @@ Proof.
   popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result.
   cbn.
   eapply Run.Call; cbn. {
-    match goal with
-    | |- context[cmp.Impl_Uint.run_is_zero ?BITS ?LIMBS _] =>
-      let H := fresh "H" in
-      epose proof (H := Impl_Uint.is_zero_like
+    setoid_rewrite (
+      Impl_Uint.is_zero_like
         _
-        (BITS := BITS) (LIMBS := LIMBS)
-      );
-      cbn in H;
-      rewrite H; clear H
-    end.
+        (BITS := {| Integer.value := 256 |})
+        (LIMBS := {| Integer.value := 4 |})
+    ).
     cbn.
     get_can_access.
     apply Run.Pure.
@@ -355,7 +345,7 @@ Proof.
   { apply Run.Pure. }
   { progress repeat get_can_access.
     eapply Run.Call; cbn. {
-      apply (Impl_Uint.wrapping_div_eq (Stack := [_; _; _])).
+      apply Impl_Uint.wrapping_div_eq.
     }
     cbn.
     progress repeat get_can_access.

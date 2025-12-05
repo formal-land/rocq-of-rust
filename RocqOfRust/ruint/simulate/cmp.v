@@ -8,10 +8,10 @@ Module Impl_Uint.
     forall {BITS LIMBS : Usize.t} (self : Self BITS LIMBS),
     bool.
 
-  Lemma is_zero_like {Stack : Stack.t} {BITS LIMBS : Usize.t}
-      (stack : Stack.to_Set Stack)
+  Lemma is_zero_like {BITS LIMBS : Usize.t}
+      (stack : Stack.t)
       (ref_self : Ref.t Pointer.Kind.Ref (Self BITS LIMBS)) :
-    SimulateM.eval_f (Stack := Stack)
+    SimulateM.eval_f
       (Impl_Uint.run_is_zero BITS LIMBS ref_self)
       stack =
     let*s self := SimulateM.read stack ref_self.(Ref.core) in

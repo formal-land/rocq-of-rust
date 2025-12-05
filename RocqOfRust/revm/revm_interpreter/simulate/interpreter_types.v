@@ -31,9 +31,8 @@ Module Stack.
         (I : C WIRE_types) :
         Prop := {
       popn_top
-          (Stack : list Set)
           (interpreter : Interpreter.t WIRE WIRE_types)
-          (stack_rest : Stack.to_Set Stack)
+          (stack_rest : Stack.t)
           (POPN : Usize.t) :
         let ref_interpreter : Ref.t Pointer.Kind.MutRef _ := make_ref 0 in
         let ref_self := {| Ref.core :=
@@ -42,19 +41,22 @@ Module Stack.
             Interpreter.SubPointer.get_stack
         |} in
         {{
-          SimulateM.eval_f (Stack := Interpreter.t WIRE WIRE_types :: Stack)
+          SimulateM.eval_f
             (run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_StackTrait_for_Stack).(StackTrait.popn_top).(TraitMethod.run)
               POPN
               ref_self
             )
-            (interpreter, stack_rest) 🌲
+            (interpreter :: stack_rest)%stack 🌲
           let (result, self) := I.(popn_top) POPN interpreter.(Interpreter.stack) in
           let result :=
             match result with
             | Some (a, stub) => Some (a, RefStub.apply ref_self stub)
             | None => None
             end in
-          (Output.Success result, (interpreter <| Interpreter.stack := self |>, stack_rest))
+          (
+            Output.Success result,
+            (interpreter <| Interpreter.stack := self |> :: stack_rest)%stack
+          )
         }};
     }.
   End Eq.
@@ -82,9 +84,8 @@ Module Loop.
         (I : C WIRE_types) :
         Prop := {
       set_instruction_result
-          (StackRest : list Set)
           (interpreter : Interpreter.t WIRE WIRE_types)
-          (stack_rest : Stack.to_Set StackRest)
+          (stack_rest : Stack.t)
           (result : InstructionResult.t) :
         let ref_interpreter : Ref.t Pointer.Kind.MutRef _ := make_ref 0 in
         let ref_self := {| Ref.core :=
@@ -95,21 +96,20 @@ Module Loop.
         let control' :=
           I.(set_instruction_result) interpreter.(Interpreter.control) result in
         {{
-          SimulateM.eval_f (Stack := Interpreter.t WIRE WIRE_types :: StackRest)
+          SimulateM.eval_f
             (run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_LoopControl_for_Control).(LoopControl.set_instruction_result).(TraitMethod.run)
               ref_self
               result
             )
-            (interpreter, stack_rest) 🌲
+            (interpreter :: stack_rest)%stack 🌲
           (
             Output.Success tt,
-            (interpreter <| Interpreter.control := control' |>, stack_rest)
+            (interpreter <| Interpreter.control := control' |> :: stack_rest)%stack
           )
         }};
       gas
-          (StackRest : list Set)
           (interpreter : Interpreter.t WIRE WIRE_types)
-          (stack_rest : Stack.to_Set StackRest) :
+          (stack_rest : Stack.t) :
         let ref_interpreter : Ref.t Pointer.Kind.MutRef _ := make_ref 0 in
         let ref_self := {| Ref.core :=
             SubPointer.Runner.apply
@@ -117,12 +117,15 @@ Module Loop.
               Interpreter.SubPointer.get_control
         |} in
         {{
-          SimulateM.eval_f (Stack := Interpreter.t WIRE WIRE_types :: StackRest)
+          SimulateM.eval_f
             (run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_LoopControl_for_Control).(LoopControl.gas).(TraitMethod.run)
               ref_self
             )
-            (interpreter, stack_rest) 🌲
-          (Output.Success (RefStub.apply ref_self I.(gas)), (interpreter, stack_rest))
+            (interpreter :: stack_rest)%stack 🌲
+          (
+            Output.Success (RefStub.apply ref_self I.(gas)),
+            (interpreter :: stack_rest)%stack
+          )
         }};
     }.
   End Eq.

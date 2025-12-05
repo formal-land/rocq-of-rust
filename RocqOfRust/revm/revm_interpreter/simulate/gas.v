@@ -16,7 +16,7 @@ Module Impl_MemoryGas.
       MemoryGas.expansion_cost := {| Integer.value := 0 |};
     |}.
 
-  Lemma new_eq (Stack : Stack.t) (stack : Stack.to_Set Stack) :
+  Lemma new_eq (stack : Stack.t) :
     {{
       SimulateM.eval_f Impl_MemoryGas.run_new stack 🌲
       (Output.Success new, stack)
@@ -41,8 +41,8 @@ Module Impl_Gas.
 
   Lemma new_eq (limit : U64.t) :
     {{
-      SimulateM.eval_f (Stack := []) (Impl_Gas.run_new limit) tt 🌲
-      (Output.Success (new limit), tt)
+      SimulateM.eval_f (Impl_Gas.run_new limit) []%stack 🌲
+      (Output.Success (new limit), []%stack)
     }}.
   Proof.
     cbn.
@@ -67,8 +67,8 @@ Module Impl_Gas.
       Ref.core := Ref.Core.Mutable (A := Self) 0%nat [] φ Some (fun _ => Some)
     |} in
     {{
-      SimulateM.eval_f (Stack := [_]) (Impl_Gas.run_limit ref_self) (self, tt) 🌲
-      (Output.Success (limit self), (self, tt))
+      SimulateM.eval_f (Impl_Gas.run_limit ref_self) [self]%stack 🌲
+      (Output.Success (limit self), [self]%stack)
     }}.
   Proof.
     cbn.
@@ -99,8 +99,8 @@ Module Impl_Gas.
       Ref.core := Ref.Core.Mutable (A := Self) 0%nat [] φ Some (fun _ => Some)
     |} in
     {{
-      SimulateM.eval_f (Stack := [_]) (Impl_Gas.run_erase_cost ref_self returned) (self, tt) 🌲
-      (Output.Success tt, (erase_cost self returned, tt))
+      SimulateM.eval_f (Impl_Gas.run_erase_cost ref_self returned) [self]%stack 🌲
+      (Output.Success tt, [erase_cost self returned]%stack)
     }}.
   Proof.
     cbn.
@@ -117,9 +117,9 @@ Module Impl_Gas.
   Parameter u64_overflowing_sub : forall (self other : U64.t), U64.t * bool.
 
   Axiom u64_overflowing_sub_eq :
-    forall (Stack : Stack.t) (stack : Stack.to_Set Stack) (self other : U64.t),
+    forall (stack : Stack.t) (self other : U64.t),
     {{
-      SimulateM.eval_f (Stack := Stack) (core.num.links.mod.Impl_u64.run_overflowing_sub self other) stack 🌲
+      SimulateM.eval_f (core.num.links.mod.Impl_u64.run_overflowing_sub self other) stack 🌲
       (Output.Success (u64_overflowing_sub self other), stack)
     }}.
 
@@ -158,8 +158,7 @@ Module Impl_Gas.
     let gas := gas_stub.(RefStub.projection) interpreter.(Interpreter.control) in
     let result := record_cost gas cost in
     {{
-      SimulateM.eval_f (Stack := [Interpreter.t WIRE WIRE_types; H])
-        (Impl_Gas.run_record_cost ref_self cost) (interpreter, (_host, tt)) 🌲
+      SimulateM.eval_f (Impl_Gas.run_record_cost ref_self cost) [interpreter; _host]%stack 🌲
       (
         Output.Success (
           match result with
@@ -167,15 +166,15 @@ Module Impl_Gas.
           | Some _ => true
           end
         ),
-        (
+        [
           interpreter <| Interpreter.control :=
             match result with
             | None => interpreter.(Interpreter.control)
             | Some gas => gas_stub.(RefStub.injection) interpreter.(Interpreter.control) gas
             end
-          |>,
-          (_host, tt)
-        )
+          |>;
+          _host
+        ]%stack
       )
     }}.
   Proof.
