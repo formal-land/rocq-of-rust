@@ -1,6 +1,6 @@
 (** Experiments for the definition of a Rust monad. *)
-Require Coq.Lists.List.
-Require Import Coq.ZArith.ZArith.
+Require Stdlib.Lists.List.
+Require Import Stdlib.ZArith.ZArith.
 Require Import RocqOfRust.RecordUpdate.
 
 Global Set Primitive Projections.

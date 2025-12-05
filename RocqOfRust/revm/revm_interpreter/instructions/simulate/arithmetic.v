@@ -326,7 +326,6 @@ Proof.
   cbn.
   gas_macro_eq H gas set_instruction_result.
   popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result.
-  Arguments Pos.to_nat _ /.
   cbn.
   eapply Run.Call; cbn. {
     match goal with
