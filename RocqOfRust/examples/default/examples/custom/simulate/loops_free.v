@@ -11,10 +11,10 @@ Definition max2 (a b : U32.t) : U32.t :=
   else
     a.
 
-Lemma max2_eq (a b : U32.t) :
+Lemma max2_eq (stack : Stack.t) (a b : U32.t) :
   {{
-    SimulateM.eval_f (Stack := []) (run_max2 a b) tt 🌲
-    (Output.Success (max2 a b), tt)
+    SimulateM.eval_f (run_max2 a b) stack 🌲
+    (Output.Success (max2 a b), stack)
   }}.
 Proof.
   unfold max2.
@@ -37,7 +37,7 @@ Definition abs_i32 (x : I32.t) : I32.t :=
   else
     x.
 
-Lemma abs_i32_eq {Stack : Stack.t} (stack : Stack.to_Set Stack) (x : I32.t) :
+Lemma abs_i32_eq (stack : Stack.t) (x : I32.t) :
   {{
     SimulateM.eval_f (run_abs_i32 x) stack 🌲
     (Output.Success (abs_i32 x), stack)
@@ -59,10 +59,10 @@ Definition bool_and (a b : bool) : bool :=
   then if b then true else false
   else false.
 
-Lemma bool_and_eq (a b : bool) :
+Lemma bool_and_eq (stack : Stack.t) (a b : bool) :
   {{
-    SimulateM.eval_f (Stack := []) (run_bool_and a b) tt 🌲
-    (Output.Success (bool_and a b), tt)
+    SimulateM.eval_f (run_bool_and a b) stack 🌲
+    (Output.Success (bool_and a b), stack)
   }}.
 Proof.
   unfold bool_and.
@@ -98,9 +98,9 @@ Lemma get_or_zero_eq
     (xs : array.t U32.t 4) (i : Usize.t)
     (H_i : 0 <= i.(Integer.value)) :
   let ref_xs := make_ref 0 in
-  let stack := (xs, tt) in
+  let stack := [xs]%stack in
   {{
-    SimulateM.eval_f (Stack := [_]) (run_get_or_zero ref_xs i) stack 🌲
+    SimulateM.eval_f (run_get_or_zero ref_xs i) stack 🌲
     (Output.Success (get_or_zero xs i), stack)
   }}.
 Proof.
@@ -140,17 +140,17 @@ Lemma eq2_eq
     (a b : array.t U32.t {| Integer.value := 2 |}) :
   let ref_a := make_ref 0 in
   let ref_b := make_ref 1 in
-  let stack := (a, (b, tt)) in
+  let stack := [a; b]%stack in
   {{
-    SimulateM.eval_f (Stack := [_; _]) (run_eq2 ref_a ref_b) stack 🌲
+    SimulateM.eval_f (run_eq2 ref_a ref_b) stack 🌲
     (Output.Success (eq2 a b), stack)
   }}.
 Proof.
-  destruct a as [[a0 [a1 []]]].
-  destruct b as [[b0 [b1 []]]].
+  destruct a as [[[a0] [[a1] []]]].
+  destruct b as [[[b0] [[b1] []]]].
   unfold eq2; cbn.
-  progress repeat get_can_access.
-  cbn.
+  get_can_access.
+  get_can_access.
   eapply Run.Call. { apply Run.Pure. } cbn.
   destruct (_ =? _); cbn.
   { progress repeat get_can_access.
@@ -172,10 +172,10 @@ Definition eq_pair (x y : U32.t * U32.t) : bool :=
   then true
   else false.
 
-Lemma eq_pair_eq (x y : U32.t * U32.t) :
+Lemma eq_pair_eq (stack : Stack.t) (x y : U32.t * U32.t) :
   {{
-    SimulateM.eval_f (Stack := []) (run_eq_pair x y) tt 🌲
-    (Output.Success (eq_pair x y), tt)
+    SimulateM.eval_f (run_eq_pair x y) stack 🌲
+    (Output.Success (eq_pair x y), stack)
   }}.
 Proof.
   destruct x as [x0 x1]; destruct y as [y0 y1].
@@ -198,8 +198,8 @@ Definition min3 (a b c : U32.t) : U32.t :=
 
 Lemma min3_eq (a b c : U32.t) :
   {{
-    SimulateM.eval_f (Stack := []) (run_min3 a b c) tt 🌲
-    (Output.Success (min3 a b c), tt)
+    SimulateM.eval_f (run_min3 a b c) []%stack 🌲
+    (Output.Success (min3 a b c), []%stack)
   }}.
 Proof.
   destruct a as [a]; destruct b as [b]; destruct c as [c].
@@ -235,11 +235,11 @@ Definition choose_ref (choice : bool) (a b : U32.t) : U32.t :=
     b.
 
 Lemma choose_ref_eq (choice : bool) (a b : U32.t) :
-  let stack := (a, (b, tt)) in
+  let stack := [a; b]%stack in
   let ref_a := make_ref 0 in
   let ref_b := make_ref 1 in
   {{
-    SimulateM.eval_f (Stack := [_; _]) (run_choose_ref choice ref_a ref_b) stack 🌲
+    SimulateM.eval_f (run_choose_ref choice ref_a ref_b) stack 🌲
     (Output.Success (choose_ref choice a b), stack)
   }}.
 Proof.
