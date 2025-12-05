@@ -319,8 +319,11 @@ Ltac get_can_access :=
   |];
   cbn.
 
+Definition make_ref_core {A : Set} `{Link A} (index : nat) : Ref.Core.t A :=
+  Ref.Core.Mutable (A := A) index [] φ Some (fun _ => Some).
+
 Definition make_ref {A : Set} `{Link A} {kind : Pointer.Kind.t} (index : nat) : Ref.t kind A :=
-  {| Ref.core := Ref.Core.Mutable (A := A) index [] φ Some (fun _ => Some) |}.
+  {| Ref.core := make_ref_core index |}.
 
 (** To get a reference to a sub-field from a reference to a larger object. *)
 Module RefStub.

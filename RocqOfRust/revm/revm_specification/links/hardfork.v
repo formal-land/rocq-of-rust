@@ -448,4 +448,4 @@ Module Impl_SpecId.
     run_symbolic.
   Defined.
 End Impl_SpecId.
-Export Impl_SpecId.
+Export (hints) Impl_SpecId.
