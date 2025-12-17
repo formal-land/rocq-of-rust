@@ -438,6 +438,30 @@ Module Exception.
   | Break : t
   (** escape from a match branch once we know that it is not valid *)
   | BreakMatch : t.
+
+  Definition is_return (exception : t) : option Value.t :=
+    match exception with
+    | Return value => Some value
+    | _ => None
+    end.
+
+  Definition is_continue (exception : t) : bool :=
+    match exception with
+    | Continue => true
+    | _ => false
+    end.
+
+  Definition is_break (exception : t) : bool :=
+    match exception with
+    | Break => true
+    | _ => false
+    end.
+
+  Definition is_break_match (exception : t) : bool :=
+    match exception with
+    | BreakMatch => true
+    | _ => false
+    end.
 End Exception.
 
 Definition M : Set :=
@@ -787,9 +811,9 @@ Definition catch_return (ty : Ty.t) (body : M) : M :=
     ty
     body
     (fun exception =>
-      match exception with
-      | Exception.Return r => pure r
-      | _ => raise exception
+      match Exception.is_return exception with
+      | Some r => pure r
+      | None => raise exception
       end
     ).
 
@@ -798,10 +822,10 @@ Definition catch_continue (ty : Ty.t) (body : M) : M :=
     ty
     body
     (fun exception =>
-      match exception with
-      | Exception.Continue => alloc (Ty.tuple []) (Value.Tuple [])
-      | _ => raise exception
-      end
+      if Exception.is_continue exception then
+        alloc (Ty.tuple []) (Value.Tuple [])
+      else
+        raise exception
     ).
 
 Definition catch_break (ty : Ty.t) (body : M) : M :=
@@ -809,10 +833,10 @@ Definition catch_break (ty : Ty.t) (body : M) : M :=
     ty
     body
     (fun exception =>
-      match exception with
-      | Exception.Break => alloc (Ty.tuple []) (Value.Tuple [])
-      | _ => raise exception
-      end
+      if Exception.is_break exception then
+        alloc (Ty.tuple []) (Value.Tuple [])
+      else
+        raise exception
     ).
 
 Definition loop (ty : Ty.t) (body : M) : M :=
@@ -837,10 +861,10 @@ Fixpoint match_operator
       ty
       (arm scrutinee)
       (fun exception =>
-        match exception with
-        | Exception.BreakMatch => match_operator ty scrutinee arms
-        | _ => raise exception
-        end
+        if Exception.is_break_match exception then
+          match_operator ty scrutinee arms
+        else
+          raise exception
       )
   end.
 
