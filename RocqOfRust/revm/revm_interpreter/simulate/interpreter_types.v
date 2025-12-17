@@ -48,15 +48,15 @@ Module Stack.
               ref_self
             )
             (interpreter :: stack_rest)%stack 🌲
-          let (result, self) := I.(popn_top) POPN interpreter.(Interpreter.stack) in
+          let result_self := I.(popn_top) POPN interpreter.(Interpreter.stack) in
           let result :=
-            match result with
+            match fst result_self with
             | Some (a, stub) => Some (a, RefStub.apply ref_self stub)
             | None => None
             end in
           (
             Output.Success result,
-            (interpreter <| Interpreter.stack := self |> :: stack_rest)%stack
+            (interpreter <| Interpreter.stack := snd result_self |> :: stack_rest)%stack
           )
         }};
     }.

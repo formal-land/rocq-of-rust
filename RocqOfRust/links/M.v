@@ -712,13 +712,11 @@ Module Output.
     | Return (return_ : R)
     | Break
     | Continue
-    | BreakMatch
-    | Panic (panic : Panic.t).
+    | BreakMatch.
     Arguments Return {_}.
     Arguments Break {_}.
     Arguments Continue {_}.
     Arguments BreakMatch {_}.
-    Arguments Panic {_}.
 
     Definition to_exception {R : Set} `{Link R} (exception : t R) : M.Exception.t :=
       match exception with
@@ -726,7 +724,6 @@ Module Output.
       | Break => M.Exception.Break
       | Continue => M.Exception.Continue
       | BreakMatch => M.Exception.BreakMatch
-      | Panic panic => M.Exception.Panic panic
       end.
 
     Smpl Create of_output.
@@ -752,11 +749,6 @@ Module Output.
       M.Exception.BreakMatch = to_exception BreakMatch.
     Proof. reflexivity. Qed.
     Smpl Add apply of_break_match_eq : of_output.
-
-    Lemma of_panic_eq {R : Set} `{Link R} panic :
-      M.Exception.Panic panic = to_exception (Panic panic).
-    Proof. reflexivity. Qed.
-    Smpl Add apply of_panic_eq : of_output.
   End Exception.
 
   Inductive t (R Output : Set) : Set :=
@@ -785,33 +777,7 @@ Module Output.
     inr exception' = to_value (Output.Exception (R := R) exception).
   Proof. now intros; subst. Qed.
   Smpl Add apply of_exception_eq : of_output.
-
-  Definition panic {R Output : Set} (message : string) : t R Output :=
-    Exception (Exception.Panic (Panic.Make message)).
 End Output.
-
-(** For the output of closure calls, where we know it can only be a success or panic, but not a
-    `return`, `break`, or `continue`. *)
-Module SuccessOrPanic.
-  Inductive t (Output : Set) : Set :=
-  | Success (output : Output)
-  | Panic (panic : Panic.t).
-  Arguments Success {_}.
-  Arguments Panic {_}.
-
-  Definition apply {Output A : Set}
-      (f : t Output -> A)
-      (output : Output.t Output Output) :
-      A :=
-    match output with
-    | Output.Success output => f (Success output)
-    | Output.Exception (Output.Exception.Panic panic) => f (Panic panic)
-    | Output.Exception _ =>
-      f (Panic (Panic.Make "unexpected return, break, or continue escaping a function"))
-    end.
-  (* This is useful to get [cbn] to make progress when evaluating a run. *)
-  Arguments apply /.
-End SuccessOrPanic.
 
 Module Run.
   Reserved Notation "{{ e 🔽 R , Output }}" (no associativity).
@@ -949,10 +915,6 @@ Module Run.
     (forall (value_inter : Output'),
       {{ k (inl (φ value_inter)) 🔽 R, Output }}
     ) ->
-    (* Panic *)
-    (forall (panic : Panic.t),
-      {{ k (inr (M.Exception.Panic panic)) 🔽 R, Output }}
-    ) ->
     {{ LowM.CallClosure ty closure args k 🔽 R, Output }}
   | CallLogicalOp
       (op : LogicalOp.t) (lhs : bool) (rhs : M) (k : Value.t + Exception.t -> M) :
@@ -1006,6 +968,8 @@ Module Run.
       {{ k (Output.to_value value_inter) 🔽 R, Output }}
     ) ->
     {{ LowM.IfThenElse ty cond' then_ else_ k 🔽 R, Output }}
+  | Impossible {T : Set} (payload : T) :
+    {{ LowM.Impossible payload 🔽 R, Output }}
   (** This primitive is useful to avoid blocking the reduction of this inductive with a [rewrite]
       that is hard to eliminate. *)
   | Rewrite
@@ -1080,7 +1044,7 @@ Module LinkM.
   | Call {A : Set} `{Link A}
       {f : list Value.t -> M} {args : list Value.t}
       (run_f : {{ f args 🔽 A }})
-      (k : SuccessOrPanic.t A -> t R Output)
+      (k : A -> t R Output)
   | Loop {A : Set} `{Link A}
       (body : t R A)
       (k : Output.t R (Ref.t Pointer.Kind.Raw A) -> t R Output)
@@ -1095,7 +1059,7 @@ Module LinkM.
       (k_break : unit -> t R Output)
       (k_continue : unit -> t R Output)
       (k_break_match : unit -> t R Output)
-      (k_panic : Panic.t -> t R Output).
+  | Impossible {T : Set} (payload : T).
   Arguments Pure {_ _}.
   Arguments CallPrimitive {_ _ _}.
   Arguments Let {_ _ _}.
@@ -1104,6 +1068,7 @@ Module LinkM.
   Arguments Loop {_ _ _ _}.
   Arguments IfThenElse {_ _}.
   Arguments MatchOutput {_ _ _}.
+  Arguments Impossible {_ _ _}.
 
   Definition match_output {R Output A : Set}
       (output : Output.t R A)
@@ -1114,8 +1079,7 @@ Module LinkM.
       (fun return_ => k (Output.Exception (Output.Exception.Return return_)))
       (fun _ => k (Output.Exception Output.Exception.Break))
       (fun _ => k (Output.Exception Output.Exception.Continue))
-      (fun _ => k (Output.Exception Output.Exception.BreakMatch))
-      (fun panic => k (Output.Exception (Output.Exception.Panic panic))).
+      (fun _ => k (Output.Exception Output.Exception.BreakMatch)).
 End LinkM.
 
 (* Definition evaluate_get_sub_pointer {R A : Set} `{Link A} {index : Pointer.Index.t}
@@ -1205,15 +1169,10 @@ Proof.
     eapply (LinkM.Call (A := Output')). {
       exact run.
     }
-    intros [output'|panic]; eapply evaluate.
-    { match goal with
-      | H : forall _ : Output', _ |- _ => apply (H output')
-      end.
-    }
-    { match goal with
-      | H : forall _ : Panic.t, _ |- _ => apply (H panic)
-      end.
-    }
+    intros output'; eapply evaluate.
+    match goal with
+    | H : forall _ : Output', _ |- _ => apply (H output')
+    end.
   }
   { (* CallLogicalOp *)
     match goal with
@@ -1313,6 +1272,9 @@ Proof.
       LinkM.match_output output' (fun output' =>
       evaluate _ _ _ _ _ (H_k output'))
     ).
+  }
+  { (* Impossible *)
+    exact (LinkM.Impossible payload).
   }
   { (* Rewrite *)
     exact (evaluate _ _ _ _ _ run).
@@ -1472,7 +1434,6 @@ Ltac run_symbolic_closure_auto :=
         try typeclasses eauto
       )
     ) |
-    cbn; intro |
     cbn; intro
   ].
 
@@ -1602,7 +1563,8 @@ Ltac run_symbolic_one_step :=
     run_symbolic_loop ||
     run_symbolic_match_tuple ||
     run_symbolic_if_then_else ||
-    fold @LowM.let_
+    fold @LowM.let_ ||
+    apply Run.Impossible
   end.
 
 Smpl Create run_symbolic.

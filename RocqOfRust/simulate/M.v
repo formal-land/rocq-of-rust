@@ -132,10 +132,12 @@ Module SimulateM.
       {f : list Value.t -> M} {args : list Value.t}
       (stack_in : Stack.t)
       (run_f : {{ f args 🔽 B }})
-      (k : Output.t B B * Stack.t -> t A).
+      (k : B * Stack.t -> t A)
+  | Impossible {T : Set} (payload : T).
   Arguments Pure {_}.
   Arguments GetCanAccess {_ _ _}.
   Arguments Call {_ _ _ _ _}.
+  Arguments Impossible {_ _}.
 
   Fixpoint let_ {A B : Set} (e1 : t A) (e2 : A -> t B) : t B :=
     match e1 with
@@ -143,6 +145,7 @@ Module SimulateM.
     | GetCanAccess Stack ref_core k =>
       GetCanAccess Stack ref_core (fun can_access => let_ (k can_access) e2)
     | Call stack_in run_f k => Call stack_in run_f (fun output_stack => let_ (k output_stack) e2)
+    | Impossible payload => Impossible payload
     end.
 
   Notation "'let*s' x ':=' X 'in' Y" :=
@@ -203,7 +206,7 @@ Module SimulateM.
         ).
         destruct (Stack.CanAccess.write H_access value) as [stack'|].
         { exact (eval _ _ (k tt) stack'). }
-        { exact (Pure (Output.panic "StateWrite: invalid reference", stack)). }
+        { exact (Pure (Output.Exception Output.Exception.BreakMatch, stack)). }
       }
       { (* GetSubPointer *)
         exact (eval _ _ (k (SubPointer.Runner.apply ref_core runner)) stack).
@@ -238,9 +241,7 @@ Module SimulateM.
     }
     { (* Call *)
       exact (Call stack run_f0 (fun '(output, stack) =>
-        SuccessOrPanic.apply (fun output =>
-          eval _ _ (k output) stack
-        ) output
+        eval _ _ (k output) stack
       )).
     }
     { (* Loop *)
@@ -264,10 +265,12 @@ Module SimulateM.
           | Output.Exception.Break => eval _ _ (k_break tt) stack
           | Output.Exception.Continue => eval _ _ (k_continue tt) stack
           | Output.Exception.BreakMatch => eval _ _ (k_break_match tt) stack
-          | Output.Exception.Panic panic => eval _ _ (k_panic panic) stack
           end
         end
       ).
+    }
+    { (* Impossible *)
+      exact (Impossible payload).
     }
   Defined.
 
@@ -302,10 +305,11 @@ Module Run.
       {f : list Value.t -> M} {args : list Value.t}
       (stack_in : Stack.t)
       (run_f : {{ f args 🔽 B }})
-      (value_inter : Output.t B B * Stack.t)
-      (k : Output.t B B * Stack.t -> SimulateM.t A)
-    (H_f : {{ SimulateM.eval (links.M.evaluate run_f) stack_in 🌲 value_inter }})
-    (H_k : {{ k value_inter 🌲 value }}) :
+      (output_inter : B)
+      (stack_inter : Stack.t)
+      (k : B * Stack.t -> SimulateM.t A)
+    (H_f : {{ SimulateM.eval (links.M.evaluate run_f) stack_in 🌲 (Output.Success output_inter, stack_inter) }})
+    (H_k : {{ k (output_inter, stack_inter) 🌲 value }}) :
     {{ SimulateM.Call stack_in run_f k 🌲 value }}
 
   where "{{ e 🌲 value }}" := (t value e).
