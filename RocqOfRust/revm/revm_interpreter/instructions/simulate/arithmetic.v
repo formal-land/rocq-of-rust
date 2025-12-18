@@ -15,6 +15,10 @@ Require Import ruint.simulate.add.
 Require Import ruint.simulate.cmp.
 Require Import ruint.simulate.div.
 Require Import ruint.simulate.mul.
+Require Import ruint.simulate.sdiv.
+Require Import ruint.simulate.rem.
+Require Import ruint.simulate.smod.
+
 
 Definition gas_macro {WIRE : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
