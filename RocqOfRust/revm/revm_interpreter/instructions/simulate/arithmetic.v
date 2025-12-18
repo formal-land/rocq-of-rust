@@ -16,6 +16,10 @@ Require Import ruint.simulate.add.
 Require Import ruint.simulate.cmp.
 Require Import ruint.simulate.div.
 Require Import ruint.simulate.mul.
+Require Import ruint.simulate.sdiv.
+Require Import ruint.simulate.rem.
+Require Import ruint.simulate.smod.
+
 
 Lemma add_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
