@@ -12,6 +12,13 @@ Module Stack.
   Class C
       (WIRE_types : InterpreterTypes.Types.t) `{InterpreterTypes.Types.AreLinks WIRE_types} :
       Type := {
+    (* fn popn<const N: usize>(&mut self) -> Option<[U256; N]>; *)
+    popn :
+      forall
+        (N : Usize.t)
+        (self : WIRE_types.(InterpreterTypes.Types.Stack)),
+      option (array.t aliases.U256.t N) *
+      WIRE_types.(InterpreterTypes.Types.Stack);
     (* fn popn_top<const POPN: usize>(&mut self) -> Option<([U256; POPN], &mut U256)>; *)
     popn_top :
       forall
@@ -31,6 +38,29 @@ Module Stack.
         (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
         (I : C WIRE_types) :
         Prop := {
+      popn
+        (interpreter : Interpreter.t WIRE WIRE_types)
+        (stack_rest : Stack.t)
+        (N : Usize.t) :
+        let ref_interpreter : Ref.t Pointer.Kind.MutRef _ := make_ref 0 in
+        let ref_self := {| Ref.core :=
+          SubPointer.Runner.apply
+            ref_interpreter.(Ref.core)
+            Interpreter.SubPointer.get_stack
+        |} in
+        {{
+          SimulateM.eval_f
+            (run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_StackTrait_for_Stack).(StackTrait.popn).(TraitMethod.run)
+              N
+              ref_self
+            )
+            (interpreter :: stack_rest)%stack 🌲
+        let result_self := I.(popn) N interpreter.(Interpreter.stack) in
+        (
+          Output.Success (fst result_self),
+          (interpreter <| Interpreter.stack := snd result_self |> :: stack_rest)%stack
+        )
+      }};
       popn_top
           (interpreter : Interpreter.t WIRE WIRE_types)
           (stack_rest : Stack.t)

@@ -1,6 +1,7 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import core.convert.links.mod.
+Require Import core.links.result.
 Require Import core.num.links.error.
 Require Import ruint.links.lib.
 Require Import ruint.from.
@@ -59,8 +60,31 @@ Module TryFrom_Uint_for_u64.
   Definition Self : Set :=
     U64.t.
 
-  Instance run (BITS LIMBS : Usize.t) :
-    TryFrom.Run Self (Impl_Uint.Self BITS LIMBS) (FromUintError.t U64.t).
+  Instance run_try_from (BITS LIMBS : Usize.t) (value : Impl_Uint.Self BITS LIMBS) :
+    Run.Trait
+      (from.Impl_core_convert_TryFrom_ruint_Uint_BITS_LIMBS_for_u64.try_from (φ BITS) (φ LIMBS))
+      [] [] [ φ value ]
+      (Result.t Self (FromUintError.t U64.t)).
+  Proof.
+    constructor.
+    run_symbolic.
   Admitted.
+
+  Definition Run_try_from (BITS LIMBS : Usize.t) :
+    TryFrom.Run_try_from Self (Impl_Uint.Self BITS LIMBS) (FromUintError.t U64.t).
+  Proof.
+    eexists.
+    { eapply IsTraitMethod.Defined.
+      { apply from.Impl_core_convert_TryFrom_ruint_Uint_BITS_LIMBS_for_u64.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance run (BITS LIMBS : Usize.t) :
+    TryFrom.Run Self (Impl_Uint.Self BITS LIMBS) (FromUintError.t U64.t) :=
+  {
+    TryFrom.try_from := Run_try_from BITS LIMBS;
+  }.
 End TryFrom_Uint_for_u64.
 Export TryFrom_Uint_for_u64.
