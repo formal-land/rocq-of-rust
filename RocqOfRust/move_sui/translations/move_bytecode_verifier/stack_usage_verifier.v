@@ -241,14 +241,12 @@ Module stack_usage_verifier.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "alloc::vec::into_iter::IntoIter")
                                       []
-                                      [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -784,14 +782,12 @@ Module stack_usage_verifier.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::ops::range::RangeInclusive")
                                       []
-                                      [ Ty.path "u16" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "u16" ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],

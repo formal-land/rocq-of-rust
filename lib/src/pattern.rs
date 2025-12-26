@@ -15,6 +15,7 @@ pub(crate) enum Pattern {
         name: String,
         ty: Rc<RocqType>,
         is_with_ref: bool,
+        is_with_mutability: bool,
         pattern: Option<Rc<Pattern>>,
     },
     StructRecord(Rc<Path>, Vec<(String, Rc<Pattern>)>),
@@ -46,6 +47,10 @@ impl Pattern {
                     is_with_ref: matches!(
                         binding_annotation,
                         rustc_hir::BindingMode(rustc_hir::ByRef::Yes(_), _)
+                    ),
+                    is_with_mutability: matches!(
+                        binding_annotation,
+                        rustc_hir::BindingMode(_, rustc_hir::Mutability::Mut)
                     ),
                     pattern: sub_pattern.map(|sub_pattern| Pattern::compile(env, sub_pattern)),
                 })
@@ -113,6 +118,7 @@ impl Pattern {
                 name,
                 ty,
                 is_with_ref: _,
+                is_with_mutability: _,
                 pattern,
             } => {
                 let mut free_vars = vec![(name.clone(), ty.clone())];

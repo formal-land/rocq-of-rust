@@ -2050,7 +2050,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter := M.copy (| Ty.path "std::fs::ReadDir", γ |) in
+                                (let~ iter : Ty.path "std::fs::ReadDir" := M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],

@@ -425,14 +425,12 @@ Module bytes.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "alloc::borrow::Cow::Owned", 0 |) in
-                  let vec :=
-                    M.copy (|
+                  let~ vec :
                       Ty.apply
                         (Ty.path "alloc::vec::Vec")
                         []
-                        [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                      γ0_0
-                    |) in
+                        [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ] :=
+                    M.read (| γ0_0 |) in
                   M.read (|
                     let~ _ : Ty.tuple [] :=
                       M.call_closure (|

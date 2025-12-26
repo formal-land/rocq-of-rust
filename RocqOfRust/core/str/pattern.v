@@ -14476,7 +14476,7 @@ Module str.
                                         1
                                       |) in
                                     let a := M.copy (| Ty.path "usize", γ0_0 |) in
-                                    let b := M.copy (| Ty.path "usize", γ0_1 |) in
+                                    let~ b : Ty.path "usize" := M.read (| γ0_1 |) in
                                     M.read (|
                                       let~ _ : Ty.tuple [] :=
                                         M.read (|
@@ -15528,7 +15528,7 @@ Module str.
                                         "core::str::pattern::SearchStep::Reject",
                                         1
                                       |) in
-                                    let a := M.copy (| Ty.path "usize", γ0_0 |) in
+                                    let~ a : Ty.path "usize" := M.read (| γ0_0 |) in
                                     let b := M.copy (| Ty.path "usize", γ0_1 |) in
                                     M.read (|
                                       let~ _ : Ty.tuple [] :=
@@ -18073,14 +18073,12 @@ Module str.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::ops::range::Range")
                                                   []
-                                                  [ Ty.path "usize" ],
-                                                γ
-                                              |) in
+                                                  [ Ty.path "usize" ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -18451,8 +18449,7 @@ Module str.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::iter::adapters::rev::Rev")
                                                   []
@@ -18461,9 +18458,8 @@ Module str.
                                                       (Ty.path "core::ops::range::Range")
                                                       []
                                                       [ Ty.path "usize" ]
-                                                  ],
-                                                γ
-                                              |) in
+                                                  ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -19460,8 +19456,7 @@ Module str.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::iter::adapters::rev::Rev")
                                                   []
@@ -19470,9 +19465,8 @@ Module str.
                                                       (Ty.path "core::ops::range::Range")
                                                       []
                                                       [ Ty.path "usize" ]
-                                                  ],
-                                                γ
-                                              |) in
+                                                  ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -19870,14 +19864,12 @@ Module str.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::ops::range::Range")
                                                   []
-                                                  [ Ty.path "usize" ],
-                                                γ
-                                              |) in
+                                                  [ Ty.path "usize" ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -22949,14 +22941,12 @@ Module str.
                                               [
                                                 fun γ =>
                                                   ltac:(M.monadic
-                                                    (let iter :=
-                                                      M.copy (|
+                                                    (let~ iter :
                                                         Ty.apply
                                                           (Ty.path "core::ops::range::Range")
                                                           []
-                                                          [ Ty.path "usize" ],
-                                                        γ
-                                                      |) in
+                                                          [ Ty.path "usize" ] :=
+                                                      M.read (| γ |) in
                                                     M.read (|
                                                       M.loop (|
                                                         Ty.tuple [],
@@ -23165,14 +23155,12 @@ Module str.
                                               [
                                                 fun γ =>
                                                   ltac:(M.monadic
-                                                    (let iter :=
-                                                      M.copy (|
+                                                    (let~ iter :
                                                         Ty.apply
                                                           (Ty.path "core::ops::range::Range")
                                                           []
-                                                          [ Ty.path "usize" ],
-                                                        γ
-                                                      |) in
+                                                          [ Ty.path "usize" ] :=
+                                                      M.read (| γ |) in
                                                     M.read (|
                                                       M.loop (|
                                                         Ty.tuple [],
@@ -24219,8 +24207,7 @@ Module str.
                                         [
                                           fun γ =>
                                             ltac:(M.monadic
-                                              (let iter :=
-                                                M.copy (|
+                                              (let~ iter :
                                                   Ty.apply
                                                     (Ty.path "core::iter::adapters::zip::Zip")
                                                     []
@@ -24233,9 +24220,8 @@ Module str.
                                                         (Ty.path "core::slice::iter::Iter")
                                                         []
                                                         [ Ty.path "u8" ]
-                                                    ],
-                                                  γ
-                                                |) in
+                                                    ] :=
+                                                M.read (| γ |) in
                                               M.read (|
                                                 M.loop (|
                                                   Ty.tuple [],
@@ -24444,10 +24430,10 @@ Module str.
                         ltac:(M.monadic
                           (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                           let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                          let px :=
-                            M.copy (| Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ], γ0_0 |) in
-                          let py :=
-                            M.copy (| Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ], γ0_1 |) in
+                          let~ px : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
+                            M.read (| γ0_0 |) in
+                          let~ py : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
+                            M.read (| γ0_1 |) in
                           M.match_operator (|
                             Ty.path "bool",
                             M.alloc (|

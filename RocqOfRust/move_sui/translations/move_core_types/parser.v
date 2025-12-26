@@ -3739,8 +3739,7 @@ Module parser.
                                                                 [
                                                                   fun γ =>
                                                                     ltac:(M.monadic
-                                                                      (let iter :=
-                                                                        M.copy (|
+                                                                      (let~ iter :
                                                                           Ty.apply
                                                                             (Ty.path
                                                                               "core::iter::adapters::peekable::Peekable")
@@ -3748,9 +3747,8 @@ Module parser.
                                                                             [
                                                                               Ty.path
                                                                                 "core::str::iter::Chars"
-                                                                            ],
-                                                                          γ
-                                                                        |) in
+                                                                            ] :=
+                                                                        M.read (| γ |) in
                                                                       M.read (|
                                                                         M.loop (|
                                                                           Ty.tuple [],
@@ -5126,16 +5124,14 @@ Module parser.
                                                     [
                                                       fun γ =>
                                                         ltac:(M.monadic
-                                                          (let iter :=
-                                                            M.copy (|
+                                                          (let~ iter :
                                                               Ty.apply
                                                                 (Ty.path
                                                                   "core::iter::adapters::peekable::Peekable")
                                                                 []
                                                                 [ Ty.path "core::str::iter::Chars"
-                                                                ],
-                                                              γ
-                                                            |) in
+                                                                ] :=
+                                                            M.read (| γ |) in
                                                           M.read (|
                                                             M.loop (|
                                                               Ty.tuple [],
@@ -5413,16 +5409,14 @@ Module parser.
                                                     [
                                                       fun γ =>
                                                         ltac:(M.monadic
-                                                          (let iter :=
-                                                            M.copy (|
+                                                          (let~ iter :
                                                               Ty.apply
                                                                 (Ty.path
                                                                   "core::iter::adapters::peekable::Peekable")
                                                                 []
                                                                 [ Ty.path "core::str::iter::Chars"
-                                                                ],
-                                                              γ
-                                                            |) in
+                                                                ] :=
+                                                            M.read (| γ |) in
                                                           M.read (|
                                                             M.loop (|
                                                               Ty.tuple [],

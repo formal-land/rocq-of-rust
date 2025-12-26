@@ -1620,8 +1620,8 @@ Module string.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (| Ty.path "core::str::lossy::Utf8Chunks", γ |) in
+                                (let~ iter : Ty.path "core::str::lossy::Utf8Chunks" :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -2153,8 +2153,7 @@ Module string.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::char::decode::DecodeUtf16")
                                       []
@@ -2168,9 +2167,8 @@ Module string.
                                               []
                                               [ Ty.path "u16" ]
                                           ]
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -7374,8 +7372,7 @@ Module string.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter :=
-                              M.copy (|
+                            (let~ iter :
                                 Ty.apply
                                   (Ty.path "core::iter::adapters::chain::Chain")
                                   []
@@ -7391,9 +7388,8 @@ Module string.
                                       (Ty.path "core::iter::sources::once::Once")
                                       []
                                       [ Ty.tuple [ Ty.path "usize"; Ty.path "usize" ] ]
-                                  ],
-                                γ
-                              |) in
+                                  ] :=
+                              M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],
@@ -10215,7 +10211,7 @@ Module string.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter := M.copy (| Ty.path "core::str::lossy::Utf8Chunks", γ |) in
+                            (let~ iter : Ty.path "core::str::lossy::Utf8Chunks" := M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],
@@ -11016,7 +11012,7 @@ Module string.
                           "core::option::Option::Some",
                           0
                         |) in
-                      let buf := M.copy (| Ty.path "alloc::string::String", γ0_0 |) in
+                      let~ buf : Ty.path "alloc::string::String" := M.read (| γ0_0 |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|

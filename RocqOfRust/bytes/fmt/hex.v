@@ -66,14 +66,12 @@ Module fmt.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (|
+                                  (let~ iter :
                                       Ty.apply
                                         (Ty.path "core::slice::iter::Iter")
                                         []
-                                        [ Ty.path "u8" ],
-                                      γ
-                                    |) in
+                                        [ Ty.path "u8" ] :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],
@@ -705,14 +703,12 @@ Module fmt.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (|
+                                  (let~ iter :
                                       Ty.apply
                                         (Ty.path "core::slice::iter::Iter")
                                         []
-                                        [ Ty.path "u8" ],
-                                      γ
-                                    |) in
+                                        [ Ty.path "u8" ] :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],

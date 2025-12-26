@@ -6483,11 +6483,12 @@ Module deserializer.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
-                                  Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ],
-                                  γ
-                                |) in
+                              (let~ iter :
+                                  Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "u8" ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -7630,14 +7631,12 @@ Module deserializer.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::slice::iter::IterMut")
                                     []
-                                    [ Ty.path "move_binary_format::deserializer::Table" ],
-                                  γ
-                                |) in
+                                    [ Ty.path "move_binary_format::deserializer::Table" ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -9160,14 +9159,12 @@ Module deserializer.
                                 [
                                   fun γ =>
                                     ltac:(M.monadic
-                                      (let iter :=
-                                        M.copy (|
+                                      (let~ iter :
                                           Ty.apply
                                             (Ty.path "core::slice::iter::Iter")
                                             []
-                                            [ Ty.path "move_binary_format::deserializer::Table" ],
-                                          γ
-                                        |) in
+                                            [ Ty.path "move_binary_format::deserializer::Table" ] :=
+                                        M.read (| γ |) in
                                       M.read (|
                                         M.loop (|
                                           Ty.tuple [],
@@ -15141,14 +15138,12 @@ Module deserializer.
                                 [
                                   fun γ =>
                                     ltac:(M.monadic
-                                      (let iter :=
-                                        M.copy (|
+                                      (let~ iter :
                                           Ty.apply
                                             (Ty.path "core::slice::iter::Iter")
                                             []
-                                            [ Ty.path "move_binary_format::deserializer::Table" ],
-                                          γ
-                                        |) in
+                                            [ Ty.path "move_binary_format::deserializer::Table" ] :=
+                                        M.read (| γ |) in
                                       M.read (|
                                         M.loop (|
                                           Ty.tuple [],
@@ -23565,14 +23560,12 @@ Module deserializer.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::ops::range::Range")
                                     []
-                                    [ Ty.path "usize" ],
-                                  γ
-                                |) in
+                                    [ Ty.path "usize" ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -26730,11 +26723,12 @@ Module deserializer.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
-                                  Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u64" ],
-                                  γ
-                                |) in
+                              (let~ iter :
+                                  Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "u64" ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -30383,17 +30377,15 @@ Module deserializer.
                         γ0_0
                       |) in
                     let arity := M.copy (| Ty.path "usize", γ0_1 |) in
-                    let ty_args :=
-                      M.copy (|
+                    let~ ty_args :
                         Ty.apply
                           (Ty.path "alloc::vec::Vec")
                           []
                           [
                             Ty.path "move_binary_format::file_format::SignatureToken";
                             Ty.path "alloc::alloc::Global"
-                          ],
-                        γ0_2
-                      |) in
+                          ] :=
+                      M.read (| γ0_2 |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
                         M.call_closure (|
@@ -32360,14 +32352,12 @@ Module deserializer.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::ops::range::Range")
                                     []
-                                    [ Ty.path "usize" ],
-                                  γ
-                                |) in
+                                    [ Ty.path "usize" ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -32937,14 +32927,12 @@ Module deserializer.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::ops::range::Range")
                                     []
-                                    [ Ty.path "usize" ],
-                                  γ
-                                |) in
+                                    [ Ty.path "usize" ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -34864,11 +34852,12 @@ Module deserializer.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
-                                  Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u64" ],
-                                  γ
-                                |) in
+                              (let~ iter :
+                                  Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "u64" ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -38880,7 +38869,7 @@ Module deserializer.
                             γ0_0
                           |) in
                         let is_entry := M.copy (| Ty.path "bool", γ0_1 |) in
-                        let extra_flags := M.copy (| Ty.path "u8", γ0_2 |) in
+                        let~ extra_flags : Ty.path "u8" := M.read (| γ0_2 |) in
                         M.read (|
                           let~ acquires_global_resources :
                               Ty.apply
@@ -39685,11 +39674,12 @@ Module deserializer.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
-                                  Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u64" ],
-                                  γ
-                                |) in
+                              (let~ iter :
+                                  Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "u64" ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],

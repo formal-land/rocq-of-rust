@@ -1764,7 +1764,7 @@ Module num.
                             ltac:(M.monadic
                               (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                               let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                              let r := M.copy (| Ty.path "u16", γ0_0 |) in
+                              let~ r : Ty.path "u16" := M.read (| γ0_0 |) in
                               let overflow := M.copy (| Ty.path "bool", γ0_1 |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
@@ -2782,7 +2782,7 @@ Module num.
                             ltac:(M.monadic
                               (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                               let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                              let r := M.copy (| Ty.path "u16", γ0_0 |) in
+                              let~ r : Ty.path "u16" := M.read (| γ0_0 |) in
                               let overflow := M.copy (| Ty.path "bool", γ0_1 |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
@@ -3148,7 +3148,7 @@ Module num.
                                     ltac:(M.monadic
                                       (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                                       let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                                      let r := M.copy (| Ty.path "u32", γ0_0 |) in
+                                      let~ r : Ty.path "u32" := M.read (| γ0_0 |) in
                                       let overflow := M.copy (| Ty.path "bool", γ0_1 |) in
                                       M.read (|
                                         let~ _ : Ty.tuple [] :=
@@ -4317,7 +4317,7 @@ Module num.
                             ltac:(M.monadic
                               (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                               let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                              let r := M.copy (| Ty.path "u16", γ0_0 |) in
+                              let~ r : Ty.path "u16" := M.read (| γ0_0 |) in
                               let overflow := M.copy (| Ty.path "bool", γ0_1 |) in
                               M.read (|
                                 let~ _ : Ty.tuple [] :=
@@ -4683,7 +4683,7 @@ Module num.
                                     ltac:(M.monadic
                                       (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                                       let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                                      let r := M.copy (| Ty.path "u32", γ0_0 |) in
+                                      let~ r : Ty.path "u32" := M.read (| γ0_0 |) in
                                       let overflow := M.copy (| Ty.path "bool", γ0_1 |) in
                                       M.read (|
                                         let~ _ : Ty.tuple [] :=
@@ -5063,7 +5063,7 @@ Module num.
                                               (let γ0_0 :=
                                                 M.SubPointer.get_tuple_field (| γ, 0 |) in
                                               let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                                              let r := M.copy (| Ty.path "u64", γ0_0 |) in
+                                              let~ r : Ty.path "u64" := M.read (| γ0_0 |) in
                                               let overflow := M.copy (| Ty.path "bool", γ0_1 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=

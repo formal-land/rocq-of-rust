@@ -8,6 +8,7 @@ Require Import core.links.array.
 Require Import core.links.borrow.
 Require Import core.ops.links.deref.
 Require Import core.ops.links.index.
+Require Import ruint.links.bytes.
 
 Module Impl_FixedBytes.
   Definition Self (N : Usize.t) : Set :=
@@ -62,8 +63,30 @@ Module Impl_From_U256_for_FixedBytes_32.
   Definition Self : Set :=
     FixedBytes.t {| Integer.value := 32 |}.
 
-  Instance run : From.Run Self aliases.U256.t.
-  Admitted.
+  Instance run_from (value : aliases.U256.t) :
+    Run.Trait
+      bits.fixed.Impl_core_convert_From_ruint_Uint_Usize_256_Usize_4_for_alloy_primitives_bits_fixed_FixedBytes_Usize_32.from
+      [] [] [ φ value ]
+      Self.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+
+  Definition Run_from : From.Run_from Self aliases.U256.t.
+  Proof.
+    eexists.
+    { eapply IsTraitMethod.Defined.
+      { apply bits.fixed.Impl_core_convert_From_ruint_Uint_Usize_256_Usize_4_for_alloy_primitives_bits_fixed_FixedBytes_Usize_32.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance run : From.Run Self aliases.U256.t :=
+  {
+    From.from := Run_from;
+  }.
 End Impl_From_U256_for_FixedBytes_32.
 Export Impl_From_U256_for_FixedBytes_32.
 

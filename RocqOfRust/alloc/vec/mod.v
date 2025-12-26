@@ -6885,11 +6885,12 @@ Module vec.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter :=
-                              M.copy (|
-                                Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                                γ
-                              |) in
+                            (let~ iter :
+                                Ty.apply
+                                  (Ty.path "core::ops::range::Range")
+                                  []
+                                  [ Ty.path "usize" ] :=
+                              M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],

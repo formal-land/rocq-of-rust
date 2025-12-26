@@ -295,8 +295,7 @@ Module ability_field_requirements.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                     []
@@ -308,9 +307,8 @@ Module ability_field_requirements.
                                           Ty.path
                                             "move_binary_format::file_format::StructDefinition"
                                         ]
-                                    ],
-                                  γ
-                                |) in
+                                    ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -1043,8 +1041,7 @@ Module ability_field_requirements.
                                                       [
                                                         fun γ =>
                                                           ltac:(M.monadic
-                                                            (let iter :=
-                                                              M.copy (|
+                                                            (let~ iter :
                                                                 Ty.apply
                                                                   (Ty.path
                                                                     "core::slice::iter::Iter")
@@ -1052,9 +1049,8 @@ Module ability_field_requirements.
                                                                   [
                                                                     Ty.path
                                                                       "move_binary_format::file_format::FieldDefinition"
-                                                                  ],
-                                                                γ
-                                                              |) in
+                                                                  ] :=
+                                                              M.read (| γ |) in
                                                             M.read (|
                                                               M.loop (|
                                                                 Ty.tuple [],

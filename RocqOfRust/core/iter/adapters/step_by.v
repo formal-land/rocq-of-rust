@@ -4385,14 +4385,12 @@ Module iter.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::ops::range::Range")
                                       []
-                                      [ Ty.path "u8" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "u8" ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -5501,14 +5499,12 @@ Module iter.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::ops::range::Range")
                                       []
-                                      [ Ty.path "u16" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "u16" ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -6617,14 +6613,12 @@ Module iter.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::ops::range::Range")
                                       []
-                                      [ Ty.path "u32" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "u32" ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -7733,14 +7727,12 @@ Module iter.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::ops::range::Range")
                                       []
-                                      [ Ty.path "u64" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "u64" ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -8857,14 +8849,12 @@ Module iter.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::ops::range::Range")
                                       []
-                                      [ Ty.path "usize" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "usize" ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],

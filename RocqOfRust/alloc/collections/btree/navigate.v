@@ -7327,22 +7327,18 @@ Module collections.
                             |) in
                           let lower_edge_idx := M.copy (| Ty.path "usize", γ1_1 |) in
                           let upper_edge_idx := M.copy (| Ty.path "usize", γ1_2 |) in
-                          let lower_child_bound :=
-                            M.copy (|
+                          let~ lower_child_bound :
                               Ty.apply
                                 (Ty.path "alloc::collections::btree::search::SearchBound")
                                 []
-                                [ Ty.apply (Ty.path "&") [] [ Q ] ],
-                              γ1_3
-                            |) in
-                          let upper_child_bound :=
-                            M.copy (|
+                                [ Ty.apply (Ty.path "&") [] [ Q ] ] :=
+                            M.read (| γ1_3 |) in
+                          let~ upper_child_bound :
                               Ty.apply
                                 (Ty.path "alloc::collections::btree::search::SearchBound")
                                 []
-                                [ Ty.apply (Ty.path "&") [] [ Q ] ],
-                              γ1_4
-                            |) in
+                                [ Ty.apply (Ty.path "&") [] [ Q ] ] :=
+                            M.read (| γ1_4 |) in
                           M.read (|
                             let~ lower_edge :
                                 Ty.apply

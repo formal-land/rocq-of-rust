@@ -393,7 +393,7 @@ Module LowM.
   | Loop (ty : Ty.t) (body : t A) (k : A -> t A)
   | MatchTuple (tuple : Value.t) (k : list Value.t -> t A)
   | IfThenElse (ty : Ty.t) (cond : Value.t) (then_ : t A) (else_ : t A) (k : A -> t A)
-  | Impossible (message : string).
+  | Impossible {T : Set} (payload : T).
   Arguments Pure {_}.
   Arguments CallPrimitive {_}.
   Arguments CallClosure {_}.
@@ -403,7 +403,7 @@ Module LowM.
   Arguments Loop {_}.
   Arguments MatchTuple {_}.
   Arguments IfThenElse {_}.
-  Arguments Impossible {_}.
+  Arguments Impossible {_ _}.
 
   Fixpoint let_ {A : Set} (e1 : t A) (e2 : A -> t A) : t A :=
     match e1 with
@@ -424,14 +424,9 @@ Module LowM.
       MatchTuple tuple (fun fields => let_ (k fields) e2)
     | IfThenElse ty cond then_ else_ k =>
       IfThenElse ty cond then_ else_ (fun v => let_ (k v) e2)
-    | Impossible message => Impossible message
+    | Impossible payload => Impossible payload
     end.
 End LowM.
-
-Module Panic.
-  Inductive t : Set :=
-  | Make (message : string).
-End Panic.
 
 Module Exception.
   Inductive t : Set :=
@@ -442,8 +437,31 @@ Module Exception.
   (** exceptions for Rust's `break` *)
   | Break : t
   (** escape from a match branch once we know that it is not valid *)
-  | BreakMatch : t
-  | Panic (panic : Panic.t) : t.
+  | BreakMatch : t.
+
+  Definition is_return (exception : t) : option Value.t :=
+    match exception with
+    | Return value => Some value
+    | _ => None
+    end.
+
+  Definition is_continue (exception : t) : bool :=
+    match exception with
+    | Continue => true
+    | _ => false
+    end.
+
+  Definition is_break (exception : t) : bool :=
+    match exception with
+    | Break => true
+    | _ => false
+    end.
+
+  Definition is_break_match (exception : t) : bool :=
+    match exception with
+    | BreakMatch => true
+    | _ => false
+    end.
 End Exception.
 
 Definition M : Set :=
@@ -709,9 +727,6 @@ Definition break : M :=
 Definition break_match : M :=
   raise Exception.BreakMatch.
 
-Definition panic (panic : Panic.t) : M :=
-  raise (Exception.Panic panic).
-
 Definition call_closure (ty : Ty.t) (f : Value.t) (args : list Value.t) : M :=
   LowM.CallClosure ty f args LowM.Pure.
 Arguments call_closure /.
@@ -720,8 +735,17 @@ Definition call_logical_op (op : LogicalOp.t) (lhs : Value.t) (rhs : M) : M :=
   LowM.CallLogicalOp op lhs rhs LowM.Pure.
 Arguments call_logical_op /.
 
-Definition impossible (message : string) : M :=
-  LowM.Impossible message.
+Definition impossible {A : Set} (payload : A) : M :=
+  LowM.Impossible payload.
+
+Module Panic.
+  Inductive t : Set :=
+  | Make (message : string).
+End Panic.
+
+(** We do not give semantics to this primitive, and only consider programs that are panic-free. *)
+Definition panic (panic : Panic.t) : M :=
+  impossible "panic is not supported".
 
 Definition call_primitive (primitive : Primitive.t) : M :=
   LowM.CallPrimitive primitive (fun result =>
@@ -787,9 +811,9 @@ Definition catch_return (ty : Ty.t) (body : M) : M :=
     ty
     body
     (fun exception =>
-      match exception with
-      | Exception.Return r => pure r
-      | _ => raise exception
+      match Exception.is_return exception with
+      | Some r => pure r
+      | None => raise exception
       end
     ).
 
@@ -798,10 +822,10 @@ Definition catch_continue (ty : Ty.t) (body : M) : M :=
     ty
     body
     (fun exception =>
-      match exception with
-      | Exception.Continue => alloc (Ty.tuple []) (Value.Tuple [])
-      | _ => raise exception
-      end
+      if Exception.is_continue exception then
+        alloc (Ty.tuple []) (Value.Tuple [])
+      else
+        raise exception
     ).
 
 Definition catch_break (ty : Ty.t) (body : M) : M :=
@@ -809,10 +833,10 @@ Definition catch_break (ty : Ty.t) (body : M) : M :=
     ty
     body
     (fun exception =>
-      match exception with
-      | Exception.Break => alloc (Ty.tuple []) (Value.Tuple [])
-      | _ => raise exception
-      end
+      if Exception.is_break exception then
+        alloc (Ty.tuple []) (Value.Tuple [])
+      else
+        raise exception
     ).
 
 Definition loop (ty : Ty.t) (body : M) : M :=
@@ -837,10 +861,10 @@ Fixpoint match_operator
       ty
       (arm scrutinee)
       (fun exception =>
-        match exception with
-        | Exception.BreakMatch => match_operator ty scrutinee arms
-        | _ => raise exception
-        end
+        if Exception.is_break_match exception then
+          match_operator ty scrutinee arms
+        else
+          raise exception
       )
   end.
 

@@ -253,14 +253,12 @@ Module log.
                 [
                   fun γ =>
                     ltac:(M.monadic
-                      (let iter :=
-                        M.copy (|
+                      (let~ iter :
                           Ty.apply
                             (Ty.path "core::iter::adapters::enumerate::Enumerate")
                             []
-                            [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ] ],
-                          γ
-                        |) in
+                            [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ] ] :=
+                        M.read (| γ |) in
                       M.read (|
                         M.loop (|
                           Ty.tuple [],
@@ -511,8 +509,7 @@ Module log.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let iter :=
-                            M.copy (|
+                          (let~ iter :
                               Ty.apply
                                 (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                 []
@@ -521,9 +518,8 @@ Module log.
                                     (Ty.path "core::slice::iter::Iter")
                                     []
                                     [ Ty.path "pinocchio::account_info::AccountInfo" ]
-                                ],
-                              γ
-                            |) in
+                                ] :=
+                            M.read (| γ |) in
                           M.read (|
                             M.loop (|
                               Ty.tuple [],

@@ -6,6 +6,7 @@ Require Import core.links.array.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.arithmetic.
+Require Import revm.revm_interpreter.instructions.simulate.macros.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
@@ -15,123 +16,6 @@ Require Import ruint.simulate.add.
 Require Import ruint.simulate.cmp.
 Require Import ruint.simulate.div.
 Require Import ruint.simulate.mul.
-
-Definition gas_macro {WIRE : Set} `{Link WIRE}
-    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
-    (interpreter : Interpreter.t WIRE WIRE_types)
-    (cost : U64.t)
-    (k : Interpreter.t WIRE WIRE_types -> Interpreter.t WIRE WIRE_types) :
-    Interpreter.t WIRE WIRE_types :=
-  let gas :=
-    IInterpreterTypes
-        .(InterpreterTypes.Loop)
-        .(Loop.gas)
-        .(RefStub.projection)
-      interpreter.(Interpreter.control) in
-  match Impl_Gas.record_cost gas cost with
-  | None =>
-    let control :=
-      IInterpreterTypes
-          .(InterpreterTypes.Loop)
-          .(Loop.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.OutOfGas in
-    interpreter
-      <| Interpreter.control := control |>
-  | Some gas =>
-    let control :=
-      IInterpreterTypes
-          .(InterpreterTypes.Loop)
-          .(Loop.gas)
-          .(RefStub.injection)
-        interpreter.(Interpreter.control) gas in
-    let interpreter :=
-      interpreter
-        <| Interpreter.control := control |> in
-    k interpreter
-  end.
-
-Ltac gas_macro_eq H gas set_instruction_result :=
-  unfold gas_macro;
-  eapply Run.Call; [
-    apply gas
-  |];
-  eapply Run.Call; [
-    apply Run.Pure
-  |];
-  eapply Run.Call; [
-    apply Impl_Gas.record_cost_eq
-  |];
-  destruct Impl_Gas.record_cost;
-  (
-    eapply Run.Call; [
-      apply Run.Pure
-    |]
-  );
-  [|
-    eapply Run.Call; [
-      apply Run.Pure
-    |];
-    eapply Run.Call; [
-      apply (set_instruction_result _ _ instruction_result.InstructionResult.OutOfGas)
-    |];
-    apply Run.Pure
-  ].
-
-Definition popn_top_macro {WIRE : Set} `{Link WIRE}
-    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-    {IInterpreterTypes : InterpreterTypes.C WIRE_types}
-    (interpreter : Interpreter.t WIRE WIRE_types)
-    (N : Usize.t)
-    (k :
-      array.t aliases.U256.t N ->
-      RefStub.t WIRE_types.(InterpreterTypes.Types.Stack) aliases.U256.t ->
-      Interpreter.t WIRE WIRE_types ->
-      Interpreter.t WIRE WIRE_types
-    ) :
-    Interpreter.t WIRE WIRE_types :=
-  let stack := interpreter.(Interpreter.stack) in
-  let (result, stack) :=
-    IInterpreterTypes
-        .(InterpreterTypes.Stack)
-        .(Stack.popn_top)
-      N stack in
-  match result with
-  | Some (arr, top) =>
-    let interpreter :=
-      interpreter
-        <| Interpreter.stack := stack |> in
-    k arr top interpreter
-  | None =>
-    let control :=
-      IInterpreterTypes.(InterpreterTypes.Loop).(Loop.set_instruction_result)
-        interpreter.(Interpreter.control)
-        instruction_result.InstructionResult.StackUnderflow in
-    interpreter
-      <| Interpreter.control := control |>
-      <| Interpreter.stack := stack |>
-  end.
-
-Ltac popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result :=
-  unfold popn_top_macro;
-  eapply Run.Call; [
-    apply Run.Pure
-  |];
-  eapply Run.Call; [
-    apply popn_top
-  |];
-  destruct IInterpreterTypes.(InterpreterTypes.Stack).(Stack.popn_top) as [[[? ?]|] ?];
-  [|
-    eapply Run.Call; [
-      apply (set_instruction_result
-        _
-        _
-        instruction_result.InstructionResult.StackUnderflow
-      )
-    |];
-    apply Run.Pure
-  ].
 
 Lemma add_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -152,8 +36,8 @@ Lemma add_eq
     (
       Output.Success tt,
       [
-        gas_macro interpreter constants.VERYLOW (fun interpreter =>
-        popn_top_macro interpreter {| Integer.value := 1 |} (fun arr top interpreter =>
+        gas_macro interpreter constants.VERYLOW id (fun interpreter =>
+        popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
           let '{| ArrayPair.x := op1 |} := arr.(array.value) in
           let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
           let stack :=
@@ -168,7 +52,7 @@ Lemma add_eq
   }}.
 Proof.
   intros.
-  destruct InterpreterTypesEq as [[] []].
+  destruct InterpreterTypesEq as [[] [] [] []].
   cbn.
   gas_macro_eq H gas set_instruction_result.
   popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result.
@@ -200,8 +84,8 @@ Lemma mul_eq
     (
       Output.Success tt,
       [
-        gas_macro interpreter constants.LOW (fun interpreter =>
-        popn_top_macro interpreter {| Integer.value := 1 |} (fun arr top interpreter =>
+        gas_macro interpreter constants.LOW id (fun interpreter =>
+        popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
           let '{| ArrayPair.x := op1 |} := arr.(array.value) in
           let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
           let stack :=
@@ -216,7 +100,7 @@ Lemma mul_eq
   }}.
 Proof.
   intros.
-  destruct InterpreterTypesEq as [[] []].
+  destruct InterpreterTypesEq as [[] [] [] []].
   cbn.
   gas_macro_eq H gas set_instruction_result.
   popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result.
@@ -248,8 +132,8 @@ Lemma sub_eq
     (
       Output.Success tt,
       [
-        gas_macro interpreter constants.VERYLOW (fun interpreter =>
-        popn_top_macro interpreter {| Integer.value := 1 |} (fun arr top interpreter =>
+        gas_macro interpreter constants.VERYLOW id (fun interpreter =>
+        popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
           let '{| ArrayPair.x := op1 |} := arr.(array.value) in
           let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
           let stack :=
@@ -264,7 +148,7 @@ Lemma sub_eq
   }}.
 Proof.
   intros.
-  destruct InterpreterTypesEq as [[] []].
+  destruct InterpreterTypesEq as [[] [] [] []].
   cbn.
   gas_macro_eq H gas set_instruction_result.
   popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result.
@@ -296,8 +180,8 @@ Lemma div_eq
     (
       Output.Success tt,
       [
-        gas_macro interpreter constants.LOW (fun interpreter =>
-        popn_top_macro interpreter {| Integer.value := 1 |} (fun arr top interpreter =>
+        gas_macro interpreter constants.LOW id (fun interpreter =>
+        popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
           let '{| ArrayPair.x := op1 |} := arr.(array.value) in
           let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
           if Impl_Uint.is_zero op2 then
@@ -316,7 +200,7 @@ Lemma div_eq
   }}.
 Proof.
   intros.
-  destruct InterpreterTypesEq as [[] []].
+  destruct InterpreterTypesEq as [[] [] [] []].
   cbn.
   gas_macro_eq H gas set_instruction_result.
   popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result.

@@ -330,15 +330,18 @@ Module Host.
   *)
   Definition Run_selfdestruct (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "selfdestruct" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self)
-             (address : Address.t)
-             (target : Address.t),
-        Run.Trait method [] [] [ φ self; φ address; φ target ] (option (StateLoad.t SelfDestructResult.t))
+      forall
+        (self : Ref.t Pointer.Kind.MutRef Self)
+        (address : Address.t)
+        (target : Address.t),
+      Run.Trait method [] [] [ φ self; φ address; φ target ]
+        (option (StateLoad.t SelfDestructResult.t))
     ).
 
-  Class Run (Self : Set) `{Link Self}
-    (types : Types.t) `{Types.AreLinks types} :
-    Set := {
+  Class Run
+      (Self : Set) `{Link Self}
+      (types : Types.t) `{Types.AreLinks types} :
+      Set := {
     run_TransactionGetter_for_Self :
       TransactionGetter.Run Self types.(Types.Transaction) types.(Types.TransactionTypes);
     run_BlockGetter_for_Self : BlockGetter.Run Self (Types.to_BlockGetter_types types);

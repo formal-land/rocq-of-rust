@@ -197,8 +197,7 @@ Module algorithms.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter :=
-                              M.copy (|
+                            (let~ iter :
                                 Ty.apply
                                   (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                   []
@@ -212,9 +211,8 @@ Module algorithms.
                                           []
                                           [ Ty.path "u64" ]
                                       ]
-                                  ],
-                                γ
-                              |) in
+                                  ] :=
+                              M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],
@@ -1509,14 +1507,12 @@ Module algorithms.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::slice::iter::Iter")
                                                   []
-                                                  [ Ty.path "u64" ],
-                                                γ
-                                              |) in
+                                                  [ Ty.path "u64" ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -2288,14 +2284,12 @@ Module algorithms.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::IterMut")
                                       []
-                                      [ Ty.path "u64" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "u64" ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -5233,14 +5227,12 @@ Module algorithms.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter :=
-                              M.copy (|
+                            (let~ iter :
                                 Ty.apply
                                   (Ty.path "core::slice::iter::IterMut")
                                   []
-                                  [ Ty.path "u64" ],
-                                γ
-                              |) in
+                                  [ Ty.path "u64" ] :=
+                              M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],
@@ -5742,8 +5734,7 @@ Module algorithms.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter :=
-                              M.copy (|
+                            (let~ iter :
                                 Ty.apply
                                   (Ty.path "core::iter::adapters::zip::Zip")
                                   []
@@ -5761,9 +5752,8 @@ Module algorithms.
                                           []
                                           [ Ty.path "u64" ]
                                       ]
-                                  ],
-                                γ
-                              |) in
+                                  ] :=
+                              M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],
@@ -6307,8 +6297,7 @@ Module algorithms.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter :=
-                              M.copy (|
+                            (let~ iter :
                                 Ty.apply
                                   (Ty.path "core::iter::adapters::zip::Zip")
                                   []
@@ -6326,9 +6315,8 @@ Module algorithms.
                                           []
                                           [ Ty.path "u64" ]
                                       ]
-                                  ],
-                                γ
-                              |) in
+                                  ] :=
+                              M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],

@@ -63,6 +63,12 @@ Module Stack.
     | Cons value stack => Cons value (dealloc stack)
     end.
 
+  Fixpoint append (stack1 stack2 : t) : t :=
+    match stack1 with
+    | Nil => stack2
+    | Cons value stack1 => Cons value (append stack1 stack2)
+    end.
+
   Declare Scope stack_scope.
   Delimit Scope stack_scope with stack.
 
@@ -70,6 +76,51 @@ Module Stack.
   Notation "[ x ]" := (Cons x Nil) (format "[ x ]") : stack_scope.
   Notation "[ x ; y ; .. ; z ]" := (Cons x (Cons y .. (Cons z Nil) ..)) (format "[ x ; y ; .. ; z ]") : stack_scope.
   Notation "x :: y" := (Cons x y) (at level 60, right associativity) : stack_scope.
+  Notation "x ++ y" := (append x y) (at level 60, right associativity) : stack_scope.
+
+  Lemma dealloc_alloc_eq {A : Set} (stack : t) (value : A) :
+    dealloc (alloc stack value) = stack.
+  Proof.
+    induction stack; cbn.
+    { reflexivity. }
+    { fold @alloc.
+      destruct stack as [|? head stack']; [reflexivity|].
+      unfold alloc at 1.
+      congruence.
+    }
+  Qed.
+
+  Fixpoint nth_alloc {A : Set} (stack : t) (value : A) :
+    Nth.t A (alloc stack value) (length stack).
+  Proof.
+    destruct stack.
+    { constructor. }
+    { constructor.
+      apply nth_alloc.
+    }
+  Defined.
+
+  Lemma read_nth_alloc_eq {A : Set} (stack : t) (value : A) :
+    read (nth_alloc stack value) = value.
+  Proof.
+    now induction stack.
+  Qed.
+
+  Lemma nth_alloc_alloc {A T : Set} (stack : t) (value : T) (index : nat)
+      (H_stack : Nth.t A stack index) :
+    Nth.t A (alloc stack value) index.
+  Proof.
+    induction H_stack; cbn; fold @alloc.
+    { constructor. }
+    { now constructor. }
+  Qed.
+
+  Lemma length_alloc_eq {A : Set} (stack : t) (value : A) :
+    length (alloc stack value) = S (length stack).
+  Proof.
+    induction stack; cbn; [reflexivity |].
+    sfirstorder.
+  Qed.
 
   Module CanAccess.
     Inductive t {A : Set} `{Link A} (stack : Stack.t) : Ref.Core.t A -> Set :=
@@ -119,6 +170,108 @@ Module Stack.
 End Stack.
 Export (notations) Stack.
 
+Module ContextRun.
+  Reserved Notation "{{ context ; stack | e 🌲 value | context' ; stack' }}".
+
+  Inductive t {R Output : Set} (context stack : Stack.t) :
+      LinkM.t R Output -> Output.t R Output -> Stack.t -> Stack.t -> Prop :=
+  | Pure (result : Output.t R Output) :
+    {{ context; stack |
+      LinkM.Pure result 🌲 result
+    | context; stack }}
+  (** We always allocate an immediate value *)
+  | CallPrimitiveStateAlloc {A : Set} `{Link A}
+      (value : A) (k : Ref.Core.t A -> LinkM.t R Output)
+      (result : Output.t R Output) (context' stack' : Stack.t) :
+    {{ context; stack |
+      k (Ref.Core.Immediate (Some value)) 🌲 result
+    | context'; stack' }} ->
+    {{ context; stack |
+      LinkM.CallPrimitive (Primitive.StateAlloc value) k 🌲 result
+    | context'; stack' }}
+  | CallPrimitiveStateReadImmediateSome {A : Set} `{Link A}
+      (value : A) (k : A -> LinkM.t R Output)
+      (result : Output.t R Output) (context' stack' : Stack.t) :
+    let ref_core := Ref.Core.Immediate (Some value) in
+    {{ context; stack |
+      k value 🌲 result
+    | context'; stack' }} ->
+    {{ context; stack |
+      LinkM.CallPrimitive (Primitive.StateRead ref_core) k 🌲 result
+    | context'; stack' }}
+  | CallPrimitiveStateReadImmediateNone {A : Set} `{Link A}
+      (k : A -> LinkM.t R Output) :
+    let ref_core := Ref.Core.Immediate None in
+    {{ context; stack |
+      LinkM.CallPrimitive (Primitive.StateRead ref_core) k 🌲
+      Output.Exception Output.Exception.BreakMatch
+    | context; stack }}
+  | CallPrimitiveGetSubPointer {A : Set} `{Link A}
+      (ref_core : Ref.Core.t A)
+      (index : Pointer.Index.t) (runner : SubPointer.Runner.t A index)
+      (k : Ref.Core.t runner.(SubPointer.Runner.Sub_A) -> LinkM.t R Output)
+      (result : Output.t R Output) (context' stack' : Stack.t) :
+    {{ context; stack |
+       k (SubPointer.Runner.apply ref_core runner) 🌲 result
+    | context'; stack' }} ->
+    {{ context; stack |
+      LinkM.CallPrimitive (Primitive.GetSubPointer ref_core runner) k 🌲 result
+    | context'; stack' }}
+  | Let {A : Set} (e : LinkM.t R A) (k : Output.t R A -> LinkM.t R Output)
+      (result_e : Output.t R A)
+      (context_e stack_e : Stack.t)
+      (result : Output.t R Output)
+      (context' stack' : Stack.t) :
+    {{ context; stack |
+      e 🌲 result_e
+    | context_e; stack_e }} ->
+    {{ context_e; stack_e |
+      k result_e 🌲 result
+    | context'; stack' }} ->
+    {{ context; stack |
+      LinkM.Let e k 🌲 result
+    | context'; stack' }}
+  | LetUnfold {A : Set} (e : LinkM.t R A) (k : Output.t R A -> LinkM.t R Output)
+      (result : Output.t R Output)
+      (context' stack' : Stack.t) :
+    {{ context; stack |
+      LinkM.let_ e k 🌲 result
+    | context'; stack' }} ->
+    {{ context; stack |
+      LinkM.Let e k 🌲 result
+    | context'; stack' }}
+  | LetAllocSuccess {A : Set} `{Link A}
+      (e : LinkM.t R A)
+      (k : Output.t R (Ref.t Pointer.Kind.Raw A) -> LinkM.t R Output)
+      (value_e : A)
+      (context_e stack_e : Stack.t)
+      (result : Output.t R Output)
+      (context' stack' stack'' : Stack.t) :
+    {{ context; stack |
+      e 🌲 Output.Success value_e
+    | context_e; stack_e }} ->
+    let ref_core :=
+      Ref.Core.Mutable
+        (Stack.length stack)
+        []
+        φ
+        Some
+        (fun _ => Some) in
+    let ref := {| Ref.core := ref_core |} in
+    let stack_e_alloc := Stack.alloc stack_e value_e in
+    {{ context_e; stack_e_alloc |
+      k (Output.Success ref) 🌲 result
+    | context'; stack' }} ->
+    stack'' = Stack.dealloc stack' ->
+    {{ context; stack |
+      LinkM.LetAlloc e k 🌲 result
+    | context'; stack'' }}
+
+  where "{{ context ; stack | e 🌲 result | context' ; stack' }}" :=
+    (t context stack e result context' stack').
+End ContextRun.
+Export (notations) ContextRun.
+
 (** Here we define an execution mode where we keep dynamic cast to retrieve data from the stack. In
     practice, these casts should always be correct as the original Rust code was well typed. *)
 Module SimulateM.
@@ -132,10 +285,12 @@ Module SimulateM.
       {f : list Value.t -> M} {args : list Value.t}
       (stack_in : Stack.t)
       (run_f : {{ f args 🔽 B }})
-      (k : Output.t B B * Stack.t -> t A).
+      (k : B * Stack.t -> t A)
+  | Impossible {T : Set} (payload : T).
   Arguments Pure {_}.
   Arguments GetCanAccess {_ _ _}.
   Arguments Call {_ _ _ _ _}.
+  Arguments Impossible {_ _}.
 
   Fixpoint let_ {A B : Set} (e1 : t A) (e2 : A -> t B) : t B :=
     match e1 with
@@ -143,6 +298,7 @@ Module SimulateM.
     | GetCanAccess Stack ref_core k =>
       GetCanAccess Stack ref_core (fun can_access => let_ (k can_access) e2)
     | Call stack_in run_f k => Call stack_in run_f (fun output_stack => let_ (k output_stack) e2)
+    | Impossible payload => Impossible payload
     end.
 
   Notation "'let*s' x ':=' X 'in' Y" :=
@@ -203,7 +359,7 @@ Module SimulateM.
         ).
         destruct (Stack.CanAccess.write H_access value) as [stack'|].
         { exact (eval _ _ (k tt) stack'). }
-        { exact (Pure (Output.panic "StateWrite: invalid reference", stack)). }
+        { exact (Pure (Output.Exception Output.Exception.BreakMatch, stack)). }
       }
       { (* GetSubPointer *)
         exact (eval _ _ (k (SubPointer.Runner.apply ref_core runner)) stack).
@@ -238,9 +394,7 @@ Module SimulateM.
     }
     { (* Call *)
       exact (Call stack run_f0 (fun '(output, stack) =>
-        SuccessOrPanic.apply (fun output =>
-          eval _ _ (k output) stack
-        ) output
+        eval _ _ (k output) stack
       )).
     }
     { (* Loop *)
@@ -264,10 +418,12 @@ Module SimulateM.
           | Output.Exception.Break => eval _ _ (k_break tt) stack
           | Output.Exception.Continue => eval _ _ (k_continue tt) stack
           | Output.Exception.BreakMatch => eval _ _ (k_break_match tt) stack
-          | Output.Exception.Panic panic => eval _ _ (k_panic panic) stack
           end
         end
       ).
+    }
+    { (* Impossible *)
+      exact (Impossible payload).
     }
   Defined.
 
@@ -302,13 +458,55 @@ Module Run.
       {f : list Value.t -> M} {args : list Value.t}
       (stack_in : Stack.t)
       (run_f : {{ f args 🔽 B }})
-      (value_inter : Output.t B B * Stack.t)
-      (k : Output.t B B * Stack.t -> SimulateM.t A)
-    (H_f : {{ SimulateM.eval (links.M.evaluate run_f) stack_in 🌲 value_inter }})
-    (H_k : {{ k value_inter 🌲 value }}) :
+      (output_inter : B)
+      (stack_inter : Stack.t)
+      (k : B * Stack.t -> SimulateM.t A)
+    (H_f : {{
+      SimulateM.eval (links.M.evaluate run_f) stack_in 🌲
+      (Output.Success output_inter, stack_inter)
+    }})
+    (H_k : {{ k (output_inter, stack_inter) 🌲 value }}) :
     {{ SimulateM.Call stack_in run_f k 🌲 value }}
 
   where "{{ e 🌲 value }}" := (t value e).
+
+  (** TODO: improve! This is unclean for now. This function can be used at the beginning of
+      a [Run.t] proof. *)
+  Axiom remove_extra_stack :
+    forall
+      {R A : Set}
+      {f : Stack.t -> SimulateM.t (Output.t R A * Stack.t)}
+      {head head' tail : Stack.t}
+      {output : Output.t R A},
+    {{ f head 🌲 (output, head') }} ->
+    {{ f (head ++ tail)%stack 🌲 (output, head' ++ tail)%stack }}.
+
+  Lemma remove_extra_stack0 :
+    forall
+      {R A : Set}
+      {f : Stack.t -> SimulateM.t (Output.t R A * Stack.t)}
+      {tail : Stack.t}
+      {output : Output.t R A},
+    {{ f []%stack 🌲 (output, [])%stack }} ->
+    {{ f tail 🌲 (output, tail)%stack }}.
+  Proof.
+    intros.
+    now apply (remove_extra_stack (head := []%stack) (head' := []%stack)).
+  Qed.
+
+  Lemma remove_extra_stack1 :
+    forall
+      {R A T1 : Set}
+      {f : Stack.t -> SimulateM.t (Output.t R A * Stack.t)}
+      {v1 v1' : T1}
+      {tail : Stack.t}
+      {output : Output.t R A},
+    {{ f [v1]%stack 🌲 (output, [v1']%stack) }} ->
+    {{ f (v1 :: tail)%stack 🌲 (output, v1' :: tail)%stack }}.
+  Proof.
+    intros.
+    now apply (remove_extra_stack (head := [v1]%stack) (head' := [v1']%stack)).
+  Qed.
 End Run.
 Export (notations) Run.
 

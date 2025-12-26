@@ -699,11 +699,9 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let iter :=
-                          M.copy (|
-                            Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "i32" ],
-                            γ
-                          |) in
+                        (let~ iter :
+                            Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "i32" ] :=
+                          M.read (| γ |) in
                         M.read (|
                           M.loop (|
                             Ty.tuple [],
@@ -971,14 +969,12 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let iter :=
-                          M.copy (|
+                        (let~ iter :
                             Ty.apply
                               (Ty.path "core::iter::adapters::take::Take")
                               []
-                              [ Ty.path "iterators::Fibonacci" ],
-                            γ
-                          |) in
+                              [ Ty.path "iterators::Fibonacci" ] :=
+                          M.read (| γ |) in
                         M.read (|
                           M.loop (|
                             Ty.tuple [],
@@ -1287,8 +1283,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let iter :=
-                          M.copy (|
+                        (let~ iter :
                             Ty.apply
                               (Ty.path "core::iter::adapters::take::Take")
                               []
@@ -1297,9 +1292,8 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                   (Ty.path "core::iter::adapters::skip::Skip")
                                   []
                                   [ Ty.path "iterators::Fibonacci" ]
-                              ],
-                            γ
-                          |) in
+                              ] :=
+                          M.read (| γ |) in
                         M.read (|
                           M.loop (|
                             Ty.tuple [],
@@ -1634,11 +1628,9 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               [
                 fun γ =>
                   ltac:(M.monadic
-                    (let iter :=
-                      M.copy (|
-                        Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u32" ],
-                        γ
-                      |) in
+                    (let~ iter :
+                        Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u32" ] :=
+                      M.read (| γ |) in
                     M.read (|
                       M.loop (|
                         Ty.tuple [],

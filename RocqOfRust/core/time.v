@@ -2557,7 +2557,7 @@ Module time.
                           "core::option::Option::Some",
                           0
                         |) in
-                      let secs := M.copy (| Ty.path "u64", γ0_0 |) in
+                      let~ secs : Ty.path "u64" := M.read (| γ0_0 |) in
                       M.read (|
                         let~ nanos : Ty.path "u32" :=
                           M.call_closure (|
@@ -2933,7 +2933,7 @@ Module time.
                           "core::option::Option::Some",
                           0
                         |) in
-                      let secs := M.copy (| Ty.path "u64", γ0_0 |) in
+                      let~ secs : Ty.path "u64" := M.read (| γ0_0 |) in
                       M.read (|
                         let~ nanos : Ty.path "u32" :=
                           M.match_operator (|
@@ -3733,7 +3733,7 @@ Module time.
                                 ltac:(M.monadic
                                   (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                                   let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                                  let nanos := M.copy (| Ty.path "u32", γ0_0 |) in
+                                  let~ nanos : Ty.path "u32" := M.read (| γ0_0 |) in
                                   let extra_nanos := M.copy (| Ty.path "u32", γ0_1 |) in
                                   M.read (|
                                     let~ _ : Ty.tuple [] :=
@@ -6946,7 +6946,7 @@ Module time.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter := M.copy (| I, γ |) in
+                            (let~ iter : I := M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],
@@ -7335,7 +7335,7 @@ Module time.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter := M.copy (| I, γ |) in
+                            (let~ iter : I := M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],

@@ -1638,8 +1638,7 @@ Module locals_safety.
                                 [
                                   fun γ =>
                                     ltac:(M.monadic
-                                      (let iter :=
-                                        M.copy (|
+                                      (let~ iter :
                                           Ty.apply
                                             (Ty.path "core::iter::adapters::zip::Zip")
                                             []
@@ -1658,9 +1657,8 @@ Module locals_safety.
                                                   Ty.path
                                                     "move_binary_format::file_format::AbilitySet"
                                                 ]
-                                            ],
-                                          γ
-                                        |) in
+                                            ] :=
+                                        M.read (| γ |) in
                                       M.read (|
                                         M.loop (|
                                           Ty.tuple [],

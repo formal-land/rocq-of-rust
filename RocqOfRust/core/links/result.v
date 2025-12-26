@@ -124,22 +124,14 @@ Module Impl_Result_T_E.
 
   (* pub fn unwrap_or(self, default: T) -> T *)
   Instance run_unwrap_or
-    (T E : Set) `{Link T} `{Link E}
-    (self : Self T E)
-    (default : T) :
+      (T E : Set) `{Link T} `{Link E}
+      (self : Self T E)
+      (default : T) :
     Run.Trait
       (result.Impl_core_result_Result_T_E.unwrap_or (Φ T) (Φ E)) [] [] [ φ self; φ default ]
       T.
   Proof.
     constructor.
-    unfold result.Impl_core_result_Result_T_E.unwrap_or.
-    cbn.
-    unshelve eapply Run.CallPrimitiveStateAllocImmediate; cbn; [
-      now repeat (smpl of_ty || smpl of_value) |
-      |
-      repeat (smpl of_value) |
-      intro
-    ].
     run_symbolic.
   Defined.
 

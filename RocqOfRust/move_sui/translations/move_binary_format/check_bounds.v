@@ -1965,14 +1965,12 @@ Module check_bounds.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
-                                      [ Ty.path "move_binary_format::file_format::Signature" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "move_binary_format::file_format::Signature" ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -2346,14 +2344,12 @@ Module check_bounds.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
-                                      [ Ty.path "move_binary_format::file_format::Constant" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "move_binary_format::file_format::Constant" ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -2727,14 +2723,12 @@ Module check_bounds.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
-                                      [ Ty.path "move_binary_format::file_format::ModuleHandle" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "move_binary_format::file_format::ModuleHandle" ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -3110,14 +3104,12 @@ Module check_bounds.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
-                                      [ Ty.path "move_binary_format::file_format::StructHandle" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "move_binary_format::file_format::StructHandle" ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -3494,14 +3486,13 @@ Module check_bounds.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
-                                      [ Ty.path "move_binary_format::file_format::FunctionHandle" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "move_binary_format::file_format::FunctionHandle"
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -3877,14 +3868,12 @@ Module check_bounds.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
-                                      [ Ty.path "move_binary_format::file_format::FieldHandle" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "move_binary_format::file_format::FieldHandle" ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -4260,14 +4249,12 @@ Module check_bounds.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
-                                      [ Ty.path "move_binary_format::file_format::ModuleHandle" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "move_binary_format::file_format::ModuleHandle" ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -4652,17 +4639,15 @@ Module check_bounds.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
                                       [
                                         Ty.path
                                           "move_binary_format::file_format::StructDefInstantiation"
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -5049,17 +5034,15 @@ Module check_bounds.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
                                       [
                                         Ty.path
                                           "move_binary_format::file_format::FunctionInstantiation"
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -5445,17 +5428,15 @@ Module check_bounds.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
                                       [
                                         Ty.path
                                           "move_binary_format::file_format::FieldInstantiation"
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -5835,15 +5816,13 @@ Module check_bounds.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
                                       [ Ty.path "move_binary_format::file_format::StructDefinition"
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -6294,8 +6273,7 @@ Module check_bounds.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                       []
@@ -6307,9 +6285,8 @@ Module check_bounds.
                                             Ty.path
                                               "move_binary_format::file_format::FunctionDefinition"
                                           ]
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -8232,17 +8209,15 @@ Module check_bounds.
                                   [
                                     fun γ =>
                                       ltac:(M.monadic
-                                        (let iter :=
-                                          M.copy (|
+                                        (let~ iter :
                                             Ty.apply
                                               (Ty.path "core::slice::iter::Iter")
                                               []
                                               [
                                                 Ty.path
                                                   "move_binary_format::file_format::SignatureToken"
-                                              ],
-                                            γ
-                                          |) in
+                                              ] :=
+                                          M.read (| γ |) in
                                         M.read (|
                                           M.loop (|
                                             Ty.tuple [],
@@ -8677,17 +8652,15 @@ Module check_bounds.
                                   [
                                     fun γ =>
                                       ltac:(M.monadic
-                                        (let iter :=
-                                          M.copy (|
+                                        (let~ iter :
                                             Ty.apply
                                               (Ty.path "core::slice::iter::Iter")
                                               []
                                               [
                                                 Ty.path
                                                   "move_binary_format::file_format::SignatureToken"
-                                              ],
-                                            γ
-                                          |) in
+                                              ] :=
+                                          M.read (| γ |) in
                                         M.read (|
                                           M.loop (|
                                             Ty.tuple [],
@@ -10528,14 +10501,13 @@ Module check_bounds.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
-                                      [ Ty.path "move_binary_format::file_format::SignatureToken" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "move_binary_format::file_format::SignatureToken"
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -11363,17 +11335,15 @@ Module check_bounds.
                                   [
                                     fun γ =>
                                       ltac:(M.monadic
-                                        (let iter :=
-                                          M.copy (|
+                                        (let~ iter :
                                             Ty.apply
                                               (Ty.path "core::slice::iter::Iter")
                                               []
                                               [
                                                 Ty.path
                                                   "move_binary_format::file_format::FieldDefinition"
-                                              ],
-                                            γ
-                                          |) in
+                                              ] :=
+                                          M.read (| γ |) in
                                         M.read (|
                                           M.loop (|
                                             Ty.tuple [],
@@ -12435,17 +12405,15 @@ Module check_bounds.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
                                       [
                                         Ty.path
                                           "move_binary_format::file_format::StructDefinitionIndex"
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -14060,14 +14028,13 @@ Module check_bounds.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
-                                      [ Ty.path "move_binary_format::file_format::SignatureToken" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "move_binary_format::file_format::SignatureToken"
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -14486,8 +14453,7 @@ Module check_bounds.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                       []
@@ -14496,9 +14462,8 @@ Module check_bounds.
                                           (Ty.path "core::slice::iter::Iter")
                                           []
                                           [ Ty.path "move_binary_format::file_format::Bytecode" ]
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -15822,9 +15787,8 @@ Module check_bounds.
                                                                                                 fun
                                                                                                     γ =>
                                                                                                   ltac:(M.monadic
-                                                                                                    (let
-                                                                                                          iter :=
-                                                                                                      M.copy (|
+                                                                                                    (let~
+                                                                                                          iter :
                                                                                                         Ty.apply
                                                                                                           (Ty.path
                                                                                                             "core::slice::iter::Iter")
@@ -15832,7 +15796,8 @@ Module check_bounds.
                                                                                                           [
                                                                                                             Ty.path
                                                                                                               "move_binary_format::file_format::SignatureToken"
-                                                                                                          ],
+                                                                                                          ] :=
+                                                                                                      M.read (|
                                                                                                         γ
                                                                                                       |) in
                                                                                                     M.read (|
@@ -17018,9 +16983,8 @@ Module check_bounds.
                                                                                     [
                                                                                       fun γ =>
                                                                                         ltac:(M.monadic
-                                                                                          (let
-                                                                                                iter :=
-                                                                                            M.copy (|
+                                                                                          (let~
+                                                                                                iter :
                                                                                               Ty.apply
                                                                                                 (Ty.path
                                                                                                   "core::slice::iter::Iter")
@@ -17028,7 +16992,8 @@ Module check_bounds.
                                                                                                 [
                                                                                                   Ty.path
                                                                                                     "move_binary_format::file_format::SignatureToken"
-                                                                                                ],
+                                                                                                ] :=
+                                                                                            M.read (|
                                                                                               γ
                                                                                             |) in
                                                                                           M.read (|
@@ -18565,9 +18530,8 @@ Module check_bounds.
                                                                                                 fun
                                                                                                     γ =>
                                                                                                   ltac:(M.monadic
-                                                                                                    (let
-                                                                                                          iter :=
-                                                                                                      M.copy (|
+                                                                                                    (let~
+                                                                                                          iter :
                                                                                                         Ty.apply
                                                                                                           (Ty.path
                                                                                                             "core::slice::iter::Iter")
@@ -18575,7 +18539,8 @@ Module check_bounds.
                                                                                                           [
                                                                                                             Ty.path
                                                                                                               "move_binary_format::file_format::SignatureToken"
-                                                                                                          ],
+                                                                                                          ] :=
+                                                                                                      M.read (|
                                                                                                         γ
                                                                                                       |) in
                                                                                                     M.read (|
@@ -20003,9 +19968,8 @@ Module check_bounds.
                                                                                       [
                                                                                         fun γ =>
                                                                                           ltac:(M.monadic
-                                                                                            (let
-                                                                                                  iter :=
-                                                                                              M.copy (|
+                                                                                            (let~
+                                                                                                  iter :
                                                                                                 Ty.apply
                                                                                                   (Ty.path
                                                                                                     "core::slice::iter::Iter")
@@ -20013,7 +19977,8 @@ Module check_bounds.
                                                                                                   [
                                                                                                     Ty.path
                                                                                                       "move_binary_format::file_format::SignatureToken"
-                                                                                                  ],
+                                                                                                  ] :=
+                                                                                              M.read (|
                                                                                                 γ
                                                                                               |) in
                                                                                             M.read (|
@@ -20931,12 +20896,10 @@ Module check_bounds.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.path
-                                      "move_binary_format::file_format::SignatureTokenPreorderTraversalIter",
-                                    γ
-                                  |) in
+                                      "move_binary_format::file_format::SignatureTokenPreorderTraversalIter" :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -22858,12 +22821,10 @@ Module check_bounds.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.path
-                                      "move_binary_format::file_format::SignatureTokenPreorderTraversalIter",
-                                    γ
-                                  |) in
+                                      "move_binary_format::file_format::SignatureTokenPreorderTraversalIter" :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],

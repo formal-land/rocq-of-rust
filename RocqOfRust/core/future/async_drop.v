@@ -709,8 +709,8 @@ Module future.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let _task_context :=
-                              M.copy (| Ty.path "core::future::ResumeTy", γ |) in
+                            (let~ _task_context : Ty.path "core::future::ResumeTy" :=
+                              M.read (| γ |) in
                             M.read (|
                               let~ ptr : Ty.apply (Ty.path "*mut") [] [ T ] := M.read (| ptr |) in
                               M.use
@@ -798,16 +798,14 @@ Module future.
                                     [
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (let __awaitee :=
-                                            M.copy (|
+                                          (let~ __awaitee :
                                               Ty.associated_in_trait
                                                 "core::future::async_drop::AsyncDrop"
                                                 []
                                                 []
                                                 T
-                                                "Dropper",
-                                              γ
-                                            |) in
+                                                "Dropper" :=
+                                            M.read (| γ |) in
                                           M.read (|
                                             M.loop (|
                                               Ty.tuple [],
@@ -991,8 +989,8 @@ Module future.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let _task_context :=
-                              M.copy (| Ty.path "core::future::ResumeTy", γ |) in
+                            (let~ _task_context : Ty.path "core::future::ResumeTy" :=
+                              M.read (| γ |) in
                             M.read (|
                               let~ ptr : Ty.apply (Ty.path "*mut") [] [ T ] := M.read (| ptr |) in
                               M.use
@@ -1327,8 +1325,8 @@ Module future.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let _task_context :=
-                              M.copy (| Ty.path "core::future::ResumeTy", γ |) in
+                            (let~ _task_context : Ty.path "core::future::ResumeTy" :=
+                              M.read (| γ |) in
                             M.read (|
                               let~ s :
                                   Ty.apply
@@ -1407,14 +1405,12 @@ Module future.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::ops::range::Range")
                                                   []
-                                                  [ Ty.path "usize" ],
-                                                γ
-                                              |) in
+                                                  [ Ty.path "usize" ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -1549,16 +1545,14 @@ Module future.
                                                               [
                                                                 fun γ =>
                                                                   ltac:(M.monadic
-                                                                    (let __awaitee :=
-                                                                      M.copy (|
+                                                                    (let~ __awaitee :
                                                                         Ty.associated_in_trait
                                                                           "core::future::async_drop::AsyncDestruct"
                                                                           []
                                                                           []
                                                                           T
-                                                                          "AsyncDestructor",
-                                                                        γ
-                                                                      |) in
+                                                                          "AsyncDestructor" :=
+                                                                      M.read (| γ |) in
                                                                     M.read (|
                                                                       M.loop (|
                                                                         Ty.tuple [],
@@ -1773,8 +1767,8 @@ Module future.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let _task_context :=
-                              M.copy (| Ty.path "core::future::ResumeTy", γ |) in
+                            (let~ _task_context : Ty.path "core::future::ResumeTy" :=
+                              M.read (| γ |) in
                             M.read (|
                               let~ first : F := M.read (| first |) in
                               let~ last : G := M.read (| last |) in
@@ -1811,16 +1805,14 @@ Module future.
                                     [
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (let __awaitee :=
-                                            M.copy (|
+                                          (let~ __awaitee :
                                               Ty.associated_in_trait
                                                 "core::future::into_future::IntoFuture"
                                                 []
                                                 []
                                                 F
-                                                "IntoFuture",
-                                              γ
-                                            |) in
+                                                "IntoFuture" :=
+                                            M.read (| γ |) in
                                           M.read (|
                                             M.loop (|
                                               Ty.tuple [],
@@ -1996,16 +1988,14 @@ Module future.
                                     [
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (let __awaitee :=
-                                            M.copy (|
+                                          (let~ __awaitee :
                                               Ty.associated_in_trait
                                                 "core::future::into_future::IntoFuture"
                                                 []
                                                 []
                                                 G
-                                                "IntoFuture",
-                                              γ
-                                            |) in
+                                                "IntoFuture" :=
+                                            M.read (| γ |) in
                                           M.read (|
                                             M.loop (|
                                               Ty.tuple [],
@@ -2186,8 +2176,8 @@ Module future.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let _task_context :=
-                              M.copy (| Ty.path "core::future::ResumeTy", γ |) in
+                            (let~ _task_context : Ty.path "core::future::ResumeTy" :=
+                              M.read (| γ |) in
                             M.read (|
                               let~ to_drop : Ty.apply (Ty.path "*mut") [] [ T ] :=
                                 M.read (| to_drop |) in
@@ -2237,15 +2227,13 @@ Module future.
                                     [
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (let __awaitee :=
-                                            M.copy (|
+                                          (let~ __awaitee :
                                               Ty.apply
                                                 (Ty.path
                                                   "core::future::async_drop::AsyncDropInPlace")
                                                 []
-                                                [ T ],
-                                              γ
-                                            |) in
+                                                [ T ] :=
+                                            M.read (| γ |) in
                                           M.read (|
                                             M.loop (|
                                               Ty.tuple [],
@@ -2441,8 +2429,8 @@ Module future.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let _task_context :=
-                              M.copy (| Ty.path "core::future::ResumeTy", γ |) in
+                            (let~ _task_context : Ty.path "core::future::ResumeTy" :=
+                              M.read (| γ |) in
                             M.read (|
                               let~ other : O := M.read (| other |) in
                               let~ matched : M_ := M.read (| matched |) in
@@ -2576,16 +2564,14 @@ Module future.
                                                 [
                                                   fun γ =>
                                                     ltac:(M.monadic
-                                                      (let __awaitee :=
-                                                        M.copy (|
+                                                      (let~ __awaitee :
                                                           Ty.associated_in_trait
                                                             "core::future::into_future::IntoFuture"
                                                             []
                                                             []
                                                             M_
-                                                            "IntoFuture",
-                                                          γ
-                                                        |) in
+                                                            "IntoFuture" :=
+                                                        M.read (| γ |) in
                                                       M.read (|
                                                         M.loop (|
                                                           Ty.tuple [],
@@ -2789,16 +2775,14 @@ Module future.
                                                 [
                                                   fun γ =>
                                                     ltac:(M.monadic
-                                                      (let __awaitee :=
-                                                        M.copy (|
+                                                      (let~ __awaitee :
                                                           Ty.associated_in_trait
                                                             "core::future::into_future::IntoFuture"
                                                             []
                                                             []
                                                             O
-                                                            "IntoFuture",
-                                                          γ
-                                                        |) in
+                                                            "IntoFuture" :=
+                                                        M.read (| γ |) in
                                                       M.read (|
                                                         M.loop (|
                                                           Ty.tuple [],
@@ -3000,8 +2984,8 @@ Module future.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let _task_context :=
-                              M.copy (| Ty.path "core::future::ResumeTy", γ |) in
+                            (let~ _task_context : Ty.path "core::future::ResumeTy" :=
+                              M.read (| γ |) in
                             M.read (|
                               let~ to_drop : Ty.apply (Ty.path "*mut") [] [ T ] :=
                                 M.read (| to_drop |) in

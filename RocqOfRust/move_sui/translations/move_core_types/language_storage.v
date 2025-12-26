@@ -10285,8 +10285,7 @@ Module language_storage.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::iter::adapters::skip::Skip")
                                                   []
@@ -10298,9 +10297,8 @@ Module language_storage.
                                                         Ty.path
                                                           "move_core_types::language_storage::TypeTag"
                                                       ]
-                                                  ],
-                                                γ
-                                              |) in
+                                                  ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
