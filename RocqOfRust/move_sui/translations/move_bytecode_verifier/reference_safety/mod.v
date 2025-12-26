@@ -2448,8 +2448,7 @@ Module reference_safety.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "alloc::vec::into_iter::IntoIter")
                                     []
@@ -2457,9 +2456,8 @@ Module reference_safety.
                                       Ty.path
                                         "move_bytecode_verifier::reference_safety::abstract_state::AbstractValue";
                                       Ty.path "alloc::alloc::Global"
-                                    ],
-                                  γ
-                                |) in
+                                    ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -2901,14 +2899,12 @@ Module reference_safety.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::ops::range::Range")
                                     []
-                                    [ Ty.path "usize" ],
-                                  γ
-                                |) in
+                                    [ Ty.path "usize" ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -28624,14 +28620,12 @@ Module reference_safety.
                                     [
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (let iter :=
-                                            M.copy (|
+                                          (let~ iter :
                                               Ty.apply
                                                 (Ty.path "core::ops::range::Range")
                                                 []
-                                                [ Ty.path "usize" ],
-                                              γ
-                                            |) in
+                                                [ Ty.path "usize" ] :=
+                                            M.read (| γ |) in
                                           M.read (|
                                             M.loop (|
                                               Ty.tuple [],

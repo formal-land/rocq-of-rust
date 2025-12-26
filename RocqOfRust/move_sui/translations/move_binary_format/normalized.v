@@ -41054,17 +41054,15 @@ Module normalized.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
                                       [
                                         Ty.path
                                           "move_binary_format::file_format::FunctionDefinition"
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -45397,8 +45395,7 @@ Module normalized.
                                               [
                                                 fun γ =>
                                                   ltac:(M.monadic
-                                                    (let iter :=
-                                                      M.copy (|
+                                                    (let~ iter :
                                                         Ty.apply
                                                           (Ty.path
                                                             "core::iter::adapters::skip::Skip")
@@ -45411,9 +45408,8 @@ Module normalized.
                                                                 Ty.path
                                                                   "move_binary_format::normalized::Type"
                                                               ]
-                                                          ],
-                                                        γ
-                                                      |) in
+                                                          ] :=
+                                                      M.read (| γ |) in
                                                     M.read (|
                                                       M.loop (|
                                                         Ty.tuple [],

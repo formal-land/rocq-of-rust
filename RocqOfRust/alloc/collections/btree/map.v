@@ -956,8 +956,7 @@ Module collections.
                                       "alloc::collections::btree::search::SearchResult::Found",
                                       0
                                     |) in
-                                  let kv :=
-                                    M.copy (|
+                                  let~ kv :
                                       Ty.apply
                                         (Ty.path "alloc::collections::btree::node::Handle")
                                         []
@@ -975,9 +974,8 @@ Module collections.
                                                 "alloc::collections::btree::node::marker::LeafOrInternal"
                                             ];
                                           Ty.path "alloc::collections::btree::node::marker::KV"
-                                        ],
-                                      γ0_0
-                                    |) in
+                                        ] :=
+                                    M.read (| γ0_0 |) in
                                   Value.StructTuple
                                     "core::option::Option::Some"
                                     []
@@ -9790,14 +9788,12 @@ Module collections.
                           "alloc::collections::btree::map::entry::Entry::Occupied",
                           0
                         |) in
-                      let entry :=
-                        M.copy (|
+                      let~ entry :
                           Ty.apply
                             (Ty.path "alloc::collections::btree::map::entry::OccupiedEntry")
                             []
-                            [ K; V; A ],
-                          γ0_0
-                        |) in
+                            [ K; V; A ] :=
+                        M.read (| γ0_0 |) in
                       Value.StructTuple
                         "core::option::Option::Some"
                         []
@@ -22073,8 +22069,7 @@ Module collections.
                                           "core::result::Result::Ok",
                                           0
                                         |) in
-                                      let kv :=
-                                        M.copy (|
+                                      let~ kv :
                                           Ty.apply
                                             (Ty.path "alloc::collections::btree::node::Handle")
                                             []
@@ -22091,9 +22086,8 @@ Module collections.
                                                     "alloc::collections::btree::node::marker::LeafOrInternal"
                                                 ];
                                               Ty.path "alloc::collections::btree::node::marker::KV"
-                                            ],
-                                          γ0_0
-                                        |) in
+                                            ] :=
+                                        M.read (| γ0_0 |) in
                                       M.match_operator (|
                                         Ty.tuple [],
                                         M.alloc (|
@@ -25951,14 +25945,12 @@ Module collections.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter :=
-                              M.copy (|
+                            (let~ iter :
                                 Ty.apply
                                   (Ty.path "alloc::collections::btree::map::Iter")
                                   []
-                                  [ K; V ],
-                                γ
-                              |) in
+                                  [ K; V ] :=
+                              M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],
@@ -30751,8 +30743,7 @@ Module collections.
                                   "core::result::Result::Ok",
                                   0
                                 |) in
-                              let kv :=
-                                M.copy (|
+                              let~ kv :
                                   Ty.apply
                                     (Ty.path "alloc::collections::btree::node::Handle")
                                     []
@@ -30768,9 +30759,8 @@ Module collections.
                                             "alloc::collections::btree::node::marker::LeafOrInternal"
                                         ];
                                       Ty.path "alloc::collections::btree::node::marker::KV"
-                                    ],
-                                  γ0_0
-                                |) in
+                                    ] :=
+                                M.read (| γ0_0 |) in
                               M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::option::Option")
@@ -31617,8 +31607,7 @@ Module collections.
                                   "core::result::Result::Ok",
                                   0
                                 |) in
-                              let kv :=
-                                M.copy (|
+                              let~ kv :
                                   Ty.apply
                                     (Ty.path "alloc::collections::btree::node::Handle")
                                     []
@@ -31634,9 +31623,8 @@ Module collections.
                                             "alloc::collections::btree::node::marker::LeafOrInternal"
                                         ];
                                       Ty.path "alloc::collections::btree::node::marker::KV"
-                                    ],
-                                  γ0_0
-                                |) in
+                                    ] :=
+                                M.read (| γ0_0 |) in
                               M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::option::Option")

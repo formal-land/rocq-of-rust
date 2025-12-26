@@ -7630,17 +7630,15 @@ Module errors.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter :=
-                              M.copy (|
+                            (let~ iter :
                                 Ty.apply
                                   (Ty.path "core::slice::iter::Iter")
                                   []
                                   [
                                     Ty.tuple
                                       [ Ty.path "move_binary_format::IndexKind"; Ty.path "u16" ]
-                                  ],
-                                γ
-                              |) in
+                                  ] :=
+                              M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],
@@ -8018,8 +8016,7 @@ Module errors.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter :=
-                              M.copy (|
+                            (let~ iter :
                                 Ty.apply
                                   (Ty.path "core::slice::iter::Iter")
                                   []
@@ -8030,9 +8027,8 @@ Module errors.
                                           "move_binary_format::file_format::FunctionDefinitionIndex";
                                         Ty.path "u16"
                                       ]
-                                  ],
-                                γ
-                              |) in
+                                  ] :=
+                              M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],
@@ -9221,17 +9217,15 @@ Module errors.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter :=
-                              M.copy (|
+                            (let~ iter :
                                 Ty.apply
                                   (Ty.path "core::slice::iter::Iter")
                                   []
                                   [
                                     Ty.tuple
                                       [ Ty.path "move_binary_format::IndexKind"; Ty.path "u16" ]
-                                  ],
-                                γ
-                              |) in
+                                  ] :=
+                              M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],
@@ -9609,8 +9603,7 @@ Module errors.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter :=
-                              M.copy (|
+                            (let~ iter :
                                 Ty.apply
                                   (Ty.path "core::slice::iter::Iter")
                                   []
@@ -9621,9 +9614,8 @@ Module errors.
                                           "move_binary_format::file_format::FunctionDefinitionIndex";
                                         Ty.path "u16"
                                       ]
-                                  ],
-                                γ
-                              |) in
+                                  ] :=
+                              M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],

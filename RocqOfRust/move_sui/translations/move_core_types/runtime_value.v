@@ -4211,17 +4211,15 @@ Module runtime_value.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "alloc::vec::into_iter::IntoIter")
                                       []
                                       [
                                         Ty.path "move_core_types::runtime_value::MoveValue";
                                         Ty.path "alloc::alloc::Global"
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -8176,8 +8174,7 @@ Module runtime_value.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                       []
@@ -8187,9 +8184,8 @@ Module runtime_value.
                                           []
                                           [ Ty.path "move_core_types::runtime_value::MoveTypeLayout"
                                           ]
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -9825,15 +9821,13 @@ Module runtime_value.
                                   [
                                     fun γ =>
                                       ltac:(M.monadic
-                                        (let iter :=
-                                          M.copy (|
+                                        (let~ iter :
                                             Ty.apply
                                               (Ty.path "core::slice::iter::Iter")
                                               []
                                               [ Ty.path "move_core_types::runtime_value::MoveValue"
-                                              ],
-                                            γ
-                                          |) in
+                                              ] :=
+                                          M.read (| γ |) in
                                         M.read (|
                                           M.loop (|
                                             Ty.tuple [],
@@ -10546,14 +10540,12 @@ Module runtime_value.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
-                                      [ Ty.path "move_core_types::runtime_value::MoveValue" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "move_core_types::runtime_value::MoveValue" ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -12886,8 +12878,7 @@ Module runtime_value.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                       []
@@ -12897,9 +12888,8 @@ Module runtime_value.
                                           []
                                           [ Ty.path "move_core_types::runtime_value::MoveTypeLayout"
                                           ]
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],

@@ -1729,8 +1729,7 @@ Module bls12_381.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::iter::adapters::zip::Zip")
                                       []
@@ -1743,9 +1742,8 @@ Module bls12_381.
                                           (Ty.path "core::slice::iter::Iter")
                                           []
                                           [ Ty.path "u8" ]
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],

@@ -61,16 +61,14 @@ Module log.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let iter :=
-                            M.copy (|
+                          (let~ iter :
                               Ty.associated_in_trait
                                 "core::iter::traits::collect::IntoIterator"
                                 []
                                 []
                                 impl_IntoIterator_Item____'a_Log_
-                                "IntoIter",
-                              γ
-                            |) in
+                                "IntoIter" :=
+                            M.read (| γ |) in
                           M.read (|
                             M.loop (|
                               Ty.tuple [],

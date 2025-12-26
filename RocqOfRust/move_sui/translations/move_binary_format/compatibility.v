@@ -1214,17 +1214,15 @@ Module compatibility.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "alloc::collections::btree::map::Iter")
                                       []
                                       [
                                         Ty.path "move_core_types::identifier::Identifier";
                                         Ty.path "move_binary_format::normalized::Struct"
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -1835,17 +1833,15 @@ Module compatibility.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "alloc::collections::btree::map::Iter")
                                       []
                                       [
                                         Ty.path "move_core_types::identifier::Identifier";
                                         Ty.path "move_binary_format::normalized::Function"
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -5476,17 +5472,15 @@ Module compatibility.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "alloc::collections::btree::map::Iter")
                                       []
                                       [
                                         Ty.path "move_core_types::identifier::Identifier";
                                         Ty.path "move_binary_format::normalized::Struct"
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -5821,17 +5815,15 @@ Module compatibility.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "alloc::collections::btree::map::Iter")
                                       []
                                       [
                                         Ty.path "move_core_types::identifier::Identifier";
                                         Ty.path "move_binary_format::normalized::Function"
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],

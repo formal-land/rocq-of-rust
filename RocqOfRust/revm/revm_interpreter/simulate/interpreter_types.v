@@ -1,12 +1,70 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import RocqOfRust.simulate.M.
+Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.links.aliases.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_specification.links.hardfork.
+
+Module InputTraits.
+  Class C
+      (WIRE_types : InterpreterTypes.Types.t) `{InterpreterTypes.Types.AreLinks WIRE_types} :
+      Type := {
+    (* fn target_address(&self) -> Address; *)
+    target_address :
+      forall
+        (self : WIRE_types.(InterpreterTypes.Types.Input)),
+      Address.t;
+    (* fn caller_address(&self) -> Address; *)
+    caller_address :
+      forall
+        (self : WIRE_types.(InterpreterTypes.Types.Input)),
+      Address.t;
+    (* fn input(&self) -> &[u8]; *)
+    input :
+      forall
+        (self : WIRE_types.(InterpreterTypes.Types.Input)),
+      Ref.t Pointer.Kind.Ref (list U8.t);
+    (* fn call_value(&self) -> U256; *)
+    call_value :
+      forall
+        (self : WIRE_types.(InterpreterTypes.Types.Input)),
+      aliases.U256.t;
+  }.
+
+  Module Eq.
+    Class t
+        (WIRE : Set) (WIRE_types : InterpreterTypes.Types.t)
+        `{Link WIRE} `{InterpreterTypes.Types.AreLinks WIRE_types}
+        (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+        (I : C WIRE_types) :
+        Prop := {
+      target_address
+        (interpreter : Interpreter.t WIRE WIRE_types)
+        (stack : Stack.t) :
+        let ref_interpreter : Ref.t Pointer.Kind.Ref _ := make_ref 0 in
+        let ref_self := {| Ref.core :=
+          SubPointer.Runner.apply
+            ref_interpreter.(Ref.core)
+            Interpreter.SubPointer.get_input
+        |} in
+        {{
+          SimulateM.eval_f
+            (run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_InputsTrait_for_Input).(InputsTrait.target_address).(TraitMethod.run)
+              ref_self
+            )
+            (interpreter :: stack)%stack 🌲
+          (
+            Output.Success (I.(target_address) interpreter.(Interpreter.input)),
+            (interpreter :: stack)%stack
+          )
+        }};
+    }.
+  End Eq.
+End InputTraits.
 
 Module Stack.
   Class C
@@ -268,6 +326,7 @@ Module InterpreterTypes.
       (WIRE_types : InterpreterTypes.Types.t) `{InterpreterTypes.Types.AreLinks WIRE_types} :
       Type := {
     Stack : Stack.C WIRE_types;
+    Input : InputTraits.C WIRE_types;
     Loop : Loop.C WIRE_types;
     RuntimeFlag : SRuntimeFlag.C WIRE_types;
   }.
@@ -280,6 +339,7 @@ Module InterpreterTypes.
         (I : C WIRE_types) :
         Prop := {
       Stack : Stack.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE I.(Stack);
+      Input : InputTraits.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE I.(Input);
       Loop : Loop.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE I.(Loop);
       RuntimeFlag : SRuntimeFlag.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE I.(RuntimeFlag);
     }.

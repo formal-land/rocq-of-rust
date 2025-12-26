@@ -222,8 +222,8 @@ Module modular.
                     ltac:(M.monadic
                       (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                       let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                      let result :=
-                        M.copy (| Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [], γ0_0 |) in
+                      let~ result : Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] :=
+                        M.read (| γ0_0 |) in
                       let overflow := M.copy (| Ty.path "bool", γ0_1 |) in
                       M.read (|
                         let~ _ : Ty.tuple [] :=

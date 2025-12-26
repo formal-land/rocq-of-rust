@@ -62,7 +62,7 @@ Definition match_mut (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
-                  let x := M.copy (| Ty.path "i32", γ0_0 |) in
+                  let~ x : Ty.path "i32" := M.read (| γ0_0 |) in
                   M.read (|
                     let~ _ : Ty.tuple [] :=
                       M.write (|

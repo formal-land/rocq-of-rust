@@ -3692,8 +3692,7 @@ Module net.
                                               [
                                                 fun γ =>
                                                   ltac:(M.monadic
-                                                    (let iter :=
-                                                      M.copy (|
+                                                    (let~ iter :
                                                         Ty.apply
                                                           (Ty.path
                                                             "core::iter::adapters::enumerate::Enumerate")
@@ -3703,9 +3702,8 @@ Module net.
                                                               (Ty.path "core::slice::iter::IterMut")
                                                               []
                                                               [ Ty.path "u8" ]
-                                                          ],
-                                                        γ
-                                                      |) in
+                                                          ] :=
+                                                      M.read (| γ |) in
                                                     M.read (|
                                                       M.loop (|
                                                         Ty.tuple [],

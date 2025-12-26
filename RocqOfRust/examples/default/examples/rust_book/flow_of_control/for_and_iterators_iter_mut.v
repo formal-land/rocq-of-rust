@@ -197,14 +197,12 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let iter :=
-                          M.copy (|
+                        (let~ iter :
                             Ty.apply
                               (Ty.path "core::slice::iter::IterMut")
                               []
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            γ
-                          |) in
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ] :=
+                          M.read (| γ |) in
                         M.read (|
                           M.loop (|
                             Ty.tuple [],

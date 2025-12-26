@@ -5068,11 +5068,12 @@ Module serializer.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
-                                  Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
-                                  γ
-                                |) in
+                              (let~ iter :
+                                  Ty.apply
+                                    (Ty.path "core::slice::iter::Iter")
+                                    []
+                                    [ Ty.path "u8" ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -6942,15 +6943,13 @@ Module serializer.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::slice::iter::Iter")
                                     []
                                     [ Ty.path "move_binary_format::file_format::StructTypeParameter"
-                                    ],
-                                  γ
-                                |) in
+                                    ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -8547,11 +8546,12 @@ Module serializer.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
-                                  Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
-                                  γ
-                                |) in
+                              (let~ iter :
+                                  Ty.apply
+                                    (Ty.path "core::slice::iter::Iter")
+                                    []
+                                    [ Ty.path "u8" ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -8878,11 +8878,12 @@ Module serializer.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
-                                  Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
-                                  γ
-                                |) in
+                              (let~ iter :
+                                  Ty.apply
+                                    (Ty.path "core::slice::iter::Iter")
+                                    []
+                                    [ Ty.path "u8" ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -9866,11 +9867,12 @@ Module serializer.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
-                                  Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
-                                  γ
-                                |) in
+                              (let~ iter :
+                                  Ty.apply
+                                    (Ty.path "core::slice::iter::Iter")
+                                    []
+                                    [ Ty.path "u8" ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -11125,14 +11127,13 @@ Module serializer.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::slice::iter::Iter")
                                     []
-                                    [ Ty.path "move_binary_format::file_format::FieldDefinition" ],
-                                  γ
-                                |) in
+                                    [ Ty.path "move_binary_format::file_format::FieldDefinition"
+                                    ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -12441,17 +12442,15 @@ Module serializer.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::slice::iter::Iter")
                                     []
                                     [
                                       Ty.path
                                         "move_binary_format::file_format::StructDefinitionIndex"
-                                    ],
-                                  γ
-                                |) in
+                                    ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -13008,14 +13007,12 @@ Module serializer.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::slice::iter::Iter")
                                     []
-                                    [ Ty.path "move_binary_format::file_format::SignatureToken" ],
-                                  γ
-                                |) in
+                                    [ Ty.path "move_binary_format::file_format::SignatureToken" ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -16342,12 +16339,10 @@ Module serializer.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.path
-                                    "move_binary_format::file_format::SignatureTokenPreorderTraversalIterWithDepth",
-                                  γ
-                                |) in
+                                    "move_binary_format::file_format::SignatureTokenPreorderTraversalIterWithDepth" :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -17132,14 +17127,12 @@ Module serializer.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::slice::iter::Iter")
                                     []
-                                    [ Ty.path "move_binary_format::file_format::AbilitySet" ],
-                                  γ
-                                |) in
+                                    [ Ty.path "move_binary_format::file_format::AbilitySet" ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -28125,14 +28118,12 @@ Module serializer.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::slice::iter::Iter")
                                     []
-                                    [ Ty.path "move_binary_format::file_format::Bytecode" ],
-                                  γ
-                                |) in
+                                    [ Ty.path "move_binary_format::file_format::Bytecode" ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -32491,17 +32482,15 @@ Module serializer.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::slice::iter::Iter")
                                                   []
                                                   [
                                                     Ty.path
                                                       "move_binary_format::file_format::ModuleHandle"
-                                                  ],
-                                                γ
-                                              |) in
+                                                  ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -33272,17 +33261,15 @@ Module serializer.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::slice::iter::Iter")
                                                   []
                                                   [
                                                     Ty.path
                                                       "move_binary_format::file_format::StructHandle"
-                                                  ],
-                                                γ
-                                              |) in
+                                                  ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -34062,17 +34049,15 @@ Module serializer.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::slice::iter::Iter")
                                                   []
                                                   [
                                                     Ty.path
                                                       "move_binary_format::file_format::FunctionHandle"
-                                                  ],
-                                                γ
-                                              |) in
+                                                  ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -34852,17 +34837,15 @@ Module serializer.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::slice::iter::Iter")
                                                   []
                                                   [
                                                     Ty.path
                                                       "move_binary_format::file_format::FunctionInstantiation"
-                                                  ],
-                                                γ
-                                              |) in
+                                                  ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -35632,17 +35615,15 @@ Module serializer.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::slice::iter::Iter")
                                                   []
                                                   [
                                                     Ty.path
                                                       "move_core_types::identifier::Identifier"
-                                                  ],
-                                                γ
-                                              |) in
+                                                  ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -36470,17 +36451,15 @@ Module serializer.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::slice::iter::Iter")
                                                   []
                                                   [
                                                     Ty.path
                                                       "move_core_types::account_address::AccountAddress"
-                                                  ],
-                                                γ
-                                              |) in
+                                                  ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -37244,17 +37223,15 @@ Module serializer.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::slice::iter::Iter")
                                                   []
                                                   [
                                                     Ty.path
                                                       "move_binary_format::file_format::Constant"
-                                                  ],
-                                                γ
-                                              |) in
+                                                  ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -38008,14 +37985,13 @@ Module serializer.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::slice::iter::Iter")
                                                   []
-                                                  [ Ty.path "move_core_types::metadata::Metadata" ],
-                                                γ
-                                              |) in
+                                                  [ Ty.path "move_core_types::metadata::Metadata"
+                                                  ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -38780,17 +38756,15 @@ Module serializer.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::slice::iter::Iter")
                                                   []
                                                   [
                                                     Ty.path
                                                       "move_binary_format::file_format::Signature"
-                                                  ],
-                                                γ
-                                              |) in
+                                                  ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -41839,17 +41813,15 @@ Module serializer.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::slice::iter::Iter")
                                                   []
                                                   [
                                                     Ty.path
                                                       "move_binary_format::file_format::StructDefinition"
-                                                  ],
-                                                γ
-                                              |) in
+                                                  ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -42649,17 +42621,15 @@ Module serializer.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::slice::iter::Iter")
                                                   []
                                                   [
                                                     Ty.path
                                                       "move_binary_format::file_format::StructDefInstantiation"
-                                                  ],
-                                                γ
-                                              |) in
+                                                  ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -43435,17 +43405,15 @@ Module serializer.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::slice::iter::Iter")
                                                   []
                                                   [
                                                     Ty.path
                                                       "move_binary_format::file_format::FieldHandle"
-                                                  ],
-                                                γ
-                                              |) in
+                                                  ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -44229,17 +44197,15 @@ Module serializer.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::slice::iter::Iter")
                                                   []
                                                   [
                                                     Ty.path
                                                       "move_binary_format::file_format::FieldInstantiation"
-                                                  ],
-                                                γ
-                                              |) in
+                                                  ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -45038,17 +45004,15 @@ Module serializer.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::slice::iter::Iter")
                                                   []
                                                   [
                                                     Ty.path
                                                       "move_binary_format::file_format::FunctionDefinition"
-                                                  ],
-                                                γ
-                                              |) in
+                                                  ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],
@@ -47067,17 +47031,15 @@ Module serializer.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::slice::iter::Iter")
                                                   []
                                                   [
                                                     Ty.path
                                                       "move_binary_format::file_format::ModuleHandle"
-                                                  ],
-                                                γ
-                                              |) in
+                                                  ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],

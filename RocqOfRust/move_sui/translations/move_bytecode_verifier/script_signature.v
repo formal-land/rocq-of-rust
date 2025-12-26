@@ -502,8 +502,7 @@ Module script_signature.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::iter::adapters::filter::Filter")
                                     []
@@ -540,9 +539,8 @@ Module script_signature.
                                             ]
                                         ]
                                         (Ty.path "bool")
-                                    ],
-                                  γ
-                                |) in
+                                    ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],

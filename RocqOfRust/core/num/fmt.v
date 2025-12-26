@@ -932,14 +932,12 @@ Module num.
                                             [
                                               fun γ =>
                                                 ltac:(M.monadic
-                                                  (let iter :=
-                                                    M.copy (|
+                                                  (let~ iter :
                                                       Ty.apply
                                                         (Ty.path "core::slice::iter::IterMut")
                                                         []
-                                                        [ Ty.path "u8" ],
-                                                      γ
-                                                    |) in
+                                                        [ Ty.path "u8" ] :=
+                                                    M.read (| γ |) in
                                                   M.read (|
                                                     M.loop (|
                                                       Ty.tuple [],
@@ -1052,7 +1050,7 @@ Module num.
                                         "core::num::fmt::Part::Num",
                                         0
                                       |) in
-                                    let v := M.copy (| Ty.path "u16", γ0_0 |) in
+                                    let~ v : Ty.path "u16" := M.read (| γ0_0 |) in
                                     M.read (|
                                       M.use
                                         (M.alloc (|
@@ -1190,8 +1188,7 @@ Module num.
                                             [
                                               fun γ =>
                                                 ltac:(M.monadic
-                                                  (let iter :=
-                                                    M.copy (|
+                                                  (let~ iter :
                                                       Ty.apply
                                                         (Ty.path "core::iter::adapters::rev::Rev")
                                                         []
@@ -1200,9 +1197,8 @@ Module num.
                                                             (Ty.path "core::slice::iter::IterMut")
                                                             []
                                                             [ Ty.path "u8" ]
-                                                        ],
-                                                      γ
-                                                    |) in
+                                                        ] :=
+                                                    M.read (| γ |) in
                                                   M.read (|
                                                     M.loop (|
                                                       Ty.tuple [],
@@ -1668,14 +1664,12 @@ Module num.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::slice::iter::Iter")
                                     []
-                                    [ Ty.path "core::num::fmt::Part" ],
-                                  γ
-                                |) in
+                                    [ Ty.path "core::num::fmt::Part" ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -2065,14 +2059,12 @@ Module num.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (|
+                                  (let~ iter :
                                       Ty.apply
                                         (Ty.path "core::slice::iter::Iter")
                                         []
-                                        [ Ty.path "core::num::fmt::Part" ],
-                                      γ
-                                    |) in
+                                        [ Ty.path "core::num::fmt::Part" ] :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],

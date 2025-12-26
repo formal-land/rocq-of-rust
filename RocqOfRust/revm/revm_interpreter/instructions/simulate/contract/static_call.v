@@ -6,7 +6,8 @@ Require Import alloy_primitives.bits.simulate.fixed.
 Require Import core.links.array.
 Require Import core.simulate.result.
 Require Import revm.revm_context_interface.links.host.
-Require Import revm.revm_context_interface.simalte.host.
+Require Import revm.revm_context_interface.links.journaled_state.
+Require Import revm.revm_context_interface.simulate.host.
 Require Import revm.revm_interpreter.instructions.contract.simulate.call_helpers.
 Require Import revm.revm_interpreter.instructions.links.contract.static_call.
 Require Import revm.revm_interpreter.instructions.simulate.macros.
@@ -35,9 +36,9 @@ Definition static_call
   let local_gas_limit :=
     Impl_Result_T_E.unwrap_or
       (TryFrom_Uint_for_u64.try_from local_gas_limit)
-      {| Integer.value := 2 ^ 64 - 1 |} in
+      {| Integer.value := (*2 ^ 64*) - 1 |} in
 
-  match get_memory_input_and_out_ranges interpreter with
+  match call_helpers.get_memory_input_and_out_ranges interpreter with
   | (None, interpreter) => (interpreter, host)
   | (Some (input, return_memory_offset), interpreter) =>
 
@@ -55,8 +56,14 @@ Definition static_call
     (interpreter, host)
   | (Some load, host) =>
 
+  let load := load <| AccountLoad.is_empty := false |> in
+  match call_helpers.calc_call_gas interpreter load false local_gas_limit with
+  | (None, interpreter) => (interpreter, host)
+  | (Some gas_limit, interpreter) =>
+  gas_macro interpreter gas_limit (fun interpreter => (interpreter, host)) (fun interpreter =>
+
   (interpreter, host)
-  end end)).
+  ) end end end)).
 
 Lemma static_call_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -87,7 +94,7 @@ Lemma static_call_eq
   }}.
 Proof.
   intros.
-  destruct InterpreterTypesEq as [[] [] []].
+  destruct InterpreterTypesEq as [[] [] [] []].
   destruct HostEq as [].
   unfold run_static_call, static_call; cbn.
   check_macro_eq spec_id set_instruction_result.
@@ -113,7 +120,7 @@ Proof.
     apply Impl_Result_T_E.unwrap_or_eq.
   }
   eapply Run.Call. {
-    apply get_memory_input_and_out_ranges_eq.
+    apply call_helpers.get_memory_input_and_out_ranges_eq.
   }
   cbn; fold @SimulateM.let_.
   destruct get_memory_input_and_out_ranges as [[[input return_memory_offset]|] ?interpreter];
@@ -136,5 +143,47 @@ Proof.
   }
   cbn.
   get_can_access.
+  get_can_access.
+  get_can_access.
+  eapply Run.Call. {
+    apply call_helpers.calc_call_gas_eq.
+  }
+  destruct call_helpers.calc_call_gas as [[gas_limit|] ?interpreter]; cbn; [|apply Run.Pure].
+
+  Require Import revm.revm_interpreter.simulate.gas.
+  unfold gas_macro;
+  eapply Run.Call; [
+    apply gas
+  |];
+  eapply Run.Call; [
+    apply Impl_Gas.record_cost_eq
+  |];
+  destruct Impl_Gas.record_cost;
+  (
+    eapply Run.Call; [
+      apply Run.Pure
+    |]
+  );
+  [|
+    eapply Run.Call; [
+      apply Run.Pure
+    |];
+    eapply Run.Call; [
+      apply (set_instruction_result _ _ instruction_result.InstructionResult.OutOfGas)
+    |];
+    apply Run.Pure
+  ].
+  cbn.
+  eapply Run.Call. {
+    apply Run.Pure.
+  }
+  cbn.
+  get_can_access.
+  eapply Run.Call. {
+    apply target_address.
+  }
+  cbn.
+  get_can_access.
+  eapply Run.Call. {
 Admitted.
 Global Opaque run_static_call.

@@ -52,7 +52,7 @@ Lemma add_eq
   }}.
 Proof.
   intros.
-  destruct InterpreterTypesEq as [[] []].
+  destruct InterpreterTypesEq as [[] [] [] []].
   cbn.
   gas_macro_eq H gas set_instruction_result.
   popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result.
@@ -100,7 +100,7 @@ Lemma mul_eq
   }}.
 Proof.
   intros.
-  destruct InterpreterTypesEq as [[] []].
+  destruct InterpreterTypesEq as [[] [] [] []].
   cbn.
   gas_macro_eq H gas set_instruction_result.
   popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result.
@@ -148,7 +148,7 @@ Lemma sub_eq
   }}.
 Proof.
   intros.
-  destruct InterpreterTypesEq as [[] []].
+  destruct InterpreterTypesEq as [[] [] [] []].
   cbn.
   gas_macro_eq H gas set_instruction_result.
   popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result.
@@ -200,7 +200,7 @@ Lemma div_eq
   }}.
 Proof.
   intros.
-  destruct InterpreterTypesEq as [[] []].
+  destruct InterpreterTypesEq as [[] [] [] []].
   cbn.
   gas_macro_eq H gas set_instruction_result.
   popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result.

@@ -343,15 +343,13 @@ Module collections.
                                       "alloc::collections::btree::node::LeftOrRight::Left",
                                       0
                                     |) in
-                                  let left_parent_kv :=
-                                    M.copy (|
+                                  let~ left_parent_kv :
                                       Ty.apply
                                         (Ty.path
                                           "alloc::collections::btree::node::BalancingContext")
                                         []
-                                        [ K; V ],
-                                      γ1_0
-                                    |) in
+                                        [ K; V ] :=
+                                    M.read (| γ1_0 |) in
                                   M.match_operator (|
                                     Ty.apply
                                       (Ty.path "core::result::Result")
@@ -686,15 +684,13 @@ Module collections.
                                       "alloc::collections::btree::node::LeftOrRight::Right",
                                       0
                                     |) in
-                                  let right_parent_kv :=
-                                    M.copy (|
+                                  let~ right_parent_kv :
                                       Ty.apply
                                         (Ty.path
                                           "alloc::collections::btree::node::BalancingContext")
                                         []
-                                        [ K; V ],
-                                      γ1_0
-                                    |) in
+                                        [ K; V ] :=
+                                    M.read (| γ1_0 |) in
                                   M.match_operator (|
                                     Ty.apply
                                       (Ty.path "core::result::Result")

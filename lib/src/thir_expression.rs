@@ -59,12 +59,19 @@ fn build_inner_match(
                 name,
                 ty,
                 is_with_ref,
+                is_with_mutability,
                 pattern,
             } => Rc::new(Expr::Let {
                 name: Some(name.clone()),
-                ty: None,
+                ty: if *is_with_ref || !*is_with_mutability {
+                    None
+                } else {
+                    Some(ty.clone())
+                },
                 init: if *is_with_ref {
                     Expr::local_var(&scrutinee).alloc(ty.clone())
+                } else if *is_with_mutability {
+                    Expr::local_var(&scrutinee).read()
                 } else {
                     Expr::local_var(&scrutinee).copy(ty.clone())
                 },
@@ -1382,6 +1389,7 @@ fn compile_stmts<'a>(
                                 ty: _,
                                 pattern: None,
                                 is_with_ref: false,
+                                is_with_mutability: _,
                             },
                             None,
                         ) => Rc::new(Expr::Let {

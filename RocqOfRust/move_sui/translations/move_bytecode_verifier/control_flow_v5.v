@@ -1506,7 +1506,7 @@ Module control_flow_v5.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let iter := M.copy (| Ty.associated_unknown, γ |) in
+                          (let~ iter : Ty.associated_unknown := M.read (| γ |) in
                           M.read (|
                             M.loop (|
                               Ty.tuple [],
@@ -2625,7 +2625,7 @@ Module control_flow_v5.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter := M.copy (| Ty.associated_unknown, γ |) in
+                              (let~ iter : Ty.associated_unknown := M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -7061,8 +7061,7 @@ Module control_flow_v5.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let iter :=
-                            M.copy (|
+                          (let~ iter :
                               Ty.apply
                                 (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                 []
@@ -7071,9 +7070,8 @@ Module control_flow_v5.
                                     (Ty.path "core::slice::iter::Iter")
                                     []
                                     [ Ty.path "move_bytecode_verifier::control_flow_v5::Label" ]
-                                ],
-                              γ
-                            |) in
+                                ] :=
+                            M.read (| γ |) in
                           M.read (|
                             M.loop (|
                               Ty.tuple [],

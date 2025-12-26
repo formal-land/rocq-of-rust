@@ -5660,15 +5660,13 @@ Module collections.
                                                           [
                                                             fun γ =>
                                                               ltac:(M.monadic
-                                                                (let iter :=
-                                                                  M.copy (|
+                                                                (let~ iter :
                                                                     Ty.apply
                                                                       (Ty.path
                                                                         "alloc::collections::btree::set::Iter")
                                                                       []
-                                                                      [ T ],
-                                                                    γ
-                                                                  |) in
+                                                                      [ T ] :=
+                                                                  M.read (| γ |) in
                                                                 M.read (|
                                                                   M.loop (|
                                                                     Ty.tuple [],

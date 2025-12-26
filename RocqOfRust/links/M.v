@@ -1080,6 +1080,30 @@ Module LinkM.
       (fun _ => k (Output.Exception Output.Exception.Break))
       (fun _ => k (Output.Exception Output.Exception.Continue))
       (fun _ => k (Output.Exception Output.Exception.BreakMatch)).
+
+  Fixpoint let_ {R Output A : Set} (e1 : t R A) (e2 : Output.t R A -> t R Output) :
+      t R Output :=
+    match e1 with
+    | Pure output => e2 output
+    | CallPrimitive primitive k =>
+      CallPrimitive primitive (fun output => let_ (k output) e2)
+    | Let e k => Let e (fun output => let_ (k output) e2)
+    | LetAlloc e k => LetAlloc e (fun output => let_ (k output) e2)
+    | Call run_f k => Call run_f (fun output => let_ (k output) e2)
+    | Loop body k => Loop body (fun output => let_ (k output) e2)
+    | IfThenElse cond then_ else_ =>
+      IfThenElse cond
+        (let_ then_ e2)
+        (let_ else_ e2)
+    | MatchOutput output k_success k_return k_break k_continue k_break_match =>
+      MatchOutput output
+       (fun output => let_ (k_success output) e2)
+       (fun return_ => let_ (k_return return_) e2)
+       (fun _ => let_ (k_break tt) e2)
+       (fun _ => let_ (k_continue tt) e2)
+       (fun _ => let_ (k_break_match tt) e2)
+    | Impossible payload => Impossible payload
+    end.
 End LinkM.
 
 (* Definition evaluate_get_sub_pointer {R A : Set} `{Link A} {index : Pointer.Index.t}

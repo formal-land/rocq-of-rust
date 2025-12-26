@@ -13,6 +13,28 @@ Module Impl_Result_T_E.
     | Result.Err _ => default
     end.
 
+  (*
+  Lemma unwrap_or_eq_context {T E : Set} `{Link T} `{Link E} (context : Stack.t)
+      (self : Self T E) (default : T) :
+    {{ context; []%stack |
+      links.M.evaluate (result.Impl_Result_T_E.run_unwrap_or T E self default).(Run.run_f) 🌲
+      Output.Success (unwrap_or self default)
+    | context; []%stack }}.
+  Proof.
+    cbn.
+    repeat apply ContextRun.CallPrimitiveStateAlloc.
+    eapply ContextRun.LetUnfold.
+    apply ContextRun.CallPrimitiveGetSubPointer with
+      (runner := Result.SubPointer.get_Ok_0 _ _).
+    destruct self as [value|].
+    { eapply ContextRun.LetAllocSuccess. {
+        apply ContextRun.CallPrimitiveStateReadImmediateSome.
+        apply ContextRun.Pure.
+      }
+      { cbn.
+  Admitted.
+  *)
+
   Lemma unwrap_or_eq {T E : Set} `{Link T} `{Link E} (stack : Stack.t)
       (self : Self T E) (default : T) :
     {{
