@@ -20,6 +20,7 @@ Instance run_pack_bits_le
     R.
 Proof.
 Admitted.
+Global Opaque run_pack_bits_le.
 
 (* 
 pub fn add2<AB: AirBuilder>(
@@ -42,7 +43,8 @@ pub fn add2<AB: AirBuilder>(
     air.utils.run_add2 [] [ Φ AB ] [ φ builder; φ a; φ b; φ c ]
     unit.
 Proof.
-Admitted. *)
+Admitted.
+Global Opaque run_add2. *)
 
 (* 
 pub fn xor_32_shift<AB: AirBuilder>(
@@ -67,4 +69,5 @@ pub fn xor_32_shift<AB: AirBuilder>(
     air.utils.run_add2 [] [ Φ AB ] [ φ builder; φ a; φ b; φ c; φ shift ]
     unit.
 Proof.
-Admitted. *)
+Admitted.
+Global Opaque run_xor_32_shift. *)

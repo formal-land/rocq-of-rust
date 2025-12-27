@@ -56,6 +56,7 @@ Proof.
     now pose proof (run_pointer_coercion_intrinsic_reify_fn_pointer F).
   }
 Defined.
+Global Opaque run_instruction_table.
 
 (*
 pub const fn instruction<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -76,3 +77,4 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_instruction.

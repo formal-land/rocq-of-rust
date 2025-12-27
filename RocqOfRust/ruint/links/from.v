@@ -25,6 +25,7 @@ Module Impl_Uint.
       (from.Impl_ruint_Uint_BITS_LIMBS.from (φ BITS) (φ LIMBS)) [] [ Φ T ] [ φ value ]
       (Self BITS LIMBS).
   Admitted.
+  Global Opaque run_from.
 End Impl_Uint.
 Export Impl_Uint.
 
@@ -69,6 +70,7 @@ Module TryFrom_Uint_for_u64.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_try_from.
 
   Definition Run_try_from (BITS LIMBS : Usize.t) :
     TryFrom.Run_try_from Self (Impl_Uint.Self BITS LIMBS) (FromUintError.t U64.t).

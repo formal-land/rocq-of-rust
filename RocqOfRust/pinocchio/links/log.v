@@ -16,6 +16,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_sol_log.
 
 Instance run_sol_log_64
   (arg1 arg2 arg3 arg4 arg5 : U64.t) :
@@ -28,6 +29,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_sol_log_64.
 
 Instance run_sol_log_data
   (data : Ref.t Pointer.Kind.Ref (list (list (Integer.t IntegerKind.U8)))) :
@@ -40,6 +42,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_sol_log_data.
 
 Instance run_sol_log_slice
   (slice : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8))) :
@@ -52,6 +55,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_sol_log_slice.
 
 Instance run_sol_log_params
   (accounts : Ref.t Pointer.Kind.Ref (list AccountInfo.t))
@@ -65,6 +69,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_sol_log_params.
 
 Instance run_sol_log_compute_units :
   Run.Trait
@@ -75,3 +80,4 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_sol_log_compute_units.

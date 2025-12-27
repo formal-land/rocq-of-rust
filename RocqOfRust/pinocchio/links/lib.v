@@ -14,6 +14,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_SUCCESS.
 
 Instance run_MAX_TX_ACCOUNTS :
   Run.Trait
@@ -26,12 +27,14 @@ Proof.
     + admit.
     + admit.
 Admitted.
+Global Opaque run_MAX_TX_ACCOUNTS.
 
 Instance run_BPF_ALIGN_OF_U128 :
   Run.Trait
     value_BPF_ALIGN_OF_U128 [] [] []
     (Ref.t Pointer.Kind.Raw Usize.t).
 Proof. constructor. run_symbolic. Defined.
+Global Opaque run_BPF_ALIGN_OF_U128.
 
 Instance run_NON_DUP_MARKER :
   Run.Trait
@@ -42,6 +45,7 @@ Proof. constructor. run_symbolic.
     + admit.
     + admit.
 Admitted.
+Global Opaque run_NON_DUP_MARKER.
 
 Module ProgramResult.
     Definition t : Set :=

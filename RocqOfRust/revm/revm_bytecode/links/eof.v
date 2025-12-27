@@ -166,5 +166,6 @@ Module Impl_Eof.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_decode.
 End Impl_Eof.
 Export Impl_Eof.

@@ -98,6 +98,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_MAX_POSITIVE_VALUE.
 
 (* pub const MIN_NEGATIVE_VALUE: U256 *)
 Instance run_MIN_NEGATIVE_VALUE :
@@ -107,6 +108,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_MIN_NEGATIVE_VALUE.
 
 (* const FLIPH_BITMASK_U64: u64 *)
 Instance run_FLIPH_BITMASK_U64 :
@@ -115,6 +117,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_FLIPH_BITMASK_U64.
 
 (* pub fn i256_sign(val: &U256) -> Sign *)
 Instance run_i256_sign (val : Ref.t Pointer.Kind.Ref aliases.U256.t) :
@@ -123,6 +126,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_i256_sign.
 
 (* pub fn two_compl(op: U256) -> U256 *)
 Instance run_two_compl (op : aliases.U256.t) :
@@ -131,6 +135,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_two_compl.
 
 (* pub fn two_compl_mut(op: &mut U256) *)
 Instance run_two_compl_mut (op : Ref.t Pointer.Kind.MutRef aliases.U256.t) :
@@ -139,6 +144,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_two_compl_mut.
 
 (* pub fn i256_sign_compl(val: &mut U256) -> Sign *)
 Instance run_i256_sign_compl (val : Ref.t Pointer.Kind.MutRef aliases.U256.t) :
@@ -148,6 +154,7 @@ Proof.
   destruct Impl_PartialEq_for_Sign.run.
   run_symbolic.
 Defined.
+Global Opaque run_i256_sign_compl.
 
 (* pub fn u256_remove_sign(val: &mut U256) *)
 Instance run_u256_remove_sign (val : Ref.t Pointer.Kind.MutRef aliases.U256.t) :
@@ -156,6 +163,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_u256_remove_sign.
 
 (* pub fn i256_cmp(first: &U256, second: &U256) -> Ordering *)
 Instance run_i256_cmp (first second : Ref.t Pointer.Kind.Ref aliases.U256.t) :
@@ -166,6 +174,7 @@ Proof.
   destruct (Impl_Ord_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_i256_cmp.
 
 (* pub fn i256_div(mut first: U256, mut second: U256) -> U256 *)
 Instance run_i256_div (first second : aliases.U256.t) :
@@ -177,6 +186,7 @@ Proof.
   destruct (Impl_Div_for_Uint_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_i256_div.
 
 (* pub fn i256_mod(mut first: U256, mut second: U256) -> U256 *)
 Instance run_i256_mod (first second : aliases.U256.t) :
@@ -187,3 +197,4 @@ Proof.
   destruct (Impl_Rem_for_Uint_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_i256_mod.

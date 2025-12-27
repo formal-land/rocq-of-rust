@@ -16,6 +16,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_sol_memcpy.
 
 Instance run_copy_val
   (A : Set) `{Link A}
@@ -30,6 +31,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_copy_val.
 
 Instance run_sol_memmove
   (dst : Ref.t Pointer.Kind.Raw U8.t)
@@ -44,6 +46,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_sol_memmove.
 
 Instance run_sol_memcmp
   (s1 : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8)))
@@ -58,6 +61,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_sol_memcmp.
 
 Instance run_sol_memset
   (s : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8)))
@@ -72,3 +76,4 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_sol_memset.

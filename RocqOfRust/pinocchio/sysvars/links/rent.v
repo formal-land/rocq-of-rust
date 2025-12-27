@@ -20,6 +20,7 @@ Proof.
   - admit.
   - admit.
 Admitted.
+Global Opaque run_RENT_ID.
 
 Instance run_DEFAULT_LAMPORTS_PER_BYTE_YEAR :
   Run.Trait
@@ -28,6 +29,7 @@ Instance run_DEFAULT_LAMPORTS_PER_BYTE_YEAR :
 Proof.
   constructor. run_symbolic.
 Defined.
+Global Opaque run_DEFAULT_LAMPORTS_PER_BYTE_YEAR.
 
 Instance run_DEFAULT_EXEMPTION_THRESHOLD :
   Run.Trait
@@ -36,6 +38,7 @@ Instance run_DEFAULT_EXEMPTION_THRESHOLD :
 Proof.
   constructor. admit.
 Admitted.
+Global Opaque run_DEFAULT_EXEMPTION_THRESHOLD.
 
 Instance run_DEFAULT_EXEMPTION_THRESHOLD_AS_U64 :
   Run.Trait
@@ -44,6 +47,7 @@ Instance run_DEFAULT_EXEMPTION_THRESHOLD_AS_U64 :
 Proof.
   constructor. run_symbolic.
 Defined.
+Global Opaque run_DEFAULT_EXEMPTION_THRESHOLD_AS_U64.
 
 Instance run_F64_EXEMPTION_THRESHOLD_AS_U64 :
   Run.Trait
@@ -52,14 +56,16 @@ Instance run_F64_EXEMPTION_THRESHOLD_AS_U64 :
 Proof.
   constructor. run_symbolic.
 Defined.
+Global Opaque run_F64_EXEMPTION_THRESHOLD_AS_U64.
 
-Instance run_DEFAULT_BURN_PERCENT_rent :
+Instance run_DEFAULT_BURN_PERCENT :
   Run.Trait
     pinocchio.sysvars.rent.sysvars.rent.value_DEFAULT_BURN_PERCENT [] [] []
     (Ref.t Pointer.Kind.Raw U8.t).
 Proof.
   constructor. run_symbolic.
 Defined.
+Global Opaque run_DEFAULT_BURN_PERCENT.
 
 Instance run_ACCOUNT_STORAGE_OVERHEAD :
   Run.Trait
@@ -68,6 +74,7 @@ Instance run_ACCOUNT_STORAGE_OVERHEAD :
 Proof.
   constructor. run_symbolic.
 Defined.
+Global Opaque run_ACCOUNT_STORAGE_OVERHEAD.
 
 Module Rent.
   Record t : Set := {
@@ -120,6 +127,7 @@ Module Impl_Rent.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_from_account_info.
 
   Instance run_from_account_info_unchecked
     (account_info : Ref.t Pointer.Kind.Ref AccountInfo.t) :
@@ -131,6 +139,7 @@ Module Impl_Rent.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_from_account_info_unchecked.
 
   Instance run_from_bytes
     (bytes : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8))) :
@@ -142,6 +151,7 @@ Module Impl_Rent.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_from_bytes.
 
   Instance run_from_bytes_unchecked
     (bytes : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8))) :
@@ -153,6 +163,7 @@ Module Impl_Rent.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_from_bytes_unchecked.
 
   Instance run_calculate_burn
     (self : Ref.t Pointer.Kind.Ref Self)
@@ -165,6 +176,7 @@ Module Impl_Rent.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_calculate_burn.
 
   Instance run_due
     (self : Ref.t Pointer.Kind.Ref Self)
@@ -179,6 +191,7 @@ Module Impl_Rent.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_due.
 
   Instance run_due_amount
     (self : Ref.t Pointer.Kind.Ref Self)
@@ -192,6 +205,7 @@ Module Impl_Rent.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_due_amount.
 
   Instance run_minimum_balance
     (self : Ref.t Pointer.Kind.Ref Self)
@@ -204,6 +218,7 @@ Module Impl_Rent.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_minimum_balance.
 
   Instance run_is_exempt
     (self : Ref.t Pointer.Kind.Ref Self)
@@ -217,6 +232,7 @@ Module Impl_Rent.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_is_exempt.
 
   Instance run_is_default_rent_threshold
     (self : Ref.t Pointer.Kind.Ref Self) :
@@ -228,6 +244,7 @@ Module Impl_Rent.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_is_default_rent_threshold.
 End Impl_Rent.
 
 Module Impl_RentDue.
@@ -243,6 +260,7 @@ Module Impl_RentDue.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_lamports.
 
   Instance run_is_exempt
     (self : Ref.t Pointer.Kind.Ref Self) :
@@ -254,6 +272,7 @@ Module Impl_RentDue.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_is_exempt.
 End Impl_RentDue.
 
 Module Impl_Default_for_Rent.

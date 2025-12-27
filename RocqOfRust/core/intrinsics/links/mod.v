@@ -9,6 +9,7 @@ Instance run_three_way_compare (integer_kind : IntegerKind.t) (x y : Integer.t i
     Ordering.t.
 Proof.
 Admitted.
+Global Opaque run_three_way_compare.
 
 Instance run_saturating_add (integer_kind : IntegerKind.t) (x y : Integer.t integer_kind) :
   Run.Trait
@@ -16,6 +17,7 @@ Instance run_saturating_add (integer_kind : IntegerKind.t) (x y : Integer.t inte
     (Integer.t integer_kind).
 Proof.
 Admitted.
+Global Opaque run_saturating_add.
 
 Instance run_saturating_sub (integer_kind : IntegerKind.t) (x y : Integer.t integer_kind) :
   Run.Trait
@@ -23,6 +25,7 @@ Instance run_saturating_sub (integer_kind : IntegerKind.t) (x y : Integer.t inte
     (Integer.t integer_kind).
 Proof.
 Admitted.
+Global Opaque run_saturating_sub.
 
 Instance run_sub_with_overflow
   (x y : Integer.t IntegerKind.U64) :
@@ -34,6 +37,7 @@ Instance run_sub_with_overflow
     (Integer.t IntegerKind.U64 * bool).
 Proof.
 Admitted.
+Global Opaque run_sub_with_overflow.
 
 (* pub const unsafe fn transmute<Src, Dst>(_src: Src) -> Dst *)
 Instance run_transmute (Src Dst : Set) `{Link Src} `{Link Dst} (src : Src) :
@@ -41,12 +45,14 @@ Instance run_transmute (Src Dst : Set) `{Link Src} `{Link Dst} (src : Src) :
     intrinsics.transmute [] [ Φ Src; Φ Dst ] [ φ src ] Dst.
 Proof.
 Admitted.
+Global Opaque run_transmute.
 
 Instance run_discriminant_value (ref : Ref.t Pointer.Kind.Ref Ordering.t) :
   Run.Trait intrinsics.discriminant_value [] [Φ Ordering.t] [φ ref]
              (Integer.t IntegerKind.I8).
 Proof.
 Admitted.
+Global Opaque run_discriminant_value.
 
 (* pub const unsafe fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: usize) *)
 Instance run_copy_nonoverlapping {T : Set} `{Link T}
@@ -58,3 +64,4 @@ Instance run_copy_nonoverlapping {T : Set} `{Link T}
     unit.
 Proof.
 Admitted.
+Global Opaque run_copy_nonoverlapping.

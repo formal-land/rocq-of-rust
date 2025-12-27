@@ -12,5 +12,6 @@ Module Impl_Slice.
   Instance run_to_vec (T : Set) `{Link T} (self : Ref.t Pointer.Kind.Ref (Self T)) :
     Run.Trait (slice.Impl_slice_T.to_vec (Φ T)) [] [] [φ self] (Vec.t T Global.t).
   Admitted.
+  Global Opaque run_to_vec.
 End Impl_Slice.
 Export Impl_Slice.

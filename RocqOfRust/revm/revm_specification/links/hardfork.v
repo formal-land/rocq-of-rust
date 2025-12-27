@@ -423,6 +423,7 @@ Module Impl_SpecId.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_n.
 
   Instance run_try_from_u8 (spec_id : U8.t) :
     Run.Trait
@@ -432,6 +433,7 @@ Module Impl_SpecId.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_try_from_u8.
 
   Instance run_is_enabled_in (self other : Self) :
     Run.Trait
@@ -447,5 +449,6 @@ Module Impl_SpecId.
     }
     run_symbolic.
   Defined.
+  Global Opaque run_is_enabled_in.
 End Impl_SpecId.
 Export (hints) Impl_SpecId.

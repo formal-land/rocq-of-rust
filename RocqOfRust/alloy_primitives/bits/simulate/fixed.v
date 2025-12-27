@@ -21,5 +21,4 @@ Module Impl_From_U256_for_FixedBytes_32.
       )
     }}.
   Admitted.
-  Global Opaque Impl_From_U256_for_FixedBytes_32.run_from.
 End Impl_From_U256_for_FixedBytes_32.

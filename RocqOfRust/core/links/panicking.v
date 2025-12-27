@@ -86,3 +86,4 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_assert_failed.

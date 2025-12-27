@@ -15,5 +15,6 @@ Module Impl_pointer_const_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_add.
 End Impl_pointer_const_T.
 Export Impl_pointer_const_T.

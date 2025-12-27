@@ -19,6 +19,7 @@ Instance run_sstore_refund
 Proof.
   constructor.
 Admitted.
+Global Opaque run_sstore_refund.
 
 (* pub const fn create2_cost(len: usize) -> Option<u64> *)
 Instance run_create2_cost (len : Usize.t) :
@@ -29,6 +30,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_create2_cost.
 
 (* pub const fn log2floor(value: U256) -> u64 *)
 Instance run_log2floor (value : aliases.U256.t) :
@@ -39,6 +41,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_log2floor.
 
 (* pub fn exp_cost(spec_id: SpecId, power: U256) -> Option<u64> *)
 Instance run_exp_cost (spec_id : SpecId.t) (power : aliases.U256.t) :
@@ -49,6 +52,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_exp_cost.
 
 (* pub const fn copy_cost_verylow(len: usize) -> Option<u64> *)
 Instance run_copy_cost_verylow (len : Usize.t) :
@@ -59,6 +63,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_copy_cost_verylow.
 
 (* pub const fn extcodecopy_cost(
     spec_id: SpecId,
@@ -76,6 +81,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_extcodecopy_cost.
 
 (* pub const fn copy_cost(base_cost: u64, len: usize) -> Option<u64> *)
 Instance run_copy_cost (base_cost : U64.t) (len : Usize.t) :
@@ -86,6 +92,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_copy_cost.
 
 (* pub const fn log_cost(n: u8, len: u64) -> Option<u64> *)
 Instance run_log_cost (n : U8.t) (len : U64.t) :
@@ -96,6 +103,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_log_cost.
 
 (* pub const fn keccak256_cost(len: usize) -> Option<u64> *)
 Instance run_keccak256_cost (len : Usize.t) :
@@ -106,6 +114,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_keccak256_cost.
 
 (* pub const fn cost_per_word(len: usize, multiple: u64) -> Option<u64> *)
 Instance run_cost_per_word (len : Usize.t) (multiple : U64.t) :
@@ -116,6 +125,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_cost_per_word.
 
 (* pub const fn initcode_cost(len: usize) -> u64 *)
 Instance run_initcode_cost (len : Usize.t) :
@@ -126,6 +136,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_initcode_cost.
 
 (* pub const fn sload_cost(spec_id: SpecId, is_cold: bool) -> u64 *)
 Instance run_sload_cost (spec_id : SpecId.t) (is_cold : bool) :
@@ -136,6 +147,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_sload_cost.
 
 (* pub fn sstore_cost(spec_id: SpecId, vals: &SStoreResult, is_cold: bool) -> u64 *)
 Instance run_sstore_cost
@@ -149,6 +161,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_sstore_cost.
 
 (* pub const fn istanbul_sstore_cost<const SLOAD_GAS: u64, const SSTORE_RESET_GAS: u64>(
     vals: &SStoreResult,
@@ -161,6 +174,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_istanbul_sstore_cost.
 
 (* pub const fn frontier_sstore_cost(vals: &SStoreResult) -> u64 *)
 Instance run_frontier_sstore_cost (vals : Ref.t Pointer.Kind.Ref SStoreResult.t) :
@@ -171,6 +185,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_frontier_sstore_cost.
 
 (* pub const fn selfdestruct_cost(spec_id: SpecId, res: StateLoad<SelfDestructResult>) -> u64 *)
 Instance run_selfdestruct_cost
@@ -183,6 +198,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_selfdestruct_cost.
 
 (* pub const fn call_cost(spec_id: SpecId, transfers_value: bool, account_load: AccountLoad) -> u64 *)
 Instance run_call_cost
@@ -196,6 +212,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_call_cost.
 
 (* pub const fn warm_cold_cost(is_cold: bool) -> u64 *)
 Instance run_warm_cold_cost (is_cold : bool) :
@@ -206,6 +223,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_warm_cold_cost.
 
 (* pub const fn warm_cold_cost_with_delegation(load: Eip7702CodeLoad<()>) -> u64 *)
 Instance run_warm_cold_cost_with_delegation (load : Eip7702CodeLoad.t unit) :
@@ -216,6 +234,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_warm_cold_cost_with_delegation.
 
 (* pub const fn memory_gas(num_words: usize) -> u64 *)
 Instance run_memory_gas (num_words : Usize.t) :
@@ -226,6 +245,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_memory_gas.
 
 (* pub fn validate_initial_tx_gas<AccessListT: AccessListTrait>(
     spec_id: SpecId,
@@ -248,3 +268,4 @@ Instance run_validate_initial_tx_gas
 Proof.
   constructor.
 Admitted.
+Global Opaque run_validate_initial_tx_gas.

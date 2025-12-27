@@ -9,3 +9,4 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_unreachable_unchecked.

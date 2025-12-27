@@ -28,6 +28,7 @@ Module entrypoint.
       - admit.
       - admit.
     Admitted.
+    Global Opaque run_deserialize.
   End deserialize.
 
   Module parse.
@@ -52,5 +53,6 @@ Module entrypoint.
       - admit.
       - admit. 
     Admitted.
+    Global Opaque run.
   End parse.
 End entrypoint.

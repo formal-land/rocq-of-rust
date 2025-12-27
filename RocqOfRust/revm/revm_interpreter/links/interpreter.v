@@ -47,6 +47,7 @@ Module Impl_Interpreter.
     destruct run_CustomInstruction_for_FN.
     run_symbolic.
   Defined.
+  Global Opaque run_step.
 
   (*
   pub fn run<FN, H: Host>(
@@ -79,4 +80,5 @@ Module Impl_Interpreter.
     (* now eapply run_step.
   Defined. *)
   Admitted.
+  Global Opaque run_run.
 End Impl_Interpreter.

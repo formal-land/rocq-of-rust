@@ -55,6 +55,7 @@ Proof.
   destruct (Impl_AsRef_for_Slice.run U8.t).
   run_symbolic.
 Defined.
+Global Opaque run_keccak256.
 
 (*
 pub fn address<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -80,6 +81,7 @@ Proof.
   destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
   run_symbolic.
 Defined.
+Global Opaque run_address.
 
 (*
 pub fn caller<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -105,6 +107,7 @@ Proof.
   destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
   run_symbolic.
 Defined.
+Global Opaque run_caller.
 
 (*
 pub fn codesize<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -129,6 +132,7 @@ Proof.
   destruct run_LegacyBytecode_for_Bytecode.
   run_symbolic.
 Defined.
+Global Opaque run_codesize.
 
 (*
 pub fn memory_resize(
@@ -154,6 +158,7 @@ Proof.
   destruct run_MemoryTrait_for_Memory.
   run_symbolic.
 Defined.
+Global Opaque run_memory_resize.
 
 (*
 pub fn codecopy<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -180,6 +185,7 @@ Proof.
   destruct Impl_TryFrom_u64_for_usize.run.
   run_symbolic.
 Defined.
+Global Opaque run_codecopy.
 
 (*
 pub fn calldataload<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -208,6 +214,7 @@ Proof.
   destruct Impl_Ord_for_usize.run.
   run_symbolic.
 Defined.
+Global Opaque run_calldataload.
 
 (*
 pub fn calldatasize<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -232,6 +239,7 @@ Proof.
   destruct run_InputsTrait_for_Input.
   run_symbolic.
 Defined.
+Global Opaque run_calldatasize.
 
 (*
 pub fn callvalue<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -256,6 +264,7 @@ Proof.
   destruct run_InputsTrait_for_Input.
   run_symbolic.
 Defined.
+Global Opaque run_callvalue.
 
 (*
 pub fn calldatacopy<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -282,6 +291,7 @@ Proof.
   destruct Impl_TryFrom_u64_for_usize.run.
   run_symbolic.
 Defined.
+Global Opaque run_calldatacopy.
 
 (*
 pub fn returndatasize<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -307,6 +317,7 @@ Proof.
   destruct run_ReturnData_for_ReturnData.
   run_symbolic.
 Defined.
+Global Opaque run_returndatasize.
 
 (*
 pub fn returndatacopy<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -334,6 +345,7 @@ Proof.
   destruct Impl_TryFrom_u64_for_usize.run.
   run_symbolic.
 Defined.
+Global Opaque run_returndatacopy.
 
 (*
 pub fn returndataload<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -384,6 +396,7 @@ Proof.
   }
   run_symbolic.
 Defined.
+Global Opaque run_returndataload.
 
 (*
 pub fn gas<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -407,3 +420,4 @@ Proof.
   destruct run_LoopControl_for_Control.
   run_symbolic.
 Defined.
+Global Opaque run_gas.

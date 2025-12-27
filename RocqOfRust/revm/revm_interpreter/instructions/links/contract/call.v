@@ -67,3 +67,4 @@ Proof.
   destruct Impl_IntoAddress_for_U256.run.
   run_symbolic.
 Defined.
+Global Opaque run_call.

@@ -60,6 +60,7 @@ Proof.
   }
   run_symbolic.
 Defined.
+Global Opaque run_data_load.
 
 (*
 pub fn data_loadn<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -101,6 +102,7 @@ Proof.
   }
   run_symbolic.
 Defined.
+Global Opaque run_data_loadn.
 
 (*
 pub fn data_size<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -126,6 +128,7 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   run_symbolic.
 Defined.
+Global Opaque run_data_size.
 
 (*
 pub fn data_copy<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -153,3 +156,4 @@ Proof.
   destruct Impl_TryFrom_u64_for_usize.run.
   run_symbolic.
 Defined.
+Global Opaque run_data_copy.

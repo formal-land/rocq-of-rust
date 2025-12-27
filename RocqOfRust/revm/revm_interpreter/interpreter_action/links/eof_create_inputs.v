@@ -82,5 +82,6 @@ Module Impl_EOFCreateInputs.
       [] [] [ φ caller; φ created_address; φ value; φ eof_init_code; φ gas_limit; φ input ]
       EOFCreateInputs.t.
   Admitted.
+  Global Opaque run_new_opcode.
 End Impl_EOFCreateInputs.
 Export Impl_EOFCreateInputs.

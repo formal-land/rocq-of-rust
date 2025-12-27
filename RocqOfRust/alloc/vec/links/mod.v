@@ -131,6 +131,7 @@ Module Impl_Vec_T.
       repeat smpl of_value.
     }
   Defined.
+  Global Opaque run_new.
 
   (* pub fn with_capacity(capacity: usize) -> Self *)
   Instance run_with_capacity {T : Set} `{Link T} (capacity : Usize.t) :
@@ -138,6 +139,7 @@ Module Impl_Vec_T.
       (vec.Impl_alloc_vec_Vec_T_alloc_alloc_Global.with_capacity (Φ T)) [] [] [φ capacity]
       (Self T).
   Admitted.
+  Global Opaque run_with_capacity.
 End Impl_Vec_T.
 Export Impl_Vec_T.
 
@@ -151,21 +153,25 @@ Module Impl_Vec_T_A.
   Instance run_len {T A : Set} `{Link T} `{Link A} (self : Ref.t Pointer.Kind.Ref (Self T A)) :
     Run.Trait (vec.Impl_alloc_vec_Vec_T_A.len (Φ T) (Φ A)) [] [] [φ self] Usize.t.
   Admitted.
+  Global Opaque run_len.
 
   (* pub const fn is_empty(&self) -> bool *)
   Instance run_is_empty {T A : Set} `{Link T} `{Link A} (self : Ref.t Pointer.Kind.Ref (Self T A)) :
     Run.Trait (vec.Impl_alloc_vec_Vec_T_A.is_empty (Φ T) (Φ A)) [] [] [φ self] bool.
   Admitted.
+  Global Opaque run_is_empty.
 
   (* pub fn pop(&mut self) -> Option<T> *)
   Instance run_pop {T A : Set} `{Link T} `{Link A} (self : Ref.t Pointer.Kind.MutRef (Self T A)) :
     Run.Trait (vec.Impl_alloc_vec_Vec_T_A.pop (Φ T) (Φ A)) [] [] [φ self] (option T).
   Admitted.
+  Global Opaque run_pop.
 
   (* pub const fn capacity(&self) -> usize *)
   Instance run_capacity {T A : Set} `{Link T} `{Link A} (self : Ref.t Pointer.Kind.Ref (Self T A)) :
     Run.Trait (vec.Impl_alloc_vec_Vec_T_A.capacity (Φ T) (Φ A)) [] [] [φ self] Usize.t.
   Admitted.
+  Global Opaque run_capacity.
 
   (* pub fn push(&mut self, value: T) *)
   Instance run_push {T A : Set} `{Link T} `{Link A}
@@ -173,12 +179,13 @@ Module Impl_Vec_T_A.
       (value : T) :
     Run.Trait (vec.Impl_alloc_vec_Vec_T_A.push (Φ T) (Φ A)) [] [] [φ self; φ value] unit.
   Admitted.
+  Global Opaque run_push.
 End Impl_Vec_T_A.
 Export Impl_Vec_T_A.
 
 Module Impl_Index_for_Vec_T_A.
   Definition Self := Vec.t.
-  
+
   Instance run (T I A Output : Set) `{Link T} `{Link I} `{Link A} `{Link Output} :
     index.Index.Run (Self T A) I Output.
   Admitted.

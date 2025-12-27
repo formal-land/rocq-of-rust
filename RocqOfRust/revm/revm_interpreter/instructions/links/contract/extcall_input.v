@@ -64,3 +64,4 @@ Proof.
   destruct (Impl_Clone_for_Range.run Usize.t).
   run_symbolic.
 Defined.
+Global Opaque run_extcall_input.

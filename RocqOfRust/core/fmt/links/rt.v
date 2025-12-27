@@ -34,5 +34,6 @@ Module Impl_Argument.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_none.
 End Impl_Argument.
 Export Impl_Argument.

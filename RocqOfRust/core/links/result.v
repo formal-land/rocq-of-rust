@@ -134,7 +134,7 @@ Module Impl_Result_T_E.
     constructor.
     run_symbolic.
   Defined.
-
+  Global Opaque run_unwrap_or.
   (*
   pub fn expect(self, msg: &str) -> T
   where
@@ -147,5 +147,6 @@ Module Impl_Result_T_E.
     Run.Trait
       (result.Impl_core_result_Result_T_E.expect (Φ T) (Φ E)) [] [] [ φ self; φ msg ] T.
   Admitted.
+  Global Opaque run_expect.
 End Impl_Result_T_E.
 Export Impl_Result_T_E.

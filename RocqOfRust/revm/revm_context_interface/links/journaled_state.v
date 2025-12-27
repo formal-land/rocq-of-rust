@@ -183,6 +183,7 @@ Module Impl_Eip7702CodeLoad.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_into_components.
 End Impl_Eip7702CodeLoad.
 Export Impl_Eip7702CodeLoad.
 

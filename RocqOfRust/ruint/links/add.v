@@ -17,6 +17,7 @@ Module Impl_Uint.
       (add.Impl_ruint_Uint_BITS_LIMBS.wrapping_add (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2 ]
       (Self BITS LIMBS).
   Admitted.
+  Global Opaque run_wrapping_add.
 
   (* pub const fn wrapping_neg(self) -> Self *)
   Instance run_wrapping_neg
@@ -26,6 +27,7 @@ Module Impl_Uint.
     (add.Impl_ruint_Uint_BITS_LIMBS.wrapping_neg (φ BITS) (φ LIMBS)) [] [] [ φ x ]
     (Self BITS LIMBS).
   Admitted.
+  Global Opaque run_wrapping_neg.
 
   (* pub const fn wrapping_sub(self, rhs: Self) -> Self *)
   Instance run_wrapping_sub
@@ -35,6 +37,7 @@ Module Impl_Uint.
     (add.Impl_ruint_Uint_BITS_LIMBS.wrapping_sub (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2 ]
     (Self BITS LIMBS).
   Admitted.
+  Global Opaque run_wrapping_sub.
 End Impl_Uint.
 Export Impl_Uint.
 

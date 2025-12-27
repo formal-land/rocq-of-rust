@@ -41,6 +41,11 @@ Lemma apply_duplicate_eq (numbers : Numbers.t) :
     (Output.Success tt, [apply_duplicate numbers]%stack)
   }}.
 Proof.
+  with_strategy transparent [
+    run_apply_duplicate
+    run_get_a_ref
+    run_get_b_mut
+  ] cbn.
   repeat (
     cbn ||
     get_can_access ||
@@ -65,4 +70,3 @@ Proof.
     apply Run.Pure
   ).
 Qed.
-Global Opaque run_duplicate.

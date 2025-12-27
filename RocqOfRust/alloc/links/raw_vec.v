@@ -38,6 +38,7 @@ Module Impl_RawVec_T_A.
       (raw_vec.Impl_alloc_raw_vec_RawVec_T_A.new_in (Φ T) (Φ A)) [] [] [φ alloc]
       (Self T A).
   Admitted.
+  Global Opaque run_new_in.
 End Impl_RawVec_T_A.
 Export Impl_RawVec_T_A.
 
@@ -51,5 +52,6 @@ Module Impl_RawVec_T.
   Instance run_new {T : Set} `{Link T} :
     Run.Trait (raw_vec.Impl_alloc_raw_vec_RawVec_T_alloc_alloc_Global.new (Φ T)) [] [] [] (Self T).
   Admitted.
+  Global Opaque run_new.
 End Impl_RawVec_T.
 Export Impl_RawVec_T.

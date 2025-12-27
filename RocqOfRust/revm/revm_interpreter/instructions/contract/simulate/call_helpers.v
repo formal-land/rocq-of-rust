@@ -36,7 +36,6 @@ Lemma get_memory_input_and_out_ranges_eq
   }}.
 Proof.
 Admitted.
-Global Opaque run_get_memory_input_and_out_ranges.
 
 Parameter calc_call_gas :
   forall
@@ -76,4 +75,3 @@ Lemma calc_call_gas_eq
   }}.
 Proof.
 Admitted.
-Global Opaque run_calc_call_gas.

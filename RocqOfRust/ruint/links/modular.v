@@ -17,6 +17,7 @@ Module Impl_Uint.
       (modular.Impl_ruint_Uint_BITS_LIMBS.add_mod (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2; φ x3 ]
       (Self BITS LIMBS).
   Admitted.
+  Global Opaque run_add_mod.
 
   (* pub fn mul_mod(self, rhs: Self, modulus: Self) -> Self *)
   Instance run_mul_mod
@@ -26,6 +27,7 @@ Module Impl_Uint.
       (modular.Impl_ruint_Uint_BITS_LIMBS.mul_mod (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2; φ x3 ]
       (Self BITS LIMBS).
   Admitted.
+  Global Opaque run_mul_mod.
 
   (* pub fn pow_mod(self, exp: Self, modulus: Self) -> Self *)
   Instance run_pow_mod
@@ -35,5 +37,6 @@ Module Impl_Uint.
       (modular.Impl_ruint_Uint_BITS_LIMBS.pow_mod (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2; φ x3 ]
       (Self BITS LIMBS).
   Admitted.
+  Global Opaque run_pow_mod.
 End Impl_Uint.
 Export Impl_Uint.

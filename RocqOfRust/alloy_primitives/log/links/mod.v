@@ -115,5 +115,6 @@ Module Impl_LogData.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_new.
 End Impl_LogData.
 Export Impl_LogData.

@@ -246,6 +246,7 @@ Module Impl_InterpreterAction.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_is_call.
 
   (* pub fn is_create(&self) -> bool *)
   Instance run_is_create (self : Ref.t Pointer.Kind.Ref Self) :
@@ -257,6 +258,7 @@ Module Impl_InterpreterAction.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_is_create.
 
   (* pub fn is_return(&self) -> bool *)
   Instance run_is_return (self : Ref.t Pointer.Kind.Ref Self) :
@@ -268,6 +270,7 @@ Module Impl_InterpreterAction.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_is_return.
 
   (* pub fn is_none(&self) -> bool *)
   Instance run_is_none (self : Ref.t Pointer.Kind.Ref Self) :
@@ -279,6 +282,7 @@ Module Impl_InterpreterAction.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_is_none.
 
   (* pub fn is_some(&self) -> bool *)
   Instance run_is_some (self : Ref.t Pointer.Kind.Ref Self) :
@@ -290,6 +294,7 @@ Module Impl_InterpreterAction.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_is_some.
 
   (* pub fn into_result_return(self) -> Option<InterpreterResult> *)
   Instance run_into_result_return (self : Self) :
@@ -303,5 +308,6 @@ Module Impl_InterpreterAction.
     (* The failure is probably dues to the phantom type on the [None] constructor. TODO: make a
        general fix. *)
   Admitted.
+  Global Opaque run_into_result_return.
 End Impl_InterpreterAction.
 Export Impl_InterpreterAction.

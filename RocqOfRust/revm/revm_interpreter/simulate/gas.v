@@ -24,7 +24,6 @@ Module Impl_MemoryGas.
   Proof.
     apply Run.Pure.
   Qed.
-  Global Opaque Impl_MemoryGas.run_new.
 End Impl_MemoryGas.
 
 Module Impl_Gas.
@@ -52,7 +51,6 @@ Module Impl_Gas.
     cbn.
     apply Run.Pure.
   Qed.
-  Global Opaque Impl_Gas.run_new.
 
   (*
       pub const fn limit(&self) -> u64 {
@@ -71,11 +69,10 @@ Module Impl_Gas.
       (Output.Success (limit self), [self]%stack)
     }}.
   Proof.
-    cbn.
-    repeat get_can_access.
+    with_strategy transparent [run_limit] cbn.
+    progress repeat get_can_access.
     apply Run.Pure.
   Qed.
-  Global Opaque Impl_Gas.run_limit.
 
   (*
       pub fn erase_cost(&mut self, returned: u64) {
@@ -103,8 +100,8 @@ Module Impl_Gas.
       (Output.Success tt, [erase_cost self returned]%stack)
     }}.
   Proof.
-    cbn.
-    repeat get_can_access.
+    with_strategy transparent [run_erase_cost] cbn.
+    progress repeat get_can_access.
     eapply Run.Call. {
       apply Run.Pure.
     }
@@ -112,7 +109,6 @@ Module Impl_Gas.
     repeat get_can_access.
     apply Run.Pure.
   Qed.
-  Global Opaque Impl_Gas.run_erase_cost.
 
   Parameter u64_overflowing_sub : forall (self other : U64.t), U64.t * bool.
 
@@ -179,7 +175,8 @@ Module Impl_Gas.
   Proof.
     intros.
     apply Run.remove_extra_stack1.
-    unfold record_cost in *; cbn.
+    unfold record_cost in *.
+    with_strategy transparent [run_record_cost] cbn.
     progress repeat get_can_access.
     eapply Run.Call. {
       apply u64_overflowing_sub_eq.
@@ -196,7 +193,6 @@ Module Impl_Gas.
     { apply Run.Pure. }
     { apply Run.Pure. }
   Qed.
-  Global Opaque Impl_Gas.run_record_cost.
 
   (*Lemma record_cost_eq'
       {WIRE : Set} `{Link WIRE}
@@ -281,7 +277,6 @@ Module Impl_Gas.
     { apply Run.Pure. }
     { apply Run.Pure. }
   Qed.
-  Global Opaque Impl_Gas.run_record_cost.
 
   Lemma record_cost_eq'
       {WIRE : Set} `{Link WIRE}
@@ -380,5 +375,5 @@ Module Impl_Gas.
     { apply Run.Pure. }
     { apply Run.Pure. }
   Qed.
-  Global Opaque Impl_Gas.run_record_cost. *)
+  *)
 End Impl_Gas.

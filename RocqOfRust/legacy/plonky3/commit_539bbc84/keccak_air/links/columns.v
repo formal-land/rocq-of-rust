@@ -310,6 +310,7 @@ Module Impl_KeccakCols.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_b.
 
   (* pub fn a_prime_prime_prime(&self, y: usize, x: usize, limb: usize) -> T *)
   Instance run_a_prime_prime_prime {T : Set} `{Link T}
@@ -324,6 +325,7 @@ Module Impl_KeccakCols.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_a_prime_prime_prime.
 End Impl_KeccakCols.
 
 (* impl<T> Borrow<KeccakCols<T>> for [T] *)

@@ -17,6 +17,7 @@ Module Impl_Uint.
       (bits.Impl_ruint_Uint_BITS_LIMBS.bit (φ BITS) (φ LIMBS)) [] [] [ φ self; φ index ]
       bool.
   Admitted.
+  Global Opaque run_bit.
 
   (* pub const fn byte(&self, index: usize) -> u8 *)
   Instance run_byte
@@ -27,6 +28,7 @@ Module Impl_Uint.
       (bits.Impl_ruint_Uint_BITS_LIMBS.byte (φ BITS) (φ LIMBS)) [] [] [ φ x; φ index ]
       U8.t.
   Admitted.
+  Global Opaque run_byte.
 
   (* pub fn arithmetic_shr(self, rhs: usize) -> Self *)
   Instance run_arithmetic_shr
@@ -37,6 +39,7 @@ Module Impl_Uint.
       (bits.Impl_ruint_Uint_BITS_LIMBS.arithmetic_shr (φ BITS) (φ LIMBS)) [] [] [ φ self; φ rhs ]
       (Self BITS LIMBS).
   Admitted.
+  Global Opaque run_arithmetic_shr.
 End Impl_Uint.
 Export Impl_Uint.
 

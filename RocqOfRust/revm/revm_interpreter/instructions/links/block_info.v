@@ -49,6 +49,7 @@ Proof.
   destruct run_Cfg_for_Cfg.
   run_symbolic.
 Defined.
+Global Opaque run_chainid.
 
 (*
 pub fn coinbase<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -79,6 +80,7 @@ Proof.
   destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
   run_symbolic.
 Defined.
+Global Opaque run_coinbase.
 
 (*
 pub fn timestamp<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -110,6 +112,7 @@ Proof.
   destruct run_Block_for_Block.
   run_symbolic.
 Defined.
+Global Opaque run_timestamp.
 
 (*
 pub fn block_number<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -141,6 +144,7 @@ Proof.
   destruct run_Block_for_Block.
   run_symbolic.
 Defined.
+Global Opaque run_block_number.
 
 (*
 pub fn difficulty<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -172,6 +176,7 @@ Proof.
   destruct Impl_IntoU256_for_B256.run.
   run_symbolic.
 Defined.
+Global Opaque run_difficulty.
 
 (*
 pub fn gaslimit<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -200,6 +205,7 @@ Proof.
   destruct run_Block_for_Block.
   run_symbolic.
 Defined.
+Global Opaque run_gaslimit.
 
 (*
 pub fn basefee<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -229,6 +235,7 @@ Proof.
   destruct run_Block_for_Block.
   run_symbolic.
 Defined.
+Global Opaque run_basefee.
 
 (*
 pub fn blob_basefee<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -258,3 +265,4 @@ Proof.
   destruct run_Block_for_Block.
   run_symbolic.
 Defined.
+Global Opaque run_blob_basefee.

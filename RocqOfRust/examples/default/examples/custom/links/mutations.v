@@ -112,6 +112,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_get_a_ref.
 
 (* fn get_b_mut(numbers: &mut Numbers) -> &mut u64 *)
 Instance run_get_b_mut (numbers : Ref.t Pointer.Kind.MutRef Numbers.t) :
@@ -120,6 +121,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_get_b_mut.
 
 (* fn duplicate(a: &u64, b: &mut u64, c: &mut u64) *)
 Instance run_duplicate
@@ -131,6 +133,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_duplicate.
 
 (* fn apply_duplicate(numbers: &mut Numbers) *)
 Instance run_apply_duplicate (numbers : Ref.t Pointer.Kind.MutRef Numbers.t) :
@@ -139,3 +142,4 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_apply_duplicate.

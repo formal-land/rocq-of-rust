@@ -46,6 +46,7 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   run_symbolic.
 Defined.
+Global Opaque run_rjump.
 
 (*
 pub fn rjumpi<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -72,6 +73,7 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   run_symbolic.
 Defined.
+Global Opaque run_rjumpi.
 
 (*
 pub fn rjumpv<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -99,6 +101,7 @@ Proof.
   destruct Impl_TryFrom_u64_for_isize.run.
   run_symbolic.
 Defined.
+Global Opaque run_rjumpv.
 
 (* fn jump_inner<WIRE: InterpreterTypes>(interpreter: &mut Interpreter<WIRE>, target: U256) *)
 Instance run_jump_inner
@@ -117,6 +120,7 @@ Proof.
   destruct run_Jumps_for_Bytecode.
   run_symbolic.
 Defined.
+Global Opaque run_jump_inner.
 
 (*
 pub fn jump<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -140,6 +144,7 @@ Proof.
   destruct run_LoopControl_for_Control.
   run_symbolic.
 Defined.
+Global Opaque run_jump.
 
 (*
 pub fn jumpi<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -163,6 +168,7 @@ Proof.
   destruct run_LoopControl_for_Control.
   run_symbolic.
 Defined.
+Global Opaque run_jumpi.
 
 (*
 pub fn jumpdest_or_nop<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -185,6 +191,7 @@ Proof.
   destruct run_LoopControl_for_Control.
   run_symbolic.
 Defined.
+Global Opaque run_jumpdest_or_nop.
 
 (*
 pub fn callf<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -214,6 +221,7 @@ Proof.
   run_symbolic.
   destruct_all Empty_set.
 Defined.
+Global Opaque run_callf.
 
 (*
 pub fn retf<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -240,6 +248,7 @@ Proof.
   run_symbolic.
   destruct_all Empty_set.
 Defined.
+Global Opaque run_retf.
 
 (*
 pub fn jumpf<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -268,6 +277,7 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   run_symbolic.
 Defined.
+Global Opaque run_jumpf.
 
 (*
 pub fn pc<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -292,6 +302,7 @@ Proof.
   destruct run_Jumps_for_Bytecode.
   run_symbolic.
 Defined.
+Global Opaque run_pc.
 
 (*
 fn return_inner(
@@ -319,6 +330,7 @@ Proof.
   destruct (Impl_Into_for_From_T.run Impl_From_Vec_u8_for_Bytes.run).
   run_symbolic.
 Defined.
+Global Opaque run_return_inner.
 
 (*
 pub fn ret<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -339,6 +351,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_ret.
 
 (*
 pub fn revert<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -362,6 +375,7 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   run_symbolic.
 Defined.
+Global Opaque run_revert.
 
 (*
 pub fn stop<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -384,6 +398,7 @@ Proof.
   destruct run_LoopControl_for_Control.
   run_symbolic.
 Defined.
+Global Opaque run_stop.
 
 (*
 pub fn invalid<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -406,6 +421,7 @@ Proof.
   destruct run_LoopControl_for_Control.
   run_symbolic.
 Defined.
+Global Opaque run_invalid.
 
 (*
 pub fn unknown<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -433,3 +449,4 @@ Proof.
   destruct run_LoopControl_for_Control.
   run_symbolic.
 Defined.
+Global Opaque run_unknown.

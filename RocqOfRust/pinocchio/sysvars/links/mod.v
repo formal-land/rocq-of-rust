@@ -54,6 +54,7 @@ Proof.
   - admit.
   - admit.
 Admitted.
+Global Opaque run_get_sysvar_unchecked.
 
 (*
 pub fn get_sysvar(dst: &mut [u8], sysvar_id: &Pubkey, offset: usize)
@@ -76,5 +77,5 @@ Proof.
   - admit.
   - admit.
 Admitted.
-
+Global Opaque run_get_sysvar.
 End sysvars.

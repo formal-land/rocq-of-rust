@@ -38,6 +38,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_value_R.
 
 (*
 pub const RC: [u64; 24] = [
@@ -107,6 +108,7 @@ Proof.
   { exact RC. }
   { reflexivity. }
 Defined.
+Global Opaque run_value_RC.
 
 (* const RC_BITS: [[u8; 64]; 24] *)
 Definition RC_BITS : array.t (array.t U8.t {| Integer.value := 64 |}) {| Integer.value := 24 |} :=
@@ -133,6 +135,7 @@ Proof.
   { exact RC_BITS. }
   { reflexivity. }
 Defined.
+Global Opaque run_value_RC_BITS.
 
 (* pub(crate) const fn rc_value_bit(round: usize, bit_index: usize) -> u8 *)
 Instance run_value_rc_value_bit (round bit_index : Usize.t) :
@@ -141,3 +144,4 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_value_rc_value_bit.

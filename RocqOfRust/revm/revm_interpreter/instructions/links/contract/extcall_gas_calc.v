@@ -71,3 +71,4 @@ Proof.
   destruct links.mod.Impl_DerefMut_for_Bytes.run.
   run_symbolic.
 Defined.
+Global Opaque run_extcall_gas_calc.

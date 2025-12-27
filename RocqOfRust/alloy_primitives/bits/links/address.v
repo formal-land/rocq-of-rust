@@ -30,6 +30,7 @@ Module Impl_Address.
       bits.address.Impl_alloy_primitives_bits_address_Address.from_word [] [] [ φ word ]
       Self.
   Admitted.
+  Global Opaque run_from_word.
 
   (* pub fn into_word(&self) -> FixedBytes<32> *)
   Instance run_into_word (self : Ref.t Pointer.Kind.Ref Self) :
@@ -37,6 +38,7 @@ Module Impl_Address.
       bits.address.Impl_alloy_primitives_bits_address_Address.into_word [] [] [ φ self ]
       (FixedBytes.t {| Integer.value := 32 |}).
   Admitted.
+  Global Opaque run_into_word.
 
   (*
   pub fn create2<S, H>(&self, salt: S, init_code_hash: H) -> Self
@@ -56,5 +58,6 @@ Module Impl_Address.
         [] [ Φ S; Φ H ] [ φ self; φ salt; φ init_code_hash ]
       Self.
   Admitted.
+  Global Opaque run_create2.
 End Impl_Address.
 Export Impl_Address.

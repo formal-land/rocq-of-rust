@@ -102,6 +102,7 @@ Module Impl_Bytes.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_new.
 
   (* pub fn copy_from_slice(data: &[u8]) -> Self *)
   Instance run_copy_from_slice (data : Ref.t Pointer.Kind.Ref (list U8.t)) :
@@ -110,6 +111,7 @@ Module Impl_Bytes.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_copy_from_slice.
 End Impl_Bytes.
 Export Impl_Bytes.
 

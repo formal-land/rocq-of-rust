@@ -302,5 +302,6 @@ Module Impl_VmCoreAir_for_BranchEqualCoreAir.
       all: admit.
     }
   Admitted.
+  Global Opaque run_eval.
 End Impl_VmCoreAir_for_BranchEqualCoreAir.
 Export Impl_VmCoreAir_for_BranchEqualCoreAir.

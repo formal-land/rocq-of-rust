@@ -42,6 +42,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
+Global Opaque run_add.
 
 (*
 pub fn mul<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -69,6 +70,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
+Global Opaque run_mul.
 
 (*
 pub fn sub<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -92,6 +94,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
+Global Opaque run_sub.
 
 (*
 pub fn div<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -115,6 +118,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
+Global Opaque run_div.
 
 (*
 pub fn sdiv<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -138,6 +142,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
+Global Opaque run_sdiv.
 
 (*
 pub fn rem<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -161,6 +166,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
+Global Opaque run_rem.
 
 (*
 pub fn smod<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -184,6 +190,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
+Global Opaque run_smod.
 
 (*
 pub fn addmod<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -207,6 +214,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
+Global Opaque run_addmod.
 
 (*
 pub fn mulmod<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -230,6 +238,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
+Global Opaque run_mulmod.
 
 (*
 pub fn exp<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -254,6 +263,7 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   run_symbolic.
 Defined.
+Global Opaque run_exp.
 
 (*
 pub fn signextend<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -283,3 +293,4 @@ Proof.
   destruct (Impl_Not_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_signextend.

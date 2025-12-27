@@ -41,5 +41,6 @@ Module Impl_Box.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_new.
 End Impl_Box.
 Export Impl_Box.

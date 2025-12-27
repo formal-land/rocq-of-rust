@@ -79,6 +79,7 @@ Module instruction.
   Proof.
     constructor. run_symbolic.
   Defined.
+  Global Opaque run_IS_SIGNER.
 
   Instance run_IS_WRITABLE :
     Run.Trait
@@ -88,6 +89,7 @@ Module instruction.
   Proof.
     constructor. run_symbolic.
   Defined.
+  Global Opaque run_IS_WRITABLE.
 
   (*
     pub const INSTRUCTIONS_ID: Pubkey = [...]
@@ -100,6 +102,8 @@ Module instruction.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_INSTRUCTIONS_ID.
+
   (*
     impl<T> Instructions<T> { unsafe fn new_unchecked(data: T) -> Self { ... } ... }
     We expose methods on our monomorphized Instructions.t
@@ -118,7 +122,8 @@ Module instruction.
     Proof.
       constructor. admit. 
     Admitted.
-  
+    Global Opaque run_new_unchecked.
+
     Instance run_load_current_index
       {T : Set} `{Link T}
       (run_Deref_for_T : Deref.Run T (list (Integer.t IntegerKind.U8)))
@@ -130,7 +135,8 @@ Module instruction.
     Proof.
       constructor. run_symbolic. admit.
     Admitted.
-  
+    Global Opaque run_load_current_index.
+
     Instance run_deserialize_instruction_unchecked
       {T : Set} `{Link T}
       (run_Deref_for_T : Deref.Run T (list (Integer.t IntegerKind.U8)))
@@ -143,7 +149,8 @@ Module instruction.
     Proof.
       constructor. run_symbolic. admit.
     Admitted.
-  
+    Global Opaque run_deserialize_instruction_unchecked.
+
     Instance run_load_instruction_at
       {T : Set} `{Link T}
       (run_Deref_for_T : Deref.Run T (list (Integer.t IntegerKind.U8)))
@@ -156,7 +163,8 @@ Module instruction.
     Proof.
       constructor. run_symbolic. admit.
     Admitted.
-  
+    Global Opaque run_load_instruction_at.
+
     Instance run_get_instruction_relative
       {T : Set} `{Link T}
       (run_Deref_for_T : Deref.Run T (list (Integer.t IntegerKind.U8)))
@@ -169,11 +177,12 @@ Module instruction.
     Proof.
       constructor. run_symbolic. admit.
     Admitted.
+    Global Opaque run_get_instruction_relative.
   End Impl_Instructions.
-  
+
   Module Impl_IntrospectedInstruction.
     Definition Self : Set := IntrospectedInstruction.t.
-  
+
     Instance run_get_account_meta_at_unchecked
       (self : Ref.t Pointer.Kind.Ref Self)
       (index : Usize.t) :
@@ -184,7 +193,8 @@ Module instruction.
     Proof.
       constructor. run_symbolic. admit.
     Admitted.
-  
+    Global Opaque run_get_account_meta_at_unchecked.
+
     Instance run_get_account_meta_at
       (self : Ref.t Pointer.Kind.Ref Self)
       (index : Usize.t) :
@@ -195,7 +205,8 @@ Module instruction.
     Proof.
       constructor. run_symbolic. admit.
     Admitted.
-  
+    Global Opaque run_get_account_meta_at.
+
     Instance run_get_program_id
       (self : Ref.t Pointer.Kind.Ref Self) :
       Run.Trait
@@ -205,7 +216,8 @@ Module instruction.
     Proof.
       constructor. run_symbolic. admit.
     Admitted.
-  
+    Global Opaque run_get_program_id.
+
     Instance run_get_instruction_data
       (self : Ref.t Pointer.Kind.Ref Self) :
       Run.Trait
@@ -215,11 +227,12 @@ Module instruction.
     Proof.
       constructor. run_symbolic. admit.
     Admitted.
+    Global Opaque run_get_instruction_data.
   End Impl_IntrospectedInstruction.
-  
+
   Module Impl_IntrospectedAccountMeta.
     Definition Self : Set := IntrospectedAccountMeta.t.
-  
+
     Instance run_is_writable
       (self : Ref.t Pointer.Kind.Ref Self) :
       Run.Trait
@@ -229,7 +242,8 @@ Module instruction.
     Proof.
       constructor. run_symbolic. admit.
     Admitted.
-  
+    Global Opaque run_is_writable.
+
     Instance run_is_signer
       (self : Ref.t Pointer.Kind.Ref Self) :
       Run.Trait
@@ -239,7 +253,8 @@ Module instruction.
     Proof.
       constructor. run_symbolic. admit.
     Admitted.
-  
+    Global Opaque run_is_signer.
+
     Instance run_to_account_meta
       (self : Ref.t Pointer.Kind.Ref Self) :
       Run.Trait
@@ -249,6 +264,7 @@ Module instruction.
     Proof.
       constructor. run_symbolic. admit.
     Admitted.
+    Global Opaque run_to_account_meta.
   End Impl_IntrospectedAccountMeta.
-  
+
 End instruction.

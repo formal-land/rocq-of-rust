@@ -48,8 +48,7 @@ Module Impl_Result_T_E.
       )
     }}.
   Proof.
-    unfold run_unwrap_or; cbn.
+    with_strategy transparent [run_unwrap_or] cbn.
     destruct self; cbn; apply Run.Pure.
   Qed.
-  Global Opaque run_unwrap_or.
 End Impl_Result_T_E.

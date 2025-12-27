@@ -14,3 +14,4 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_keccak256.
