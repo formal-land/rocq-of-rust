@@ -96,7 +96,7 @@ Proof.
   intros.
   destruct InterpreterTypesEq as [[] [] [] []].
   destruct HostEq as [].
-  unfold run_static_call, static_call; cbn.
+  unfold static_call; cbn.
   check_macro_eq spec_id set_instruction_result.
   popn_macro_eq H IInterpreterTypes popn set_instruction_result.
   eapply Run.Call. {
@@ -186,4 +186,3 @@ Proof.
   get_can_access.
   eapply Run.Call. {
 Admitted.
-Global Opaque run_static_call.

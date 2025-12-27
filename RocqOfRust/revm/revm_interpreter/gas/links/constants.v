@@ -11,6 +11,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_ZERO.
 
 Instance run_BASE :
   Run.Trait
@@ -20,6 +21,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_BASE.
 
 Instance run_VERYLOW :
   Run.Trait
@@ -39,6 +41,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_DATA_LOADN_GAS.
 
 Instance run_CONDITION_JUMP_GAS :
   Run.Trait
@@ -48,6 +51,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_CONDITION_JUMP_GAS.
 
 Instance run_RETF_GAS :
   Run.Trait
@@ -57,6 +61,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_RETF_GAS.
 
 Instance run_DATA_LOAD_GAS :
   Run.Trait
@@ -66,6 +71,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_DATA_LOAD_GAS.
 
 Instance run_LOW :
   Run.Trait
@@ -75,6 +81,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_LOW.
 
 Instance run_MID :
   Run.Trait
@@ -84,6 +91,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_MID.
 
 Instance run_HIGH :
   Run.Trait
@@ -93,6 +101,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_HIGH.
 
 Instance run_JUMPDEST :
   Run.Trait
@@ -102,6 +111,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_JUMPDEST.
 
 Instance run_SELFDESTRUCT :
   Run.Trait
@@ -111,6 +121,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_SELFDESTRUCT.
 
 Instance run_CREATE :
   Run.Trait
@@ -120,6 +131,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_CREATE.
 
 Instance run_CALLVALUE :
   Run.Trait
@@ -129,6 +141,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_CALLVALUE.
 
 Instance run_NEWACCOUNT :
   Run.Trait
@@ -138,6 +151,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_NEWACCOUNT.
 
 Instance run_EXP :
   Run.Trait
@@ -147,6 +161,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_EXP.
 
 Instance run_MEMORY :
   Run.Trait
@@ -156,6 +171,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_MEMORY.
 
 Instance run_LOG :
   Run.Trait
@@ -165,6 +181,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_LOG.
 
 Instance run_LOGDATA :
   Run.Trait
@@ -174,6 +191,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_LOGDATA.
 
 Instance run_LOGTOPIC :
   Run.Trait
@@ -183,6 +201,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_LOGTOPIC.
 
 Instance run_KECCAK256 :
   Run.Trait
@@ -192,6 +211,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_KECCAK256.
 
 Instance run_KECCAK256WORD :
   Run.Trait
@@ -201,6 +221,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_KECCAK256WORD.
 
 Instance run_COPY :
   Run.Trait
@@ -210,6 +231,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_COPY.
 
 Instance run_BLOCKHASH :
   Run.Trait
@@ -219,6 +241,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_BLOCKHASH.
 
 Instance run_CODEDEPOSIT :
   Run.Trait
@@ -228,6 +251,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_CODEDEPOSIT.
 
 Instance run_ISTANBUL_SLOAD_GAS :
   Run.Trait
@@ -237,6 +261,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_ISTANBUL_SLOAD_GAS.
 
 Instance run_SSTORE_SET :
   Run.Trait
@@ -246,6 +271,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_SSTORE_SET.
 
 Instance run_SSTORE_RESET :
   Run.Trait
@@ -255,6 +281,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_SSTORE_RESET.
 
 Instance run_REFUND_SSTORE_CLEARS :
   Run.Trait
@@ -264,6 +291,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_REFUND_SSTORE_CLEARS.
 
 Instance run_TRANSACTION_ZERO_DATA :
   Run.Trait
@@ -273,6 +301,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_TRANSACTION_ZERO_DATA.
 
 Instance run_TRANSACTION_NON_ZERO_DATA_INIT :
   Run.Trait
@@ -282,6 +311,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_TRANSACTION_NON_ZERO_DATA_INIT.
 
 Instance run_TRANSACTION_NON_ZERO_DATA_FRONTIER :
   Run.Trait
@@ -291,6 +321,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_TRANSACTION_NON_ZERO_DATA_FRONTIER.
 
 Instance run_EOF_CREATE_GAS :
   Run.Trait
@@ -300,6 +331,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_EOF_CREATE_GAS.
 
 Instance run_ACCESS_LIST_ADDRESS :
   Run.Trait
@@ -309,6 +341,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_ACCESS_LIST_ADDRESS.
 
 Instance run_ACCESS_LIST_STORAGE_KEY :
   Run.Trait
@@ -318,6 +351,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_ACCESS_LIST_STORAGE_KEY.
 
 Instance run_COLD_SLOAD_COST :
   Run.Trait
@@ -327,6 +361,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_COLD_SLOAD_COST.
 
 Instance run_COLD_ACCOUNT_ACCESS_COST :
   Run.Trait
@@ -336,6 +371,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_COLD_ACCOUNT_ACCESS_COST.
 
 Instance run_WARM_STORAGE_READ_COST :
   Run.Trait
@@ -345,6 +381,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_WARM_STORAGE_READ_COST.
 
 Instance run_WARM_SSTORE_RESET :
   Run.Trait
@@ -354,6 +391,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_WARM_SSTORE_RESET.
 
 Instance run_INITCODE_WORD_COST :
   Run.Trait
@@ -363,6 +401,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_INITCODE_WORD_COST.
 
 Instance run_CALL_STIPEND :
   Run.Trait
@@ -372,6 +411,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_CALL_STIPEND.
 
 Instance run_MIN_CALLEE_GAS :
   Run.Trait
@@ -381,3 +421,4 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_MIN_CALLEE_GAS.

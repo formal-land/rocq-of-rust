@@ -53,6 +53,7 @@ Module Impl_InstructionContext.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_new.
 
   Instance run_new_unchecked
     (input : Ref.t Pointer.Kind.Raw U8.t) :
@@ -62,6 +63,7 @@ Module Impl_InstructionContext.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_new_unchecked.
 
   Instance run_next_account
     (self : Ref.t Pointer.Kind.Ref Self) :
@@ -71,6 +73,7 @@ Module Impl_InstructionContext.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_next_account.
 
   Instance run_next_account_unchecked
     (self : Ref.t Pointer.Kind.Ref Self) :
@@ -80,6 +83,7 @@ Module Impl_InstructionContext.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_next_account_unchecked.
 
   Instance run_remaining
     (self : Ref.t Pointer.Kind.Ref Self) :
@@ -89,6 +93,7 @@ Module Impl_InstructionContext.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_remaining.
 
   Instance run_instruction_data
     (self : Ref.t Pointer.Kind.Ref Self) :
@@ -98,6 +103,7 @@ Module Impl_InstructionContext.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_instruction_data.
 
   Instance run_instruction_data_unchecked
     (self : Ref.t Pointer.Kind.Ref Self) :
@@ -107,6 +113,7 @@ Module Impl_InstructionContext.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_instruction_data_unchecked.
 
   Instance run_program_id
     (self : Ref.t Pointer.Kind.Ref Self) :
@@ -116,6 +123,7 @@ Module Impl_InstructionContext.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_program_id.
 
   Instance run_program_id_unchecked
     (self : Ref.t Pointer.Kind.Ref Self) :
@@ -125,17 +133,19 @@ Module Impl_InstructionContext.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_program_id_unchecked.
 End Impl_InstructionContext.
 
 Module Impl_MaybeAccount.
-    Definition Self : Set := MaybeAccount.t.
-  
-    Instance run_assume_account
-      (self : Self) :
-      Run.Trait
-       pinocchio.entrypoint.lazy.entrypoint.lazy.Impl_pinocchio_entrypoint_lazy_MaybeAccount.assume_account
-        [] [] [φ self] AccountInfo.t.
-    Proof.
-      constructor. admit.
-    Admitted.
+  Definition Self : Set := MaybeAccount.t.
+
+  Instance run_assume_account
+    (self : Self) :
+    Run.Trait
+      pinocchio.entrypoint.lazy.entrypoint.lazy.Impl_pinocchio_entrypoint_lazy_MaybeAccount.assume_account
+      [] [] [φ self] AccountInfo.t.
+  Proof.
+    constructor. admit.
+  Admitted.
+  Global Opaque run_assume_account.
 End Impl_MaybeAccount.

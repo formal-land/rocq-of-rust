@@ -63,7 +63,6 @@ Proof.
   get_can_access.
   apply Run.Pure.
 Qed.
-Global Opaque run_add.
 
 Lemma mul_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -111,7 +110,6 @@ Proof.
   get_can_access.
   apply Run.Pure.
 Qed.
-Global Opaque run_mul.
 
 Lemma sub_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -159,7 +157,6 @@ Proof.
   get_can_access.
   apply Run.Pure.
 Qed.
-Global Opaque run_sub.
 
 Lemma div_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -236,4 +233,3 @@ Proof.
     apply Run.Pure.
   }
 Qed.
-Global Opaque run_div.

@@ -57,6 +57,7 @@ Module Impl_Uint.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_from_limbs.
 
   (* pub const BITS: usize *)
   Instance run_BITS (BITS LIMBS : Usize.t) :
@@ -67,6 +68,7 @@ Module Impl_Uint.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_BITS.
 
   (* pub const ZERO: Self *)
   Instance run_ZERO (BITS LIMBS : Usize.t) :
@@ -84,6 +86,7 @@ Module Impl_Uint.
     }
     apply Run.run_f.
   Defined.
+  Global Opaque run_ZERO.
 
   (* pub const MIN: Self *)
   Instance run_MIN (BITS LIMBS : Usize.t) :
@@ -94,6 +97,7 @@ Module Impl_Uint.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_MIN.
 
   (* pub const MAX: Self *)
   Instance run_MAX (BITS LIMBS : Usize.t) :
@@ -104,6 +108,7 @@ Module Impl_Uint.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_MAX.
 
   (* pub const fn as_limbs(&self) -> &[u64; LIMBS] *)
   Instance run_as_limbs
@@ -116,6 +121,7 @@ Module Impl_Uint.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_as_limbs.
 
   (* pub unsafe fn as_limbs_mut(&mut self) -> &mut [u64; LIMBS] *)
   Instance run_as_limbs_mut
@@ -128,5 +134,6 @@ Module Impl_Uint.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_as_limbs_mut.
 End Impl_Uint.
 Export Impl_Uint.

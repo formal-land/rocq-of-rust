@@ -24,5 +24,4 @@ Module TryFrom_Uint_for_u64.
       )
     }}.
   Admitted.
-  Global Opaque TryFrom_Uint_for_u64.run_try_from.
 End TryFrom_Uint_for_u64.

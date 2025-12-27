@@ -29,6 +29,7 @@ Instance run_log
     run_symbolic.
     admit.
   Admitted.
+  Global Opaque run_log.
 
 Instance run_find_program_address
   (seeds : Ref.t Pointer.Kind.Ref (list (Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8)))))
@@ -37,24 +38,26 @@ Run.Trait
   find_program_address [] [] [φ seeds; φ pubkey]
   (Ref.t Pointer.Kind.Ref Pubkey.t * U8.t).
 Proof.
-    constructor.
-    run_symbolic.
-    admit.
+  constructor.
+  run_symbolic.
+  admit.
 Admitted.
+Global Opaque run_find_program_address.
 
-Instance try_find_program_address
+Instance run_try_find_program_address
   (seeds : Ref.t Pointer.Kind.Ref (list (Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8)))))
   (program_id : Ref.t Pointer.Kind.Ref Pubkey.t) :
 Run.Trait
   try_find_program_address [] [] [φ seeds; φ program_id]
   (option (Ref.t Pointer.Kind.Ref Pubkey.t * U8.t)).
 Proof.
-    constructor.
-    run_symbolic.
-    admit.
+  constructor.
+  run_symbolic.
+  admit.
 Admitted.
+Global Opaque run_try_find_program_address.
 
-Instance create_program_address
+Instance run_create_program_address
   (seeds : Ref.t Pointer.Kind.Ref (list (Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8)))))
   (program_id : Ref.t Pointer.Kind.Ref Pubkey.t) :
   Run.Trait
@@ -65,8 +68,9 @@ Proof.
   run_symbolic.
   admit.
 Admitted.
+Global Opaque run_create_program_address.
 
-Instance checked_create_program_address
+Instance run_checked_create_program_address
   (seeds : Ref.t Pointer.Kind.Ref (list (Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8)))))
   (program_id : Ref.t Pointer.Kind.Ref Pubkey.t) :
   Run.Trait
@@ -77,5 +81,4 @@ Proof.
   run_symbolic.
   admit.
 Admitted.
-
-
+Global Opaque run_checked_create_program_address.

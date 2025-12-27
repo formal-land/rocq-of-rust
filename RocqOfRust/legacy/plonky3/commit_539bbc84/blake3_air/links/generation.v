@@ -19,4 +19,5 @@ pub fn generate_trace_rows<F: PrimeField64>(
     generation.generate_trace_rows [] [ Φ F ] [ φ inputs; φ extra_capacity_bits ]
     RowMajorMatrix.t F.
 Proof.
-Admitted. *)
+Admitted.
+Global Opaque run_generate_trace_rows. *)

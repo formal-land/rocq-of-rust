@@ -40,6 +40,7 @@ Proof.
   destruct (Impl_PartialOrd_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_lt.
 
 Instance run_gt
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -58,6 +59,7 @@ Proof.
   destruct (Impl_PartialOrd_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_gt.
 
 Instance run_slt
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -76,6 +78,7 @@ Proof.
   destruct Impl_PartialEq_for_Ordering.run.
   run_symbolic.
 Defined.
+Global Opaque run_slt.
 
 Instance run_sgt
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -94,6 +97,7 @@ Proof.
   destruct Impl_PartialEq_for_Ordering.run.
   run_symbolic.
 Defined.
+Global Opaque run_sgt.
 
 Instance run_bitwise_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -112,6 +116,7 @@ Proof.
   destruct (Impl_PartialEq_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_bitwise_eq.
 
 Instance run_bitwise_is_zero
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -129,6 +134,7 @@ Proof.
   destruct run_LoopControl_for_Control.
   run_symbolic.
 Defined.
+Global Opaque run_bitwise_is_zero.
 
 Instance run_bitwise_bitand
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -147,6 +153,7 @@ Proof.
   destruct (Impl_BitAnd_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_bitwise_bitand.
 
 Instance run_bitwise_bitor
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -165,6 +172,7 @@ Proof.
   destruct (Impl_BitOr_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_bitwise_bitor.
 
 Instance run_bitwise_bitxor
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -183,6 +191,7 @@ Proof.
   destruct (Impl_BitXor_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_bitwise_bitxor.
 
 Instance run_bitwise_not
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -201,6 +210,7 @@ Proof.
   destruct (Impl_Not_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_bitwise_not.
 
 Instance run_bitwise_sar
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -220,6 +230,7 @@ Proof.
   destruct Impl_TryFrom_u64_for_usize.run.
   run_symbolic.
 Defined.
+Global Opaque run_bitwise_sar.
 
 Instance run_bitwise_shl
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -240,6 +251,7 @@ Proof.
   destruct (Impl_Shl_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_bitwise_shl.
 
 Instance run_bitwise_shr
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -260,3 +272,4 @@ Proof.
   destruct (Impl_Shr_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_bitwise_shr.

@@ -16,5 +16,6 @@ Module Impl_Uint.
       (mul.Impl_ruint_Uint_BITS_LIMBS.wrapping_mul (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2 ]
       (Self BITS LIMBS).
   Admitted.
+  Global Opaque run_wrapping_mul.
 End Impl_Uint.
 Export Impl_Uint.

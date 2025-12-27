@@ -79,3 +79,4 @@ Proof.
   epose proof (run_any' := run_any _ _ _ (Function1.of_run run_any_callback) _ _ _).
   typeclasses eauto.
 Defined.
+Global Opaque run_pop_extcall_target_address.

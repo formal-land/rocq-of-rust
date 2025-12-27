@@ -21,5 +21,4 @@ Module Impl_Address.
       )
     }}.
   Admitted.
-  Global Opaque Impl_Address.run_from_word.
 End Impl_Address.

@@ -10,6 +10,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_panic_fmt.
 
 (* pub const fn panic(expr: &'static str) -> ! *)
 Instance run_panic (expr : Ref.t Pointer.Kind.Ref string) :
@@ -18,6 +19,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_panic.
 
 (* pub const fn panic_display<T: fmt::Display>(x: &T) -> ! *)
 Instance run_panic_display {T : Set} `{Link T}
@@ -29,3 +31,4 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_panic_display.

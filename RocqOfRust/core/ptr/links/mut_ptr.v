@@ -16,6 +16,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_is_null.
 
   (* pub const fn cast<U>(self) -> *mut U *)
   Instance run_cast
@@ -27,6 +28,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_cast.
 
   (* pub const fn with_addr(self, addr: usize) -> Self *)
   Instance run_with_addr
@@ -38,6 +40,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_with_addr.
 
   (* pub const unsafe fn as_mut<'a>(self) -> Option<&'a mut T> *)
   Instance run_as_mut
@@ -49,6 +52,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_as_mut.
 
   (* pub const unsafe fn as_uninit_mut<'a>(self) -> Option<&'a mut MaybeUninit<T>> *)
   Instance run_as_uninit_mut
@@ -60,6 +64,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_as_uninit_mut.
 
   (* pub const fn guaranteed_eq(self, other: *mut T) -> Option<bool> *)
   Instance run_guaranteed_eq
@@ -72,6 +77,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_guaranteed_eq.
 
   (* pub const fn guaranteed_ne(self, other: *mut T) -> Option<bool> *)
   Instance run_guaranteed_ne
@@ -84,6 +90,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_guaranteed_ne.
 
   (* pub const unsafe fn offset(self, count: isize) -> *mut T *)
   Instance run_offset
@@ -95,6 +102,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_offset.
 
   (* pub const fn wrapping_offset(self, count: isize) -> *mut T *)
   Instance run_wrapping_offset
@@ -106,6 +114,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_wrapping_offset.
 
   (* pub const fn wrapping_byte_offset(self, count: isize) -> *mut T *)
   Instance run_wrapping_byte_offset
@@ -117,6 +126,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_wrapping_byte_offset.
 
   (* pub fn mask(self, mask: usize) -> *mut T *)
   Instance run_mask
@@ -128,6 +138,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_mask.
 
   (* pub const unsafe fn as_mut_unchecked<'a>(self) -> &'a mut T *)
   Instance run_as_mut_unchecked
@@ -139,6 +150,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_as_mut_unchecked.
 
   (* pub const unsafe fn add(self, count: usize) -> Self *)
   Instance run_add
@@ -150,6 +162,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_add.
 
   (* pub const fn wrapping_add(self, count: usize) -> Self *)
   Instance run_wrapping_add
@@ -161,6 +174,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_wrapping_add.
 
   (* pub const unsafe fn sub(self, count: usize) -> Self *)
   Instance run_sub
@@ -172,6 +186,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_sub.
 
   (* pub const fn wrapping_sub(self, count: usize) -> Self *)
   Instance run_wrapping_sub
@@ -183,6 +198,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_wrapping_sub.
 
   (* pub const fn addr(self) -> usize *)
   Instance run_addr
@@ -193,6 +209,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_addr.
 
   (* pub const fn cast_const(self) -> *const T *)
   Instance run_cast_const
@@ -204,6 +221,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_cast_const.
 
   (* pub const fn with_metadata_of<U>(self, val: *mut U) -> *mut U *)
   Instance run_with_metadata_of
@@ -217,6 +235,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_with_metadata_of.
 
   (* pub const unsafe fn write(self, val: T) *)
   Instance run_write
@@ -242,5 +261,6 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_write_bytes.
 End Impl_pointer_mut_T.
 Export Impl_pointer_mut_T.

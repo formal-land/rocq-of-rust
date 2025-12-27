@@ -18,6 +18,7 @@ Module Impl_Uint.
       (bytes.Impl_ruint_Uint_BITS_LIMBS.to_be_bytes (φ BITS) (φ LIMBS)) [ φ BYTES ] [] [ φ x ]
       (array.t U8.t BYTES).
   Admitted.
+  Global Opaque run_to_be_bytes.
 
   (* pub const fn from_be_bytes<const BYTES: usize>(bytes: [u8; BYTES]) -> Self *)
   Instance run_from_be_bytes
@@ -27,6 +28,7 @@ Module Impl_Uint.
       (bytes.Impl_ruint_Uint_BITS_LIMBS.from_be_bytes (φ BITS) (φ LIMBS)) [ φ BYTES ] [] [ φ bytes ]
       (Self BITS LIMBS).
   Admitted.
+  Global Opaque run_from_be_bytes.
 
   (* pub const fn try_from_be_slice(bytes: &[u8]) -> Option<Self> *)
   Instance run_try_from_be_slice
@@ -36,5 +38,6 @@ Module Impl_Uint.
       (bytes.Impl_ruint_Uint_BITS_LIMBS.try_from_be_slice (φ BITS) (φ LIMBS)) [] [] [ φ bytes ]
       (option (Self BITS LIMBS)).
   Admitted.
+  Global Opaque run_try_from_be_slice.
 End Impl_Uint.
 Export Impl_Uint.

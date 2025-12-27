@@ -182,12 +182,14 @@ Module Impl_EofHeader.
   Instance run_size (self : Ref.t Pointer.Kind.Ref Self) : 
     Run.Trait header.eof.header.Impl_revm_bytecode_eof_header_EofHeader.size [] [] [φ self] Usize.t.
   Admitted.
+  Global Opaque run_size.
 
   (* pub fn eof_size(&self) -> usize *)
   Instance run_eof_size (self : Ref.t Pointer.Kind.Ref Self) :
     Run.Trait header.eof.header.Impl_revm_bytecode_eof_header_EofHeader.eof_size [] [] [φ self]
       Usize.t.
   Admitted.
+  Global Opaque run_eof_size.
 
   (*
     pub fn encode(&self, buffer: &mut Vec<u8>)
@@ -195,11 +197,13 @@ Module Impl_EofHeader.
   Instance run_encode (self : Ref.t Pointer.Kind.Ref Self) (buffer : Ref.t Pointer.Kind.MutPointer (Vec.t U8.t Global.t)) :
     Run.Trait header.eof.header.Impl_revm_bytecode_eof_header_EofHeader.encode [] [] [φ self; φ buffer] unit.
   Admitted.
+  Global Opaque run_encode.
 
   (* pub fn decode(input: &[u8]) -> Result<(Self, &[u8]), EofDecodeError> *)
   Instance run_decode (input : Ref.t Pointer.Kind.Ref (list U8.t)) :
     Run.Trait header.eof.header.Impl_revm_bytecode_eof_header_EofHeader.decode [] [] [φ input]
       (Result.t Self (Ref.t Pointer.Kind.Ref (list U8.t))).
   Admitted.
+  Global Opaque run_decode.
 End Impl_EofHeader.
 Export Impl_EofHeader.

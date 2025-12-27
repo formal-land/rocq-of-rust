@@ -149,6 +149,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_offset.
 
 Module Impl_AccountMeta.
   Definition Self : Set := AccountMeta.t.
@@ -167,6 +168,7 @@ Module Impl_AccountMeta.
     run_symbolic.
     admit.
   Admitted.
+  Global Opaque run_new.
 
   Instance run_readonly
     (pubkey : Ref.t Pointer.Kind.Ref Pubkey.t) :
@@ -180,6 +182,7 @@ Module Impl_AccountMeta.
     run_symbolic.
     admit.
   Admitted.
+  Global Opaque run_readonly.
 
   Instance run_writable
     (pubkey : Ref.t Pointer.Kind.Ref Pubkey.t) :
@@ -193,6 +196,7 @@ Module Impl_AccountMeta.
     run_symbolic.
     admit.
   Admitted.
+  Global Opaque run_writable.
 
   Instance run_readonly_signer
     (pubkey : Ref.t Pointer.Kind.Ref Pubkey.t) :
@@ -205,6 +209,7 @@ Module Impl_AccountMeta.
     constructor.
     admit.
   Admitted.
+  Global Opaque run_readonly_signer.
 
   Instance run_writable_signer
     (pubkey : Ref.t Pointer.Kind.Ref Pubkey.t) :
@@ -218,6 +223,7 @@ Module Impl_AccountMeta.
     run_symbolic.
     admit.
   Admitted.
+  Global Opaque run_writable_signer.
 End Impl_AccountMeta.
 
 Module Impl_From_ref_AccountInfo_for_Account.

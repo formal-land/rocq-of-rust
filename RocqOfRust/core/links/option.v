@@ -98,6 +98,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_unwrap_failed.
 
 (* const fn expect_failed(msg: &str) -> ! *)
 Instance run_expect_failed (msg : Ref.t Pointer.Kind.Ref string) :
@@ -108,6 +109,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_expect_failed.
 
 Module Impl_Option.
   Definition Self (T : Set) `{Link T} : Set := option T.
@@ -133,6 +135,7 @@ Module Impl_Option.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_ok_or.
 
   (* pub const fn unwrap(self) -> T *)
   Instance run_unwrap {T : Set} `{Link T}
@@ -144,6 +147,7 @@ Module Impl_Option.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_unwrap.
 
   (* pub const unsafe fn unwrap_unchecked(self) -> T *)
   Instance run_unwrap_unchecked {T : Set} `{Link T}
@@ -155,6 +159,7 @@ Module Impl_Option.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_unwrap_unchecked.
 
   (*
     pub fn unwrap_or_default(self) -> T
@@ -172,6 +177,7 @@ Module Impl_Option.
     destruct run_Default_for_T.
     run_symbolic.
   Defined.
+  Global Opaque run_unwrap_or_default.
 
   (* pub fn unwrap_or(self, default: T) -> T *)
   Instance run_unwrap_or {T : Set} `{Link T}
@@ -183,6 +189,7 @@ Module Impl_Option.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_unwrap_or.
 
   (* pub const fn expect(self, msg: &str) -> T *)
   Instance run_expect {T : Set} `{Link T}
@@ -194,6 +201,7 @@ Module Impl_Option.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_expect.
 End Impl_Option.
 Export Impl_Option.
 

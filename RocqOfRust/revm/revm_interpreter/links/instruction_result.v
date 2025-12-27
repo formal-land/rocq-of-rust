@@ -688,6 +688,7 @@ Module Impl_InstructionResult.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_is_ok.
 
   (* pub const fn is_ok_or_revert(self) -> bool *)
   Instance run_is_ok_or_revert (self : Self) :
@@ -699,6 +700,7 @@ Module Impl_InstructionResult.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_is_ok_or_revert.
 
   (* pub const fn is_continue(self) -> bool *)
   Instance run_is_continue (self : Self) :
@@ -711,6 +713,7 @@ Module Impl_InstructionResult.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_is_continue.
 
   (* pub const fn is_revert(self) -> bool *)
   Instance run_is_revert (self : Self) :
@@ -722,6 +725,7 @@ Module Impl_InstructionResult.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_is_revert.
 
   (* pub const fn is_error(self) -> bool *)
   Instance run_is_error (self : Self) :
@@ -733,5 +737,6 @@ Module Impl_InstructionResult.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_is_error.
 End Impl_InstructionResult.
 Export Impl_InstructionResult.

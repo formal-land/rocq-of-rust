@@ -67,3 +67,4 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   run_symbolic.
 Defined.
+Global Opaque run_extcall.

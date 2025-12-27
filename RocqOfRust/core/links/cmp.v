@@ -16,13 +16,13 @@ pub trait PartialEq<Rhs: ?Sized = Self> {
 Module PartialEq.
   Definition trait (Self Rhs : Set) `{Link Self} `{Link Rhs} : TraitMethod.Header.t :=
     ("core::cmp::PartialEq", [], [ Φ Rhs ], Φ Self).
-    
+
   Definition Run_eq (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set :=
     TraitMethod.C (trait Self Rhs) "eq" (fun method =>
       forall (self other : Ref.t Pointer.Kind.Ref Self),
       Run.Trait method [] [] [ φ self; φ other ] bool
     ).
-    
+
   Definition Run_ne (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set :=
     TraitMethod.C (trait Self Rhs) "ne" (fun method =>
       forall (self other : Ref.t Pointer.Kind.Ref Self),
@@ -67,6 +67,7 @@ Proof.
   destruct Run_FnOnce_for_F.
   run_symbolic.
 Defined.
+Global Opaque run_max_by.
 
 (*
     pub trait Ord: Eq + PartialOrd<Self> {
@@ -122,6 +123,7 @@ Module Ord.
   Run.Trait (cmp.cmp.Ord.min (Φ Self)) [] [] [ φ self; φ other ] Self.
   Proof.
   Admitted.
+  Global Opaque run_min.
 
   Instance run_max {Self : Set} `{Link Self} (self other : Self)
       (run_cmp : Run_cmp Self) :
@@ -136,12 +138,14 @@ Module Ord.
         (Function2.of_run run_cmp.(TraitMethod.run))
     ).
   Defined.
+  Global Opaque run_max.
 
   Instance run_clamp {Self : Set} `{Link Self} (self min max : Self)
       (H_cmp : Run_cmp Self) :
     Run.Trait (cmp.cmp.Ord.clamp (Φ Self)) [] [] [ φ self; φ min; φ max ] Self.
   Proof.
   Admitted.
+  Global Opaque run_clamp.
 End Ord.
 
 Instance run_min {T : Set} `{Link T} `{Ord.Run T} (v1 v2 : T) :
@@ -151,6 +155,7 @@ Proof.
   destruct_all (Ord.Run T).
   run_symbolic.
 Defined.
+Global Opaque run_min.
 
 (* pub fn max<T: Ord>(v1: T, v2: T) -> T *)
 Instance run_max {T : Set} `{Link T} `{Ord.Run T} (v1 v2 : T) :
@@ -160,6 +165,7 @@ Proof.
   destruct_all (Ord.Run T).
   run_symbolic.
 Defined.
+Global Opaque run_max.
 
 Module Impl_Ord_for_u64.
   Definition Self : Set := U64.t.

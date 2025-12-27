@@ -44,3 +44,4 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_num_words.

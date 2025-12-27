@@ -15,6 +15,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_CLOCK_ID.
 
 Instance run_DEFAULT_TICKS_PER_SLOT :
   Run.Trait
@@ -24,6 +25,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_DEFAULT_TICKS_PER_SLOT.
 
 Instance run_DEFAULT_TICKS_PER_SECOND :
   Run.Trait
@@ -33,6 +35,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_DEFAULT_TICKS_PER_SECOND.
 
 Instance run_DEFAULT_MS_PER_SLOT :
   Run.Trait
@@ -42,6 +45,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_DEFAULT_MS_PER_SLOT.
 
 Module Clock.
   Record t : Set := {
@@ -76,6 +80,7 @@ Module Impl_Clock.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_LEN.
 
   Instance run_from_account_info
     (account_info : Ref.t Pointer.Kind.Ref AccountInfo.t) :
@@ -88,6 +93,7 @@ Module Impl_Clock.
     constructor.
     admit.
   Admitted.
+  Global Opaque run_from_account_info.
 
   Instance run_from_account_info_unchecked
     (account_info : Ref.t Pointer.Kind.Ref AccountInfo.t) :
@@ -100,6 +106,7 @@ Module Impl_Clock.
     constructor.
     admit.
   Admitted.
+  Global Opaque run_from_account_info_unchecked.
 
   Instance run_from_bytes
     (bytes : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8))) :
@@ -112,6 +119,7 @@ Module Impl_Clock.
     constructor.
     admit.
   Admitted.
+  Global Opaque run_from_bytes.
 
   Instance run_from_bytes_unchecked
     (bytes : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8))) :
@@ -124,4 +132,5 @@ Module Impl_Clock.
     constructor.
     admit.
   Admitted.
+  Global Opaque run_from_bytes_unchecked.
 End Impl_Clock.

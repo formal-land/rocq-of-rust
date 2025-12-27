@@ -19,6 +19,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_MAX_CPI_ACCOUNTS.
 
 (*
 pub fn invoke<const ACCOUNTS: usize>(
@@ -43,6 +44,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_invoke.
 
 (*
 pub fn invoke_with_bounds<const MAX_ACCOUNTS: usize>(
@@ -67,6 +69,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_invoke_with_bounds.
 
 (*
 pub fn slice_invoke(instruction: &Instruction, account_infos: &[&AccountInfo]) -> ProgramResult {
@@ -88,6 +91,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_slice_invoke.
 
 (*
 pub fn invoke_signed<const ACCOUNTS: usize>(
@@ -114,6 +118,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_invoke_signed.
 
 (*
 pub fn invoke_signed_with_bounds<const MAX_ACCOUNTS: usize>(
@@ -140,6 +145,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_invoke_signed_with_bounds.
 
 (*
 pub fn slice_invoke_signed(
@@ -166,6 +172,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_slice_invoke_signed.
 
 (*
 unsafe fn inner_invoke_signed_with_bounds<const MAX_ACCOUNTS: usize>(
@@ -192,6 +199,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_inner_invoke_signed_with_bounds.
 
 (*
 pub unsafe fn invoke_unchecked(instruction: &Instruction, accounts: &[Account]) {
@@ -213,6 +221,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_invoke_unchecked.
 
 (*
 pub unsafe fn invoke_signed_unchecked(
@@ -241,6 +250,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_invoke_signed_unchecked.
 
 (* pub fn set_return_data(data: &[u8]) {
     #[cfg(target_os = "solana")]
@@ -265,6 +275,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_set_return_data.
 
 (*
 pub fn get_return_data() -> Option<ReturnData> {
@@ -279,6 +290,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_MAX_RETURN_DATA.
 
 (*
 pub struct ReturnData {
@@ -322,6 +334,7 @@ Proof.
   constructor.
   admit.
 Admitted.
+Global Opaque run_get_return_data.
 
 (*
 impl ReturnData {
@@ -351,6 +364,7 @@ Module Impl_ReturnData.
     run_symbolic.
     admit.
   Admitted.
+  Global Opaque run_program_id.
 
   Instance run_as_slice
     (self : Ref.t Pointer.Kind.Ref Self) :
@@ -364,6 +378,7 @@ Module Impl_ReturnData.
     run_symbolic.
     admit.
   Admitted.
+  Global Opaque run_as_slice.
 End Impl_ReturnData.
 
 (* 
@@ -389,6 +404,7 @@ Module Impl_Deref_for_ReturnData.
     { constructor.
       admit. }
   Admitted.
+  Global Opaque run_deref.
 
   Instance run
     : Deref.Run ReturnData.t (list (Integer.t IntegerKind.U8)) :=

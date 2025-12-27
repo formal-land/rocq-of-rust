@@ -12,6 +12,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_value_NUM_ROUNDS.
 
 (* const BITS_PER_LIMB: usize = 16; *)
 Definition BITS_PER_LIMB : Usize.t :=
@@ -23,6 +24,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_value_BITS_PER_LIMB.
 
 (* pub const U64_LIMBS: usize = 64 / BITS_PER_LIMB; *)
 Definition U64_LIMBS : Usize.t :=
@@ -34,6 +36,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_value_U64_LIMBS.
 
 (* const RATE_BITS: usize = 1088; *)
 Definition RATE_BITS : Usize.t :=
@@ -45,6 +48,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_value_RATE_BITS.
 
 (* const RATE_LIMBS: usize = RATE_BITS / BITS_PER_LIMB; *)
 Definition RATE_LIMBS : Usize.t :=
@@ -56,3 +60,4 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_value_RATE_LIMBS.

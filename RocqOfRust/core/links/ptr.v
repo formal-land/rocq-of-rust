@@ -9,4 +9,4 @@ Definition run_write_volatile (T: Set) `{Link T} (dst: Ref.t Pointer.Kind.MutRef
         write_volatile [] [] [φ dst] unit.
 Proof.
 Admitted.
-
+Global Opaque run_write_volatile.

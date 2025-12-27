@@ -53,6 +53,7 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_from_fn.
 
 (*
 impl<'a, T, const N: usize> TryFrom<&'a [T]> for &'a [T; N] {

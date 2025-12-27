@@ -71,3 +71,4 @@ Proof.
   destruct run_Deref_for_Synthetic1.
   run_symbolic.
 Defined.
+Global Opaque run_create.

@@ -26,6 +26,7 @@ Instance run_get_memory_input_and_out_ranges
 Proof.
   constructor.
 Admitted.
+Global Opaque run_get_memory_input_and_out_ranges.
 
 (*
 pub fn resize_memory(
@@ -47,6 +48,7 @@ Instance run_resize_memory
 Proof.
   constructor.
 Admitted.
+Global Opaque run_resize_memory.
 
 (*
 pub fn calc_call_gas(
@@ -71,3 +73,4 @@ Instance run_calc_call_gas
 Proof.
   constructor.
 Admitted.
+Global Opaque run_calc_call_gas.

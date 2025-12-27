@@ -26,7 +26,6 @@ Proof.
     destruct (_ <? _)
   ).
 Qed.
-Global Opaque run_max2.
 
 Definition abs_i32 (x : I32.t) : I32.t :=
   if x.(Integer.value) <? 0 then
@@ -52,7 +51,6 @@ Proof.
   }
   { apply Run.Pure. }
 Qed.
-Global Opaque run_abs_i32.
 
 Definition bool_and (a b : bool) : bool :=
   if a
@@ -75,7 +73,6 @@ Proof.
     destruct b
   ).
 Qed.
-Global Opaque run_bool_and.
 
 Definition get_or_zero (xs : array.t U32.t {| Integer.value := 4 |}) (i : Usize.t) : U32.t :=
   let i := i.(Integer.value) in
@@ -126,7 +123,6 @@ Proof.
     apply Run.Pure.
   }
 Qed.
-Global Opaque run_get_or_zero.
 
 Definition eq2 (a b : array.t U32.t {| Integer.value := 2 |}) : bool :=
   let '(tt, x1, x0) := ArrayPairs.to_tuple_rev a.(array.value) in
@@ -162,7 +158,6 @@ Proof.
     apply Run.Pure.
   }
 Qed.
-Global Opaque run_eq2.
 
 Definition eq_pair (x y : U32.t * U32.t) : bool :=
   let '(x0, x1) := x in
@@ -190,7 +185,6 @@ Proof.
     apply Run.Pure.
   }
 Qed.
-Global Opaque run_eq_pair.
 
 Definition min3 (a b c : U32.t) : U32.t :=
   let m := if a.(Integer.value) <? b.(Integer.value) then a else b in
@@ -226,7 +220,6 @@ Proof.
     { apply Run.Pure. }
   }
 Qed.
-Global Opaque run_min3.
 
 Definition choose_ref (choice : bool) (a b : U32.t) : U32.t :=
   if choice then
@@ -256,4 +249,3 @@ Proof.
     apply Run.Pure.
   }
 Qed.
-Global Opaque run_choose_ref.

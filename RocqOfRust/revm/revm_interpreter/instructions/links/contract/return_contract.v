@@ -70,3 +70,4 @@ Proof.
   destruct run_Deref_for_Synthetic1.
   Time run_symbolic.
 Admitted.
+Global Opaque run_return_contract.

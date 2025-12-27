@@ -38,6 +38,7 @@ Module Impl_Arguments.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_new_const.
 
   (*
     pub fn new_v1<const P: usize, const A: usize>(
@@ -54,5 +55,6 @@ Module Impl_Arguments.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_new_v1.
 End Impl_Arguments.
 Export Impl_Arguments.

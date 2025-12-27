@@ -126,6 +126,7 @@ Module Impl_MemoryGas.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_new.
 
   (*
   pub fn record_new_len(&mut self, new_num: usize) -> Option<u64> {
@@ -150,6 +151,7 @@ Module Impl_MemoryGas.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_record_new_len.
 End Impl_MemoryGas.
 Export Impl_MemoryGas.
 
@@ -407,6 +409,7 @@ Module Impl_Gas.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_new.
 
   (*
       pub const fn new_spent(limit: u64) -> Self {
@@ -424,6 +427,7 @@ Module Impl_Gas.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_new_spent.
 
   (*
       pub const fn limit(&self) -> u64 {
@@ -436,6 +440,7 @@ Module Impl_Gas.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_limit.
 
   (*
       pub const fn memory(&self) -> u64 {
@@ -448,6 +453,7 @@ Module Impl_Gas.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_memory.
 
   (*
       pub const fn refunded(&self) -> i64 {
@@ -460,6 +466,7 @@ Module Impl_Gas.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_refunded.
 
   (*
       pub const fn spent(&self) -> u64 {
@@ -472,6 +479,7 @@ Module Impl_Gas.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_spent.
 
   (*
       pub const fn remaining(&self) -> u64 {
@@ -484,6 +492,7 @@ Module Impl_Gas.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_remaining.
 
   (*
       pub const fn remaining_63_of_64_parts(&self) -> u64 {
@@ -496,6 +505,7 @@ Module Impl_Gas.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_remaining_63_of_64_parts.
 
   (*
       pub fn erase_cost(&mut self, returned: u64) {
@@ -508,6 +518,7 @@ Module Impl_Gas.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_erase_cost.
 
   (*
       pub fn spend_all(&mut self) {
@@ -520,6 +531,7 @@ Module Impl_Gas.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_spend_all.
 
   (*
       pub fn record_refund(&mut self, refund: i64) {
@@ -532,6 +544,7 @@ Module Impl_Gas.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_record_refund.
 
   (*
       pub fn set_final_refund(&mut self, is_london: bool) {
@@ -546,6 +559,7 @@ Module Impl_Gas.
     pose cmp.Impl_Ord_for_u64.run_min.
     run_symbolic.
   Defined.
+  Global Opaque run_set_final_refund.
 
   (*
       pub fn set_refund(&mut self, refund: i64) {
@@ -558,6 +572,7 @@ Module Impl_Gas.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_set_refund.
 
   (*
       pub fn record_cost(&mut self, cost: u64) -> bool {
@@ -575,6 +590,7 @@ Module Impl_Gas.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_record_cost.
 
   (*
       pub fn record_memory_expansion(&mut self, new_len: usize) -> MemoryExtensionResult {
@@ -599,5 +615,6 @@ Module Impl_Gas.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_record_memory_expansion.
 End Impl_Gas.
 Export Impl_Gas.

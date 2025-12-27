@@ -33,6 +33,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
+Global Opaque run_pop.
 
 (*
 pub fn push0<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -57,6 +58,7 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   run_symbolic.
 Defined.
+Global Opaque run_push0.
 
 (*
 pub fn push<const N: usize, WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -83,6 +85,7 @@ Proof.
   destruct run_Immediates_for_Bytecode.
   run_symbolic.
 Defined.
+Global Opaque run_push.
 
 (*
 pub fn dup<const N: usize, WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -107,6 +110,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
+Global Opaque run_dup.
 
 (*
 pub fn swap<const N: usize, WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -131,6 +135,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
+Global Opaque run_swap.
 
 (*
 pub fn dupn<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -157,6 +162,7 @@ Proof.
   destruct run_Immediates_for_Bytecode.
   run_symbolic.
 Defined.
+Global Opaque run_dupn.
 
 (*
 pub fn swapn<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -183,6 +189,7 @@ Proof.
   destruct run_Immediates_for_Bytecode.
   run_symbolic.
 Defined.
+Global Opaque run_swapn.
 
 (*
 pub fn exchange<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -209,3 +216,4 @@ Proof.
   destruct run_Immediates_for_Bytecode.
   run_symbolic.
 Defined.
+Global Opaque run_exchange.

@@ -23,6 +23,7 @@ Module Impl_Slice.
     Run.Trait (slice.Impl_slice_T.get (Φ T)) [] [Φ I] [φ self; φ index]
       (option (Ref.t Pointer.Kind.Ref Output)).
   Admitted.
+  Global Opaque run_get.
 
   (*
     pub unsafe fn get_unchecked_mut<I>(&mut self, index: I) -> &mut I::Output
@@ -39,6 +40,7 @@ Module Impl_Slice.
     Run.Trait (slice.Impl_slice_T.get_unchecked_mut (Φ T)) [] [Φ I] [φ self; φ index]
       (Ref.t Pointer.Kind.MutRef Output).
   Admitted.
+  Global Opaque run_get_unchecked_mut.
 
   (* pub const fn len(&self) -> usize *)
   Instance run_len
@@ -47,6 +49,7 @@ Module Impl_Slice.
     Run.Trait (slice.Impl_slice_T.len (Φ T)) [] [] [φ self]
       Usize.t.
   Admitted.
+  Global Opaque run_len.
 
   (* pub const fn is_empty(&self) -> bool *)
   Instance run_is_empty
@@ -58,6 +61,7 @@ Module Impl_Slice.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_is_empty.
 
   (* pub fn iter(&self) -> Iter<'_, T> *)
   Instance run_iter
@@ -66,6 +70,7 @@ Module Impl_Slice.
     Run.Trait (slice.Impl_slice_T.iter (Φ T)) [] [] [φ self]
       (Iter.t T).
   Admitted.
+  Global Opaque run_iter.
 
   (* pub fn iter_mut(&mut self) -> IterMut<'_, T> *)
   Instance run_iter_mut
@@ -74,6 +79,7 @@ Module Impl_Slice.
     Run.Trait (slice.Impl_slice_T.iter_mut (Φ T)) [] [] [φ self]
       (IterMut.t T).
   Admitted.
+  Global Opaque run_iter_mut.
 
   (* pub const fn as_ptr(&self) -> *const T *)
   Instance run_as_ptr
@@ -82,6 +88,7 @@ Module Impl_Slice.
     Run.Trait (slice.Impl_slice_T.as_ptr (Φ T)) [] [] [φ self]
       (Ref.t Pointer.Kind.ConstPointer T).
   Admitted.
+  Global Opaque run_as_ptr.
 
   (* pub const fn as_mut_ptr(&mut self) -> *mut T *)
   Instance run_as_mut_ptr
@@ -90,6 +97,7 @@ Module Impl_Slice.
     Run.Trait (slice.Impl_slice_T.as_mut_ptr (Φ T)) [] [] [φ self]
       (Ref.t Pointer.Kind.MutPointer T).
   Admitted.
+  Global Opaque run_as_mut_ptr.
 
   (* pub fn chunks_exact(&self, chunk_size: usize) -> ChunksExact<'_, T> *)
   Instance run_chunks_exact
@@ -99,6 +107,7 @@ Module Impl_Slice.
     Run.Trait (slice.Impl_slice_T.chunks_exact (Φ T)) [] [] [φ self; φ chunk_size]
       (ChunksExact.t T).
   Admitted.
+  Global Opaque run_chunks_exact.
 
   (* pub fn rchunks_exact(&self, chunk_size: usize) -> RChunksExact<'_, T> *)
   Instance run_rchunks_exact
@@ -108,6 +117,7 @@ Module Impl_Slice.
     Run.Trait (slice.Impl_slice_T.rchunks_exact (Φ T)) [] [] [φ self; φ chunk_size]
       (RChunksExact.t T).
   Admitted.
+  Global Opaque run_rchunks_exact.
 
   (*
   pub const fn copy_from_slice(&mut self, src: &[T])
@@ -121,5 +131,6 @@ Module Impl_Slice.
     Run.Trait (slice.Impl_slice_T.copy_from_slice (Φ T)) [] [] [φ self; φ src]
       unit.
   Admitted.
+  Global Opaque run_copy_from_slice.
 End Impl_Slice.
 Export Impl_Slice.

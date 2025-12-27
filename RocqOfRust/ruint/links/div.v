@@ -16,6 +16,7 @@ Module Impl_Uint.
       (div.Impl_ruint_Uint_BITS_LIMBS.wrapping_div (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2 ]
       (Self BITS LIMBS).
   Admitted.
+  Global Opaque run_wrapping_div.
 
   (* pub fn wrapping_rem(self, rhs: Self) -> Self *)
   Instance run_wrapping_rem
@@ -25,5 +26,6 @@ Module Impl_Uint.
       (div.Impl_ruint_Uint_BITS_LIMBS.wrapping_rem (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2 ]
       (Self BITS LIMBS).
   Admitted.
+  Global Opaque run_wrapping_rem.
 End Impl_Uint.
 Export Impl_Uint.

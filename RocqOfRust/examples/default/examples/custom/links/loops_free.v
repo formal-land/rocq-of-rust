@@ -9,18 +9,21 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_max2.
 
 Instance run_abs_i32 (x : I32.t) : Run.Trait abs_i32 [] [] [φ x] I32.t.
 Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_abs_i32.
 
 Instance run_bool_and (a b : bool) : Run.Trait bool_and [] [] [φ a; φ b] bool.
 Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_bool_and.
 
 (* pub fn get_or_zero(xs: &[u32; 4], i: usize) -> u32 *)
 Instance run_get_or_zero
@@ -31,6 +34,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_get_or_zero.
 
 (* pub fn eq2(a: &[u32; 2], b: &[u32; 2]) -> bool *)
 Instance run_eq2
@@ -41,6 +45,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_eq2.
 
 (* pub fn eq_pair(x: (u32, u32), y: (u32, u32)) -> bool *)
 Instance run_eq_pair
@@ -51,6 +56,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_eq_pair.
 
 (* pub fn min3(a: u32, b: u32, c: u32) -> u32 *)
 Instance run_min3 (a b c : U32.t) : Run.Trait min3 [] [] [φ a; φ b; φ c] U32.t.
@@ -58,6 +64,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_min3.
 
 (* pub fn choose_ref<'a>(choice: bool, a: &'a u32, b: &'a u32) -> &'a u32 *)
 Instance run_choose_ref (choice : bool) (a b : Ref.t Pointer.Kind.Ref U32.t) :
@@ -66,3 +73,4 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_choose_ref.

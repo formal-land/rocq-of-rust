@@ -36,6 +36,7 @@ Module Impl_Bytes.
       bytes.Impl_bytes_bytes_Bytes.len [] [] [ φ self ]
       Usize.t.
   Admitted.
+  Global Opaque run_len.
 
   (* pub fn clear(&mut self) *)
   Instance run_clear (self : Ref.t Pointer.Kind.MutRef Self) :
@@ -44,6 +45,7 @@ Module Impl_Bytes.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_clear.
 End Impl_Bytes.
 Export Impl_Bytes.
 

@@ -55,6 +55,7 @@ Proof.
   destruct Impl_IntoAddress_for_U256.run.
   run_symbolic.
 Defined.
+Global Opaque run_balance.
 
 (*
 pub fn selfbalance<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -83,6 +84,7 @@ Proof.
   destruct run_InputsTrait_for_Input.
   run_symbolic.
 Defined.
+Global Opaque run_selfbalance.
 
 (*
 pub fn extcodesize<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -112,6 +114,7 @@ Proof.
   destruct alloy_primitives.bytes.links.mod.Impl_Deref_for_Bytes.run.
   run_symbolic.
 Defined.
+Global Opaque run_extcodesize.
 
 (*
 pub fn extcodehash<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -141,6 +144,7 @@ Proof.
   destruct Impl_IntoAddress_for_U256.run.
   run_symbolic.
 Defined.
+Global Opaque run_extcodehash.
 
 (*
 pub fn extcodecopy<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -173,6 +177,7 @@ Proof.
   destruct links.mod.Impl_Deref_for_Bytes.run.
   run_symbolic.
 Defined.
+Global Opaque run_extcodecopy.
 
 (*
 pub fn blockhash<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -200,6 +205,7 @@ Proof.
   destruct run_LoopControl_for_Control.
   run_symbolic.
 Defined.
+Global Opaque run_blockhash.
 
 (*
 pub fn sload<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -228,6 +234,7 @@ Proof.
   destruct run_Host_for_H.
   run_symbolic.
 Defined.
+Global Opaque run_sload.
 
 (*
 pub fn sstore<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -256,6 +263,7 @@ Proof.
   destruct run_Host_for_H.
   run_symbolic.
 Defined.
+Global Opaque run_sstore.
 
 (*
 pub fn tstore<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -284,6 +292,7 @@ Proof.
   destruct run_Host_for_H.
   run_symbolic.
 Defined.
+Global Opaque run_tstore.
 
 (*
 pub fn tload<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -312,6 +321,7 @@ Proof.
   destruct run_Host_for_H.
   run_symbolic.
 Defined.
+Global Opaque run_tload.
 
 (*
 pub fn log<const N: usize, H: Host + ?Sized>(
@@ -362,6 +372,7 @@ Proof.
   change (Value.Closure _) with (φ (Function1.of_run run_from)).
   typeclasses eauto.
 Defined.
+Global Opaque run_log.
 
 (*
 pub fn selfdestruct<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -392,3 +403,4 @@ Proof.
   destruct (Impl_Deref_for_StateLoad.run SelfDestructResult.t).
   run_symbolic.
 Defined.
+Global Opaque run_selfdestruct.

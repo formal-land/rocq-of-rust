@@ -49,6 +49,7 @@ Proof.
   destruct run_Transaction_for_Transaction.
   run_symbolic.
 Defined.
+Global Opaque run_gasprice.
 
 (*
 pub fn origin<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -78,6 +79,7 @@ Proof.
   run_symbolic.
   (* dyn type *)
 Admitted.
+Global Opaque run_origin.
 
 (*
 pub fn blob_hash<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -127,3 +129,4 @@ Proof.
         generalize Transaction_IsAssociated; clear; intros.
       } *)
 Admitted.
+Global Opaque run_blob_hash.

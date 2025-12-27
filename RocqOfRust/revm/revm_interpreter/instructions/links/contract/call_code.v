@@ -68,3 +68,4 @@ Proof.
   destruct (TryFrom_Uint_for_u64.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_call_code.

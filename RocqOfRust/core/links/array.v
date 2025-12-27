@@ -332,3 +332,4 @@ Instance run_pointer_coercion_unsize_array_to_slice
     [ φ source ]
     Target.
 Admitted.
+Global Opaque run_pointer_coercion_unsize_array_to_slice.

@@ -106,6 +106,7 @@ Module Impl_ChunksExact.
     Run.Trait (slice.iter.Impl_core_slice_iter_ChunksExact_T.remainder (Φ T)) [] [] [φ self]
       (Ref.t Pointer.Kind.Ref (list T)).
   Admitted.
+  Global Opaque run_remainder.
 End Impl_ChunksExact.
 Export Impl_ChunksExact.
 
@@ -164,6 +165,7 @@ Module Impl_RChunksExact.
       (slice.iter.Impl_core_slice_iter_RChunksExact_T.remainder (Φ T)) [] [] [φ self]
       (Ref.t Pointer.Kind.Ref (list T)).
   Admitted.
+  Global Opaque run_remainder.
 End Impl_RChunksExact.
 Export Impl_RChunksExact.
 

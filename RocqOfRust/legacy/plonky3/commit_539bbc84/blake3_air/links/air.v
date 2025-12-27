@@ -44,6 +44,7 @@ Module Impl_Blake3Air.
     run_symbolic.
     (* "rand_core::SeedableRng::seed_from_u64" *)
   Admitted.
+  Global Opaque run_generate_trace_rows.
 
   (* 
   fn quarter_round_function<AB: AirBuilder>(
@@ -75,6 +76,7 @@ Module Impl_Blake3Air.
     (* p3_air::utils::add2 *)
     (* p3_air::utils::xor_32_shift *)
   Admitted.
+  Global Opaque run_quarter_round_function.
 
   (* 
   const fn full_round_to_column_quarter_round<'a, T: Copy, U>(
@@ -103,6 +105,7 @@ Module Impl_Blake3Air.
     (* p3_blake3_air::columns::Blake3State::row0
     Seems like Coq cannot recognize our current definition in struct is a link... *)
   Admitted.
+  Global Opaque run_full_round_to_column_quarter_round.
 
   (* 
   const fn full_round_to_diagonal_quarter_round<'a, T: Copy, U>(
@@ -128,6 +131,7 @@ Module Impl_Blake3Air.
     run_symbolic.
     (* Stuck at using FullRound::state_middle? *)
   Admitted.
+  Global Opaque run_full_round_to_diagonal_quarter_round.
 
   (* 
   fn verify_round<AB: AirBuilder>(
@@ -161,6 +165,7 @@ Module Impl_Blake3Air.
     `Impl_Air_for_Blake3Air` *)
     run_symbolic.
   Admitted.
+  Global Opaque run_verify_round.
 End Impl_Blake3Air.
 
 (* impl<F> BaseAir<F> for Blake3Air { *)

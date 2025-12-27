@@ -17,6 +17,7 @@ Module Impl_Uint.
       (cmp.Impl_ruint_Uint_BITS_LIMBS.is_zero (φ BITS) (φ LIMBS)) [] [] [ φ self ]
       bool.
   Admitted.
+  Global Opaque run_is_zero.
 End Impl_Uint.
 Export Impl_Uint.
 

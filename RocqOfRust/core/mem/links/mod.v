@@ -13,3 +13,4 @@ Instance run_swap {T : Set} `{Link T} (x y : Ref.t Pointer.Kind.MutRef T) :
   Run.Trait mem.swap [] [ Φ T ] [ φ x; φ y ] unit.
 Proof.
 Admitted.
+Global Opaque run_swap.

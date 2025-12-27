@@ -89,6 +89,7 @@ Module Impl_Range.
       (ops.range.Impl_core_ops_range_Range_Idx.is_empty (Φ Idx)) [] [] [ φ self ]
       bool.
   Admitted.
+  Global Opaque run_is_empty.
 End Impl_Range.
 Export Impl_Range.
 

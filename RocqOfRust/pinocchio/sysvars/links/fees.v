@@ -14,6 +14,7 @@ Instance run_DEFAULT_TARGET_LAMPORTS_PER_SIGNATURE :
 Proof.
   constructor. run_symbolic.
 Defined.
+Global Opaque run_DEFAULT_TARGET_LAMPORTS_PER_SIGNATURE.
 
 Instance run_DEFAULT_TARGET_SIGNATURES_PER_SLOT :
   Run.Trait
@@ -24,6 +25,7 @@ Proof.
   run_symbolic.
   admit.
 Admitted.
+Global Opaque run_DEFAULT_TARGET_SIGNATURES_PER_SLOT.
 
 Instance run_DEFAULT_BURN_PERCENT :
   Run.Trait
@@ -32,6 +34,7 @@ Instance run_DEFAULT_BURN_PERCENT :
 Proof.
   constructor. run_symbolic.
 Defined.
+Global Opaque run_DEFAULT_BURN_PERCENT.
 
 Module FeeCalculator.
   Record t : Set := {
@@ -100,6 +103,7 @@ Module Impl_FeeCalculator.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_new.
 End Impl_FeeCalculator.
 
 Module Impl_FeeRateGovernor.
@@ -114,6 +118,7 @@ Module Impl_FeeRateGovernor.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_default.
 
   Instance run_create_fee_calculator
     (self : Ref.t Pointer.Kind.Ref Self) :
@@ -125,6 +130,7 @@ Module Impl_FeeRateGovernor.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_create_fee_calculator.
 
   Instance run_burn
     (self : Ref.t Pointer.Kind.Ref Self)
@@ -137,6 +143,7 @@ Module Impl_FeeRateGovernor.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_burn.
 End Impl_FeeRateGovernor.
 
 Module Impl_Fees.
@@ -153,6 +160,7 @@ Module Impl_Fees.
   Proof.
     constructor. admit.
   Admitted.
+  Global Opaque run_new.
 End Impl_Fees.
 
 Module Impl_Default_for_FeeCalculator.

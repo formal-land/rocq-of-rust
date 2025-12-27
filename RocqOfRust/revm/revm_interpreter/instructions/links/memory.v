@@ -42,6 +42,7 @@ Proof.
   destruct (Impl_AsRef_for_Slice.run U8.t).
   run_symbolic.
 Defined.
+Global Opaque run_mload.
 
 (* pub fn mstore<WIRE: InterpreterTypes, H: Host + ?Sized>(
     interpreter: &mut Interpreter<WIRE>,
@@ -67,6 +68,7 @@ Proof.
   run_symbolic.
   (* pointer_coercion *)
 Admitted.
+Global Opaque run_mstore.
 
 (* pub fn mstore8<WIRE: InterpreterTypes, H: Host + ?Sized>(
     interpreter: &mut Interpreter<WIRE>,
@@ -92,6 +94,7 @@ Proof.
   run_symbolic.
   (* pointer_coercion *)
 Admitted.
+Global Opaque run_mstore8.
 
 (* pub fn msize<WIRE: InterpreterTypes, H: Host + ?Sized>(
     interpreter: &mut Interpreter<WIRE>,
@@ -116,6 +119,7 @@ Proof.
   destruct run_MemoryTrait_for_Memory.
   run_symbolic.
 Defined.
+Global Opaque run_msize.
 
 (* pub fn mcopy<WIRE: InterpreterTypes, H: Host + ?Sized>(
     interpreter: &mut Interpreter<WIRE>,
@@ -139,3 +143,4 @@ Proof.
   destruct run_MemoryTrait_for_Memory.
   run_symbolic.
 Defined.
+Global Opaque run_mcopy.

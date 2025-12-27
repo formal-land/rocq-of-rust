@@ -78,6 +78,7 @@ Module Impl_EofBody.
     destruct (vec.links.mod.Impl_Deref_for_Vec.run (T := Usize.t) (A := Global.t)).
     run_symbolic.
   Admitted.
+  Global Opaque run_code.
 
   (*
     pub fn encode(&self, buffer: &mut Vec<u8>)
@@ -88,6 +89,7 @@ Module Impl_EofBody.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_encode.
 
   (*
     pub fn into_eof(self) -> Eof
@@ -98,6 +100,7 @@ Module Impl_EofBody.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_into_eof.
 
   (*
     pub fn eof_code_section_start(&self, idx: usize) -> Option<usize> 
@@ -110,6 +113,7 @@ Module Impl_EofBody.
     destruct deref.
     run_symbolic.
   Admitted.
+  Global Opaque run_eof_code_section_start.
 
   (*
     pub fn decode(input: &Bytes, header: &EofHeader) -> Result<Self, EofDecodeError>
@@ -120,4 +124,5 @@ Module Impl_EofBody.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_decode.
 End Impl_EofBody.

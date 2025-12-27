@@ -41,6 +41,7 @@ Proof.
     run_symbolic.
   } *)
 Admitted.
+Global Opaque run_cast_slice_to_u256.
 
 (*
 pub trait IntoU256 {

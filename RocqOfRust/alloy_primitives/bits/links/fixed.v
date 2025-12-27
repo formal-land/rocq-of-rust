@@ -22,6 +22,7 @@ Module Impl_FixedBytes.
   Proof.
     constructor.
   Admitted.
+  Global Opaque run_zero.
 
   (* pub fn new(bytes: [u8; N]) -> Self *)
   Instance run_new (N : Usize.t) (bytes: array.t U8.t N) :
@@ -32,6 +33,7 @@ Module Impl_FixedBytes.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_new.
 End Impl_FixedBytes.
 Export Impl_FixedBytes.
 
@@ -72,6 +74,7 @@ Module Impl_From_U256_for_FixedBytes_32.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_from.
 
   Definition Run_from : From.Run_from Self aliases.U256.t.
   Proof.

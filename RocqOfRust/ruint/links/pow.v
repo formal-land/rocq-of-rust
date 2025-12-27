@@ -16,6 +16,7 @@ Module Impl_Uint.
     (pow.Impl_ruint_Uint_BITS_LIMBS.pow (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2 ]
     (Self BITS LIMBS).
   Admitted.
+  Global Opaque run_pow.
 
   (* pub fn wrapping_pow(mut self, mut exp: Self) -> Self *)
   Instance run_wrapping_pow
@@ -25,5 +26,6 @@ Module Impl_Uint.
     (pow.Impl_ruint_Uint_BITS_LIMBS.wrapping_pow (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2 ]
     (Self BITS LIMBS).
   Admitted.
+  Global Opaque run_wrapping_pow.
 End Impl_Uint.
 Export Impl_Uint.

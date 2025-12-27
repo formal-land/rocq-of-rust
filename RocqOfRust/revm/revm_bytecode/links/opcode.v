@@ -55,6 +55,7 @@ Module Impl_OpCode.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_STOP.
 
   Instance run_ADD :
     Run.Trait
@@ -64,6 +65,7 @@ Module Impl_OpCode.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_ADD.
 
   Instance run_BALANCE :
     Run.Trait
@@ -73,6 +75,7 @@ Module Impl_OpCode.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_BALANCE.
 End Impl_OpCode.
 
 Instance run_STOP :
@@ -83,6 +86,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_STOP.
 
 Instance run_ADD :
   Run.Trait
@@ -92,6 +96,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_ADD.
 
 Instance run_BALANCE :
   Run.Trait
@@ -101,3 +106,4 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_BALANCE.

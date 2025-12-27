@@ -32,3 +32,4 @@ Proof.
   }
   run_symbolic.
 Admitted.
+Global Opaque run_eval_round_flags.
