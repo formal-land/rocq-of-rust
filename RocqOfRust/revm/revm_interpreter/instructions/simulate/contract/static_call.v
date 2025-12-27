@@ -1,9 +1,11 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import RocqOfRust.simulate.M.
+Require Import alloc.simulate.boxed.
 Require Import alloy_primitives.bits.simulate.address.
 Require Import alloy_primitives.bits.simulate.fixed.
 Require Import core.links.array.
+Require Import core.num.simulate.mod.
 Require Import core.simulate.result.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_context_interface.links.journaled_state.
@@ -17,6 +19,7 @@ Require Import revm.revm_interpreter.simulate.interpreter_types.
 Require Import revm.revm_specification.links.hardfork.
 Require Import revm.revm_specification.simulate.hardfork.
 Require Import ruint.simulate.from.
+Require Import ruint.simulate.lib.
 
 Definition static_call
     {WIRE H : Set} `{Link WIRE} `{Link H}
@@ -26,17 +29,17 @@ Definition static_call
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :
     Interpreter.t WIRE WIRE_types * H :=
-  let inject_interpreter interpreter := (interpreter, host) in
-
-  check_macro interpreter SpecId.BYZANTIUM inject_interpreter (fun interpreter =>
-  popn_macro interpreter {| Integer.value := 2 |} inject_interpreter (fun arr interpreter =>
+  check_macro interpreter SpecId.BYZANTIUM
+    (fun interpreter => (interpreter, host)) (fun interpreter =>
+  popn_macro interpreter {| Integer.value := 2 |}
+    (fun interpreter => (interpreter, host)) (fun arr interpreter =>
   let '(_, to, local_gas_limit) := ArrayPairs.to_tuple_rev (arr.(array.value)) in
   let to := Impl_Address.from_word (Impl_From_U256_for_FixedBytes_32.from to) in
 
   let local_gas_limit :=
     Impl_Result_T_E.unwrap_or
       (TryFrom_Uint_for_u64.try_from local_gas_limit)
-      {| Integer.value := (*2 ^ 64*) - 1 |} in
+      Impl_u64.MAX in
 
   match call_helpers.get_memory_input_and_out_ranges interpreter with
   | (None, interpreter) => (interpreter, host)
@@ -60,7 +63,34 @@ Definition static_call
   match call_helpers.calc_call_gas interpreter load false local_gas_limit with
   | (None, interpreter) => (interpreter, host)
   | (Some gas_limit, interpreter) =>
-  gas_macro interpreter gas_limit (fun interpreter => (interpreter, host)) (fun interpreter =>
+  gas_macro interpreter gas_limit
+    (fun interpreter => (interpreter, host)) (fun interpreter =>
+
+  let control :=
+    IInterpreterTypes
+        .(InterpreterTypes.Loop)
+        .(Loop.set_next_action)
+      interpreter.(Interpreter.control)
+      (interpreter_action.InterpreterAction.NewFrame
+        (interpreter_action.FrameInput.Call
+          (Impl_Box.new
+            {|
+              call_inputs.CallInputs.bytecode_address := to;
+              call_inputs.CallInputs.caller :=
+                IInterpreterTypes.(InterpreterTypes.Input).(InputTraits.target_address) interpreter.(Interpreter.input);
+              call_inputs.CallInputs.gas_limit := gas_limit;
+              call_inputs.CallInputs.input := input;
+              call_inputs.CallInputs.is_eof := false;
+              call_inputs.CallInputs.is_static := true;
+              call_inputs.CallInputs.return_memory_offset := return_memory_offset;
+              call_inputs.CallInputs.scheme := call_inputs.CallScheme.StaticCall;
+              call_inputs.CallInputs.target_address := to;
+              call_inputs.CallInputs.value := call_inputs.CallValue.Transfer Impl_Uint.ZERO
+            |}
+      )))
+      instruction_result.InstructionResult.CallOrCreate in
+  let interpreter :=
+    interpreter <| Interpreter.control := control |> in
 
   (interpreter, host)
   ) end end end)).
@@ -109,12 +139,7 @@ Proof.
     apply TryFrom_Uint_for_u64.try_from_eq.
   }
   eapply Run.Call. {
-    cbn.
-    (* TODO: simulate the integer *)
-    eapply Run.Call. {
-      apply Run.Pure.
-    }
-    apply Run.Pure.
+    apply Impl_u64.max_eq.
   }
   eapply Run.Call. {
     apply Impl_Result_T_E.unwrap_or_eq.
@@ -130,8 +155,7 @@ Proof.
   eapply Run.Call. {
     apply load_account_delegated.
   }
-  destruct IHost.(Host.load_account_delegated) as [[load|] ?host].
-  2: {
+  destruct IHost.(Host.load_account_delegated) as [[load|] ?host]. 2: {
     eapply Run.Call; [
       apply (set_instruction_result
         _
@@ -149,30 +173,7 @@ Proof.
     apply call_helpers.calc_call_gas_eq.
   }
   destruct call_helpers.calc_call_gas as [[gas_limit|] ?interpreter]; cbn; [|apply Run.Pure].
-
-  Require Import revm.revm_interpreter.simulate.gas.
-  unfold gas_macro;
-  eapply Run.Call; [
-    apply gas
-  |];
-  eapply Run.Call; [
-    apply Impl_Gas.record_cost_eq
-  |];
-  destruct Impl_Gas.record_cost;
-  (
-    eapply Run.Call; [
-      apply Run.Pure
-    |]
-  );
-  [|
-    eapply Run.Call; [
-      apply Run.Pure
-    |];
-    eapply Run.Call; [
-      apply (set_instruction_result _ _ instruction_result.InstructionResult.OutOfGas)
-    |];
-    apply Run.Pure
-  ].
+  gas_macro_eq H gas set_instruction_result.
   cbn.
   eapply Run.Call. {
     apply Run.Pure.
@@ -185,4 +186,29 @@ Proof.
   cbn.
   get_can_access.
   eapply Run.Call. {
-Admitted.
+    apply Impl_Uint.ZERO_eq.
+  }
+  cbn.
+  eapply Run.Call. {
+    match goal with
+    | |- context[boxed.Impl_Box.run_new ?x] =>
+      let H := fresh "H" in
+      epose proof (Impl_Box.new_eq _ x) as H;
+      cbn in H;
+      apply H
+    end.
+  }
+  cbn.
+  fold @SimulateM.let_.
+  eapply Run.Call. {
+    match goal with
+    | |- context[?method _ ?action ?result] =>
+      let H := fresh "H" in
+      epose proof (set_next_action _ _ action result) as H;
+      cbn in H;
+      apply H
+    end.
+  }
+  cbn.
+  apply Run.PureEq; repeat f_equal.
+Defined.

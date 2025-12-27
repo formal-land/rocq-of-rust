@@ -5,7 +5,7 @@ Require Import alloc.links.alloc.
 
 Module Box.
   Record t {T A : Set} : Set := {
-    value : list T;
+    value : T;
   }.
   Arguments t : clear implicits.
 
@@ -33,7 +33,7 @@ Module Impl_Box.
   Definition Self (T : Set) : Set :=
     Box.t T Global.t.
 
-  Instance run_new (T : Set) `{Link T} (x : T) :
+  Instance run_new {T : Set} `{Link T} (x : T) :
     Run.Trait
       (boxed.Impl_alloc_boxed_Box_T_alloc_alloc_Global.new (Φ T)) [] [] [ φ x ]
       (Self T).

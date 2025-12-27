@@ -470,6 +470,15 @@ Module Run.
 
   where "{{ e 🌲 value }}" := (t value e).
 
+  Lemma PureEq {A : Set} (value1 value2 : A) :
+    value1 = value2 ->
+    {{ SimulateM.Pure value1 🌲 value2 }}.
+  Proof.
+    intros.
+    subst.
+    apply Pure.
+  Qed.
+
   (** TODO: improve! This is unclean for now. This function can be used at the beginning of
       a [Run.t] proof. *)
   Axiom remove_extra_stack :

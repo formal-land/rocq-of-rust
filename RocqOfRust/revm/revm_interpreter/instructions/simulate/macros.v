@@ -52,9 +52,9 @@ Ltac gas_macro_eq H gas set_instruction_result :=
   eapply Run.Call; [
     apply gas
   |];
-  eapply Run.Call; [
+  try (eapply Run.Call; [
     apply Run.Pure
-  |];
+  |]);
   eapply Run.Call; [
     apply Impl_Gas.record_cost_eq
   |];
