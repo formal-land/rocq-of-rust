@@ -6,6 +6,7 @@ Require Import alloy_primitives.links.aliases.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
+Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_specification.links.hardfork.
 
@@ -161,6 +162,13 @@ Module Loop.
         (self : WIRE_types.(InterpreterTypes.Types.Control))
         (result : InstructionResult.t),
       WIRE_types.(InterpreterTypes.Types.Control);
+    (* fn set_next_action(&mut self, action: InterpreterAction, result: InstructionResult); *)
+    set_next_action :
+      forall
+        (self : WIRE_types.(InterpreterTypes.Types.Control))
+        (action : InterpreterAction.t)
+        (result : InstructionResult.t),
+      WIRE_types.(InterpreterTypes.Types.Control);
     (* fn gas(&mut self) -> &mut Gas; *)
     gas : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t;
   }.
@@ -188,6 +196,32 @@ Module Loop.
           SimulateM.eval_f
             (run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_LoopControl_for_Control).(LoopControl.set_instruction_result).(TraitMethod.run)
               ref_self
+              result
+            )
+            (interpreter :: stack_rest)%stack 🌲
+          (
+            Output.Success tt,
+            (interpreter <| Interpreter.control := control' |> :: stack_rest)%stack
+          )
+        }};
+      set_next_action
+        (interpreter : Interpreter.t WIRE WIRE_types)
+        (stack_rest : Stack.t)
+        (action : InterpreterAction.t)
+        (result : InstructionResult.t) :
+        let ref_interpreter : Ref.t Pointer.Kind.MutRef _ := make_ref 0 in
+        let ref_self := {| Ref.core :=
+            SubPointer.Runner.apply
+              ref_interpreter.(Ref.core)
+              Interpreter.SubPointer.get_control
+        |} in
+        let control' :=
+          I.(set_next_action) interpreter.(Interpreter.control) action result in
+        {{
+          SimulateM.eval_f
+            (run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_LoopControl_for_Control).(LoopControl.set_next_action).(TraitMethod.run)
+              ref_self
+              action
               result
             )
             (interpreter :: stack_rest)%stack 🌲
