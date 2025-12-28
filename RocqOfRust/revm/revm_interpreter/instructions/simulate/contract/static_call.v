@@ -156,13 +156,9 @@ Proof.
     apply load_account_delegated.
   }
   destruct IHost.(Host.load_account_delegated) as [[load|] ?host]. 2: {
-    eapply Run.Call; [
-      apply (set_instruction_result
-        _
-        _
-        instruction_result.InstructionResult.FatalExternalError
-      )
-    |];
+    eapply Run.Call. {
+      apply set_instruction_result.
+    }
     apply Run.Pure.
   }
   cbn.
@@ -190,24 +186,12 @@ Proof.
   }
   cbn.
   eapply Run.Call. {
-    match goal with
-    | |- context[boxed.Impl_Box.run_new ?x] =>
-      let H := fresh "H" in
-      epose proof (Impl_Box.new_eq _ x) as H;
-      cbn in H;
-      apply H
-    end.
+    apply @Impl_Box.new_eq.
   }
   cbn.
   fold @SimulateM.let_.
   eapply Run.Call. {
-    match goal with
-    | |- context[?method _ ?action ?result] =>
-      let H := fresh "H" in
-      epose proof (set_next_action _ _ action result) as H;
-      cbn in H;
-      apply H
-    end.
+    apply set_next_action.
   }
   cbn.
   apply Run.PureEq; repeat f_equal.

@@ -63,7 +63,7 @@ Proof.
   destruct (Impl_Index_for_FixedBytes_N.run {| Integer.value := 32 |} (RangeTo.t Usize.t)).
   run_symbolic.
   match goal with
-  | |- context[M.closure ?closure] =>
+  | |- context[Value.Closure (existS (_, _) ?closure)] =>
     set (any_callback := closure)
   end.
   assert (run_any_callback :
@@ -75,7 +75,7 @@ Proof.
     run_symbolic.
   }
   change (M.closure any_callback) with (φ (Function1.of_run run_any_callback)).
-  generalize any; clear; intros [? ? run_any]; cbn in *.
+  destruct any as [? ? run_any]; cbn in *.
   epose proof (run_any' := run_any _ _ _ (Function1.of_run run_any_callback) _ _ _).
   typeclasses eauto.
 Defined.
