@@ -1007,6 +1007,7 @@ Parameter cast : Ty.t -> Value.t -> Value.t.
 
 Definition closure (f : list Value.t -> M) : Value.t :=
   Value.Closure (existS (_, _) f).
+Arguments closure /.
 
 Definition constructor_as_closure (constructor : string) (consts : list Value.t) (tys : list Ty.t) :
     Value.t :=

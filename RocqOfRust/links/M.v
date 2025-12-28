@@ -1408,21 +1408,6 @@ Ltac prepare_call_f f :=
 (** We put all the parameters of a function call in a form where each element is the image of some
     value of the link side. *)
 Ltac prepare_call :=
-  with_strategy opaque [Φ] match goal with
-  | |- {{ ?f ?consts ?tys ?arguments 🔽 _, _ }} =>
-    let f' := prepare_call_f f in
-    let f' := eval cbn in f' in
-    let consts' := as_of_values consts in
-    let consts' := eval cbn in consts' in
-    let tys' := as_of_tys tys in
-    let tys' := eval cbn in tys' in
-    let arguments' := as_of_values arguments in
-    let arguments' := eval cbn in arguments' in
-    change f with f';
-    change consts with consts';
-    change tys with tys';
-    change arguments with arguments'
-  end;
   match goal with
   | |- {{ _ 🔽 ?Output }} =>
     let Output' := fresh "Output'" in
@@ -1430,7 +1415,31 @@ Ltac prepare_call :=
     change Output with Output'
   end.
 
+(** We apply the [change] tactic before calling [Run.CallClosure] so that the function arguments are
+    represented in a nice form in the final [Run.t] tree, that is to say as applications of the [φ] or
+    the [Φ] function. This is helpful to have less inference problems later for the simulations. *)
+Ltac prepare_call_closure :=
+  with_strategy opaque [Φ] match goal with
+  | |- {{ LowM.CallClosure _ ?closure ?arguments _ 🔽 _, _ }} =>
+    let arguments' := as_of_values arguments in
+    let arguments' := eval cbn in arguments' in
+    change arguments with arguments';
+    match closure with
+    | Value.Closure (existS (_, _) (?f ?consts ?tys)) =>
+      let f' := prepare_call_f f in
+      let f' := eval cbn in f' in
+      let consts' := as_of_values consts in
+      let consts' := eval cbn in consts' in
+      let tys' := as_of_tys tys in
+      let tys' := eval cbn in tys' in
+      change f with f';
+      change consts with consts';
+      change tys with tys'
+    end
+  end.
+
 Ltac run_symbolic_closure :=
+  try prepare_call_closure;
   unshelve eapply Run.CallClosure; [
     repeat smpl of_ty |
     try prepare_call;
@@ -1440,6 +1449,7 @@ Ltac run_symbolic_closure :=
   ].
 
 Ltac run_symbolic_closure_auto :=
+  try prepare_call_closure;
   unshelve eapply Run.CallClosure; [
     now repeat smpl of_ty |
     try prepare_call;
