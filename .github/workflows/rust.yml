@@ -221,14 +221,78 @@ jobs:
             cd ..
             cd ../../..
           endGroup
-          startGroup "Translate Pinocchio"
-            cd third-party/anza-xyz-pinocchio/sdk/pinocchio
-            cp ../../../../rust-toolchain ./
+          startGroup "Translate the Token program"
+            cd third-party/solana-program-token
+            cp ../../rust-toolchain ./
+            # Pinocchio Token program
+            cd pinocchio/program
             cargo rocq-of-rust
             touch src/lib.rs
             cargo rocq-of-rust
-            rsync -rcv ./src/ ../../../../RocqOfRust/pinocchio --include='*/' --include='*.v' --include='*.rs' --exclude='*'
-            cd ../../../..
+            rsync -rcv ./src/ ../../../../RocqOfRust/solana_program_token/pinocchio --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            cd ../..
+            # Original Token program
+            cd program
+            cargo rocq-of-rust
+            touch src/lib.rs
+            cargo rocq-of-rust
+            rsync -rcv ./src/ ../../../RocqOfRust/solana_program_token/program --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            cd ..
+            # SPL Token Interface
+            cd interface
+            cargo rocq-of-rust
+            touch src/lib.rs
+            cargo rocq-of-rust
+            rsync -rcv ./src/ ../../../RocqOfRust/solana_program_token/interface --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            cd ..
+            cd ../..
+          endGroup
+          startGroup "Translate the Solana SDK"
+            cd third-party/anza-xyz-solana-sdk
+            cp ../../rust-toolchain ./
+            # account-info
+            cd account-info
+            cargo rocq-of-rust
+            touch src/lib.rs
+            cargo rocq-of-rust
+            rsync -rcv ./src/ ../../../RocqOfRust/anza_xyz_solana_sdk/account_info --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            cd ..
+            # address
+            cd address
+            cargo rocq-of-rust
+            touch src/lib.rs
+            cargo rocq-of-rust
+            rsync -rcv ./src/ ../../../RocqOfRust/anza_xyz_solana_sdk/address --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            cd ..
+            # program-error
+            cd program-error
+            cargo rocq-of-rust
+            touch src/lib.rs
+            cargo rocq-of-rust
+            rsync -rcv ./src/ ../../../RocqOfRust/anza_xyz_solana_sdk/program_error --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            cd ..
+            # program-option
+            cd program-option
+            cargo rocq-of-rust
+            touch src/lib.rs
+            cargo rocq-of-rust
+            rsync -rcv ./src/ ../../../RocqOfRust/anza_xyz_solana_sdk/program_option --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            cd ..
+            # program-pack
+            cd program-pack
+            cargo rocq-of-rust
+            touch src/lib.rs
+            cargo rocq-of-rust
+            rsync -rcv ./src/ ../../../RocqOfRust/anza_xyz_solana_sdk/program_pack --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            cd ..
+            # pubkey
+            cd pubkey
+            cargo rocq-of-rust
+            touch src/lib.rs
+            cargo rocq-of-rust
+            rsync -rcv ./src/ ../../../RocqOfRust/anza_xyz_solana_sdk/pubkey --include='*/' --include='*.v' --include='*.rs' --exclude='*'
+            cd ..
+            cd ../..
           endGroup
           startGroup "Generate Rocq files from Python"
             cd RocqOfRust

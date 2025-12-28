@@ -1,5 +1,8 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import links.M.
+Require Import core.convert.links.mod_Infaillible.
+Require Import core.ops.links.try_trait.
+Require Import core.ops.links.control_flow.
 Require Import core.result.
 
 Module Result.
@@ -117,6 +120,41 @@ Module Result.
     Smpl Add apply get_Err_0_is_valid : run_sub_pointer.
   End SubPointer.
 End Result.
+
+(* impl<T, E, F: From<E>> FromResidual<Result<Infallible, E>> for Result<T, F> *)
+(* Simplified: impl<T, E> FromResidual<Result<Infallible, E>> for Result<T, E> *)
+Module Impl_FromResidual_for_Result.
+  Definition Self (T E : Set) : Set := Result.t T E.
+  Definition R (E : Set) : Set := Result.t Infallible.t E.
+
+  Global Instance run (T E : Set) `{Link T} `{Link E} :
+    FromResidual.Run (Self T E) (R E).
+  Admitted.
+End Impl_FromResidual_for_Result.
+
+(* impl<T, E> Try for Result<T, E> *)
+Module Impl_Try_for_Result.
+  Definition Self (T E : Set) : Set := Result.t T E.
+
+  (* For Result<T, E>:
+     - Output = T
+     - Residual = Result<Infallible, E>
+  *)
+  Definition types (T E : Set) : Try.Types.t := {|
+    Try.Types.Output := T;
+    Try.Types.Residual := Result.t Infallible.t E;
+  |}.
+
+  Global Instance types_AreLinks (T E : Set) `{Link T} `{Link E} :
+    Try.Types.AreLinks (types T E).
+  Proof.
+    constructor; exact _.
+  Defined.
+
+  Global Instance run (T E : Set) `{Link T} `{Link E} :
+    Try.Run (Self T E) (types T E).
+  Admitted.
+End Impl_Try_for_Result.
 
 Module Impl_Result_T_E.
   Definition Self (T E : Set) : Set :=

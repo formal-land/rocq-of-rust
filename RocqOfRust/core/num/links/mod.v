@@ -79,6 +79,24 @@ Module Impl_u64.
     run_symbolic.
   Admitted.
   Global Opaque run_from_be_bytes.
+
+  (* pub const fn checked_add(self, rhs: Self) -> Option<Self> *)
+  Instance run_checked_add (self rhs: Self) :
+    Run.Trait num.Impl_u64.checked_add [] [] [ φ self; φ rhs ] (option Self).
+  Proof.
+    constructor.
+    run_symbolic.
+  Admitted.
+  Global Opaque run_checked_add.
+
+  (* pub const fn checked_sub(self, rhs: Self) -> Option<Self> *)
+  Instance run_checked_sub (self rhs: Self) :
+    Run.Trait num.Impl_u64.checked_sub [] [] [ φ self; φ rhs ] (option Self).
+  Proof.
+    constructor.
+    run_symbolic.
+  Admitted.
+  Global Opaque run_checked_sub.
 End Impl_u64.
 Export Impl_u64.
 
