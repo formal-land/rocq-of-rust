@@ -2,6 +2,9 @@ Require Import RocqOfRust.RocqOfRust.
 Require Import links.M.
 Require Import core.convert.mod.
 Require Import core.links.result.
+
+Require Export core.convert.links.mod_Infaillible.
+
 (*
 pub trait From<T>: Sized {
     fn from(value: T) -> Self;
@@ -185,20 +188,3 @@ Module Impl_TryInto_for_TryFrom_T.
   Admitted.
 End Impl_TryInto_for_TryFrom_T.
 Export Impl_TryInto_for_TryFrom_T.
-
-(* pub enum Infallible {} *)
-Module Infallible.
-  Inductive t : Set :=.
-
-  Global Instance IsLink : Link t := {
-    Φ := Ty.path "core::convert::Infallible";
-    φ x := match x with end;
-  }.
-
-  Definition of_ty : OfTy.t (Ty.path "core::convert::Infallible").
-  Proof.
-    eapply OfTy.Make.
-    subst; reflexivity.
-  Defined.
-  Smpl Add apply of_ty : of_ty.
-End Infallible.
