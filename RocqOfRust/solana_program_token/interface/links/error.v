@@ -106,6 +106,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::NotRentExempt" [] [] [] =
     φ NotRentExempt.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_NotRentExempt : of_value.
   Definition of_value_NotRentExempt :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::NotRentExempt" [] [] []).
   Proof. econstructor; apply of_value_with_NotRentExempt. Defined.
@@ -115,6 +116,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::InsufficientFunds" [] [] [] =
     φ InsufficientFunds.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_InsufficientFunds : of_value.
   Definition of_value_InsufficientFunds :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::InsufficientFunds" [] [] []).
   Proof. econstructor; apply of_value_with_InsufficientFunds. Defined.
@@ -124,6 +126,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::InvalidMint" [] [] [] =
     φ InvalidMint.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_InvalidMint : of_value.
   Definition of_value_InvalidMint :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidMint" [] [] []).
   Proof. econstructor; apply of_value_with_InvalidMint. Defined.
@@ -133,6 +136,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::MintMismatch" [] [] [] =
     φ MintMismatch.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_MintMismatch : of_value.
   Definition of_value_MintMismatch :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::MintMismatch" [] [] []).
   Proof. econstructor; apply of_value_with_MintMismatch. Defined.
@@ -142,6 +146,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::OwnerMismatch" [] [] [] =
     φ OwnerMismatch.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_OwnerMismatch : of_value.
   Definition of_value_OwnerMismatch :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::OwnerMismatch" [] [] []).
   Proof. econstructor; apply of_value_with_OwnerMismatch. Defined.
@@ -151,6 +156,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::FixedSupply" [] [] [] =
     φ FixedSupply.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_FixedSupply : of_value.
   Definition of_value_FixedSupply :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::FixedSupply" [] [] []).
   Proof. econstructor; apply of_value_with_FixedSupply. Defined.
@@ -160,6 +166,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::AlreadyInUse" [] [] [] =
     φ AlreadyInUse.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_AlreadyInUse : of_value.
   Definition of_value_AlreadyInUse :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::AlreadyInUse" [] [] []).
   Proof. econstructor; apply of_value_with_AlreadyInUse. Defined.
@@ -169,6 +176,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::InvalidNumberOfProvidedSigners" [] [] [] =
     φ InvalidNumberOfProvidedSigners.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_InvalidNumberOfProvidedSigners : of_value.
   Definition of_value_InvalidNumberOfProvidedSigners :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidNumberOfProvidedSigners" [] [] []).
   Proof. econstructor; apply of_value_with_InvalidNumberOfProvidedSigners. Defined.
@@ -178,6 +186,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::InvalidNumberOfRequiredSigners" [] [] [] =
     φ InvalidNumberOfRequiredSigners.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_InvalidNumberOfRequiredSigners : of_value.
   Definition of_value_InvalidNumberOfRequiredSigners :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidNumberOfRequiredSigners" [] [] []).
   Proof. econstructor; apply of_value_with_InvalidNumberOfRequiredSigners. Defined.
@@ -187,6 +196,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::UninitializedState" [] [] [] =
     φ UninitializedState.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_UninitializedState : of_value.
   Definition of_value_UninitializedState :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::UninitializedState" [] [] []).
   Proof. econstructor; apply of_value_with_UninitializedState. Defined.
@@ -196,6 +206,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::NativeNotSupported" [] [] [] =
     φ NativeNotSupported.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_NativeNotSupported : of_value.
   Definition of_value_NativeNotSupported :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::NativeNotSupported" [] [] []).
   Proof. econstructor; apply of_value_with_NativeNotSupported. Defined.
@@ -205,6 +216,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::NonNativeHasBalance" [] [] [] =
     φ NonNativeHasBalance.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_NonNativeHasBalance : of_value.
   Definition of_value_NonNativeHasBalance :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::NonNativeHasBalance" [] [] []).
   Proof. econstructor; apply of_value_with_NonNativeHasBalance. Defined.
@@ -214,6 +226,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::InvalidInstruction" [] [] [] =
     φ InvalidInstruction.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_InvalidInstruction : of_value.
   Definition of_value_InvalidInstruction :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidInstruction" [] [] []).
   Proof. econstructor; apply of_value_with_InvalidInstruction. Defined.
@@ -223,6 +236,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::InvalidState" [] [] [] =
     φ InvalidState.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_InvalidState : of_value.
   Definition of_value_InvalidState :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidState" [] [] []).
   Proof. econstructor; apply of_value_with_InvalidState. Defined.
@@ -232,6 +246,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::Overflow" [] [] [] =
     φ Overflow.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_Overflow : of_value.
   Definition of_value_Overflow :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::Overflow" [] [] []).
   Proof. econstructor; apply of_value_with_Overflow. Defined.
@@ -241,6 +256,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::AuthorityTypeNotSupported" [] [] [] =
     φ AuthorityTypeNotSupported.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_AuthorityTypeNotSupported : of_value.
   Definition of_value_AuthorityTypeNotSupported :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::AuthorityTypeNotSupported" [] [] []).
   Proof. econstructor; apply of_value_with_AuthorityTypeNotSupported. Defined.
@@ -250,6 +266,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::MintCannotFreeze" [] [] [] =
     φ MintCannotFreeze.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_MintCannotFreeze : of_value.
   Definition of_value_MintCannotFreeze :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::MintCannotFreeze" [] [] []).
   Proof. econstructor; apply of_value_with_MintCannotFreeze. Defined.
@@ -259,6 +276,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::AccountFrozen" [] [] [] =
     φ AccountFrozen.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_AccountFrozen : of_value.
   Definition of_value_AccountFrozen :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::AccountFrozen" [] [] []).
   Proof. econstructor; apply of_value_with_AccountFrozen. Defined.
@@ -268,6 +286,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::MintDecimalsMismatch" [] [] [] =
     φ MintDecimalsMismatch.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_MintDecimalsMismatch : of_value.
   Definition of_value_MintDecimalsMismatch :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::MintDecimalsMismatch" [] [] []).
   Proof. econstructor; apply of_value_with_MintDecimalsMismatch. Defined.
@@ -277,6 +296,7 @@ Module TokenError.
     Value.StructTuple "spl_token_interface::error::TokenError::NonNativeNotSupported" [] [] [] =
     φ NonNativeNotSupported.
   Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_NonNativeNotSupported : of_value.
   Definition of_value_NonNativeNotSupported :
     OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::NonNativeNotSupported" [] [] []).
   Proof. econstructor; apply of_value_with_NonNativeNotSupported. Defined.
