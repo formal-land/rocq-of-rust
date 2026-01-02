@@ -1,6 +1,6 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import links.M.
-Require Import simulations.M.
+Require Import simulations_legacy.M.
 
 Module U64.
   Definition checked_add (a b : Z) : option Z :=

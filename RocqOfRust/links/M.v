@@ -1491,7 +1491,7 @@ Ltac run_main_rewrites :=
       (repeat (
         erewrite IsTraitAssociatedType_eq ||
         match goal with
-        | H : _ |- _ => exact H
+        | H : _ |- _ => apply H
         end
       ))
     ));
@@ -1515,6 +1515,15 @@ Ltac change_cast_integer :=
     change (Ty.path x) with (Φ Isize.t)
   end.
 
+Definition cast_bool (kind_target : IntegerKind.t) (value : bool) : Integer.t kind_target :=
+  {| Integer.value := Z.b2z value |}.
+
+Lemma cast_bool_eq (kind_target : IntegerKind.t) (source : bool) :
+  M.cast (Φ (Integer.t kind_target)) (φ source) =
+  φ (cast_bool kind_target source).
+Proof.
+Admitted.
+
 (* TODO: define this function *)
 Parameter cast_integer : forall {kind_source} kind_target,
   Integer.t kind_source -> Integer.t kind_target.
@@ -1531,6 +1540,7 @@ Ltac rewrite_cast_integer :=
   | |- context[M.cast _ (φ _)] =>
     eapply Run.Rewrite; [
       (
+        erewrite cast_bool_eq ||
         erewrite cast_integer_eq with (kind_source := IntegerKind.U8) ||
         erewrite cast_integer_eq with (kind_source := IntegerKind.U16) ||
         erewrite cast_integer_eq with (kind_source := IntegerKind.U32) ||

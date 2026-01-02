@@ -12,6 +12,16 @@ some_crate/
     lib.v         # Links file with specifications
 ```
 
+## Compile
+
+To compile a file and check that it works, with its dependencies, run:
+
+```sh
+make path/file.vo
+```
+
+Note the extension `.vo` instead of `.v`.
+
 ## Basic Link Structure for Types
 
 ### Simple Enum (No Type Parameters)

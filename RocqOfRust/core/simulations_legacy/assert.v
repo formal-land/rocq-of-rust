@@ -1,7 +1,7 @@
 Require Import Stdlib.Strings.String.
-Require Import RocqOfRust.simulations.M.
-Require Import core.simulations.bool.
-Require Import core.simulations.eq.
+Require Import RocqOfRust.simulations_legacy.M.
+Require Import core.simulations_legacy.bool.
+Require Import core.simulations_legacy.eq.
 
 Module Assert.
   Module Stateful.

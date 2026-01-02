@@ -1,6 +1,6 @@
 Require Import RocqOfRust.RocqOfRust.
-Require Import simulations.M.
-Require Import core.simulations.eq.
+Require Import simulations_legacy.M.
+Require Import core.simulations_legacy.eq.
 
 Definition contains {A : Set} `{Eq.Trait A} (self : list A) (x : A) : bool :=
   List.existsb (Eq.eqb x) self.

@@ -59,6 +59,17 @@ Module Impl_Uint.
   Admitted.
   Global Opaque run_from_limbs.
 
+  (* pub const MASK: u64 = mask(BITS); *)
+  Instance run_MASK (BITS LIMBS : Usize.t) :
+    Run.Trait
+      (Impl_ruint_Uint_BITS_LIMBS.value_MASK (φ BITS) (φ LIMBS)) [] [] []
+      (Ref.t Pointer.Kind.Raw U64.t).
+  Proof.
+    constructor.
+    run_symbolic.
+  Admitted.
+  Global Opaque run_MASK.
+
   (* pub const BITS: usize *)
   Instance run_BITS (BITS LIMBS : Usize.t) :
     Run.Trait
@@ -136,4 +147,4 @@ Module Impl_Uint.
   Admitted.
   Global Opaque run_as_limbs_mut.
 End Impl_Uint.
-Export Impl_Uint.
+Export (hints) Impl_Uint.

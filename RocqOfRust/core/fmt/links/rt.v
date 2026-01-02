@@ -27,6 +27,15 @@ Module Impl_Argument.
   Definition Self : Set :=
     Argument.t.
 
+  (* pub const fn new_display<T: Display>(x: &T) -> Argument<'_> *)
+  Instance run_new_display (T : Set) `{Link T} (x : Ref.t Pointer.Kind.Ref T) :
+    Run.Trait fmt.rt.Impl_core_fmt_rt_Argument.new_display [] [Φ T] [φ x] Self.
+  Proof.
+    constructor.
+    run_symbolic.
+  Admitted.
+  Global Opaque run_new_display.
+
   (* pub fn none() -> [Self; 0] *)
   Instance run_none :
     Run.Trait fmt.rt.Impl_core_fmt_rt_Argument.none [] [] [] (array.t Self {| Integer.value := 0 |}).
