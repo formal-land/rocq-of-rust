@@ -1,6 +1,6 @@
 Require Import RocqOfRust.RocqOfRust.
-Require Import simulations.M.
-Require Import core.simulations.eq.
+Require Import simulations_legacy.M.
+Require Import core.simulations_legacy.eq.
 
 Module ImplEq.
   Global Instance I (A B : Set) `{Eq.Trait A} `{Eq.Trait B} :

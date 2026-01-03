@@ -1,6 +1,6 @@
 Require Import RocqOfRust.lib.lib.
 Require Import RocqOfRust.proofs.M.
-Require Import RocqOfRust.simulations.M.
+Require Import RocqOfRust.simulations_legacy.M.
 
 (*** Destruct the matched value in an expression [e]. *)
 Ltac destruct_match_in e :=

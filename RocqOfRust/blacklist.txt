@@ -23,4 +23,4 @@ move_sui/simulations/move_bytecode_verifier_meter/lib.v
 move_sui/proofs
 move_sui/simulations
 # Legacy folder
-legacy/
+./legacy/

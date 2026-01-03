@@ -1,5 +1,5 @@
 Require Import RocqOfRust.M.
-Require Import simulations.M.
+Require Import simulations_legacy.M.
 
 Module IntegerKind.
   Lemma eqb_refl (kind : IntegerKind.t) : IntegerKind.eqb kind kind = true.

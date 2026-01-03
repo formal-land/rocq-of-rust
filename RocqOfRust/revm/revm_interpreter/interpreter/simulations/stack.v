@@ -1,6 +1,6 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
-Require Import RocqOfRust.simulations.M.
+Require Import RocqOfRust.simulations_legacy.M.
 Require Import core.links.array.
 Require Import revm_interpreter.interpreter.links.stack.
 

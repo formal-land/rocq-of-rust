@@ -1,18 +1,18 @@
 Require Import RocqOfRust.RocqOfRust.
-Require Import simulations.M.
-Require Import core.simulations.default.
-Require Import core.simulations.eq.
+Require Import simulations_legacy.M.
+Require Import core.simulations_legacy.default.
+Require Import core.simulations_legacy.eq.
 
 Module Option.
   Definition Self (T : Set) : Set :=
     option T.
 
   Definition unwrap_or_default {T : Set}
-      {_ : core.simulations.default.Default.Trait T}
+      {_ : core.simulations_legacy.default.Default.Trait T}
       (self : Self T) :
       T :=
     match self with
-    | None => core.simulations.default.Default.default (Self := T)
+    | None => core.simulations_legacy.default.Default.default (Self := T)
     | Some x => x
     end.
 
