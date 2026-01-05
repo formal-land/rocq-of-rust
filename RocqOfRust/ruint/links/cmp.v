@@ -12,7 +12,7 @@ Module Impl_Uint.
   (* pub fn is_zero(&self) -> bool *)
   Instance run_is_zero
       (BITS LIMBS : usize)
-      (self : Ref.t Pointer.Kind.Ref (Self BITS LIMBS)) :
+      (self : '& (Self BITS LIMBS)) :
     Run.Trait
       (cmp.Impl_ruint_Uint_BITS_LIMBS.is_zero (φ BITS) (φ LIMBS)) [] [] [ φ self ]
       bool.

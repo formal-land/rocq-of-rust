@@ -27,7 +27,7 @@ Module BaseAir.
   (* fn width(&self) -> usize; *)
   Definition Run_width (Self F : Set) `{Link Self} `{Link F} : Set :=
   TraitMethod.C (trait Self F) "width" (fun method =>
-    forall (self : Ref.t Pointer.Kind.Ref Self),
+    forall (self : '& Self),
     Run.Trait method [] [] [ φ self ] usize
   ).
 
@@ -35,7 +35,7 @@ Module BaseAir.
   Definition Run_preprocessed_trace
     (Self F : Set) `{Link Self} `{Link F} : Set :=
   TraitMethod.C (trait Self F) "preprocessed_trace" (fun method =>
-    forall (self : Ref.t Pointer.Kind.Ref Self),
+    forall (self : '& Self),
     Run.Trait method [] [] [ φ self ] (option (RowMajorMatrix.t F))
   ).
 
@@ -55,7 +55,7 @@ pub struct FilteredAirBuilder<'a, AB: AirBuilder> {
 Module FilteredAirBuilder.
   (** As the [AirBuilder] is defined after, we require to explicitly provide the [Expr] type. *)
   Record t {AB Expr : Set} `{Link AB} : Set := {
-    inner : Ref.t Pointer.Kind.MutRef AB;
+    inner : '&mut AB;
     condition : Expr;
   }.
   Arguments t _ _ {_}.
@@ -140,7 +140,7 @@ Module AirBuilder.
       (types : AssociatedTypes.t) `{AssociatedTypes.AreLinks types} :
       Set :=
     TraitMethod.C (trait Self) "main" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] types.(AssociatedTypes.M)
     ).
 
@@ -150,7 +150,7 @@ Module AirBuilder.
       (types : AssociatedTypes.t) `{AssociatedTypes.AreLinks types} :
       Set :=
     TraitMethod.C (trait Self) "is_first_row" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] types.(AssociatedTypes.Expr)
     ).
 
@@ -160,7 +160,7 @@ Module AirBuilder.
       (types : AssociatedTypes.t) `{AssociatedTypes.AreLinks types} :
       Set :=
     TraitMethod.C (trait Self) "is_last_row" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] types.(AssociatedTypes.Expr)
     ).
 
@@ -170,7 +170,7 @@ Module AirBuilder.
       (types : AssociatedTypes.t) `{AssociatedTypes.AreLinks types} :
       Set :=
     TraitMethod.C (trait Self) "is_transition" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] types.(AssociatedTypes.Expr)
     ).
 
@@ -180,7 +180,7 @@ Module AirBuilder.
       (types : AssociatedTypes.t) `{AssociatedTypes.AreLinks types} :
       Set :=
     TraitMethod.C (trait Self) "is_transition_window" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (size : usize),
+      forall (self : '& Self) (size : usize),
       Run.Trait method [] [] [ φ self; φ size ] types.(AssociatedTypes.Expr)
     ).
 
@@ -193,7 +193,7 @@ Module AirBuilder.
       forall
         (I : Set) `(Link I)
         (run_Into_for_I : Into.Run I types.(AssociatedTypes.Expr))
-        (self : Ref.t Pointer.Kind.MutRef Self)
+        (self : '&mut Self)
         (condition : I),
       Run.Trait method [] [Φ I] [ φ self; φ condition ]
         (FilteredAirBuilder.t Self types.(AssociatedTypes.Expr))
@@ -215,7 +215,7 @@ Module AirBuilder.
         (I1 I2 : Set) `(Link I1) `(Link I2)
         (run_Into_for_I1 : Into.Run I1 types.(AssociatedTypes.Expr))
         (run_Into_for_I2 : Into.Run I2 types.(AssociatedTypes.Expr))
-        (self : Ref.t Pointer.Kind.Ref Self)
+        (self : '& Self)
         (x y : I1),
       Run.Trait method [] [Φ I1; Φ I2] [ φ self; φ x; φ y ]
         (FilteredAirBuilder.t Self types.(AssociatedTypes.Expr))
@@ -227,7 +227,7 @@ Module AirBuilder.
       (types : AssociatedTypes.t) `{AssociatedTypes.AreLinks types} :
       Set :=
     TraitMethod.C (trait Self) "when_first_row" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self),
+      forall (self : '&mut Self),
       Run.Trait method [] [] [ φ self ] (FilteredAirBuilder.t Self types.(AssociatedTypes.Expr))
     ).
 
@@ -237,7 +237,7 @@ Module AirBuilder.
       (types : AssociatedTypes.t) `{AssociatedTypes.AreLinks types} :
       Set :=
     TraitMethod.C (trait Self) "when_last_row" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self),
+      forall (self : '&mut Self),
       Run.Trait method [] [] [ φ self ] (FilteredAirBuilder.t Self types.(AssociatedTypes.Expr))
     ).
 
@@ -247,7 +247,7 @@ Module AirBuilder.
       (types : AssociatedTypes.t) `{AssociatedTypes.AreLinks types} :
       Set :=
     TraitMethod.C (trait Self) "when_transition" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self),
+      forall (self : '&mut Self),
       Run.Trait method [] [] [ φ self ] (FilteredAirBuilder.t Self types.(AssociatedTypes.Expr))
     ).
 
@@ -257,7 +257,7 @@ Module AirBuilder.
       (types : AssociatedTypes.t) `{AssociatedTypes.AreLinks types} :
       Set :=
     TraitMethod.C (trait Self) "when_transition_window" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (size : usize),
+      forall (self : '&mut Self) (size : usize),
       Run.Trait method [] [] [ φ self; φ size ]
         (FilteredAirBuilder.t Self types.(AssociatedTypes.Expr))
     ).
@@ -271,7 +271,7 @@ Module AirBuilder.
       forall
         (I : Set) `(Link I)
         (run_Into_for_I : Into.Run I types.(AssociatedTypes.Expr))
-        (self : Ref.t Pointer.Kind.Ref Self)
+        (self : '& Self)
         (x : I),
       Run.Trait method [] [Φ I] [ φ self; φ x ] unit
     ).
@@ -286,7 +286,7 @@ Module AirBuilder.
         (N : usize)
         (I : Set) `(Link I)
         (run_Into_for_I : Into.Run I types.(AssociatedTypes.Expr))
-        (self : Ref.t Pointer.Kind.MutRef Self)
+        (self : '&mut Self)
         (array : array.t I N),
       Run.Trait method [φ N] [Φ I] [ φ self; φ array ] unit
     ).
@@ -301,7 +301,7 @@ Module AirBuilder.
         (N : usize)
         (I : Set) `(Link I)
         (run_Into_for_I : Into.Run I types.(AssociatedTypes.Expr))
-        (self : Ref.t Pointer.Kind.MutRef Self)
+        (self : '&mut Self)
         (array : array.t I N),
       Run.Trait method [φ N] [Φ I] [ φ self; φ array ] unit
     ).
@@ -315,7 +315,7 @@ Module AirBuilder.
       forall
         (I : Set) `(Link I)
         (run_Into_for_I : Into.Run I types.(AssociatedTypes.Expr))
-        (self : Ref.t Pointer.Kind.MutRef Self)
+        (self : '&mut Self)
         (x : I),
       Run.Trait method [] [Φ I] [ φ self; φ x ] unit
     ).
@@ -330,7 +330,7 @@ Module AirBuilder.
         (I1 I2 : Set) `(Link I1) `(Link I2)
         (run_Into_for_I1 : Into.Run I1 types.(AssociatedTypes.Expr))
         (run_Into_for_I2 : Into.Run I2 types.(AssociatedTypes.Expr))
-        (self : Ref.t Pointer.Kind.MutRef Self)
+        (self : '&mut Self)
         (x y : I1),
       Run.Trait method [] [Φ I1; Φ I2] [ φ self; φ x; φ y ] unit
     ).
@@ -344,7 +344,7 @@ Module AirBuilder.
       forall
         (I : Set) `(Link I)
         (run_Into_for_I : Into.Run I types.(AssociatedTypes.Expr))
-        (self : Ref.t Pointer.Kind.MutRef Self)
+        (self : '&mut Self)
         (x : I),
       Run.Trait method [] [Φ I] [ φ self; φ x ] unit
     ).
@@ -482,8 +482,8 @@ Module Air.
       Set :=
     TraitMethod.C (trait Self AB) "eval" (fun method =>
       forall
-        (self : Ref.t Pointer.Kind.Ref Self)
-        (builder : Ref.t Pointer.Kind.MutRef AB),
+        (self : '& Self)
+        (builder : '&mut AB),
       Run.Trait method [] [] [ φ self; φ builder ] unit
   ).
 

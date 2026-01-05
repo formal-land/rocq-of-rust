@@ -27,7 +27,7 @@ Global Opaque run_bool_and.
 
 (* pub fn get_or_zero(xs: &[u32; 4], i: usize) -> u32 *)
 Instance run_get_or_zero
-    (xs : Ref.t Pointer.Kind.Ref (array.t u32 {| Integer.value := 4 |}))
+    (xs : '& (array.t u32 {| Integer.value := 4 |}))
     (i : usize) :
   Run.Trait get_or_zero [] [] [φ xs; φ i] u32.
 Proof.
@@ -38,8 +38,8 @@ Global Opaque run_get_or_zero.
 
 (* pub fn eq2(a: &[u32; 2], b: &[u32; 2]) -> bool *)
 Instance run_eq2
-    (a : Ref.t Pointer.Kind.Ref (array.t u32 {| Integer.value := 2 |}))
-    (b : Ref.t Pointer.Kind.Ref (array.t u32 {| Integer.value := 2 |})) :
+    (a : '& (array.t u32 {| Integer.value := 2 |}))
+    (b : '& (array.t u32 {| Integer.value := 2 |})) :
   Run.Trait eq2 [] [] [φ a; φ b] bool.
 Proof.
   constructor.
@@ -67,7 +67,7 @@ Defined.
 Global Opaque run_min3.
 
 (* pub fn choose_ref<'a>(choice: bool, a: &'a u32, b: &'a u32) -> &'a u32 *)
-Instance run_choose_ref (choice : bool) (a b : Ref.t Pointer.Kind.Ref u32) :
+Instance run_choose_ref (choice : bool) (a b : '& u32) :
   Run.Trait choose_ref [] [] [φ choice; φ a; φ b] u32.
 Proof.
   constructor.

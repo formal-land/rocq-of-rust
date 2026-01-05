@@ -19,8 +19,8 @@ Require Import solana_program_token.program.processor.
 Module Impl_Processor.
   (* pub fn cmp_pubkeys(a: &Pubkey, b: &Pubkey) -> bool *)
   Instance run_cmp_pubkeys
-      (a : M.Ref.t Pointer.Kind.Ref Address.t)
-      (b : M.Ref.t Pointer.Kind.Ref Address.t) :
+      (a : '& Address.t)
+      (b : '& Address.t) :
     Run.Trait processor.Impl_spl_token_processor_Processor.cmp_pubkeys
       [] [] [φ a; φ b]
       bool.
@@ -32,8 +32,8 @@ Module Impl_Processor.
 
   (* pub fn check_account_owner(program_id: &Pubkey, account_info: &AccountInfo) -> ProgramResult *)
   Instance run_check_account_owner
-      (program_id : M.Ref.t Pointer.Kind.Ref Address.t)
-      (account_info : M.Ref.t Pointer.Kind.Ref AccountInfo.t) :
+      (program_id : '& Address.t)
+      (account_info : '& AccountInfo.t) :
     Run.Trait processor.Impl_spl_token_processor_Processor.check_account_owner
       [] [] [φ program_id; φ account_info]
       ProgramResult.t.
@@ -56,10 +56,10 @@ Module Impl_Processor.
     ) -> ProgramResult
   *)
   Instance run_validate_owner
-      (program_id : M.Ref.t Pointer.Kind.Ref Address.t)
-      (expected_owner : M.Ref.t Pointer.Kind.Ref Address.t)
-      (owner_account_info : M.Ref.t Pointer.Kind.Ref AccountInfo.t)
-      (signers : M.Ref.t Pointer.Kind.Ref (list AccountInfo.t)) :
+      (program_id : '& Address.t)
+      (expected_owner : '& Address.t)
+      (owner_account_info : '& AccountInfo.t)
+      (signers : '& (list AccountInfo.t)) :
     Run.Trait processor.Impl_spl_token_processor_Processor.validate_owner
       [] [] [φ program_id; φ expected_owner; φ owner_account_info; φ signers]
       ProgramResult.t.
@@ -78,8 +78,8 @@ Module Impl_Processor.
     ) -> ProgramResult
   *)
   Instance run_process_transfer
-      (program_id : M.Ref.t Pointer.Kind.Ref Address.t)
-      (accounts : M.Ref.t Pointer.Kind.Ref (list AccountInfo.t))
+      (program_id : '& Address.t)
+      (accounts : '& (list AccountInfo.t))
       (amount : u64)
       (expected_decimals : option u8) :
     Run.Trait processor.Impl_spl_token_processor_Processor.process_transfer
@@ -87,7 +87,7 @@ Module Impl_Processor.
       ProgramResult.t.
   Proof.
     constructor.
-    destruct (Impl_Try_for_Result.run (M.Ref.t Pointer.Kind.Ref AccountInfo.t) ProgramError.t).
+    destruct (Impl_Try_for_Result.run ('& AccountInfo.t) ProgramError.t).
     destruct (Impl_Try_for_Result.run Account.t ProgramError.t).
     destruct (Impl_Try_for_Result.run Mint.t ProgramError.t).
     destruct (Impl_Try_for_Result.run u64 TokenError.t).
@@ -96,7 +96,7 @@ Module Impl_Processor.
     destruct (Impl_Into_for_From_T.run Impl_From_TokenError_for_ProgramError.run).
     destruct Impl_Pack_for_Account.run.
     destruct Impl_Pack_for_Mint.run.
-    destruct (Impl_Deref_for_Ref.run (M.Ref.t Pointer.Kind.MutRef (list u8))).
+    destruct (Impl_Deref_for_Ref.run ('&mut (list u8))).
     Time run_symbolic.
   Admitted.
   Global Opaque run_process_transfer.

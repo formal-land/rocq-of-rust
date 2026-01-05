@@ -18,7 +18,7 @@ Instance run_get_memory_input_and_out_ranges
   {WIRE : Set} `{Link WIRE}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types)) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types)) :
   Run.Trait
     instructions.contract.call_helpers.get_memory_input_and_out_ranges
     [] [Φ WIRE] [φ interpreter]
@@ -39,7 +39,7 @@ Instance run_resize_memory
   {WIRE : Set} `{Link WIRE}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
   (offset len : aliases.U256.t) :
   Run.Trait
     instructions.contract.call_helpers.resize_memory
@@ -62,7 +62,7 @@ Instance run_calc_call_gas
   {WIRE : Set} `{Link WIRE}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
   (account_load : AccountLoad.t)
   (has_transfer : bool)
   (local_gas_limit : u64) :

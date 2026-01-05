@@ -11,7 +11,7 @@ Module Impl_Uint.
 
   (* pub const fn bit(&self, index: usize) -> bool *)
   Instance run_bit (BITS LIMBS : usize)
-      (self : Ref.t Pointer.Kind.Ref (Self BITS LIMBS))
+      (self : '& (Self BITS LIMBS))
       (index : usize) :
     Run.Trait
       (bits.Impl_ruint_Uint_BITS_LIMBS.bit (φ BITS) (φ LIMBS)) [] [] [ φ self; φ index ]
@@ -22,7 +22,7 @@ Module Impl_Uint.
   (* pub const fn byte(&self, index: usize) -> u8 *)
   Instance run_byte
     (BITS LIMBS BYTES : usize)
-    (x : Ref.t Pointer.Kind.Ref (Self BITS LIMBS)) 
+    (x : '& (Self BITS LIMBS)) 
     (index : usize) :
     Run.Trait
       (bits.Impl_ruint_Uint_BITS_LIMBS.byte (φ BITS) (φ LIMBS)) [] [] [ φ x; φ index ]

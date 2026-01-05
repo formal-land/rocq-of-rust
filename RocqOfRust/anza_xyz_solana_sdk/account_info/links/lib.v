@@ -8,7 +8,7 @@ Require Import anza_xyz_solana_sdk.account_info.lib.
 Instance run_MAX_PERMITTED_DATA_INCREASE :
   Run.Trait
     lib.value_MAX_PERMITTED_DATA_INCREASE [] [] []
-    (Ref.t Pointer.Kind.Raw usize).
+    ('* usize).
 Proof.
   constructor.
   run_symbolic.
@@ -39,10 +39,10 @@ Module AccountInfo.
   Global Existing Instance Rc_RefCell_mut_slice_u8_IsLink.
 
   Record t : Set := {
-    key : Ref.t Pointer.Kind.Ref Address.t;
+    key : '& Address.t;
     lamports : Rc_RefCell_mut_u64;
     data : Rc_RefCell_mut_slice_u8;
-    owner : Ref.t Pointer.Kind.Ref Address.t;
+    owner : '& Address.t;
     _unused : u64;
     is_signer : bool;
     is_writable : bool;
@@ -69,10 +69,10 @@ Module AccountInfo.
   Smpl Add apply of_ty : of_ty.
 
   Lemma of_value_with
-    (key : Ref.t Pointer.Kind.Ref Address.t) (key' : Value.t)
+    (key : '& Address.t) (key' : Value.t)
     (lamports : Rc_RefCell_mut_u64) (lamports' : Value.t)
     (data : Rc_RefCell_mut_slice_u8) (data' : Value.t)
-    (owner : Ref.t Pointer.Kind.Ref Address.t) (owner' : Value.t)
+    (owner : '& Address.t) (owner' : Value.t)
     (_unused : u64) (_unused' : Value.t)
     (is_signer : bool) (is_signer' : Value.t)
     (is_writable : bool) (is_writable' : Value.t)
@@ -100,10 +100,10 @@ Module AccountInfo.
   Smpl Add apply of_value_with : of_value.
 
   Definition of_value
-    (key : Ref.t Pointer.Kind.Ref Address.t) (key' : Value.t)
+    (key : '& Address.t) (key' : Value.t)
     (lamports : Rc_RefCell_mut_u64) (lamports' : Value.t)
     (data : Rc_RefCell_mut_slice_u8) (data' : Value.t)
-    (owner : Ref.t Pointer.Kind.Ref Address.t) (owner' : Value.t)
+    (owner : '& Address.t) (owner' : Value.t)
     (_unused : u64) (_unused' : Value.t)
     (is_signer : bool) (is_signer' : Value.t)
     (is_writable : bool) (is_writable' : Value.t)
@@ -237,10 +237,10 @@ End AccountInfo.
 *)
 Instance run_next_account_info
     (I : Set) `{Link I}
-    (iter : Ref.t Pointer.Kind.MutRef I) :
+    (iter : '&mut I) :
   Run.Trait
     lib.next_account_info [] [Φ I] [φ iter]
-    (Result.t (Ref.t Pointer.Kind.Ref AccountInfo.t) ProgramError.t).
+    (Result.t ('& AccountInfo.t) ProgramError.t).
 Proof.
   constructor.
   run_symbolic.

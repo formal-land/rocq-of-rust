@@ -181,7 +181,7 @@ Module Impl_Result_T_E.
   Instance run_expect
     (T E : Set) `{Link T} `{Link E}
     (self : Self T E)
-    (msg : Ref.t Pointer.Kind.Ref string) :
+    (msg : '& string) :
     Run.Trait
       (result.Impl_core_result_Result_T_E.expect (Φ T) (Φ E)) [] [] [ φ self; φ msg ] T.
   Admitted.

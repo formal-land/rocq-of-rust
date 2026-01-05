@@ -148,7 +148,7 @@ Module Matrix.
       Set :=
     TraitMethod.C (trait Self T) "width" (fun method =>
       forall
-        (self : Ref.t Pointer.Kind.Ref Self),
+        (self : '& Self),
       Run.Trait method [] [] [ φ self ] usize
     ).
 
@@ -157,7 +157,7 @@ Module Matrix.
       Set :=
     TraitMethod.C (trait Self T) "height" (fun method =>
       forall
-        (self : Ref.t Pointer.Kind.Ref Self),
+        (self : '& Self),
       Run.Trait method [] [] [ φ self ] usize
     ).
 
@@ -166,7 +166,7 @@ Module Matrix.
       Set :=
     TraitMethod.C (trait Self T) "dimensions" (fun method =>
       forall
-        (self : Ref.t Pointer.Kind.Ref Self),
+        (self : '& Self),
       Run.Trait method [] [] [ φ self ] Dimensions.t
     ).
 
@@ -175,7 +175,7 @@ Module Matrix.
       Set :=
     TraitMethod.C (trait Self T) "get" (fun method =>
       forall
-        (self : Ref.t Pointer.Kind.Ref Self)
+        (self : '& Self)
         (r c : usize),
       Run.Trait method [] [] [ φ self; φ r; φ c ] T
     ).
@@ -186,7 +186,7 @@ Module Matrix.
       Set :=
     TraitMethod.C (trait Self T) "row" (fun method =>
       forall
-        (self : Ref.t Pointer.Kind.Ref Self)
+        (self : '& Self)
         (r : usize),
       Run.Trait method [] [] [ φ self; φ r ] types.(AssociatedTypes.Row)
     ).
@@ -196,7 +196,7 @@ Module Matrix.
       (types : AssociatedTypes.t) `{AssociatedTypes.AreLinks types} :
       Set :=
     TraitMethod.C (trait Self T) "rows" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] types.(AssociatedTypes.Synthetic)
     ).
 
@@ -205,7 +205,7 @@ Module Matrix.
       (types : AssociatedTypes.t) `{AssociatedTypes.AreLinks types} :
       Set :=
     TraitMethod.C (trait Self T) "par_rows" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] types.(AssociatedTypes.Synthetic1)
     ).
 
@@ -214,7 +214,7 @@ Module Matrix.
       (types : AssociatedTypes.t) `{AssociatedTypes.AreLinks types} :
       Set :=
     TraitMethod.C (trait Self T) "row_slice" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (r : usize),
+      forall (self : '& Self) (r : usize),
       Run.Trait method [] [] [ φ self; φ r ] types.(AssociatedTypes.Synthetic2)
     ).
 

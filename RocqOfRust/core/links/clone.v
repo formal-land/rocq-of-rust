@@ -14,7 +14,7 @@ Module Clone.
 
   Definition Run_clone (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "clone" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] Self
     ).
 

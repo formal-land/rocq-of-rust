@@ -12,7 +12,7 @@ Require Import revm_specification.links.hardfork.
 (* pub fn sstore_refund(spec_id: SpecId, vals: &SStoreResult) -> i64 *)
 Instance run_sstore_refund
     (spec_id : SpecId.t)
-    (vals : Ref.t Pointer.Kind.Ref SStoreResult.t) :
+    (vals : '& SStoreResult.t) :
   Run.Trait
     gas.calc.sstore_refund [] [] [ φ spec_id; φ vals ]
     i64.
@@ -152,7 +152,7 @@ Global Opaque run_sload_cost.
 (* pub fn sstore_cost(spec_id: SpecId, vals: &SStoreResult, is_cold: bool) -> u64 *)
 Instance run_sstore_cost
     (spec_id : SpecId.t)
-    (vals : Ref.t Pointer.Kind.Ref SStoreResult.t)
+    (vals : '& SStoreResult.t)
     (is_cold : bool) :
   Run.Trait
     gas.calc.sstore_cost [] [] [ φ spec_id; φ vals; φ is_cold ]
@@ -166,7 +166,7 @@ Global Opaque run_sstore_cost.
 (* pub const fn istanbul_sstore_cost<const SLOAD_GAS: u64, const SSTORE_RESET_GAS: u64>(
     vals: &SStoreResult,
 ) -> u64 *)
-Instance run_istanbul_sstore_cost (vals : Ref.t Pointer.Kind.Ref SStoreResult.t) :
+Instance run_istanbul_sstore_cost (vals : '& SStoreResult.t) :
   Run.Trait
     gas.calc.istanbul_sstore_cost [] [] [ φ vals ]
     u64.
@@ -177,7 +177,7 @@ Admitted.
 Global Opaque run_istanbul_sstore_cost.
 
 (* pub const fn frontier_sstore_cost(vals: &SStoreResult) -> u64 *)
-Instance run_frontier_sstore_cost (vals : Ref.t Pointer.Kind.Ref SStoreResult.t) :
+Instance run_frontier_sstore_cost (vals : '& SStoreResult.t) :
   Run.Trait
     gas.calc.frontier_sstore_cost [] [] [ φ vals ]
     u64.
@@ -257,9 +257,9 @@ Global Opaque run_memory_gas.
 Instance run_validate_initial_tx_gas
     {AccessListT : Set} `{Link AccessListT}
     (spec_id : SpecId.t)
-    (input : Ref.t Pointer.Kind.Ref (list u8))
+    (input : '& (list u8))
     (is_create : bool)
-    (access_list : option (Ref.t Pointer.Kind.Ref AccessListT))
+    (access_list : option ('& AccessListT))
     (authorization_list_num : u64) :
   Run.Trait
     gas.calc.validate_initial_tx_gas [] [ Φ AccessListT ]

@@ -254,7 +254,7 @@ End Account.
 
 Module AccountInfo.
   Record t : Set := {
-    raw : Ref.t Pointer.Kind.MutRef Account.t;
+    raw : '&mut Account.t;
   }.
 
   Global Instance IsLink : Link t := {
@@ -272,7 +272,7 @@ Module AccountInfo.
   Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
   Smpl Add apply of_ty : of_ty.
 
-  Lemma of_value_with (raw : Ref.t Pointer.Kind.MutRef Account.t) (raw' : Value.t) :
+  Lemma of_value_with (raw : '&mut Account.t) (raw' : Value.t) :
     raw' = φ raw ->
     Value.StructRecord "pinocchio::account_info::AccountInfo" [] [] [
       ("raw", raw')
@@ -280,7 +280,7 @@ Module AccountInfo.
   Proof. intros; subst; reflexivity. Qed.
   Smpl Add apply of_value_with : of_value.
 
-  Definition of_value (raw : Ref.t Pointer.Kind.MutRef Account.t) (raw' : Value.t) :
+  Definition of_value (raw : '&mut Account.t) (raw' : Value.t) :
     raw' = φ raw ->
     OfValue.t (
       Value.StructRecord "pinocchio::account_info::AccountInfo" [] [] [
@@ -308,10 +308,10 @@ Module Impl_AccountInfo.
   Definition Self : Set := AccountInfo.t.
 
   Instance run_key
-      (self : Ref.t Pointer.Kind.Ref Self) :
+      (self : '& Self) :
     Run.Trait
       key [] [] [φ self]
-      (Ref.t Pointer.Kind.Ref Pubkey.t).
+      ('& Pubkey.t).
   Proof.
     constructor.
     run_symbolic.
@@ -319,7 +319,7 @@ Module Impl_AccountInfo.
   Global Opaque run_key.
 
   Instance run_is_signer 
-      (self : Ref.t Pointer.Kind.Ref Self) :
+      (self : '& Self) :
     Run.Trait
       is_signer [] [] [φ self]
       bool.
@@ -330,10 +330,10 @@ Module Impl_AccountInfo.
   Global Opaque run_is_signer.
 
   Instance run_owner
-      (self : Ref.t Pointer.Kind.Ref Self) :
+      (self : '& Self) :
     Run.Trait
       owner [] [] [φ self]
-      (Ref.t Pointer.Kind.Ref Pubkey.t).
+      ('& Pubkey.t).
   Proof.
     constructor.
     run_symbolic.
@@ -341,7 +341,7 @@ Module Impl_AccountInfo.
   Global Opaque run_owner.
 
   Instance run_is_writable
-      (self : Ref.t Pointer.Kind.Ref Self) :
+      (self : '& Self) :
     Run.Trait
       is_writable [] [] [φ self]
       bool.
@@ -352,7 +352,7 @@ Module Impl_AccountInfo.
   Global Opaque run_is_writable.
 
   Instance run_executable
-      (self : Ref.t Pointer.Kind.Ref Self) :
+      (self : '& Self) :
     Run.Trait
       executable [] [] [φ self]
       bool.
@@ -363,7 +363,7 @@ Module Impl_AccountInfo.
   Global Opaque run_executable.
 
   Instance run_data_len
-      (self : Ref.t Pointer.Kind.Ref Self) :
+      (self : '& Self) :
     Run.Trait
       data_len [] [] [φ self]
       usize.
@@ -374,7 +374,7 @@ Module Impl_AccountInfo.
   Global Opaque run_data_len.
 
   Instance run_lamports
-      (self : Ref.t Pointer.Kind.Ref Self) :
+      (self : '& Self) :
     Run.Trait
       lamports [] [] [φ self]
       u64.
@@ -385,7 +385,7 @@ Module Impl_AccountInfo.
   Global Opaque run_lamports.
 
   Instance run_data_is_empty
-      (self : Ref.t Pointer.Kind.Ref Self) :
+      (self : '& Self) :
     Run.Trait
       data_is_empty [] [] [φ self]
       bool.
@@ -396,8 +396,8 @@ Module Impl_AccountInfo.
   Global Opaque run_data_is_empty.
 
   Instance run_is_owned_by
-      (self : Ref.t Pointer.Kind.Ref Self) 
-      (program : Ref.t Pointer.Kind.Ref Pubkey.t):
+      (self : '& Self) 
+      (program : '& Pubkey.t):
     Run.Trait
       is_owned_by [] [] [φ self; φ program]
       bool.
@@ -410,8 +410,8 @@ Module Impl_AccountInfo.
   Global Opaque run_is_owned_by.
 
   Instance run_assign
-    (self : Ref.t Pointer.Kind.Ref Self) 
-    (new_owner : Ref.t Pointer.Kind.Ref Pubkey.t):
+    (self : '& Self) 
+    (new_owner : '& Pubkey.t):
   Run.Trait
     assign [] [] [φ self; φ new_owner]
     unit.
@@ -423,7 +423,7 @@ Module Impl_AccountInfo.
   Global Opaque run_assign.
 
   Instance run_is_borrowed
-        (self : Ref.t Pointer.Kind.Ref Self) 
+        (self : '& Self) 
         (state : BorrowState.t):
   Run.Trait
     is_borrowed [] [] [φ self; φ state]

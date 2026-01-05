@@ -18,7 +18,7 @@ Module Impl_FixedBytes.
   Instance run_zero (N : usize) :
     Run.Trait
       (bits.fixed.Impl_alloy_primitives_bits_fixed_FixedBytes_N.value_ZERO (φ N)) [] [] []
-      (Ref.t Pointer.Kind.Raw (Self N)).
+      ('* (Self N)).
   Proof.
     constructor.
   Admitted.

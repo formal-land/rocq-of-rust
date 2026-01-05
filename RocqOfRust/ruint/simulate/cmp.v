@@ -10,7 +10,7 @@ Module Impl_Uint.
 
   Lemma is_zero_like {BITS LIMBS : usize}
       (stack : Stack.t)
-      (ref_self : Ref.t Pointer.Kind.Ref (Self BITS LIMBS)) :
+      (ref_self : '& (Self BITS LIMBS)) :
     SimulateM.eval_f
       (Impl_Uint.run_is_zero BITS LIMBS ref_self)
       stack =

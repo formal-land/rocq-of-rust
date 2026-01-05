@@ -93,7 +93,7 @@ Export Impl_Ord_for_Sign.
 (* pub const MAX_POSITIVE_VALUE: U256 *)
 Instance run_MAX_POSITIVE_VALUE :
   Run.Trait instructions.i256.value_MAX_POSITIVE_VALUE [] [] []
-    (Ref.t Pointer.Kind.Raw aliases.U256.t).
+    ('* aliases.U256.t).
 Proof.
   constructor.
   run_symbolic.
@@ -103,7 +103,7 @@ Global Opaque run_MAX_POSITIVE_VALUE.
 (* pub const MIN_NEGATIVE_VALUE: U256 *)
 Instance run_MIN_NEGATIVE_VALUE :
   Run.Trait instructions.i256.value_MIN_NEGATIVE_VALUE [] [] []
-    (Ref.t Pointer.Kind.Raw aliases.U256.t).
+    ('* aliases.U256.t).
 Proof.
   constructor.
   run_symbolic.
@@ -112,7 +112,7 @@ Global Opaque run_MIN_NEGATIVE_VALUE.
 
 (* const FLIPH_BITMASK_U64: u64 *)
 Instance run_FLIPH_BITMASK_U64 :
-  Run.Trait instructions.i256.value_FLIPH_BITMASK_U64 [] [] [] (Ref.t Pointer.Kind.Raw u64).
+  Run.Trait instructions.i256.value_FLIPH_BITMASK_U64 [] [] [] ('* u64).
 Proof.
   constructor.
   run_symbolic.
@@ -120,7 +120,7 @@ Defined.
 Global Opaque run_FLIPH_BITMASK_U64.
 
 (* pub fn i256_sign(val: &U256) -> Sign *)
-Instance run_i256_sign (val : Ref.t Pointer.Kind.Ref aliases.U256.t) :
+Instance run_i256_sign (val : '& aliases.U256.t) :
   Run.Trait instructions.i256.i256_sign [] [] [ φ val ] Sign.t.
 Proof.
   constructor.
@@ -138,7 +138,7 @@ Defined.
 Global Opaque run_two_compl.
 
 (* pub fn two_compl_mut(op: &mut U256) *)
-Instance run_two_compl_mut (op : Ref.t Pointer.Kind.MutRef aliases.U256.t) :
+Instance run_two_compl_mut (op : '&mut aliases.U256.t) :
   Run.Trait instructions.i256.two_compl_mut [] [] [ φ op ] unit.
 Proof.
   constructor.
@@ -147,7 +147,7 @@ Defined.
 Global Opaque run_two_compl_mut.
 
 (* pub fn i256_sign_compl(val: &mut U256) -> Sign *)
-Instance run_i256_sign_compl (val : Ref.t Pointer.Kind.MutRef aliases.U256.t) :
+Instance run_i256_sign_compl (val : '&mut aliases.U256.t) :
   Run.Trait instructions.i256.i256_sign_compl [] [] [ φ val ] Sign.t.
 Proof.
   constructor.
@@ -157,7 +157,7 @@ Defined.
 Global Opaque run_i256_sign_compl.
 
 (* pub fn u256_remove_sign(val: &mut U256) *)
-Instance run_u256_remove_sign (val : Ref.t Pointer.Kind.MutRef aliases.U256.t) :
+Instance run_u256_remove_sign (val : '&mut aliases.U256.t) :
   Run.Trait instructions.i256.u256_remove_sign [] [] [ φ val ] unit.
 Proof.
   constructor.
@@ -166,7 +166,7 @@ Defined.
 Global Opaque run_u256_remove_sign.
 
 (* pub fn i256_cmp(first: &U256, second: &U256) -> Ordering *)
-Instance run_i256_cmp (first second : Ref.t Pointer.Kind.Ref aliases.U256.t) :
+Instance run_i256_cmp (first second : '& aliases.U256.t) :
   Run.Trait instructions.i256.i256_cmp [] [] [ φ first; φ second ] Ordering.t.
 Proof.
   constructor.

@@ -28,7 +28,7 @@ Module Impl_Argument.
     Argument.t.
 
   (* pub const fn new_display<T: Display>(x: &T) -> Argument<'_> *)
-  Instance run_new_display (T : Set) `{Link T} (x : Ref.t Pointer.Kind.Ref T) :
+  Instance run_new_display (T : Set) `{Link T} (x : '& T) :
     Run.Trait fmt.rt.Impl_core_fmt_rt_Argument.new_display [] [Φ T] [φ x] Self.
   Proof.
     constructor.

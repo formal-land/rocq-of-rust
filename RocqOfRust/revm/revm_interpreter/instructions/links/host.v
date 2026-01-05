@@ -40,8 +40,8 @@ Instance run_balance
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
     (run_Host_for_H : Host.Run H H_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (host : '&mut H) :
   Run.Trait
     instructions.host.balance [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -69,8 +69,8 @@ Instance run_selfbalance
   {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   (run_Host_for_H : Host.Run H H_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.host.selfbalance [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -98,8 +98,8 @@ Instance run_extcodesize
   {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   (run_Host_for_H : Host.Run H H_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (host : '&mut H) :
   Run.Trait
     instructions.host.extcodesize [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -128,8 +128,8 @@ Instance run_extcodehash
   {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   (run_Host_for_H : Host.Run H H_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (host : '&mut H) :
   Run.Trait
     instructions.host.extcodehash [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -158,8 +158,8 @@ Instance run_extcodecopy
   {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   (run_Host_for_H : Host.Run H H_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (host : '&mut H) :
   Run.Trait
     instructions.host.extcodecopy [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -191,8 +191,8 @@ Instance run_blockhash
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
     (run_Host_for_H : Host.Run H H_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (host : '&mut H) :
   Run.Trait
     instructions.host.blockhash [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -219,8 +219,8 @@ Instance run_sload
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
     (run_Host_for_H : Host.Run H H_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (host : '&mut H) :
   Run.Trait
     instructions.host.sload [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -248,8 +248,8 @@ Instance run_sstore
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
     (run_Host_for_H : Host.Run H H_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (host : '&mut H) :
   Run.Trait
     instructions.host.sstore [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -277,8 +277,8 @@ Instance run_tstore
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}  
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
     (run_Host_for_H : Host.Run H H_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (host : '&mut H) :
   Run.Trait
     instructions.host.tstore [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -306,8 +306,8 @@ Instance run_tload
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
     (run_Host_for_H : Host.Run H H_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (host : '&mut H) :
   Run.Trait
     instructions.host.tload [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -336,8 +336,8 @@ Instance run_log
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
     (run_Host_for_H : Host.Run H H_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (host : '&mut H) :
   Run.Trait
     instructions.host.log [ φ N ] [ Φ H; Φ WIRE ] [ φ interpreter; φ host ]
     unit.
@@ -386,8 +386,8 @@ Instance run_selfdestruct
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
     (run_Host_for_H : Host.Run H H_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (host : '&mut H) :
   Run.Trait
     instructions.host.selfdestruct [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.

@@ -62,13 +62,13 @@ impl<'a, T, const N: usize> TryFrom<&'a [T]> for &'a [T; N] {
 *)
 Module Impl_TryFrom_Ref_for_Ref_Array.
   Definition Self (T : Set) (N : usize) `{Link T} : Set :=
-    Ref.t Pointer.Kind.Ref (array.t T N).
+    '& (array.t T N).
 
   Definition Error : Set :=
     TryFromSliceError.t.
 
   Instance run (T : Set) `{Link T} (N : usize) :
-    TryFrom.Run (Self T N) (Ref.t Pointer.Kind.Ref (list T)) Error.
+    TryFrom.Run (Self T N) ('& (list T)) Error.
   Admitted.
 End Impl_TryFrom_Ref_for_Ref_Array.
 Export Impl_TryFrom_Ref_for_Ref_Array.
@@ -88,7 +88,7 @@ Module Impl_TryFrom_Ref_for_Array.
     TryFromSliceError.t.
 
   Instance run (T : Set) `{Link T} (N : usize) :
-    TryFrom.Run (Self T N) (Ref.t Pointer.Kind.Ref (list T)) Error.
+    TryFrom.Run (Self T N) ('& (list T)) Error.
   Admitted.
 End Impl_TryFrom_Ref_for_Array.
 Export Impl_TryFrom_Ref_for_Array.

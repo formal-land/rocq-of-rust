@@ -45,7 +45,7 @@ Instance run_extcall_input
   {WIRE : Set} `{Link WIRE}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types)) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types)) :
   Run.Trait
     instructions.contract.extcall_input [] [ Φ WIRE ] [ φ interpreter ]
     (option alloy_primitives.bytes.links.mod.Bytes.t).

@@ -144,8 +144,8 @@ Module Impl_Gas.
       (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
       (cost : u64)
       (stack : Stack.t) :
-    let ref_interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types) := make_ref 0 in
-    let ref_control : Ref.t Pointer.Kind.MutRef _ := {| Ref.core :=
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_control : '&mut _ := {| Ref.core :=
         SubPointer.Runner.apply
           ref_interpreter.(Ref.core)
           Interpreter.SubPointer.get_control
@@ -201,8 +201,8 @@ Module Impl_Gas.
       (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
       (cost : u64)
       (stack : Stack.t) :
-    let ref_interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types) := make_ref 0 in
-    let ref_control : Ref.t Pointer.Kind.MutRef _ := {| Ref.core :=
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_control : '&mut _ := {| Ref.core :=
         SubPointer.Runner.apply
           ref_interpreter.(Ref.core)
           Interpreter.SubPointer.get_control
@@ -285,8 +285,8 @@ Module Impl_Gas.
       (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
       (cost : u64)
       (stack : Stack.t) :
-    let ref_interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types) := make_ref 0 in
-    let ref_control : Ref.t Pointer.Kind.MutRef _ := {| Ref.core :=
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_control : '&mut _ := {| Ref.core :=
         SubPointer.Runner.apply
           ref_interpreter.(Ref.core)
           Interpreter.SubPointer.get_control

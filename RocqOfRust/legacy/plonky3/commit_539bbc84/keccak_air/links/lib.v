@@ -7,7 +7,7 @@ Definition NUM_ROUNDS : usize :=
   {| Integer.value := 24 |}.
 
 Instance run_value_NUM_ROUNDS :
-  Run.Trait lib.value_NUM_ROUNDS [] [] [] (Ref.t Pointer.Kind.Raw usize).
+  Run.Trait lib.value_NUM_ROUNDS [] [] [] ('* usize).
 Proof.
   constructor.
   run_symbolic.
@@ -19,7 +19,7 @@ Definition BITS_PER_LIMB : usize :=
   {| Integer.value := 16 |}.
 
 Instance run_value_BITS_PER_LIMB :
-  Run.Trait lib.value_BITS_PER_LIMB [] [] [] (Ref.t Pointer.Kind.Raw usize).
+  Run.Trait lib.value_BITS_PER_LIMB [] [] [] ('* usize).
 Proof.
   constructor.
   run_symbolic.
@@ -31,7 +31,7 @@ Definition U64_LIMBS : usize :=
   {| Integer.value := 64 / BITS_PER_LIMB.(Integer.value) |}.
 
 Instance run_value_U64_LIMBS :
-  Run.Trait lib.value_U64_LIMBS [] [] [] (Ref.t Pointer.Kind.Raw usize).
+  Run.Trait lib.value_U64_LIMBS [] [] [] ('* usize).
 Proof.
   constructor.
   run_symbolic.
@@ -43,7 +43,7 @@ Definition RATE_BITS : usize :=
   {| Integer.value := 1088 |}.
 
 Instance run_value_RATE_BITS :
-  Run.Trait lib.value_RATE_BITS [] [] [] (Ref.t Pointer.Kind.Raw usize).
+  Run.Trait lib.value_RATE_BITS [] [] [] ('* usize).
 Proof.
   constructor.
   run_symbolic.
@@ -55,7 +55,7 @@ Definition RATE_LIMBS : usize :=
   {| Integer.value := RATE_BITS.(Integer.value) / BITS_PER_LIMB.(Integer.value) |}.
 
 Instance run_value_RATE_LIMBS :
-  Run.Trait lib.value_RATE_LIMBS [] [] [] (Ref.t Pointer.Kind.Raw usize).
+  Run.Trait lib.value_RATE_LIMBS [] [] [] ('* usize).
 Proof.
   constructor.
   run_symbolic.

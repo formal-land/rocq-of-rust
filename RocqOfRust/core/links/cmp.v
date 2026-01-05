@@ -19,13 +19,13 @@ Module PartialEq.
 
   Definition Run_eq (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set :=
     TraitMethod.C (trait Self Rhs) "eq" (fun method =>
-      forall (self other : Ref.t Pointer.Kind.Ref Self),
+      forall (self other : '& Self),
       Run.Trait method [] [] [ φ self; φ other ] bool
     ).
 
   Definition Run_ne (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set :=
     TraitMethod.C (trait Self Rhs) "ne" (fun method =>
-      forall (self other : Ref.t Pointer.Kind.Ref Self),
+      forall (self other : '& Self),
       Run.Trait method [] [] [ φ self; φ other ] bool
     ).
 
@@ -57,7 +57,7 @@ Instance run_max_by {T F : Set} `{Link T} `{Link F}
     (Run_FnOnce_for_F :
       function.FnOnce.Run
         F
-        (Ref.t Pointer.Kind.Ref T * Ref.t Pointer.Kind.Ref T)
+        ('& T * '& T)
         Ordering.t
     )
     (v1 v2 : T) (compare : F) :
@@ -89,7 +89,7 @@ Module Ord.
 
   Definition Run_cmp (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "cmp" (fun method =>
-      forall (self other : Ref.t Pointer.Kind.Ref Self),
+      forall (self other : '& Self),
       Run.Trait method [] [] [ φ self; φ other ] Ordering.t
     ).
 
@@ -314,31 +314,31 @@ Module PartialOrd.
 
   Definition Run_partial_cmp (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set :=
     TraitMethod.C (trait Self Rhs) "partial_cmp" (fun method =>
-      forall (self other : Ref.t Pointer.Kind.Ref Self),
+      forall (self other : '& Self),
       Run.Trait method [] [] [ φ self; φ other ] (option Ordering.t)
     ).
 
   Definition Run_lt (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set :=
     TraitMethod.C (trait Self Rhs) "lt" (fun method =>
-      forall (self other : Ref.t Pointer.Kind.Ref Self),
+      forall (self other : '& Self),
       Run.Trait method [] [] [ φ self; φ other ] bool
     ).
 
   Definition Run_le (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set :=
     TraitMethod.C (trait Self Rhs) "le" (fun method =>
-      forall (self other : Ref.t Pointer.Kind.Ref Self),
+      forall (self other : '& Self),
       Run.Trait method [] [] [ φ self; φ other ] bool
     ).
 
   Definition Run_gt (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set :=
     TraitMethod.C (trait Self Rhs) "gt" (fun method =>
-      forall (self other : Ref.t Pointer.Kind.Ref Self),
+      forall (self other : '& Self),
       Run.Trait method [] [] [ φ self; φ other ] bool
     ).
 
   Definition Run_ge (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set :=
     TraitMethod.C (trait Self Rhs) "ge" (fun method =>
-      forall (self other : Ref.t Pointer.Kind.Ref Self),
+      forall (self other : '& Self),
       Run.Trait method [] [] [ φ self; φ other ] bool
     ).
 
@@ -377,11 +377,11 @@ End Impl_PartialEq_for_Array.
 
 Module Impl_PartialEq_for_Ref.
   Definition Self (A B : Set) `{Link A} `{Link B} : Set :=  
-  Ref.t Pointer.Kind.Ref A.
+  '& A.
 
   Instance run
     (A B : Set) `{Link A} `{Link B} 
-    : PartialEq.Run (Ref.t Pointer.Kind.Ref A) (Ref.t Pointer.Kind.Ref B).
+    : PartialEq.Run ('& A) ('& B).
   Admitted.
 End Impl_PartialEq_for_Ref.
 Export Impl_PartialEq_for_Ref.
@@ -396,11 +396,11 @@ Export (hints) Impl_PartialOrd_for_U32.
 
 Module Impl_PartialOrd_for_Ref.
   Definition Self (A : Set) `{Link A} : Set :=
-    Ref.t Pointer.Kind.Ref A.
+    '& A.
 
   Instance run (A B : Set) `{Link A} `{Link B}
     {run_PartialOrd_for_A : PartialOrd.Run A B} :
-    PartialOrd.Run (Ref.t Pointer.Kind.Ref A) (Ref.t Pointer.Kind.Ref B).
+    PartialOrd.Run ('& A) ('& B).
   Admitted.
 End Impl_PartialOrd_for_Ref.
 Export (hints) Impl_PartialOrd_for_Ref.

@@ -142,7 +142,7 @@ Module Impl_MemoryGas.
   }
   *)
   Instance run_record_new_len
-      (self : Ref.t Pointer.Kind.MutRef MemoryGas.t)
+      (self : '&mut MemoryGas.t)
       (new_num : usize) :
     Run.Trait
       gas.Impl_revm_interpreter_gas_MemoryGas.record_new_len [] [] [φ self; φ new_num]
@@ -434,7 +434,7 @@ Module Impl_Gas.
           self.limit
       }
   *)
-  Instance run_limit (self : Ref.t Pointer.Kind.Ref Self) :
+  Instance run_limit (self : '& Self) :
     Run.Trait gas.Impl_revm_interpreter_gas_Gas.limit [] [] [φ self] u64.
   Proof.
     constructor.
@@ -447,7 +447,7 @@ Module Impl_Gas.
           0
       }
   *)
-  Instance run_memory (self : Ref.t Pointer.Kind.Ref Self) :
+  Instance run_memory (self : '& Self) :
     Run.Trait gas.Impl_revm_interpreter_gas_Gas.memory [] [] [φ self] u64.
   Proof.
     constructor.
@@ -460,7 +460,7 @@ Module Impl_Gas.
           self.refunded
       }
   *)
-  Instance run_refunded (self : Ref.t Pointer.Kind.Ref Self) :
+  Instance run_refunded (self : '& Self) :
     Run.Trait gas.Impl_revm_interpreter_gas_Gas.refunded [] [] [φ self] i64.
   Proof.
     constructor.
@@ -473,7 +473,7 @@ Module Impl_Gas.
           self.limit - self.remaining
       }
   *)
-  Instance run_spent (self : Ref.t Pointer.Kind.Ref Self) :
+  Instance run_spent (self : '& Self) :
     Run.Trait gas.Impl_revm_interpreter_gas_Gas.spent [] [] [φ self] u64.
   Proof.
     constructor.
@@ -486,7 +486,7 @@ Module Impl_Gas.
           self.remaining
       }
   *)
-  Instance run_remaining (self : Ref.t Pointer.Kind.Ref Self) :
+  Instance run_remaining (self : '& Self) :
     Run.Trait gas.Impl_revm_interpreter_gas_Gas.remaining [] [] [φ self] u64.
   Proof.
     constructor.
@@ -499,7 +499,7 @@ Module Impl_Gas.
           self.remaining - self.remaining / 64
       }
   *)
-  Instance run_remaining_63_of_64_parts (self : Ref.t Pointer.Kind.Ref Self) :
+  Instance run_remaining_63_of_64_parts (self : '& Self) :
     Run.Trait gas.Impl_revm_interpreter_gas_Gas.remaining_63_of_64_parts [] [] [φ self] u64.
   Proof.
     constructor.
@@ -512,7 +512,7 @@ Module Impl_Gas.
           self.remaining += returned;
       }
   *)
-  Instance run_erase_cost (self : Ref.t Pointer.Kind.MutRef Self) (returned : u64) :
+  Instance run_erase_cost (self : '&mut Self) (returned : u64) :
     Run.Trait gas.Impl_revm_interpreter_gas_Gas.erase_cost [] [] [φ self; φ returned] unit.
   Proof.
     constructor.
@@ -525,7 +525,7 @@ Module Impl_Gas.
           self.remaining = 0;
       }
   *)
-  Instance run_spend_all (self : Ref.t Pointer.Kind.MutRef Self) :
+  Instance run_spend_all (self : '&mut Self) :
     Run.Trait gas.Impl_revm_interpreter_gas_Gas.spend_all [] [] [φ self] unit.
   Proof.
     constructor.
@@ -538,7 +538,7 @@ Module Impl_Gas.
           self.refunded += refund;
       }
   *)
-  Instance run_record_refund (self : Ref.t Pointer.Kind.MutRef Self) (refund : i64) :
+  Instance run_record_refund (self : '&mut Self) (refund : i64) :
     Run.Trait gas.Impl_revm_interpreter_gas_Gas.record_refund [] [] [φ self; φ refund] unit.
   Proof.
     constructor.
@@ -552,7 +552,7 @@ Module Impl_Gas.
           self.refunded = (self.refunded() as u64).min(self.spent() / max_refund_quotient) as i64;
       }
   *)
-  Instance run_set_final_refund (self : Ref.t Pointer.Kind.MutRef Self) (is_london : bool) :
+  Instance run_set_final_refund (self : '&mut Self) (is_london : bool) :
     Run.Trait gas.Impl_revm_interpreter_gas_Gas.set_final_refund [] [] [φ self; φ is_london] unit.
   Proof.
     constructor.
@@ -566,7 +566,7 @@ Module Impl_Gas.
           self.refunded = refund;
       }
   *)
-  Instance run_set_refund (self : Ref.t Pointer.Kind.MutRef Self) (refund : i64) :
+  Instance run_set_refund (self : '&mut Self) (refund : i64) :
     Run.Trait gas.Impl_revm_interpreter_gas_Gas.set_refund [] [] [φ self; φ refund] unit.
   Proof.
     constructor.
@@ -584,7 +584,7 @@ Module Impl_Gas.
         success
     }
   *)
-  Instance run_record_cost (self : Ref.t Pointer.Kind.MutRef Self) (cost : u64) :
+  Instance run_record_cost (self : '&mut Self) (cost : u64) :
     Run.Trait gas.Impl_revm_interpreter_gas_Gas.record_cost [] [] [φ self; φ cost] bool.
   Proof.
     constructor.
@@ -606,7 +606,7 @@ Module Impl_Gas.
       }
   *)
   Instance run_record_memory_expansion
-      (self : Ref.t Pointer.Kind.MutRef Self)
+      (self : '&mut Self)
       (new_len : usize) :
     Run.Trait
       gas.Impl_revm_interpreter_gas_Gas.record_memory_expansion [] [] [φ self; φ new_len]

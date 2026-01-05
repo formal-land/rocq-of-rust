@@ -22,9 +22,9 @@ Module SliceIndex.
       (Output : Set) `{Link Output} : Set :=
     { get @ 
       IsTraitMethod.t "core::slice::index::SliceIndex" [] [Φ T] (Φ Self) "get" get *
-      forall (self : Self) (slice : Ref.t Pointer.Kind.Ref T),
+      forall (self : Self) (slice : '& T),
         {{ get [] [] [ φ self; φ slice ] 🔽 
-        option (Ref.t Pointer.Kind.Ref Output) }}
+        option ('& Output) }}
     }.
 
   Definition run_get_mut 
@@ -33,9 +33,9 @@ Module SliceIndex.
       (Output : Set) `{Link Output} : Set :=
     { get_mut @ 
       IsTraitMethod.t "core::slice::index::SliceIndex" [] [Φ T] (Φ Self) "get_mut" get_mut *
-      forall (self : Self) (slice : Ref.t Pointer.Kind.MutRef T),
+      forall (self : Self) (slice : '&mut T),
         {{ get_mut [] [] [ φ self; φ slice ] 🔽 
-        option (Ref.t Pointer.Kind.MutRef Output) }}
+        option ('&mut Output) }}
     }.
 
   Definition run_get_unchecked 
@@ -44,9 +44,9 @@ Module SliceIndex.
       (Output : Set) `{Link Output} : Set :=
     { get_unchecked @ 
       IsTraitMethod.t "core::slice::index::SliceIndex" [] [Φ T] (Φ Self) "get_unchecked" get_unchecked *
-      forall (self : Self) (slice : Ref.t Pointer.Kind.ConstPointer T),
+      forall (self : Self) (slice : '*const T),
         {{ get_unchecked [] [] [ φ self; φ slice ] 🔽 
-        Ref.t Pointer.Kind.ConstPointer Output }}
+        '*const Output }}
     }.
 
   Definition run_get_unchecked_mut 
@@ -55,9 +55,9 @@ Module SliceIndex.
       (Output : Set) `{Link Output} : Set :=
     { get_unchecked_mut @ 
       IsTraitMethod.t "core::slice::index::SliceIndex" [] [Φ T] (Φ Self) "get_unchecked_mut" get_unchecked_mut *
-      forall (self : Self) (slice : Ref.t Pointer.Kind.Ref T),
+      forall (self : Self) (slice : '& T),
         {{ get_unchecked_mut [] [] [ φ self; φ slice ] 🔽 
-        Ref.t Pointer.Kind.Ref Output }}
+        '& Output }}
     }.
 
   Definition run_index 
@@ -67,9 +67,9 @@ Module SliceIndex.
       Set := 
     { index @ 
       IsTraitMethod.t "core::slice::index::SliceIndex" [] [Φ T] (Φ Self) "index" index *
-      forall (self : Self) (slice : Ref.t Pointer.Kind.Ref T),
+      forall (self : Self) (slice : '& T),
         {{ index [] [] [ φ self; φ slice ] 🔽 
-        Ref.t Pointer.Kind.Ref Output }}
+        '& Output }}
     }.
 
   Definition run_index_mut 
@@ -79,9 +79,9 @@ Module SliceIndex.
       Set := 
     { index_mut @ 
       IsTraitMethod.t "core::slice::index::SliceIndex" [] [Φ T] (Φ Self) "index_mut" index_mut *
-      forall (self : Self) (slice : Ref.t Pointer.Kind.MutRef T),
+      forall (self : Self) (slice : '&mut T),
         {{ index_mut [] [] [ φ self; φ slice ] 🔽 
-        Ref.t Pointer.Kind.MutRef Output }}
+        '&mut Output }}
     }.
 
   Class Run

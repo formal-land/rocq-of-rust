@@ -86,22 +86,22 @@ Module FieldAlgebraWithoutField.
 
   Definition Run_ZERO (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "ZERO" (fun method =>
-      Run.Trait method [] [] [] (Ref.t Pointer.Kind.Raw Self)
+      Run.Trait method [] [] [] ('* Self)
     ).
 
   Definition Run_ONE (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "ONE" (fun method =>
-      Run.Trait method [] [] [] (Ref.t Pointer.Kind.Raw Self)
+      Run.Trait method [] [] [] ('* Self)
     ).
 
   Definition Run_TWO (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "TWO" (fun method =>
-      Run.Trait method [] [] [] (Ref.t Pointer.Kind.Raw Self)
+      Run.Trait method [] [] [] ('* Self)
     ).
 
   Definition Run_NEG_ONE (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "NEG_ONE" (fun method =>
-      Run.Trait method [] [] [] (Ref.t Pointer.Kind.Raw Self)
+      Run.Trait method [] [] [] ('* Self)
     ).
 
   Definition Run_from_f
@@ -163,68 +163,68 @@ Module FieldAlgebraWithoutField.
 
   Definition Run_double (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "double" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] Self
     ).
 
   Definition Run_square (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "square" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] Self
     ).
 
   Definition Run_cube (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "cube" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] Self
     ).
 
   Definition Run_exp_u64 (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "exp_u64" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (power : u64),
+      forall (self : '& Self) (power : u64),
       Run.Trait method [] [] [ φ self; φ power ] Self
     ).
 
   Definition Run_exp_const_u64 (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "exp_const_u64" (fun method =>
-      forall (POWER : u64) (self : Ref.t Pointer.Kind.Ref Self),
+      forall (POWER : u64) (self : '& Self),
       Run.Trait method [ φ POWER ] [] [ φ self ] Self
     ).
 
   Definition Run_exp_power_of_2 (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "exp_power_of_2" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (power_log : usize),
+      forall (self : '& Self) (power_log : usize),
       Run.Trait method [] [] [ φ self; φ power_log ] Self
     ).
 
   Definition Run_mul_2exp_u64 (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "mul_2exp_u64" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (exp : u64),
+      forall (self : '& Self) (exp : u64),
       Run.Trait method [] [] [ φ self; φ exp ] Self
     ).
 
   Definition Run_powers (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "powers" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] (Powers.t Self)
     ).
 
   Definition Run_shifted_powers (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "shifted_powers" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (start : Self),
+      forall (self : '& Self) (start : Self),
       Run.Trait method [] [] [ φ self; φ start ] (Powers.t Self)
     ).
 
   (* FIXME *)
   (* Definition Run_powers_packed (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "powers_packed" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] (Powers.t Self)
     ).
 
   Definition Run_shifted_powers_packed (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "shifted_powers_packed" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (start : Self),
+      forall (self : '& Self) (start : Self),
       Run.Trait method [] [] [ φ self; φ start ] (Powers.t Self)
     ). *)
 
@@ -232,8 +232,8 @@ Module FieldAlgebraWithoutField.
     TraitMethod.C (trait Self) "dot_product" (fun method =>
       forall
         (N : usize)
-        (u : Ref.t Pointer.Kind.Ref (array.t Self N))
-        (v : Ref.t Pointer.Kind.Ref (array.t Self N)),
+        (u : '& (array.t Self N))
+        (v : '& (array.t Self N)),
       Run.Trait method [ φ N ] [] [ φ u; φ v ] Self
     ).
 
@@ -333,19 +333,19 @@ Module Field.
 
   Definition Run_is_zero (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "is_zero" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] bool
     ).
 
   Definition Run_is_one (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "is_one" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] bool
     ).
 
   Definition Run_div_2exp_u64 (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "div_2exp_u64" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (exp : u64),
+      forall (self : '& Self) (exp : u64),
       Run.Trait method [] [] [ φ self; φ exp ] Self
     ).
 
@@ -361,19 +361,19 @@ Module Field.
 
   Definition Run_try_inverse (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "try_inverse" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] (option Self)
     ).
 
   Definition Run_inverse (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "inverse" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] Self
     ).
 
   Definition Run_halve (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "halve" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] Self
     ).
 
@@ -431,7 +431,7 @@ Module PrimeField.
   (* TODO *)
   (* Definition Run_as_canonical_biguint (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "as_canonical_biguint" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
         Run.Trait method [] [] [ φ self ] BigUint.t
     ). *)
 
@@ -460,21 +460,21 @@ Module PrimeField64.
   (* const ORDER_U64: u64; *)
   Definition run_ORDER_U64 (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "ORDER_U64" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
         Run.Trait method [] [] [] u64
     ).
 
   (* fn as_canonical_u64(&self) -> u64; *)
   Definition Run_as_canonical_u64 (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "as_canonical_u64" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
         Run.Trait method [] [] [ φ self ] u64
     ).
 
   (* fn to_unique_u64(&self) -> u64 *)
   Definition Run_to_unique_u64 (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "to_unique_u64" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
         Run.Trait method [] [] [ φ self ] u64
     ).
 

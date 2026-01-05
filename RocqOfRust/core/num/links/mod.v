@@ -24,7 +24,7 @@ Module Impl_u64.
 
   (* pub const MIN: Self *)
   Instance run_min :
-    Run.Trait num.Impl_u64.value_MIN [] [] [] (Ref.t Pointer.Kind.Raw Self).
+    Run.Trait num.Impl_u64.value_MIN [] [] [] ('* Self).
   Proof.
     constructor.
     run_symbolic.
@@ -33,7 +33,7 @@ Module Impl_u64.
 
   (* pub const MAX: Self *)
   Instance run_max :
-    Run.Trait num.Impl_u64.value_MAX [] [] [] (Ref.t Pointer.Kind.Raw Self).
+    Run.Trait num.Impl_u64.value_MAX [] [] [] ('* Self).
   Proof.
     constructor.
     run_symbolic.
@@ -105,7 +105,7 @@ Module Impl_usize.
 
   (* pub const MIN: Self *)
   Instance run_min :
-    Run.Trait num.Impl_usize.value_MIN [] [] [] (Ref.t Pointer.Kind.Raw Self).
+    Run.Trait num.Impl_usize.value_MIN [] [] [] ('* Self).
   Proof.
     constructor.
     run_symbolic.
@@ -114,7 +114,7 @@ Module Impl_usize.
 
   (* pub const MAX: Self *)
   Instance run_max :
-    Run.Trait num.Impl_usize.value_MAX [] [] [] (Ref.t Pointer.Kind.Raw Self).
+    Run.Trait num.Impl_usize.value_MAX [] [] [] ('* Self).
   Proof.
     constructor.
     run_symbolic.
@@ -161,7 +161,7 @@ Module Impl_isize.
 
   (* pub const MAX: Self *)
   Instance run_max :
-    Run.Trait num.Impl_isize.value_MAX [] [] [] (Ref.t Pointer.Kind.Raw Self).
+    Run.Trait num.Impl_isize.value_MAX [] [] [] ('* Self).
   Proof.
     constructor.
     run_symbolic.
@@ -170,7 +170,7 @@ Module Impl_isize.
 
   (* pub const MIN: Self *)
   Instance run_min :
-    Run.Trait num.Impl_isize.value_MIN [] [] [] (Ref.t Pointer.Kind.Raw Self).
+    Run.Trait num.Impl_isize.value_MIN [] [] [] ('* Self).
   Proof.
     constructor.
     run_symbolic.

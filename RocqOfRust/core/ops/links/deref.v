@@ -16,8 +16,8 @@ Module Deref.
       (Target : Set) `{Link Target} :
       Set :=
     TraitMethod.C (trait Self) "deref" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref Target)
+      forall (self : '& Self),
+      Run.Trait method [] [] [ φ self ] ('& Target)
     ).
 
   Class Run
@@ -42,8 +42,8 @@ Module DerefMut.
       (Target : Set) `{Link Target} :
       Set :=
     TraitMethod.C (trait Self) "deref_mut" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.MutRef Target)
+      forall (self : '&mut Self),
+      Run.Trait method [] [] [ φ self ] ('&mut Target)
     ).
 
   Class Run

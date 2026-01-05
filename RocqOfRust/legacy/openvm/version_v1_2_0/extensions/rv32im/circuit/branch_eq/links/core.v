@@ -243,9 +243,9 @@ Module Impl_VmCoreAir_for_BranchEqualCoreAir.
       (run_InteractionBuilder_for_AB : InteractionBuilder.Run AB AirBuilder_types)
       (run_VmAdapterInterface_for_I :
         VmAdapterInterface.Run I AirBuilder_types.(AirBuilder.AssociatedTypes.Expr) VmAdapterInterface_types)
-      (self : Ref.t Pointer.Kind.Ref (Self NUM_LIMBS))
-      (builder : Ref.t Pointer.Kind.MutRef AB)
-      (local : Ref.t Pointer.Kind.Ref (list AirBuilder_types.(AirBuilder.AssociatedTypes.Var)))
+      (self : '& (Self NUM_LIMBS))
+      (builder : '&mut AB)
+      (local : '& (list AirBuilder_types.(AirBuilder.AssociatedTypes.Var)))
       (from_pc : AirBuilder_types.(AirBuilder.AssociatedTypes.Var)) :
     Run.Trait (eval (φ NUM_LIMBS) (Φ AB) (Φ I)) [] [] [φ self; φ builder; φ local; φ from_pc] unit.
   Proof.
@@ -278,7 +278,7 @@ Module Impl_VmCoreAir_for_BranchEqualCoreAir.
         assert (run_handler :
           forall
             (acc : AirBuilder_types.(AirBuilder.AssociatedTypes.Expr))
-            (flag : Ref.t Pointer.Kind.Ref AirBuilder_types.(AirBuilder.AssociatedTypes.Var)),
+            (flag : '& AirBuilder_types.(AirBuilder.AssociatedTypes.Var)),
           Run.Trait (fun _ _ => handler) [] [] [φ acc; φ flag]
             AirBuilder_types.(AirBuilder.AssociatedTypes.Expr)
         ). {
@@ -292,7 +292,7 @@ Module Impl_VmCoreAir_for_BranchEqualCoreAir.
           AirBuilder_types.(AirBuilder.AssociatedTypes.Expr)
           (Function2.t
             AirBuilder_types.(AirBuilder.AssociatedTypes.Expr)
-            (Ref.t Pointer.Kind.Ref AirBuilder_types.(AirBuilder.AssociatedTypes.Var))
+            ('& AirBuilder_types.(AirBuilder.AssociatedTypes.Var))
             AirBuilder_types.(AirBuilder.AssociatedTypes.Expr)
           )
           _ _

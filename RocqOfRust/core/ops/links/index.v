@@ -16,8 +16,8 @@ Module Index.
       (Self Idx Output : Set) `{Link Self} `{Link Idx} `{Link Output} :
       Set :=
     TraitMethod.C (trait Self Idx) "index" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (index : Idx),
-      Run.Trait method [] [] [ φ self; φ index ] (Ref.t Pointer.Kind.Ref Output)
+      forall (self : '& Self) (index : Idx),
+      Run.Trait method [] [] [ φ self; φ index ] ('& Output)
     ).
 
   Class Run
@@ -73,8 +73,8 @@ Module IndexMut.
       (Self Idx Output : Set) `{Link Self} `{Link Idx} `{Link Output} :
       Set :=
     TraitMethod.C (trait Self Idx) "index_mut" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (index : Idx),
-      Run.Trait method [] [] [ φ self; φ index ] (Ref.t Pointer.Kind.MutRef Output)
+      forall (self : '&mut Self) (index : Idx),
+      Run.Trait method [] [] [ φ self; φ index ] ('&mut Output)
     ).
 
   Class Run

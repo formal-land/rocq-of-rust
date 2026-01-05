@@ -544,6 +544,12 @@ Module Ref.
   Smpl Add apply of_value_of_core : of_value.
 End Ref.
 
+Notation "'*" := (Ref.t Pointer.Kind.Raw).
+Notation "'&" := (Ref.t Pointer.Kind.Ref).
+Notation "'&mut" := (Ref.t Pointer.Kind.MutRef).
+Notation "'*const" := (Ref.t Pointer.Kind.ConstPointer).
+Notation "'*mut" := (Ref.t Pointer.Kind.MutPointer).
+
 Module SubPointer.
   Module Runner.
     (** We group in a single data structure how we can access to the address of a field of a value
@@ -773,7 +779,7 @@ Module Run.
       (of_ty : OfTy.t ty')
       (value : OfTy.get_Set of_ty) :
     value' = φ value ->
-    (forall (ref : Ref.t Pointer.Kind.Raw (OfTy.get_Set of_ty)),
+    (forall (ref : '* (OfTy.get_Set of_ty)),
       {{ k (φ ref) 🔽 R, Output }}
     ) ->
     {{ LowM.CallPrimitive (Primitive.StateAlloc ty' value') k 🔽 R, Output }}
@@ -784,14 +790,14 @@ Module Run.
       (of_ty : OfTy.t ty')
       (value : OfTy.get_Set of_ty) :
     value' = φ value ->
-    (forall (ref : Ref.t Pointer.Kind.Raw (OfTy.get_Set of_ty)),
+    (forall (ref : '* (OfTy.get_Set of_ty)),
       {{ k (φ ref) 🔽 R, Output }}
     ) ->
     {{ LowM.CallPrimitive (Primitive.StateAlloc ty' value') k 🔽 R, Output }}
   | CallPrimitiveStateRead {A : Set} `{Link A}
       (ref_core : Ref.Core.t A)
       (k : Value.t -> M) :
-    let ref : Ref.t Pointer.Kind.Raw A := {| Ref.core := ref_core |} in
+    let ref : '* A := {| Ref.core := ref_core |} in
     (forall (value : A),
       {{ k (φ value) 🔽 R, Output }}
     ) ->
@@ -808,7 +814,7 @@ Module Run.
       (ref_core : Ref.Core.t A)
       (value' : Value.t) (value : A)
       (k : Value.t -> M) :
-    let ref : Ref.t Pointer.Kind.Raw A := {| Ref.core := ref_core |} in
+    let ref : '* A := {| Ref.core := ref_core |} in
     value' = φ value ->
     {{ k (φ tt) 🔽 R, Output }} ->
     {{ LowM.CallPrimitive (Primitive.StateWrite (φ ref) value') k 🔽 R, Output }}
@@ -818,9 +824,9 @@ Module Run.
       (runner : SubPointer.Runner.t A index)
       (k : Value.t -> M) :
     let _ := runner.(SubPointer.Runner.H_Sub_A) in
-    let ref : Ref.t Pointer.Kind.Raw A := {| Ref.core := ref_core |} in
+    let ref : '* A := {| Ref.core := ref_core |} in
     SubPointer.Runner.Valid.t runner ->
-    (forall (sub_ref : Ref.t Pointer.Kind.Raw runner.(SubPointer.Runner.Sub_A)),
+    (forall (sub_ref : '* runner.(SubPointer.Runner.Sub_A)),
       {{ k (φ sub_ref) 🔽 R, Output }}
     ) ->
     {{
@@ -902,7 +908,7 @@ Module Run.
       (of_ty : OfTy.t ty) :
     let Output' : Set := OfTy.get_Set of_ty in
     {{ e 🔽 R, Output' }} ->
-    (forall (value_inter : Output.t R (Ref.t Pointer.Kind.Raw Output')),
+    (forall (value_inter : Output.t R ('* Output')),
       {{ k (Output.to_value value_inter) 🔽 R, Output }}
     ) ->
     {{ LowM.LetAlloc ty e k 🔽 R, Output }}
@@ -911,7 +917,7 @@ Module Run.
       (of_ty : OfTy.t ty) :
     let Output' : Set := OfTy.get_Set of_ty in
     {{ body 🔽 R, Output' }} ->
-    (forall (value_inter : Output.t R (Ref.t Pointer.Kind.Raw Output')),
+    (forall (value_inter : Output.t R ('* Output')),
       {{ k (Output.to_value value_inter) 🔽 R, Output }}
     ) ->
     {{ LowM.Loop ty body k 🔽 R, Output }}
@@ -1005,14 +1011,14 @@ Module LinkM.
   | Let {A : Set} (e : t R A) (k : Output.t R A -> t R Output)
   | LetAlloc {A : Set} `{Link A}
       (e : t R A)
-      (k : Output.t R (Ref.t Pointer.Kind.Raw A) -> t R Output)
+      (k : Output.t R ('* A) -> t R Output)
   | Call {A : Set} `{Link A}
       {f : list Value.t -> M} {args : list Value.t}
       (run_f : {{ f args 🔽 A }})
       (k : A -> t R Output)
   | Loop {A : Set} `{Link A}
       (body : t R A)
-      (k : Output.t R (Ref.t Pointer.Kind.Raw A) -> t R Output)
+      (k : Output.t R ('* A) -> t R Output)
   | IfThenElse
       (cond : bool) (then_ : t R Output) (else_ : t R Output)
   | MatchOutput {A : Set}

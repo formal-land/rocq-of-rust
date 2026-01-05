@@ -38,8 +38,8 @@ pub unsafe fn get_sysvar_unchecked(
 ) -> Result<(), ProgramError>
 *)
 Instance run_get_sysvar_unchecked
-  (dst : Ref.t Pointer.Kind.Raw u8)
-  (sysvar_id : Ref.t Pointer.Kind.Ref Pubkey.t)
+  (dst : '* u8)
+  (sysvar_id : '& Pubkey.t)
   (offset : usize)
   (len : usize) :
   Run.Trait
@@ -62,8 +62,8 @@ pub fn get_sysvar(dst: &mut [u8], sysvar_id: &Pubkey, offset: usize)
 *)
 Instance run_get_sysvar
   (N : usize)
-  (dst : Ref.t Pointer.Kind.Ref (array.t u8 N))
-  (sysvar_id : Ref.t Pointer.Kind.Ref Pubkey.t)
+  (dst : '& (array.t u8 N))
+  (sysvar_id : '& Pubkey.t)
   (offset : usize) :
   Run.Trait
   pinocchio.sysvars.mod.sysvars.get_sysvar

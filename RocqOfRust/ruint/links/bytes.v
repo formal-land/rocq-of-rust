@@ -13,7 +13,7 @@ Module Impl_Uint.
   (* pub const fn to_be_bytes<const BYTES: usize>(&self) -> [u8; BYTES] *)
   Instance run_to_be_bytes
       (BITS LIMBS BYTES : usize)
-      (x : Ref.t Pointer.Kind.Ref (Self BITS LIMBS)) :
+      (x : '& (Self BITS LIMBS)) :
     Run.Trait
       (bytes.Impl_ruint_Uint_BITS_LIMBS.to_be_bytes (φ BITS) (φ LIMBS)) [ φ BYTES ] [] [ φ x ]
       (array.t u8 BYTES).
@@ -33,7 +33,7 @@ Module Impl_Uint.
   (* pub const fn try_from_be_slice(bytes: &[u8]) -> Option<Self> *)
   Instance run_try_from_be_slice
       (BITS LIMBS : usize)
-      (bytes : Ref.t Pointer.Kind.Ref (list u8)) :
+      (bytes : '& (list u8)) :
     Run.Trait
       (bytes.Impl_ruint_Uint_BITS_LIMBS.try_from_be_slice (φ BITS) (φ LIMBS)) [] [] [ φ bytes ]
       (option (Self BITS LIMBS)).

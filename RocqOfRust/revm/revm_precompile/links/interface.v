@@ -243,7 +243,7 @@ Module Impl_PrecompileError.
     PrecompileError.t.
 
   (* pub fn is_oog(&self) -> bool *)
-  Definition run_is_oog (self : Ref.t Pointer.Kind.Ref Self) :
+  Definition run_is_oog (self : '& Self) :
     {{
       interface.Impl_revm_precompile_interface_PrecompileError.is_oog [] [] [ φ self ] 🔽
       bool

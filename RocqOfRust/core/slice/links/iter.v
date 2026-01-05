@@ -37,7 +37,7 @@ Module Impl_Iterator_for_Iter.
 
   (* type Item = &'a T; *)
   Definition Item (T : Set) `{Link T} : Set :=
-    Ref.t Pointer.Kind.Ref T.
+    '& T.
 
   Instance run (T : Set) `{Link T} : Iterator.Run (Self T) (Item T).
   Admitted.
@@ -102,9 +102,9 @@ Module Impl_ChunksExact.
   (* pub fn remainder(&self) -> &'a [T] *)
   Instance run_remainder
     (T : Set) `{Link T}
-    (self : Ref.t Pointer.Kind.Ref (Self T)) :
+    (self : '& (Self T)) :
     Run.Trait (slice.iter.Impl_core_slice_iter_ChunksExact_T.remainder (Φ T)) [] [] [φ self]
-      (Ref.t Pointer.Kind.Ref (list T)).
+      ('& (list T)).
   Admitted.
   Global Opaque run_remainder.
 End Impl_ChunksExact.
@@ -117,7 +117,7 @@ Module Impl_Iterator_for_ChunksExact.
 
     (* type Item = &'a [T]; *)
     Definition Item (T : Set) `{Link T} : Set :=
-      Ref.t Pointer.Kind.Ref (list T).
+      '& (list T).
 
     Instance run (T : Set) `{Link T} : Iterator.Run (Self T) (Item T).
     Admitted.
@@ -160,10 +160,10 @@ Module Impl_RChunksExact.
   (* pub fn remainder(&self) -> &'a [T] *)
   Instance run_remainder
     (T : Set) `{Link T}
-    (self : Ref.t Pointer.Kind.Ref (Self T)) :
+    (self : '& (Self T)) :
     Run.Trait
       (slice.iter.Impl_core_slice_iter_RChunksExact_T.remainder (Φ T)) [] [] [φ self]
-      (Ref.t Pointer.Kind.Ref (list T)).
+      ('& (list T)).
   Admitted.
   Global Opaque run_remainder.
 End Impl_RChunksExact.
@@ -176,7 +176,7 @@ Module Impl_Iterator_for_RChunksExact.
 
     (* type Item = &'a [T]; *)
     Definition Item (T : Set) `{Link T} : Set :=
-      Ref.t Pointer.Kind.Ref (list T).
+      '& (list T).
 
     Instance run (T : Set) `{Link T} : Iterator.Run (Self T) (Item T).
     Admitted.

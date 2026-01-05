@@ -32,7 +32,7 @@ Module Impl_Arguments.
   (* pub const fn new_const<const N: usize>(pieces: &'a [&'static str; N]) -> Self *)
   Instance run_new_const
       (N : usize)
-      (pieces : Ref.t Pointer.Kind.Ref (array.t (Ref.t Pointer.Kind.Ref string) N)) :
+      (pieces : '& (array.t ('& string) N)) :
     Run.Trait fmt.Impl_core_fmt_Arguments.new_const [φ N] [] [φ pieces] Self.
   Proof.
     constructor.
@@ -48,8 +48,8 @@ Module Impl_Arguments.
   *)
   Instance run_new_v1
       (P A : usize)
-      (pieces : Ref.t Pointer.Kind.Ref (array.t (Ref.t Pointer.Kind.Ref string) P))
-      (args : Ref.t Pointer.Kind.Ref (array.t Argument.t A)) :
+      (pieces : '& (array.t ('& string) P))
+      (args : '& (array.t Argument.t A)) :
     Run.Trait fmt.Impl_core_fmt_Arguments.new_v1 [φ P; φ A] [] [φ pieces; φ args] Self.
   Proof.
     constructor.

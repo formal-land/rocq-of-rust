@@ -34,7 +34,7 @@ Module Impl_Blake3Air.
   Instance run_generate_trace_rows
     {F : Set} `{Link F} 
     {run_PrimeField64_for_F : PrimeField64.Run F}
-    (self : Ref.t Pointer.Kind.Ref Self) (num_hashes : usize) (extra_capacity_bits : usize) :
+    (self : '& Self) (num_hashes : usize) (extra_capacity_bits : usize) :
     Run.Trait
       blake3_air.air.air.Impl_p3_blake3_air_air_Blake3Air.generate_trace_rows [] [ Φ F ] [ φ self; φ num_hashes; φ extra_capacity_bits ]
       (RowMajorMatrix.t F).
@@ -57,9 +57,9 @@ Module Impl_Blake3Air.
     {AB : Set} `{Link AB}
     {AB_types : AirBuilder.AssociatedTypes.t} `{AirBuilder.AssociatedTypes.AreLinks AB_types}
     {run_AirBuilder_for_AB : AirBuilder.Run AB AB_types}
-    (self : Ref.t Pointer.Kind.Ref Self) 
-    (builder : Ref.t Pointer.Kind.MutRef AB) 
-    (trace : Ref.t Pointer.Kind.Ref (QuarterRound.t 
+    (self : '& Self) 
+    (builder : '&mut AB) 
+    (trace : '& (QuarterRound.t 
       AB_types.(AirBuilder.AssociatedTypes.Var) AB_types.(AirBuilder.AssociatedTypes.Expr)))
     :
     Run.Trait
@@ -89,10 +89,10 @@ Module Impl_Blake3Air.
   *)
   Instance run_full_round_to_column_quarter_round
     {T U : Set} `{Link T} `{Link U}
-    (self : Ref.t Pointer.Kind.Ref Self) 
-    (input : Ref.t Pointer.Kind.Ref (Blake3State.t T))
-    (round_data : Ref.t Pointer.Kind.Ref (FullRound.t T))
-    (m_vector : Ref.t Pointer.Kind.Ref (array.t (array.t U {| Integer.value := 2 |}) {| Integer.value := 16 |}))
+    (self : '& Self) 
+    (input : '& (Blake3State.t T))
+    (round_data : '& (FullRound.t T))
+    (m_vector : '& (array.t (array.t U {| Integer.value := 2 |}) {| Integer.value := 16 |}))
     (index : usize)
     :
     Run.Trait
@@ -117,9 +117,9 @@ Module Impl_Blake3Air.
   *)
   Instance run_full_round_to_diagonal_quarter_round
     {T U : Set} `{Link T}  `{Link U}
-    (self : Ref.t Pointer.Kind.Ref Self) 
-    (round_data : Ref.t Pointer.Kind.Ref (FullRound.t T))
-    (m_vector : Ref.t Pointer.Kind.Ref (array.t (array.t U {| Integer.value := 2 |}) {| Integer.value := 16 |}))
+    (self : '& Self) 
+    (round_data : '& (FullRound.t T))
+    (m_vector : '& (array.t (array.t U {| Integer.value := 2 |}) {| Integer.value := 16 |}))
     (index : usize)
     :
     Run.Trait
@@ -146,11 +146,11 @@ Module Impl_Blake3Air.
     {AB : Set} `{Link AB}
     {AB_types : AirBuilder.AssociatedTypes.t} `{AirBuilder.AssociatedTypes.AreLinks AB_types}
     {run_AirBuilder_for_AB : AirBuilder.Run AB AB_types}
-    (self : Ref.t Pointer.Kind.Ref Self) 
-    (builder : Ref.t Pointer.Kind.MutRef AB) 
-    (input : Ref.t Pointer.Kind.Ref (Blake3State.t (AB_types.(AirBuilder.AssociatedTypes.Var))))
-    (round_data : Ref.t Pointer.Kind.Ref (FullRound.t (AB_types.(AirBuilder.AssociatedTypes.Var))))
-    (m_vector : Ref.t Pointer.Kind.Ref
+    (self : '& Self) 
+    (builder : '&mut AB) 
+    (input : '& (Blake3State.t (AB_types.(AirBuilder.AssociatedTypes.Var))))
+    (round_data : '& (FullRound.t (AB_types.(AirBuilder.AssociatedTypes.Var))))
+    (m_vector : '&
       (array.t (array.t (AB_types.(AirBuilder.AssociatedTypes.Expr)) {| Integer.value := 2 |}) {| Integer.value := 16 |}))
     :
     Run.Trait

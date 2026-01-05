@@ -20,7 +20,7 @@ Module Iterator.
       (Item : Set) `{Link Item} :
       Set :=
     TraitMethod.C (trait Self) "next" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self),
+      forall (self : '&mut Self),
       Run.Trait method [] [] [φ self] (option Item)
     ).
 
@@ -36,7 +36,7 @@ Module Iterator.
     TraitMethod.C (trait Self) "next_chunk" (fun method =>
       forall
         (N : usize)
-        (self : Ref.t Pointer.Kind.MutRef Self),
+        (self : '&mut Self),
       Run.Trait method [] [] [φ self] (Result.t (array.t Item N) (IntoIter.t Item N))
     ).
 
@@ -45,7 +45,7 @@ Module Iterator.
       (Self : Set) `{Link Self} :
       Set :=
     TraitMethod.C (trait Self) "size_hint" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [φ self] (usize * option usize)
     ).
 
@@ -74,7 +74,7 @@ Module Iterator.
       Set :=
     TraitMethod.C (trait Self) "advance_by" (fun method =>
       forall
-         (self : Ref.t Pointer.Kind.MutRef Self)
+         (self : '&mut Self)
          (n : usize),
       Run.Trait method [] [] [φ self; φ n] (Result.t unit (NonZero.t usize))
     ).
@@ -248,7 +248,7 @@ Module Iterator.
     TraitMethod.C (trait Self) "any" (fun method =>
       forall
          (F : Set) `(Link F)
-         (self : Ref.t Pointer.Kind.MutRef Self)
+         (self : '&mut Self)
          (f : F)
          `(FnMut.Run F Item bool),
       Run.Trait method [] [Φ F] [φ self; φ f] bool

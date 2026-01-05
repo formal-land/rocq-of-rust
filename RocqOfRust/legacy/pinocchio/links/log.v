@@ -6,7 +6,7 @@ Require Import pinocchio.links.account_info.
 Require Import pinocchio.links.pubkey.
 
 Instance run_sol_log
-  (message : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8))) :
+  (message : '& (list (Integer.t IntegerKind.U8))) :
   Run.Trait
     log.sol_log
     [] []
@@ -32,7 +32,7 @@ Admitted.
 Global Opaque run_sol_log_64.
 
 Instance run_sol_log_data
-  (data : Ref.t Pointer.Kind.Ref (list (list (Integer.t IntegerKind.U8)))) :
+  (data : '& (list (list (Integer.t IntegerKind.U8)))) :
   Run.Trait
     log.sol_log_data
     [] []
@@ -45,7 +45,7 @@ Admitted.
 Global Opaque run_sol_log_data.
 
 Instance run_sol_log_slice
-  (slice : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8))) :
+  (slice : '& (list (Integer.t IntegerKind.U8))) :
   Run.Trait
     log.sol_log_slice
     [] []
@@ -58,8 +58,8 @@ Admitted.
 Global Opaque run_sol_log_slice.
 
 Instance run_sol_log_params
-  (accounts : Ref.t Pointer.Kind.Ref (list AccountInfo.t))
-  (data : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8))) :
+  (accounts : '& (list AccountInfo.t))
+  (data : '& (list (Integer.t IntegerKind.U8))) :
   Run.Trait
     log.sol_log_params
     [] []

@@ -105,7 +105,7 @@ Module Impl_Bytes.
   Global Opaque run_new.
 
   (* pub fn copy_from_slice(data: &[u8]) -> Self *)
-  Instance run_copy_from_slice (data : Ref.t Pointer.Kind.Ref (list u8)) :
+  Instance run_copy_from_slice (data : '& (list u8)) :
     Run.Trait bytes_.Impl_alloy_primitives_bytes__Bytes.copy_from_slice [] [] [ φ data ] Self.
   Proof.
     constructor.

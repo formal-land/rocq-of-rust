@@ -49,7 +49,7 @@ Instance run_pop_extcall_target_address
   {WIRE : Set} `{Link WIRE}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types)) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types)) :
   Run.Trait
     instructions.contract.pop_extcall_target_address [] [ Φ WIRE ] [ φ interpreter ]
     (option Address.t).
@@ -67,7 +67,7 @@ Proof.
     set (any_callback := closure)
   end.
   assert (run_any_callback :
-    forall (i : Ref.t Pointer.Kind.Ref u8),
+    forall (i : '& u8),
     Run.Trait (fun _ _ => any_callback) [] [] [φ i] bool
   ). {
     intros.

@@ -63,7 +63,7 @@ Module Impl_Uint.
   Instance run_MASK (BITS LIMBS : usize) :
     Run.Trait
       (Impl_ruint_Uint_BITS_LIMBS.value_MASK (φ BITS) (φ LIMBS)) [] [] []
-      (Ref.t Pointer.Kind.Raw u64).
+      ('* u64).
   Proof.
     constructor.
     run_symbolic.
@@ -74,7 +74,7 @@ Module Impl_Uint.
   Instance run_BITS (BITS LIMBS : usize) :
     Run.Trait
       (Impl_ruint_Uint_BITS_LIMBS.value_BITS (φ BITS) (φ LIMBS)) [] [] []
-      (Ref.t Pointer.Kind.Raw usize).
+      ('* usize).
   Proof.
     constructor.
     run_symbolic.
@@ -85,7 +85,7 @@ Module Impl_Uint.
   Instance run_ZERO (BITS LIMBS : usize) :
     Run.Trait
       (Impl_ruint_Uint_BITS_LIMBS.value_ZERO (φ BITS) (φ LIMBS)) [] [] []
-      (Ref.t Pointer.Kind.Raw (Self BITS LIMBS)).
+      ('* (Self BITS LIMBS)).
   Proof.
     constructor.
     run_symbolic.
@@ -103,7 +103,7 @@ Module Impl_Uint.
   Instance run_MIN (BITS LIMBS : usize) :
     Run.Trait
       (Impl_ruint_Uint_BITS_LIMBS.value_MIN (φ BITS) (φ LIMBS)) [] [] []
-      (Ref.t Pointer.Kind.Raw (Self BITS LIMBS)).
+      ('* (Self BITS LIMBS)).
   Proof.
     constructor.
     run_symbolic.
@@ -114,7 +114,7 @@ Module Impl_Uint.
   Instance run_MAX (BITS LIMBS : usize) :
     Run.Trait
       (Impl_ruint_Uint_BITS_LIMBS.value_MAX (φ BITS) (φ LIMBS)) [] [] []
-      (Ref.t Pointer.Kind.Raw (Self BITS LIMBS)).
+      ('* (Self BITS LIMBS)).
   Proof.
     constructor.
     run_symbolic.
@@ -124,10 +124,10 @@ Module Impl_Uint.
   (* pub const fn as_limbs(&self) -> &[u64; LIMBS] *)
   Instance run_as_limbs
     (BITS LIMBS : usize)
-    (self : Ref.t Pointer.Kind.Ref (Uint.t BITS LIMBS)) :
+    (self : '& (Uint.t BITS LIMBS)) :
     Run.Trait
       (Impl_ruint_Uint_BITS_LIMBS.as_limbs (φ BITS) (φ LIMBS)) [] [] [ φ self ]
-      (Ref.t Pointer.Kind.Ref (array.t u64 LIMBS)).
+      ('& (array.t u64 LIMBS)).
   Proof.
     constructor.
     run_symbolic.
@@ -137,10 +137,10 @@ Module Impl_Uint.
   (* pub unsafe fn as_limbs_mut(&mut self) -> &mut [u64; LIMBS] *)
   Instance run_as_limbs_mut
     (BITS LIMBS : usize)
-    (self : Ref.t Pointer.Kind.MutRef (Uint.t BITS LIMBS)) :
+    (self : '&mut (Uint.t BITS LIMBS)) :
     Run.Trait
       (Impl_ruint_Uint_BITS_LIMBS.as_limbs_mut (φ BITS) (φ LIMBS)) [] [] [ φ self ]
-      (Ref.t Pointer.Kind.MutRef (array.t u64 LIMBS)).
+      ('&mut (array.t u64 LIMBS)).
   Proof.
     constructor.
     run_symbolic.

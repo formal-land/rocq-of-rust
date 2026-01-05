@@ -10,7 +10,7 @@ Require Import core.links.marker.
 Instance run_DEFAULT_TARGET_LAMPORTS_PER_SIGNATURE :
   Run.Trait
     pinocchio.sysvars.fees.sysvars.fees.value_DEFAULT_TARGET_LAMPORTS_PER_SIGNATURE [] [] []
-    (Ref.t Pointer.Kind.Raw u64).
+    ('* u64).
 Proof.
   constructor. run_symbolic.
 Defined.
@@ -19,7 +19,7 @@ Global Opaque run_DEFAULT_TARGET_LAMPORTS_PER_SIGNATURE.
 Instance run_DEFAULT_TARGET_SIGNATURES_PER_SLOT :
   Run.Trait
     pinocchio.sysvars.fees.sysvars.fees.value_DEFAULT_TARGET_SIGNATURES_PER_SLOT [] [] []
-    (Ref.t Pointer.Kind.Raw u64).
+    ('* u64).
 Proof.
   constructor. 
   run_symbolic.
@@ -30,7 +30,7 @@ Global Opaque run_DEFAULT_TARGET_SIGNATURES_PER_SLOT.
 Instance run_DEFAULT_BURN_PERCENT :
   Run.Trait
     pinocchio.sysvars.fees.sysvars.fees.value_DEFAULT_BURN_PERCENT [] [] []
-    (Ref.t Pointer.Kind.Raw u8).
+    ('* u8).
 Proof.
   constructor. run_symbolic.
 Defined.
@@ -121,7 +121,7 @@ Module Impl_FeeRateGovernor.
   Global Opaque run_default.
 
   Instance run_create_fee_calculator
-    (self : Ref.t Pointer.Kind.Ref Self) :
+    (self : '& Self) :
     Run.Trait
       pinocchio.sysvars.fees.sysvars.fees.Impl_pinocchio_sysvars_fees_FeeRateGovernor.create_fee_calculator
       [] []
@@ -133,7 +133,7 @@ Module Impl_FeeRateGovernor.
   Global Opaque run_create_fee_calculator.
 
   Instance run_burn
-    (self : Ref.t Pointer.Kind.Ref Self)
+    (self : '& Self)
     (fees : u64) :
     Run.Trait
       pinocchio.sysvars.fees.sysvars.fees.Impl_pinocchio_sysvars_fees_FeeRateGovernor.burn

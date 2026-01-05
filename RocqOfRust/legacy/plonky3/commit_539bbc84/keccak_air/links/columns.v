@@ -299,7 +299,7 @@ Module Impl_KeccakCols.
 
   (* pub fn b(&self, x: usize, y: usize, z: usize) -> T *)
   Instance run_b {T : Set} `{Link T}
-      (self : Ref.t Pointer.Kind.Ref (Self T))
+      (self : '& (Self T))
       (x : usize)
       (y : usize)
       (z : usize) :
@@ -314,7 +314,7 @@ Module Impl_KeccakCols.
 
   (* pub fn a_prime_prime_prime(&self, y: usize, x: usize, limb: usize) -> T *)
   Instance run_a_prime_prime_prime {T : Set} `{Link T}
-      (self : Ref.t Pointer.Kind.Ref (Self T))
+      (self : '& (Self T))
       (y : usize)
       (x : usize)
       (limb : usize) :

@@ -70,7 +70,7 @@ Module Impl_EofBody.
   (*
     pub fn code(&self, index: usize) -> Option<Bytes>
   *)
-  Instance run_code (self : Ref.t Pointer.Kind.Ref Self) (index : usize) :
+  Instance run_code (self : '& Self) (index : usize) :
     Run.Trait body.eof.body.Impl_revm_bytecode_eof_body_EofBody.code [] [] [φ self; φ index] (option Bytes.t).
   Proof.
     constructor.
@@ -83,7 +83,7 @@ Module Impl_EofBody.
   (*
     pub fn encode(&self, buffer: &mut Vec<u8>)
   *)
-  Instance run_encode (self : Ref.t Pointer.Kind.Ref Self) (buffer : Ref.t Pointer.Kind.MutPointer (Vec.t u8 Global.t)) :
+  Instance run_encode (self : '& Self) (buffer : '*mut (Vec.t u8 Global.t)) :
     Run.Trait body.eof.body.Impl_revm_bytecode_eof_body_EofBody.encode [] [] [φ self; φ buffer] unit.
   Proof.
     constructor.
@@ -105,7 +105,7 @@ Module Impl_EofBody.
   (*
     pub fn eof_code_section_start(&self, idx: usize) -> Option<usize> 
   *)
-  Instance run_eof_code_section_start (self : Ref.t Pointer.Kind.Ref Self) (idx : usize) :
+  Instance run_eof_code_section_start (self : '& Self) (idx : usize) :
     Run.Trait body.eof.body.Impl_revm_bytecode_eof_body_EofBody.eof_code_section_start [] [] [φ self; φ idx] (option usize).
   Proof.
     constructor.
@@ -118,7 +118,7 @@ Module Impl_EofBody.
   (*
     pub fn decode(input: &Bytes, header: &EofHeader) -> Result<Self, EofDecodeError>
   *)
-  Instance run_decode (input : Ref.t Pointer.Kind.Ref Bytes.t) (header : Ref.t Pointer.Kind.Ref EofHeader.t) :
+  Instance run_decode (input : '& Bytes.t) (header : '& EofHeader.t) :
     Run.Trait body.eof.body.Impl_revm_bytecode_eof_body_EofBody.decode [] [] [φ input; φ header] (Result.t EofBody.t EofDecodeError.t).
   Proof.
     constructor.

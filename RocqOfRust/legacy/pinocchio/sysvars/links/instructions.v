@@ -37,7 +37,7 @@ Module instruction.
   *)
   Module IntrospectedInstruction.
     Record t : Set := {
-      raw : Ref.t Pointer.Kind.Raw u8;
+      raw : '* u8;
       marker : unit
     }.
 
@@ -75,7 +75,7 @@ Module instruction.
     Run.Trait
     pinocchio.sysvars.instructions.sysvars.instructions.value_IS_SIGNER
       [] [] []
-      (Ref.t Pointer.Kind.Raw u8).
+      ('* u8).
   Proof.
     constructor. run_symbolic.
   Defined.
@@ -85,7 +85,7 @@ Module instruction.
     Run.Trait
     pinocchio.sysvars.instructions.sysvars.instructions.value_IS_WRITABLE
       [] [] []
-      (Ref.t Pointer.Kind.Raw u8).
+      ('* u8).
   Proof.
     constructor. run_symbolic.
   Defined.
@@ -98,7 +98,7 @@ Module instruction.
     Run.Trait
     pinocchio.sysvars.instructions.sysvars.instructions.value_INSTRUCTIONS_ID
       [] [] []
-      (Ref.t Pointer.Kind.Raw Pubkey.t).
+      ('* Pubkey.t).
   Proof.
     constructor. admit.
   Admitted.
@@ -127,7 +127,7 @@ Module instruction.
     Instance run_load_current_index
       {T : Set} `{Link T}
       (run_Deref_for_T : Deref.Run T (list (Integer.t IntegerKind.U8)))
-      (self : Ref.t Pointer.Kind.Ref (Self T)) :
+      (self : '& (Self T)) :
       Run.Trait
         (sysvars.instructions.Impl_pinocchio_sysvars_instructions_Instructions_T.load_current_index (Φ T))
         [] [] [φ self]
@@ -140,7 +140,7 @@ Module instruction.
     Instance run_deserialize_instruction_unchecked
       {T : Set} `{Link T}
       (run_Deref_for_T : Deref.Run T (list (Integer.t IntegerKind.U8)))
-      (self : Ref.t Pointer.Kind.Ref (Self T))
+      (self : '& (Self T))
       (index : usize) :
       Run.Trait
         (sysvars.instructions.Impl_pinocchio_sysvars_instructions_Instructions_T.deserialize_instruction_unchecked (Φ T))
@@ -154,7 +154,7 @@ Module instruction.
     Instance run_load_instruction_at
       {T : Set} `{Link T}
       (run_Deref_for_T : Deref.Run T (list (Integer.t IntegerKind.U8)))
-      (self : Ref.t Pointer.Kind.Ref (Self T))
+      (self : '& (Self T))
       (index : usize) :
       Run.Trait
         (sysvars.instructions.Impl_pinocchio_sysvars_instructions_Instructions_T.load_instruction_at (Φ T))
@@ -168,7 +168,7 @@ Module instruction.
     Instance run_get_instruction_relative
       {T : Set} `{Link T}
       (run_Deref_for_T : Deref.Run T (list (Integer.t IntegerKind.U8)))
-      (self : Ref.t Pointer.Kind.Ref (Self T))
+      (self : '& (Self T))
       (index_rel : i64) :
       Run.Trait
         (sysvars.instructions.Impl_pinocchio_sysvars_instructions_Instructions_T.get_instruction_relative (Φ T))
@@ -184,42 +184,42 @@ Module instruction.
     Definition Self : Set := IntrospectedInstruction.t.
 
     Instance run_get_account_meta_at_unchecked
-      (self : Ref.t Pointer.Kind.Ref Self)
+      (self : '& Self)
       (index : usize) :
       Run.Trait
         sysvars.instructions.Impl_pinocchio_sysvars_instructions_IntrospectedInstruction.get_account_meta_at_unchecked
         [] [] [φ self; φ index]
-        (Ref.t Pointer.Kind.Ref IntrospectedAccountMeta.t).
+        ('& IntrospectedAccountMeta.t).
     Proof.
       constructor. run_symbolic. admit.
     Admitted.
     Global Opaque run_get_account_meta_at_unchecked.
 
     Instance run_get_account_meta_at
-      (self : Ref.t Pointer.Kind.Ref Self)
+      (self : '& Self)
       (index : usize) :
       Run.Trait
         sysvars.instructions.Impl_pinocchio_sysvars_instructions_IntrospectedInstruction.get_account_meta_at
         [] [] [φ self; φ index]
-        (Result.t (Ref.t Pointer.Kind.Ref IntrospectedAccountMeta.t) ProgramError.t).
+        (Result.t ('& IntrospectedAccountMeta.t) ProgramError.t).
     Proof.
       constructor. run_symbolic. admit.
     Admitted.
     Global Opaque run_get_account_meta_at.
 
     Instance run_get_program_id
-      (self : Ref.t Pointer.Kind.Ref Self) :
+      (self : '& Self) :
       Run.Trait
         sysvars.instructions.Impl_pinocchio_sysvars_instructions_IntrospectedInstruction.get_program_id
         [] [] [φ self]
-        (Ref.t Pointer.Kind.Ref Pubkey.t).
+        ('& Pubkey.t).
     Proof.
       constructor. run_symbolic. admit.
     Admitted.
     Global Opaque run_get_program_id.
 
     Instance run_get_instruction_data
-      (self : Ref.t Pointer.Kind.Ref Self) :
+      (self : '& Self) :
       Run.Trait
         sysvars.instructions.Impl_pinocchio_sysvars_instructions_IntrospectedInstruction.get_instruction_data
         [] [] [φ self]
@@ -234,7 +234,7 @@ Module instruction.
     Definition Self : Set := IntrospectedAccountMeta.t.
 
     Instance run_is_writable
-      (self : Ref.t Pointer.Kind.Ref Self) :
+      (self : '& Self) :
       Run.Trait
         sysvars.instructions.Impl_pinocchio_sysvars_instructions_IntrospectedAccountMeta.is_writable
         [] [] [φ self]
@@ -245,7 +245,7 @@ Module instruction.
     Global Opaque run_is_writable.
 
     Instance run_is_signer
-      (self : Ref.t Pointer.Kind.Ref Self) :
+      (self : '& Self) :
       Run.Trait
         sysvars.instructions.Impl_pinocchio_sysvars_instructions_IntrospectedAccountMeta.is_signer
         [] [] [φ self]
@@ -256,7 +256,7 @@ Module instruction.
     Global Opaque run_is_signer.
 
     Instance run_to_account_meta
-      (self : Ref.t Pointer.Kind.Ref Self) :
+      (self : '& Self) :
       Run.Trait
         sysvars.instructions.Impl_pinocchio_sysvars_instructions_IntrospectedAccountMeta.to_account_meta
         [] [] [φ self]

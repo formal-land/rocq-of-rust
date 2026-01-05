@@ -106,8 +106,8 @@ Module Numbers.
 End Numbers.
 
 (* fn get_a_ref(numbers: &Numbers) -> &u64 *)
-Instance run_get_a_ref (numbers : Ref.t Pointer.Kind.Ref Numbers.t) :
-  Run.Trait get_a_ref [] [] [φ numbers] (Ref.t Pointer.Kind.Ref u64).
+Instance run_get_a_ref (numbers : '& Numbers.t) :
+  Run.Trait get_a_ref [] [] [φ numbers] ('& u64).
 Proof.
   constructor.
   run_symbolic.
@@ -115,8 +115,8 @@ Defined.
 Global Opaque run_get_a_ref.
 
 (* fn get_b_mut(numbers: &mut Numbers) -> &mut u64 *)
-Instance run_get_b_mut (numbers : Ref.t Pointer.Kind.MutRef Numbers.t) :
-  Run.Trait get_b_mut [] [] [φ numbers] (Ref.t Pointer.Kind.MutRef u64).
+Instance run_get_b_mut (numbers : '&mut Numbers.t) :
+  Run.Trait get_b_mut [] [] [φ numbers] ('&mut u64).
 Proof.
   constructor.
   run_symbolic.
@@ -125,9 +125,9 @@ Global Opaque run_get_b_mut.
 
 (* fn duplicate(a: &u64, b: &mut u64, c: &mut u64) *)
 Instance run_duplicate
-    (a : Ref.t Pointer.Kind.Ref u64)
-    (b : Ref.t Pointer.Kind.MutRef u64)
-    (c : Ref.t Pointer.Kind.MutRef u64) :
+    (a : '& u64)
+    (b : '&mut u64)
+    (c : '&mut u64) :
   Run.Trait duplicate [] [] [φ a; φ b; φ c] unit.
 Proof.
   constructor.
@@ -136,7 +136,7 @@ Defined.
 Global Opaque run_duplicate.
 
 (* fn apply_duplicate(numbers: &mut Numbers) *)
-Instance run_apply_duplicate (numbers : Ref.t Pointer.Kind.MutRef Numbers.t) :
+Instance run_apply_duplicate (numbers : '&mut Numbers.t) :
   Run.Trait apply_duplicate [] [] [φ numbers] unit.
 Proof.
   constructor.

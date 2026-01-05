@@ -84,7 +84,7 @@ Module Impl_Range.
     Range.t Idx.
 
   (* pub fn is_empty(&self) -> bool *)
-  Instance run_is_empty {Idx : Set} `{Link Idx} (self : Ref.t Pointer.Kind.Ref (Self Idx)) :
+  Instance run_is_empty {Idx : Set} `{Link Idx} (self : '& (Self Idx)) :
     Run.Trait
       (ops.range.Impl_core_ops_range_Range_Idx.is_empty (Φ Idx)) [] [] [ φ self ]
       bool.
@@ -139,16 +139,16 @@ Module RangeBounds.
       (T : Set) `{Link T} : Set :=
     {start_bound @
       IsTraitMethod.t "core::ops::RangeBounds" [] [] (Φ Self) "start_bound" start_bound *
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-        {{ start_bound [] [] [φ self] 🔽 Bound.t (Ref.t Pointer.Kind.Ref T) }}
+      forall (self : '& Self),
+        {{ start_bound [] [] [φ self] 🔽 Bound.t ('& T) }}
     }.
 
   Definition Run_end_bound (Self : Set) `{Link Self} 
       (T : Set) `{Link T} : Set :=
     {end_bound @
       IsTraitMethod.t "core::ops::RangeBounds" [] [] (Φ Self) "end_bound" end_bound *
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-        {{ end_bound [] [] [φ self] 🔽 Bound.t (Ref.t Pointer.Kind.Ref T) }}
+      forall (self : '& Self),
+        {{ end_bound [] [] [φ self] 🔽 Bound.t ('& T) }}
     }.
 
   Definition Run_contains (Self : Set) `{Link Self} 
@@ -156,9 +156,9 @@ Module RangeBounds.
     {contains @
       IsTraitMethod.t "core::ops::RangeBounds" [] [] (Φ Self) "contains" contains *
       forall 
-          (self : Ref.t Pointer.Kind.Ref Self)
+          (self : '& Self)
           (U : Set) `(Link U)
-          (item : Ref.t Pointer.Kind.Ref U)
+          (item : '& U)
           (run_Ord_for_T : PartialOrd.Run T T)
           (run_Ord_for_U : PartialOrd.Run U U),
         {{ contains [] [] [φ self; φ item] 🔽 bool }}
@@ -168,7 +168,7 @@ Module RangeBounds.
       (T : Set) `{Link T} : Set :=
     {is_empty @ 
       IsTraitMethod.t "core::ops::RangeBounds" [] [] (Φ Self) "is_empty" is_empty *
-      forall (self : Ref.t Pointer.Kind.Ref Self)
+      forall (self : '& Self)
           (run_Ord_for_T : PartialOrd.Run T T),
         {{ is_empty [] [] [φ self] 🔽 bool }}
     }.

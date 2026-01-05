@@ -18,8 +18,8 @@ Require Import ruint.links.lib.
 
 (* pub fn cast_slice_to_u256(slice: &[u8], dest: &mut U256) *)
 Instance run_cast_slice_to_u256
-  (slice : Ref.t Pointer.Kind.Ref (list u8))
-  (dest : Ref.t Pointer.Kind.MutRef aliases.U256.t) :
+  (slice : '& (list u8))
+  (dest : '&mut aliases.U256.t) :
   Run.Trait instructions.utility.cast_slice_to_u256 [] [] [ φ slice; φ dest ] unit.
 Proof.
   constructor.

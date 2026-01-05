@@ -362,7 +362,7 @@ Module Impl_Account.
 
   (* pub fn is_frozen(&self) -> bool *)
   Instance run_is_frozen
-      (self : Ref.t Pointer.Kind.Ref Self) :
+      (self : '& Self) :
     Run.Trait state.Impl_spl_token_interface_state_Account.is_frozen [] [] [φ self]
       bool.
   Proof.
@@ -373,7 +373,7 @@ Module Impl_Account.
 
   (* pub fn is_native(&self) -> bool *)
   Instance run_is_native
-      (self : Ref.t Pointer.Kind.Ref Self) :
+      (self : '& Self) :
     Run.Trait state.Impl_spl_token_interface_state_Account.is_native [] [] [φ self]
       bool.
   Proof.

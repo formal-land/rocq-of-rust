@@ -33,7 +33,7 @@ Module Impl_Address.
   Global Opaque run_from_word.
 
   (* pub fn into_word(&self) -> FixedBytes<32> *)
-  Instance run_into_word (self : Ref.t Pointer.Kind.Ref Self) :
+  Instance run_into_word (self : '& Self) :
     Run.Trait
       bits.address.Impl_alloy_primitives_bits_address_Address.into_word [] [] [ φ self ]
       (FixedBytes.t {| Integer.value := 32 |}).
@@ -50,7 +50,7 @@ Module Impl_Address.
   Instance run_create2 (S H : Set) `{Link S} `{Link H}
     {run_Borrow_for_S : Borrow.Run S (array.t u8 {| Integer.value := 32 |})}
     {run_Borrow_for_H : Borrow.Run H (array.t u8 {| Integer.value := 32 |})}
-    (self : Ref.t Pointer.Kind.Ref Self)
+    (self : '& Self)
     (salt : S)
     (init_code_hash : H) :
     Run.Trait

@@ -31,7 +31,7 @@ Module InteractionBuilder.
       (types : AirBuilder.AssociatedTypes.t) `{AirBuilder.AssociatedTypes.AreLinks types} :
       Set :=
     TraitMethod.C (trait Self) "push_interaction" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self),
+      forall (self : '&mut Self),
       Run.Trait method [] [] [ φ self ] types.(AirBuilder.AssociatedTypes.Expr)
     ). *)
 

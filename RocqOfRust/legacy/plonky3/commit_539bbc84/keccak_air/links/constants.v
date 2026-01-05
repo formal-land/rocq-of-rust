@@ -33,7 +33,7 @@ Definition R : array.t (array.t u8 {| Integer.value := 5 |}) {| Integer.value :=
 
 Instance run_value_R :
   Run.Trait constants.value_R [] [] []
-    (Ref.t Pointer.Kind.Raw (array.t (array.t u8 {| Integer.value := 5 |}) {| Integer.value := 5 |})).
+    ('* (array.t (array.t u8 {| Integer.value := 5 |}) {| Integer.value := 5 |})).
 Proof.
   constructor.
   run_symbolic.
@@ -101,7 +101,7 @@ Definition RC : array.t u64 {| Integer.value := 24 |} :=
 
 Instance run_value_RC :
   Run.Trait constants.value_RC [] [] []
-    (Ref.t Pointer.Kind.Raw (array.t u64 {| Integer.value := 24 |})).
+    ('* (array.t u64 {| Integer.value := 24 |})).
 Proof.
   constructor.
   run_symbolic.
@@ -128,7 +128,7 @@ Definition RC_BITS : array.t (array.t u8 {| Integer.value := 64 |}) {| Integer.v
 
 Instance run_value_RC_BITS :
   Run.Trait constants.value_RC_BITS [] [] []
-    (Ref.t Pointer.Kind.Raw (array.t (array.t u8 {| Integer.value := 64 |}) {| Integer.value := 24 |})).
+    ('* (array.t (array.t u8 {| Integer.value := 64 |}) {| Integer.value := 24 |})).
 Proof.
   constructor.
   run_symbolic.
