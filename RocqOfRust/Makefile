@@ -11,6 +11,9 @@ RocqMakefile: $(VFILES) blacklist.txt
 
 MAKEROCQ := +$(MAKE) -f RocqMakefile
 
+%.v: %.v.jinja2
+	python scripts/jinja_preprocess.py $<
+
 %.vo: RocqMakefile %.v
 	$(MAKEROCQ) $@
 

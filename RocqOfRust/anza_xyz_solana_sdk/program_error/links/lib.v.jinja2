@@ -1,0 +1,113 @@
+{# Template for ProgramError links file #}
+{% set path = "solana_program_error::ProgramError" %}
+{% set unit_variants = [
+  "InvalidArgument",
+  "InvalidInstructionData",
+  "InvalidAccountData",
+  "AccountDataTooSmall",
+  "InsufficientFunds",
+  "IncorrectProgramId",
+  "MissingRequiredSignature",
+  "AccountAlreadyInitialized",
+  "UninitializedAccount",
+  "NotEnoughAccountKeys",
+  "AccountBorrowFailed",
+  "MaxSeedLengthExceeded",
+  "InvalidSeeds",
+  "BorshIoError",
+  "AccountNotRentExempt",
+  "UnsupportedSysvar",
+  "IllegalOwner",
+  "MaxAccountsDataAllocationsExceeded",
+  "InvalidRealloc",
+  "MaxInstructionTraceLengthExceeded",
+  "BuiltinProgramsMustConsumeComputeUnits",
+  "InvalidAccountOwner",
+  "ArithmeticOverflow",
+  "Immutable",
+  "IncorrectAuthority",
+] %}
+Require Import RocqOfRust.RocqOfRust.
+Require Import RocqOfRust.links.M.
+Require Import core.links.result.
+Require Import anza_xyz_solana_sdk.program_error.lib.
+
+Module ProgramError.
+  Inductive t : Set :=
+  | Custom (n : u32)
+{% for variant in unit_variants %}
+  | {{ variant }}
+{% endfor %}
+  .
+
+  Global Instance IsLink : Link t := {
+    Φ := Ty.path "{{ path }}";
+    φ x :=
+      match x with
+      | Custom n =>
+          Value.StructTuple "{{ path }}::Custom" [] [] [φ n]
+{% for variant in unit_variants %}
+      | {{ variant }} =>
+          Value.StructTuple "{{ path }}::{{ variant }}" [] [] []
+{% endfor %}
+      end
+  }.
+
+  Definition of_ty : OfTy.t (Ty.path "{{ path }}").
+  Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
+  Smpl Add apply of_ty : of_ty.
+
+  Lemma of_value_with_Custom (n : u32) :
+    Value.StructTuple "{{ path }}::Custom" [] [] [φ n]
+    = φ (Custom n).
+  Proof. reflexivity. Qed.
+  Smpl Add apply of_value_with_Custom : of_value.
+  Definition of_value_Custom (n : u32) :
+    OfValue.t (Value.StructTuple "{{ path }}::Custom" [] [] [φ n]).
+  Proof. econstructor; apply of_value_with_Custom. Defined.
+  Smpl Add apply of_value_Custom : of_value.
+
+{% for variant in unit_variants %}
+  Global Instance IsOfValueWith_{{ variant }} :
+    OfValueWith.C t (Value.StructTuple "{{ path }}::{{ variant }}" [] [] []) :=
+  {
+    value := {{ variant }};
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_{{ variant }} :
+    OfValue.C (Value.StructTuple "{{ path }}::{{ variant }}" [] [] []) :=
+  {
+    value := {{ variant }};
+    eq := eq_refl;
+  }.
+
+{% endfor %}
+  Module SubPointer.
+    Definition get_Custom_0 : SubPointer.Runner.t t
+      (Pointer.Index.StructTuple "{{ path }}::Custom" 0) :=
+    {|
+      SubPointer.Runner.projection x :=
+        match x with
+        | Custom n => Some n
+        | _ => None
+        end;
+      SubPointer.Runner.injection x y :=
+        match x with
+        | Custom _ => Some (Custom y)
+        | _ => None
+        end;
+    |}.
+
+    Lemma get_Custom_0_is_valid :
+      SubPointer.Runner.Valid.t get_Custom_0.
+    Proof.
+      constructor; intros; destruct a; try reflexivity; discriminate.
+    Qed.
+    Smpl Add apply get_Custom_0_is_valid : run_sub_pointer.
+  End SubPointer.
+End ProgramError.
+
+(* ProgramResult = Result<(), ProgramError> *)
+Module ProgramResult.
+  Definition t : Set := Result.t unit ProgramError.t.
+End ProgramResult.
