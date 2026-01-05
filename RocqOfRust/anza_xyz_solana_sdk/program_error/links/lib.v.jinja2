@@ -35,10 +35,7 @@ Require Import anza_xyz_solana_sdk.program_error.lib.
 Module ProgramError.
   Inductive t : Set :=
   | Custom (n : u32)
-{% for variant in unit_variants %}
-  | {{ variant }}
-{% endfor %}
-  .
+{{ macros.inductive_unit_variants(unit_variants) }}  .
 
   Global Instance IsLink : Link t := {
     Φ := Ty.path "{{ path }}";
@@ -46,11 +43,7 @@ Module ProgramError.
       match x with
       | Custom n =>
           Value.StructTuple "{{ path }}::Custom" [] [] [φ n]
-{% for variant in unit_variants %}
-      | {{ variant }} =>
-          Value.StructTuple "{{ path }}::{{ variant }}" [] [] []
-{% endfor %}
-      end
+{{ macros.phi_unit_cases(path, unit_variants) }}      end
   }.
 
   Definition of_ty : OfTy.t (Ty.path "{{ path }}").
@@ -67,21 +60,7 @@ Module ProgramError.
   Proof. econstructor; apply of_value_with_Custom. Defined.
   Smpl Add apply of_value_Custom : of_value.
 
-{% for variant in unit_variants %}
-  Global Instance IsOfValueWith_{{ variant }} :
-    OfValueWith.C t (Value.StructTuple "{{ path }}::{{ variant }}" [] [] []) :=
-  {
-    value := {{ variant }};
-    eq := eq_refl;
-  }.
-  Global Instance IsOfValue_{{ variant }} :
-    OfValue.C (Value.StructTuple "{{ path }}::{{ variant }}" [] [] []) :=
-  {
-    value := {{ variant }};
-    eq := eq_refl;
-  }.
-
-{% endfor %}
+{{ macros.all_unit_variant_instances(path, unit_variants) }}
   Module SubPointer.
     Definition get_Custom_0 : SubPointer.Runner.t t
       (Pointer.Index.StructTuple "{{ path }}::Custom" 0) :=

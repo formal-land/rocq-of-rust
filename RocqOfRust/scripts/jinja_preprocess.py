@@ -7,6 +7,7 @@ Usage:
 
 Each template.v.jinja2 generates a corresponding template.v file.
 Templates define their own data using Jinja's {% set %} directive.
+Macros from scripts/macros.jinja2 are automatically available.
 """
 
 import sys
@@ -18,18 +19,26 @@ except ImportError:
     print("Error: jinja2 is required. Install with: pip install jinja2", file=sys.stderr)
     sys.exit(1)
 
+# Directory containing this script and macros
+SCRIPTS_DIR = Path(__file__).parent
+
 
 def render_template(template_path: Path) -> str:
     """Render a single template file."""
+    # Load from both the template's directory and the scripts directory (for macros)
     env = Environment(
-        loader=FileSystemLoader(template_path.parent),
+        loader=FileSystemLoader([template_path.parent, SCRIPTS_DIR]),
         undefined=StrictUndefined,
         keep_trailing_newline=True,
         trim_blocks=True,
         lstrip_blocks=True,
     )
 
-    template = env.get_template(template_path.name)
+    # Prepend macro import
+    template_content = template_path.read_text()
+    template_content = "{% import 'macros.jinja2' as macros %}\n" + template_content
+
+    template = env.from_string(template_content)
     return template.render()
 
 

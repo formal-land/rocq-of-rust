@@ -1,0 +1,47 @@
+{#
+  Jinja macros for generating Rocq code.
+  Automatically imported as 'macros' in all templates.
+#}
+
+{# Generate IsOfValueWith and IsOfValue instances for a unit variant (no parameters) #}
+{% macro unit_variant_instances(path, variant) %}
+  Global Instance IsOfValueWith_{{ variant }} :
+    OfValueWith.C t (Value.StructTuple "{{ path }}::{{ variant }}" [] [] []) :=
+  {
+    value := {{ variant }};
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_{{ variant }} :
+    OfValue.C (Value.StructTuple "{{ path }}::{{ variant }}" [] [] []) :=
+  {
+    value := {{ variant }};
+    eq := eq_refl;
+  }.
+{% endmacro %}
+
+{# Generate all instances for a list of unit variants #}
+{% macro all_unit_variant_instances(path, variants) %}
+{% for variant in variants %}
+{{ unit_variant_instances(path, variant) }}
+{% endfor %}
+{% endmacro %}
+
+{# Generate φ match case for a unit variant #}
+{% macro phi_unit_case(path, variant) %}
+      | {{ variant }} =>
+          Value.StructTuple "{{ path }}::{{ variant }}" [] [] []
+{% endmacro %}
+
+{# Generate all φ cases for unit variants #}
+{% macro phi_unit_cases(path, variants) %}
+{% for variant in variants %}
+{{ phi_unit_case(path, variant) }}
+{%- endfor %}
+{% endmacro %}
+
+{# Generate Inductive variant declarations for unit variants #}
+{% macro inductive_unit_variants(variants) %}
+{% for variant in variants %}
+  | {{ variant }}
+{% endfor %}
+{% endmacro %}

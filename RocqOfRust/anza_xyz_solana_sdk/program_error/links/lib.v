@@ -432,6 +432,7 @@ Module ProgramError.
     eq := eq_refl;
   }.
 
+
   Module SubPointer.
     Definition get_Custom_0 : SubPointer.Runner.t t
       (Pointer.Index.StructTuple "solana_program_error::ProgramError::Custom" 0) :=
