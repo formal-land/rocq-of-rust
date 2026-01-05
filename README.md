@@ -1,15 +1,15 @@
 # <img src="logo.png" alt= "logo" width="120px" height="120px" style="vertical-align: middle;"> <span style="vertical-align: middle;">rocq-of-rust</span>
 
-> Formal verification tool for Rust: check 100% of execution cases of your programs 🦀 to make super safe applications! ✈️ 🚀 ⚕️ 🏦
+> Formal verification tool for Rust: check 100% of execution cases of your programs to ensure they are safe and correct.
 
-Even if Rust's type system prevents many mistakes, including memory errors, the code is still not immune to vulnerabilities, such as unexpected panics or wrongly implemented business rules.
+Even if type system of Rust prevents many mistakes, including memory errors, the code is still not immune to vulnerabilities, such as security vulnerabilities, unexpected panics, or wrongly implemented business rules.
 
-The way to go further is to **mathematically** prove that it implements its specification for all inputs: this is named "formal verification" and what `rocq-of-rust` proposes! This is the strongest way to look for bugs or vulnerabilities, even for code that needs to be safe against state-level actors 🧚.
+The way to go further is to **mathematically** prove that it implements its specification for all inputs: this is named "formal verification" and what `rocq-of-rust` proposes. This is the strongest way to look for bugs or vulnerabilities, even for code that needs to be safe against state-level actors, or in applications where human life is at stake.
 
-| We propose formal verification as a service, including designing the specification and the proofs.<br /><br />**➡️ [Get started 🦸](https://n25o5qrzcx2.typeform.com/to/UPZq4O6U) ⬅️** |
+| We propose formal verification as a service, including designing the specification and the proofs.<br /><br />**➡️ [Book a meeting](https://calendly.com/guillaume-claret) ⬅️** |
 | --- |
 
-_The development of `rocq-of-rust` was mainly funded by the&nbsp;[Aleph Zero Foundation](https://alephzero.org/). We thank them for their support!_
+_The development of `rocq-of-rust` was mainly funded by the **Ethereum Foundation** and the **Aleph Zero Foundation**. We thank them for their support!_
 
 ## Table of Contents
 
@@ -23,7 +23,13 @@ _The development of `rocq-of-rust` was mainly funded by the&nbsp;[Aleph Zero Fou
 - [Contributing](#contributing)
 
 ## Example
-At the heart of `rocq-of-rust` is the translation of Rust programs to the [proof system Rocq 🐓](https://rocq-prover.org/). Once some Rust code is translated to Rocq, it can then be verified using standard proof techniques.
+At the heart of `rocq-of-rust` is the translation of Rust programs to idiomatic code in the [theorem prover Rocq](https://rocq-prover.org/). Once in Rocq, the code can be verified using standard proof techniques.
+
+The translation is in three steps:
+
+1. Import of the THIR representation of Rust to Rocq, running `cargo rocq-of-rust`.
+2. Type-checking and trait inference with native Rocq types and typeclasses (we call it linking).
+3. Representation of the control-flow and memory manipulations in a purely functional style (we call it simulation).
 
 Here is an example of a Rust function:
 ```rust
@@ -31,18 +37,28 @@ fn add_one(x: u32) -> u32 {
     x + 1
 }
 ```
-Running `rocq-of-rust`, it translates in Rocq to:
+
+We can prove it equivalent to the purely functional Rocq code:
 ```coq
-Definition add_one (τ : list Ty.t) (α : list Value.t) : M :=
-  match τ, α with
-  | [], [ x ] =>
+Definition add_one (x : u32) : u32 :=
+  x +i 1.
+```
+
+For reference, here is the representation of the THIR in Rocq for this function:
+```coq
+Definition add_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
+  match ε, τ, α with
+  | [], [], [ x ] =>
     ltac:(M.monadic
-      (let x := M.alloc (| x |) in
-      BinOp.Panic.add (| M.read (| x |), Value.Integer Integer.U32 1 |)))
-  | _, _ => M.impossible
+      (let x := M.alloc (| Ty.path "u32", x |) in
+      M.call_closure (|
+        Ty.path "u32",
+        BinOp.Wrap.add,
+        [ M.read (| x |); Value.Integer IntegerKind.U32 1 ]
+      |)))
+  | _, _, _ => M.impossible "wrong number of arguments"
   end.
 ```
-Functions such as&nbsp;`BinOp.Panic.add` are part of the standard library for Rust in Rocq that we provide. We can then express and verify specifications on the code in Rocq.
 
 ## Workflow
 
@@ -51,8 +67,8 @@ Here is the typical workflow of usage for `rocq-of-rust`:
 ```mermaid
 graph TB
     R[Rust code 🦀] -- rocq-of-rust --> T[Translated code 🐓]
-    T -- name resolutions --> L[Linked code 🐓]
-    L -- refinement --> S[Simulations 🐓]
+    T -- types/traits resolutions --> L[Linked code 🐓]
+    L -- control-flow/memory --> S[Simulations 🐓]
     S --> P
     SP[Specifications 🐓] --> P[Proofs 🐓]
     P -.-> X[100% reliable code! 🦄]
@@ -60,7 +76,7 @@ graph TB
 
 We start by generating an automatic translation of the Rust we verify to Rocq code with `rocq-of-rust`. The translation is originally verbose. We go through two semi-automated refinement steps, links and simulations, that gradually make the code more amenable to formal verification.
 
-Finally, we write the **specifications** and **prove** that our Rust program fulfills them **with any possible user input 🔥**.
+Finally, we write the **specifications** and **prove** that our Rust program fulfills them **for any possible user input**.
 
 Examples of typical specifications are:
 
@@ -71,16 +87,7 @@ Examples of typical specifications are:
 - The storage system is sound, as what goes in goes out (this generally amounts to state that the serialization/deserialization functions are inverse).
 - The implementation behaves as a special case of what the whitepaper describes once formally expressed.
 
-**With that in hand, you can virtually reduce your bugs and vulnerabilities to zero 🦸!**
-
-## Rationale
-Formal verification allows the prevention of all bugs in critical software.
-
-The type system of Rust already offers strong guarantees to avoid bugs that exist in C or Python. We still need to write tests to verify the business rules or the absence of `panic`. Testing is incomplete as it cannot cover all execution cases.
-
-With formal verification, we cover all cases (code 100% bug-free!). We replace the tests with mathematical reasoning on code. You can view it as an extension of the type system but without restrictions on the expressivity.
-
-The tool `rocq-of-rust` translates Rust programs to the battle-tested formal verification system Rocq to make Rust programs 100% safe&nbsp;🚀.
+**With that in hand, you can virtually reduce your bugs and vulnerabilities to zero.**
 
 ## Prerequisites
 
@@ -91,22 +98,8 @@ The tool `rocq-of-rust` translates Rust programs to the battle-tested formal ver
 
 The [build tutorial](./docs/BUILD.md) provides detailed instructions on building and installing `rocq-of-rust`, while the [user tutorial](./docs/GUIDE.md) provides an introduction to the `rocq-of-rust` command line interface and the list of supported options.
 
-## Language features
-The translation works at the level of the [THIR](https://rustc-dev-guide.rust-lang.org/thir.html) intermediate representation of Rust.
-
-We support 99% of the Rust examples from the [Rust Book by Examples](https://doc.rust-lang.org/rust-by-example/). This includes:
-
-- basic control structures (like&nbsp;`if` and&nbsp;`match`)
-- loops (`while` and&nbsp;`for`)
-- references and mutability (`&` and&nbsp;`&mut`)
-- closures
-- panics
-- user types (with&nbsp;`struct` and&nbsp;`enum`)
-- the definition of traits
-- the implementation keyword&nbsp;`impl` for traits or user types
-
 ## Contact
-For formal verification services on your Rust code base, contact us at [&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land). Formal verification can apply to smart contracts, database engines, or any critical Rust project. This provides the highest confidence level in the absence of bugs compared to other techniques, such as manual reviews or testing.
+For formal verification services (training or application) on your Rust code base, contact us at [&#099;&#111;&#110;&#116;&#097;&#099;&#116;&#064;formal&#046;&#108;&#097;&#110;&#100;](mailto:contact@formal.land). Formal verification can apply to smart contracts, database engines, or any critical Rust project.
 
 ## Alternative Projects
 
