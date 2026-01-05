@@ -4,9 +4,9 @@ VFILES := $(shell find -L . -name "*.v" | grep -v -f blacklist.txt | sort)
 JINJA_TEMPLATES := $(shell find -L . -name "*.v.jinja2" | sort)
 JINJA_GENERATED := $(JINJA_TEMPLATES:.v.jinja2=.v)
 
-jinja: $(JINJA_GENERATED)
-
 default: all
+
+jinja: $(JINJA_GENERATED)
 
 # We use the '@' to avoid displaying this command as the parameters list is
 # very long.

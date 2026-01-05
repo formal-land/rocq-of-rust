@@ -34,22 +34,7 @@ Require Import core.links.result.
 Require Import anza_xyz_solana_sdk.program_error.lib.
 
 Module ProgramError.
-  Inductive t : Set :=
-{{ macros.inductive_variants(variants) }}  .
-
-  Global Instance IsLink : Link t := {
-    Φ := Ty.path "{{ path }}";
-    φ x :=
-      match x with
-{{ macros.phi_cases(path, variants) }}      end
-  }.
-
-  Definition of_ty : OfTy.t (Ty.path "{{ path }}").
-  Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
-  Smpl Add apply of_ty : of_ty.
-
-{{ macros.all_variant_instances(path, variants) }}
-{{ macros.subpointer_module(path, variants) }}
+{{ macros.enum_body(path, variants) }}
 End ProgramError.
 
 (* ProgramResult = Result<(), ProgramError> *)

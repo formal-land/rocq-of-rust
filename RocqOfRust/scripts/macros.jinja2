@@ -51,6 +51,7 @@
     value := {{ name }}{% for p in params %} H_{{ p[0] }}.(OfValueWith.value){% endfor %};
     eq := ltac:(sauto lq: on);
   }.
+
   Global Instance IsOfValue_{{ name }}
 {% for p in params %}      ({{ p[0] }}' : Value.t) {H_{{ p[0] }} : OfValueWith.C {{ p[1] }} {{ p[0] }}'}{% endfor %} :
     OfValue.C (Value.StructTuple "{{ path }}::{{ name }}" [] [] [{% for p in params %}{{ p[0] }}'{{ "; " if not loop.last else "" }}{% endfor %}]) :=
@@ -66,6 +67,7 @@
     value := {{ name }};
     eq := eq_refl;
   }.
+
   Global Instance IsOfValue_{{ name }} :
     OfValue.C (Value.StructTuple "{{ path }}::{{ name }}" [] [] []) :=
   {
@@ -108,7 +110,7 @@
       constructor; intros; destruct a; try reflexivity; discriminate.
     Qed.
     Smpl Add apply get_{{ name }}_{{ param_index }}_is_valid : run_sub_pointer.
-{% endmacro %}
+{%- endmacro %}
 
 {# Generate all SubPointers for a variant (one per parameter) #}
 {% macro variant_subpointers(path, variant) %}
@@ -116,13 +118,32 @@
 {% for param in params %}
 {{ subpointer(path, variant, loop.index0) }}
 {% endfor %}
-{% endmacro %}
+{%- endmacro %}
 
 {# Generate SubPointer module with all subpointers for all variants #}
 {% macro subpointer_module(path, variants) %}
   Module SubPointer.
-{% for variant in variants %}
-{{ variant_subpointers(path, variant) -}}
-{% endfor %}
-  End SubPointer.
+{% for variant in variants %}{{ variant_subpointers(path, variant) }}{% endfor %}  End SubPointer.
+{%- endmacro %}
+
+{# Generate complete enum body (everything inside Module ... End) #}
+{% macro enum_body(path, variants) %}
+  Inductive t : Set :=
+{{ inductive_variants(variants) }}  .
+
+  Global Instance IsLink : Link t := {
+    Φ := Ty.path "{{ path }}";
+    φ x :=
+      match x with
+{{ phi_cases(path, variants) }}      end
+  }.
+
+  Global Instance IsOfTy : OfTy.C (Ty.path "{{ path }}") :=
+  {
+    A := t;
+    eq := eq_refl;
+  }.
+
+{{ all_variant_instances(path, variants) -}}
+{{ subpointer_module(path, variants) -}}
 {% endmacro %}
