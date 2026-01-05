@@ -1,6 +1,10 @@
-.PHONY: all clean clean-util distclean default watch generate
+.PHONY: all clean clean-util distclean default watch generate jinja
 
 VFILES := $(shell find -L . -name "*.v" | grep -v -f blacklist.txt | sort)
+JINJA_TEMPLATES := $(shell find -L . -name "*.v.jinja2" | sort)
+JINJA_GENERATED := $(JINJA_TEMPLATES:.v.jinja2=.v)
+
+jinja: $(JINJA_GENERATED)
 
 default: all
 
@@ -11,7 +15,7 @@ RocqMakefile: $(VFILES) blacklist.txt
 
 MAKEROCQ := +$(MAKE) -f RocqMakefile
 
-%.v: %.v.jinja2 scripts/macros.jinja2
+%.v: %.v.jinja2 scripts/macros.jinja2 scripts/jinja_preprocess.py
 	python scripts/jinja_preprocess.py $<
 
 %.vo: RocqMakefile %.v
