@@ -34,9 +34,10 @@ Module EofBody.
       ]
   }.
 
-  Definition of_ty : OfTy.t (Ty.path "revm_bytecode::eof::body::EofBody").
-  Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
-  Smpl Add apply of_ty : of_ty.
+  Global Instance IsOfTy : OfTy.C (Ty.path "revm_bytecode::eof::body::EofBody") := {
+    A := t;
+    eq := eq_refl;
+  }.
 
   Lemma of_value_with
       (code : Bytes.t) code'

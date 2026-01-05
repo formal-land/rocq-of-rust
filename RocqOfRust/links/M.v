@@ -46,6 +46,16 @@ Module OfTy.
     reflexivity.
   Defined.
   Smpl Add apply of_ty : of_ty.
+
+  Class C (ty : Ty.t) : Type := {
+    A : Set;
+    H : Link A;
+    eq : ty = Φ A;
+  }.
+
+  Definition to_inductive {ty : Ty.t} `{C ty} : OfTy.t ty :=
+    OfTy.Make ty eq.
+  Smpl Add apply to_inductive : of_ty.
 End OfTy.
 
 Smpl Create of_value.
@@ -57,6 +67,20 @@ Lemma of_value_link_eq {A : Set} `{Link A} (value : A) :
   φ value = φ value.
 Proof. reflexivity. Qed.
 Smpl Add apply of_value_link_eq : of_value.
+
+Module OfValueWith.
+  Class C (A : Set) `{Link A} (value' : Value.t) : Set := {
+    value : A;
+    eq : value' = φ value;
+  }.
+
+  Lemma of_value_with {A : Set} `{Link A} {value' : Value.t} `{C A value'} :
+    value' = φ value.
+  Proof.
+    exact eq.
+  Qed.
+  Smpl Add apply of_value_with : of_value.
+End OfValueWith.
 
 Module OfValue.
   Inductive t (value' : Value.t) : Type :=
@@ -106,6 +130,17 @@ Module OfValue.
     subst.
     reflexivity.
   Qed.
+
+  Class C (value' : Value.t) : Type := {
+    A : Set;
+    H : Link A;
+    value : A;
+    eq : value' = φ value;
+  }.
+
+  Definition to_inductive {value' : Value.t} `{C value'} : OfValue.t value' :=
+    OfValue.Make value' value eq.
+  Smpl Add apply to_inductive : of_value.
 End OfValue.
 
 (** Implementation of the primitive Rust operator for equality check *)
@@ -121,21 +156,20 @@ Module Bool.
     φ b := Value.Bool b;
   }.
 
-  Definition of_ty : OfTy.t (Ty.path "bool").
-  Proof. eapply OfTy.Make with (A := bool); reflexivity. Defined.
-  Smpl Add apply of_ty : of_ty.
+  Global Instance IsOfTy : OfTy.C (Ty.path "bool") := {
+    A := bool;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with (b : bool) :
-    Value.Bool b = φ b.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with : of_value.
+  (* Global Instance IsOfValueWith (b : bool) : OfValueWith.C bool (Value.Bool b) := {
+    value := b;
+    eq := eq_refl;
+  }.
 
-  Definition of_value (b : bool) :
-    OfValue.t (Value.Bool b).
-  Proof.
-    eapply OfValue.Make with (A := bool); smpl of_value.
-  Defined.
-  Smpl Add apply of_value : of_value.
+  Global Instance IsOfValue (b : bool) : OfValue.C (Value.Bool b) := {
+    value := b;
+    eq := eq_refl;
+  }. *)
 
   Global Instance IsPrimitiveEq : PrimitiveEq.Trait bool := {
     PrimitiveEq.eqb := Bool.eqb;
@@ -171,53 +205,65 @@ Module Integer.
     φ '{| value := value |} := Value.Integer kind value;
   }.
 
-  Definition of_ty_i8 : OfTy.t (Ty.path "i8").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.I8); reflexivity. Defined.
-  Smpl Add apply of_ty_i8 : of_ty.
+  Global Instance IsOfTy_i8 : OfTy.C (Ty.path "i8") := {
+    A := t IntegerKind.I8;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_i16 : OfTy.t (Ty.path "i16").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.I16); reflexivity. Defined.
-  Smpl Add apply of_ty_i16 : of_ty.
+  Global Instance IsOfTy_i16 : OfTy.C (Ty.path "i16") := {
+    A := t IntegerKind.I16;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_i32 : OfTy.t (Ty.path "i32").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.I32); reflexivity. Defined.
-  Smpl Add apply of_ty_i32 : of_ty.
+  Global Instance IsOfTy_i32 : OfTy.C (Ty.path "i32") := {
+    A := t IntegerKind.I32;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_i64 : OfTy.t (Ty.path "i64").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.I64); reflexivity. Defined.
-  Smpl Add apply of_ty_i64 : of_ty.
+  Global Instance IsOfTy_i64 : OfTy.C (Ty.path "i64") := {
+    A := t IntegerKind.I64;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_i128 : OfTy.t (Ty.path "i128").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.I128); reflexivity. Defined.
-  Smpl Add apply of_ty_i128 : of_ty.
+  Global Instance IsOfTy_i128 : OfTy.C (Ty.path "i128") := {
+    A := t IntegerKind.I128;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_isize : OfTy.t (Ty.path "isize").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.Isize); reflexivity. Defined.
-  Smpl Add apply of_ty_isize : of_ty.
+  Global Instance IsOfTy_isize : OfTy.C (Ty.path "isize") := {
+    A := t IntegerKind.Isize;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_u8 : OfTy.t (Ty.path "u8").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.U8); reflexivity. Defined.
-  Smpl Add apply of_ty_u8 : of_ty.
+  Global Instance IsOfTy_u8 : OfTy.C (Ty.path "u8") := {
+    A := t IntegerKind.U8;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_u16 : OfTy.t (Ty.path "u16").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.U16); reflexivity. Defined.
-  Smpl Add apply of_ty_u16 : of_ty.
+  Global Instance IsOfTy_u16 : OfTy.C (Ty.path "u16") := {
+    A := t IntegerKind.U16;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_u32 : OfTy.t (Ty.path "u32").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.U32); reflexivity. Defined.
-  Smpl Add apply of_ty_u32 : of_ty.
+  Global Instance IsOfTy_u32 : OfTy.C (Ty.path "u32") := {
+    A := t IntegerKind.U32;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_u64 : OfTy.t (Ty.path "u64").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.U64); reflexivity. Defined.
-  Smpl Add apply of_ty_u64 : of_ty.
+  Global Instance IsOfTy_u64 : OfTy.C (Ty.path "u64") := {
+    A := t IntegerKind.U64;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_u128 : OfTy.t (Ty.path "u128").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.U128); reflexivity. Defined.
-  Smpl Add apply of_ty_u128 : of_ty.
+  Global Instance IsOfTy_u128 : OfTy.C (Ty.path "u128") := {
+    A := t IntegerKind.U128;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_usize : OfTy.t (Ty.path "usize").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.Usize); reflexivity. Defined.
-  Smpl Add apply of_ty_usize : of_ty.
+  Global Instance IsOfTy_usize : OfTy.C (Ty.path "usize") := {
+    A := t IntegerKind.Usize;
+    eq := eq_refl;
+  }.
 
   Lemma of_value_with {kind : IntegerKind.t} (value : Z) :
     Value.Integer kind value = φ (Integer.Build_t kind value).

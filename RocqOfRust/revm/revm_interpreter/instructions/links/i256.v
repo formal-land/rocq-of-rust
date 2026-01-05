@@ -38,26 +38,32 @@ Module Sign.
   Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
   Smpl Add apply of_ty : of_ty.
 
-  Lemma of_value_with_Minus :
-    Value.StructTuple "revm_interpreter::instructions::i256::Sign::Minus" [] [] [] = φ Minus.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_Minus : of_value.
+  Global Instance IsOfValueWith_Minus :
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Minus" [] [] []) :=
+  {
+    value := Minus;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_Zero :
-    Value.StructTuple "revm_interpreter::instructions::i256::Sign::Zero" [] [] [] = φ Zero.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_Zero : of_value.
+  Global Instance IsOfValueWith_Zero :
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Zero" [] [] []) :=
+  {
+    value := Zero;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_Plus :
-    Value.StructTuple "revm_interpreter::instructions::i256::Sign::Plus" [] [] [] = φ Plus.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_Plus : of_value.
+  Global Instance IsOfValueWith_Plus :
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Plus" [] [] []) :=
+  {
+    value := Plus;
+    eq := eq_refl;
+  }.
 
   Definition of_value_Minus :
     OfValue.t (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Minus" [] [] []).
   Proof.
     econstructor.
-    apply of_value_with_Minus.
+    smpl of_value.
   Defined.
   Smpl Add apply of_value_Minus : of_value.
 
@@ -65,7 +71,7 @@ Module Sign.
     OfValue.t (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Zero" [] [] []).
   Proof.
     econstructor.
-    apply of_value_with_Zero.
+    smpl of_value.
   Defined.
   Smpl Add apply of_value_Zero : of_value.
 
@@ -73,7 +79,7 @@ Module Sign.
     OfValue.t (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Plus" [] [] []).
   Proof.
     econstructor.
-    apply of_value_with_Plus.
+    smpl of_value.
   Defined.
   Smpl Add apply of_value_Plus : of_value.
 End Sign.

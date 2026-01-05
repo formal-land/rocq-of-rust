@@ -38,70 +38,76 @@ Module TransactionType.
   Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
   Smpl Add apply of_ty : of_ty.
 
-  Lemma of_value_with_Legacy :
-    Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Legacy" [] [] [] =
-    φ Legacy.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_Legacy : of_value.
+  Global Instance IsOfValueWith_Legacy :
+    OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Legacy" [] [] []) :=
+  {
+    value := Legacy;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_Eip2930 :
-    Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930" [] [] [] =
-    φ Eip2930.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_Eip2930 : of_value.
+  Global Instance IsOfValueWith_Eip2930 :
+    OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930" [] [] []) :=
+  {
+    value := Eip2930;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_Eip1559 :
-    Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559" [] [] [] =
-    φ Eip1559.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_Eip1559 : of_value.
+  Global Instance IsOfValueWith_Eip1559 :
+    OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559" [] [] []) :=
+  {
+    value := Eip1559;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_Eip4844 :
-    Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844" [] [] [] =
-    φ Eip4844.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_Eip4844 : of_value.
+  Global Instance IsOfValueWith_Eip4844 :
+    OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844" [] [] []) :=
+  {
+    value := Eip4844;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_Eip7702 :
-    Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702" [] [] [] =
-    φ Eip7702.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_Eip7702 : of_value.
+  Global Instance IsOfValueWith_Eip7702 :
+    OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702" [] [] []) :=
+  {
+    value := Eip7702;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_Custom :
-    Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Custom" [] [] [] =
-    φ Custom.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_Custom : of_value.
+  Global Instance IsOfValueWith_Custom :
+    OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Custom" [] [] []) :=
+  {
+    value := Custom;
+    eq := eq_refl;
+  }.
 
   Definition of_value_Legacy :
     OfValue.t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Legacy" [] [] []).
-  Proof. econstructor; apply of_value_with_Legacy. Defined.
+  Proof. econstructor; smpl of_value. Defined.
   Smpl Add apply of_value_Legacy : of_value.
 
   Definition of_value_Eip2930 :
     OfValue.t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930" [] [] []).
-  Proof. econstructor; apply of_value_with_Eip2930. Defined.
+  Proof. econstructor; smpl of_value. Defined.
   Smpl Add apply of_value_Eip2930 : of_value.
 
   Definition of_value_Eip1559 :
     OfValue.t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559" [] [] []).
-  Proof. econstructor; apply of_value_with_Eip1559. Defined.
+  Proof. econstructor; smpl of_value. Defined.
   Smpl Add apply of_value_Eip1559 : of_value.
 
   Definition of_value_Eip4844 :
     OfValue.t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844" [] [] []).
-  Proof. econstructor; apply of_value_with_Eip4844. Defined.
+  Proof. econstructor; smpl of_value. Defined.
   Smpl Add apply of_value_Eip4844 : of_value.
 
   Definition of_value_Eip7702 :
     OfValue.t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702" [] [] []).
-  Proof. econstructor; apply of_value_with_Eip7702. Defined.
+  Proof. econstructor; smpl of_value. Defined.
   Smpl Add apply of_value_Eip7702 : of_value.
 
   Definition of_value_Custom :
     OfValue.t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Custom" [] [] []).
-  Proof. econstructor; apply of_value_with_Custom. Defined.
+  Proof. econstructor; smpl of_value. Defined.
   Smpl Add apply of_value_Custom : of_value.
 End TransactionType.
 

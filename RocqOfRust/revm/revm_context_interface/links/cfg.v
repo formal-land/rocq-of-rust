@@ -33,10 +33,12 @@ Module CreateScheme.
   Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
   Smpl Add apply of_ty : of_ty.
 
-  Lemma of_value_with_Create :
-    Value.StructTuple "revm_context_interface::cfg::CreateScheme::Create" [] [] [] = φ Create.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_Create : of_value.
+  Global Instance IsOfValueWith_Create :
+    OfValueWith.C t (Value.StructTuple "revm_context_interface::cfg::CreateScheme::Create" [] [] []) :=
+  {
+    value := Create;
+    eq := eq_refl;
+  }.
 
   Lemma of_value_with_Create2 (x : aliases.U256.t) x' :
     x' = φ x ->
@@ -48,7 +50,7 @@ Module CreateScheme.
 
   Definition of_value_Create :
     OfValue.t (Value.StructTuple "revm_context_interface::cfg::CreateScheme::Create" [] [] []).
-  Proof. eapply OfValue.Make; apply of_value_with_Create. Defined.
+  Proof. eapply OfValue.Make; smpl of_value. Defined.
   Smpl Add apply of_value_Create : of_value.
 
   Definition of_value_Create2 (x : aliases.U256.t) x' :

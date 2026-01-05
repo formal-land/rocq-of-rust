@@ -102,205 +102,252 @@ Module TokenError.
   Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
   Smpl Add apply of_ty : of_ty.
 
-  Lemma of_value_with_NotRentExempt :
-    Value.StructTuple "spl_token_interface::error::TokenError::NotRentExempt" [] [] [] =
-    φ NotRentExempt.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_NotRentExempt : of_value.
-  Definition of_value_NotRentExempt :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::NotRentExempt" [] [] []).
-  Proof. econstructor; apply of_value_with_NotRentExempt. Defined.
-  Smpl Add apply of_value_NotRentExempt : of_value.
+  Global Instance IsOfValueWith_NotRentExempt :
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::NotRentExempt" [] [] []) :=
+  {
+    value := NotRentExempt;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_NotRentExempt :
+    OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::NotRentExempt" [] [] []) :=
+  {
+    value := NotRentExempt;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_InsufficientFunds :
-    Value.StructTuple "spl_token_interface::error::TokenError::InsufficientFunds" [] [] [] =
-    φ InsufficientFunds.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_InsufficientFunds : of_value.
-  Definition of_value_InsufficientFunds :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::InsufficientFunds" [] [] []).
-  Proof. econstructor; apply of_value_with_InsufficientFunds. Defined.
-  Smpl Add apply of_value_InsufficientFunds : of_value.
+  Global Instance IsOfValueWith_InsufficientFunds :
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::InsufficientFunds" [] [] []) :=
+  {
+    value := InsufficientFunds;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_InsufficientFunds :
+    OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::InsufficientFunds" [] [] []) :=
+  {
+    value := InsufficientFunds;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_InvalidMint :
-    Value.StructTuple "spl_token_interface::error::TokenError::InvalidMint" [] [] [] =
-    φ InvalidMint.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_InvalidMint : of_value.
-  Definition of_value_InvalidMint :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidMint" [] [] []).
-  Proof. econstructor; apply of_value_with_InvalidMint. Defined.
-  Smpl Add apply of_value_InvalidMint : of_value.
+  Global Instance IsOfValueWith_InvalidMint :
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidMint" [] [] []) :=
+  {
+    value := InvalidMint;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_InvalidMint :
+    OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::InvalidMint" [] [] []) :=
+  {
+    value := InvalidMint;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_MintMismatch :
-    Value.StructTuple "spl_token_interface::error::TokenError::MintMismatch" [] [] [] =
-    φ MintMismatch.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_MintMismatch : of_value.
-  Definition of_value_MintMismatch :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::MintMismatch" [] [] []).
-  Proof. econstructor; apply of_value_with_MintMismatch. Defined.
-  Smpl Add apply of_value_MintMismatch : of_value.
+  Global Instance IsOfValueWith_MintMismatch :
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::MintMismatch" [] [] []) :=
+  {
+    value := MintMismatch;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_MintMismatch :
+    OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::MintMismatch" [] [] []) :=
+  {
+    value := MintMismatch;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_OwnerMismatch :
-    Value.StructTuple "spl_token_interface::error::TokenError::OwnerMismatch" [] [] [] =
-    φ OwnerMismatch.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_OwnerMismatch : of_value.
-  Definition of_value_OwnerMismatch :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::OwnerMismatch" [] [] []).
-  Proof. econstructor; apply of_value_with_OwnerMismatch. Defined.
-  Smpl Add apply of_value_OwnerMismatch : of_value.
+  Global Instance IsOfValueWith_OwnerMismatch :
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::OwnerMismatch" [] [] []) :=
+  {
+    value := OwnerMismatch;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_OwnerMismatch :
+    OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::OwnerMismatch" [] [] []) :=
+  {
+    value := OwnerMismatch;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_FixedSupply :
-    Value.StructTuple "spl_token_interface::error::TokenError::FixedSupply" [] [] [] =
-    φ FixedSupply.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_FixedSupply : of_value.
-  Definition of_value_FixedSupply :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::FixedSupply" [] [] []).
-  Proof. econstructor; apply of_value_with_FixedSupply. Defined.
-  Smpl Add apply of_value_FixedSupply : of_value.
+  Global Instance IsOfValueWith_FixedSupply :
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::FixedSupply" [] [] []) :=
+  {
+    value := FixedSupply;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_FixedSupply :
+    OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::FixedSupply" [] [] []) :=
+  {
+    value := FixedSupply;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_AlreadyInUse :
-    Value.StructTuple "spl_token_interface::error::TokenError::AlreadyInUse" [] [] [] =
-    φ AlreadyInUse.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_AlreadyInUse : of_value.
-  Definition of_value_AlreadyInUse :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::AlreadyInUse" [] [] []).
-  Proof. econstructor; apply of_value_with_AlreadyInUse. Defined.
-  Smpl Add apply of_value_AlreadyInUse : of_value.
+  Global Instance IsOfValueWith_AlreadyInUse :
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::AlreadyInUse" [] [] []) :=
+  {
+    value := AlreadyInUse;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_AlreadyInUse :
+    OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::AlreadyInUse" [] [] []) :=
+  {
+    value := AlreadyInUse;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_InvalidNumberOfProvidedSigners :
-    Value.StructTuple "spl_token_interface::error::TokenError::InvalidNumberOfProvidedSigners" [] [] [] =
-    φ InvalidNumberOfProvidedSigners.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_InvalidNumberOfProvidedSigners : of_value.
-  Definition of_value_InvalidNumberOfProvidedSigners :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidNumberOfProvidedSigners" [] [] []).
-  Proof. econstructor; apply of_value_with_InvalidNumberOfProvidedSigners. Defined.
-  Smpl Add apply of_value_InvalidNumberOfProvidedSigners : of_value.
+  Global Instance IsOfValueWith_InvalidNumberOfProvidedSigners :
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidNumberOfProvidedSigners" [] [] []) :=
+  {
+    value := InvalidNumberOfProvidedSigners;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_InvalidNumberOfProvidedSigners :
+    OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::InvalidNumberOfProvidedSigners" [] [] []) :=
+  {
+    value := InvalidNumberOfProvidedSigners;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_InvalidNumberOfRequiredSigners :
-    Value.StructTuple "spl_token_interface::error::TokenError::InvalidNumberOfRequiredSigners" [] [] [] =
-    φ InvalidNumberOfRequiredSigners.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_InvalidNumberOfRequiredSigners : of_value.
-  Definition of_value_InvalidNumberOfRequiredSigners :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidNumberOfRequiredSigners" [] [] []).
-  Proof. econstructor; apply of_value_with_InvalidNumberOfRequiredSigners. Defined.
-  Smpl Add apply of_value_InvalidNumberOfRequiredSigners : of_value.
+  Global Instance IsOfValueWith_InvalidNumberOfRequiredSigners :
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidNumberOfRequiredSigners" [] [] []) :=
+  {
+    value := InvalidNumberOfRequiredSigners;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_InvalidNumberOfRequiredSigners :
+    OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::InvalidNumberOfRequiredSigners" [] [] []) :=
+  {
+    value := InvalidNumberOfRequiredSigners;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_UninitializedState :
-    Value.StructTuple "spl_token_interface::error::TokenError::UninitializedState" [] [] [] =
-    φ UninitializedState.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_UninitializedState : of_value.
-  Definition of_value_UninitializedState :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::UninitializedState" [] [] []).
-  Proof. econstructor; apply of_value_with_UninitializedState. Defined.
-  Smpl Add apply of_value_UninitializedState : of_value.
+  Global Instance IsOfValueWith_UninitializedState :
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::UninitializedState" [] [] []) :=
+  {
+    value := UninitializedState;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_UninitializedState :
+    OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::UninitializedState" [] [] []) :=
+  {
+    value := UninitializedState;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_NativeNotSupported :
-    Value.StructTuple "spl_token_interface::error::TokenError::NativeNotSupported" [] [] [] =
-    φ NativeNotSupported.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_NativeNotSupported : of_value.
-  Definition of_value_NativeNotSupported :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::NativeNotSupported" [] [] []).
-  Proof. econstructor; apply of_value_with_NativeNotSupported. Defined.
-  Smpl Add apply of_value_NativeNotSupported : of_value.
+  Global Instance IsOfValueWith_NonNativeHasBalance :
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::NonNativeHasBalance" [] [] []) :=
+  {
+    value := NonNativeHasBalance;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_NonNativeHasBalance :
+    OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::NonNativeHasBalance" [] [] []) :=
+  {
+    value := NonNativeHasBalance;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_NonNativeHasBalance :
-    Value.StructTuple "spl_token_interface::error::TokenError::NonNativeHasBalance" [] [] [] =
-    φ NonNativeHasBalance.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_NonNativeHasBalance : of_value.
-  Definition of_value_NonNativeHasBalance :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::NonNativeHasBalance" [] [] []).
-  Proof. econstructor; apply of_value_with_NonNativeHasBalance. Defined.
-  Smpl Add apply of_value_NonNativeHasBalance : of_value.
+  Global Instance IsOfValueWith_InvalidInstruction :
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidInstruction" [] [] []) :=
+  {
+    value := InvalidInstruction;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_InvalidInstruction :
+    OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::InvalidInstruction" [] [] []) :=
+  {
+    value := InvalidInstruction;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_InvalidInstruction :
-    Value.StructTuple "spl_token_interface::error::TokenError::InvalidInstruction" [] [] [] =
-    φ InvalidInstruction.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_InvalidInstruction : of_value.
-  Definition of_value_InvalidInstruction :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidInstruction" [] [] []).
-  Proof. econstructor; apply of_value_with_InvalidInstruction. Defined.
-  Smpl Add apply of_value_InvalidInstruction : of_value.
+  Global Instance IsOfValueWith_InvalidState :
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidState" [] [] []) :=
+  {
+    value := InvalidState;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_InvalidState :
+    OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::InvalidState" [] [] []) :=
+  {
+    value := InvalidState;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_InvalidState :
-    Value.StructTuple "spl_token_interface::error::TokenError::InvalidState" [] [] [] =
-    φ InvalidState.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_InvalidState : of_value.
-  Definition of_value_InvalidState :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidState" [] [] []).
-  Proof. econstructor; apply of_value_with_InvalidState. Defined.
-  Smpl Add apply of_value_InvalidState : of_value.
+  Global Instance IsOfValueWith_Overflow :
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::Overflow" [] [] []) :=
+  {
+    value := Overflow;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_Overflow :
+    OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::Overflow" [] [] []) :=
+  {
+    value := Overflow;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_Overflow :
-    Value.StructTuple "spl_token_interface::error::TokenError::Overflow" [] [] [] =
-    φ Overflow.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_Overflow : of_value.
-  Definition of_value_Overflow :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::Overflow" [] [] []).
-  Proof. econstructor; apply of_value_with_Overflow. Defined.
-  Smpl Add apply of_value_Overflow : of_value.
+  Global Instance IsOfValueWith_AuthorityTypeNotSupported :
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::AuthorityTypeNotSupported" [] [] []) :=
+  {
+    value := AuthorityTypeNotSupported;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_AuthorityTypeNotSupported :
+    OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::AuthorityTypeNotSupported" [] [] []) :=
+  {
+    value := AuthorityTypeNotSupported;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_AuthorityTypeNotSupported :
-    Value.StructTuple "spl_token_interface::error::TokenError::AuthorityTypeNotSupported" [] [] [] =
-    φ AuthorityTypeNotSupported.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_AuthorityTypeNotSupported : of_value.
-  Definition of_value_AuthorityTypeNotSupported :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::AuthorityTypeNotSupported" [] [] []).
-  Proof. econstructor; apply of_value_with_AuthorityTypeNotSupported. Defined.
-  Smpl Add apply of_value_AuthorityTypeNotSupported : of_value.
+  Global Instance IsOfValueWith_MintCannotFreeze :
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::MintCannotFreeze" [] [] []) :=
+  {
+    value := MintCannotFreeze;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_MintCannotFreeze :
+    OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::MintCannotFreeze" [] [] []) :=
+  {
+    value := MintCannotFreeze;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_MintCannotFreeze :
-    Value.StructTuple "spl_token_interface::error::TokenError::MintCannotFreeze" [] [] [] =
-    φ MintCannotFreeze.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_MintCannotFreeze : of_value.
-  Definition of_value_MintCannotFreeze :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::MintCannotFreeze" [] [] []).
-  Proof. econstructor; apply of_value_with_MintCannotFreeze. Defined.
-  Smpl Add apply of_value_MintCannotFreeze : of_value.
+  Global Instance IsOfValueWith_AccountFrozen :
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::AccountFrozen" [] [] []) :=
+  {
+    value := AccountFrozen;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_AccountFrozen :
+    OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::AccountFrozen" [] [] []) :=
+  {
+    value := AccountFrozen;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_AccountFrozen :
-    Value.StructTuple "spl_token_interface::error::TokenError::AccountFrozen" [] [] [] =
-    φ AccountFrozen.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_AccountFrozen : of_value.
-  Definition of_value_AccountFrozen :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::AccountFrozen" [] [] []).
-  Proof. econstructor; apply of_value_with_AccountFrozen. Defined.
-  Smpl Add apply of_value_AccountFrozen : of_value.
+  Global Instance IsOfValueWith_MintDecimalsMismatch :
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::MintDecimalsMismatch" [] [] []) :=
+  {
+    value := MintDecimalsMismatch;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_MintDecimalsMismatch :
+    OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::MintDecimalsMismatch" [] [] []) :=
+  {
+    value := MintDecimalsMismatch;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_MintDecimalsMismatch :
-    Value.StructTuple "spl_token_interface::error::TokenError::MintDecimalsMismatch" [] [] [] =
-    φ MintDecimalsMismatch.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_MintDecimalsMismatch : of_value.
-  Definition of_value_MintDecimalsMismatch :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::MintDecimalsMismatch" [] [] []).
-  Proof. econstructor; apply of_value_with_MintDecimalsMismatch. Defined.
-  Smpl Add apply of_value_MintDecimalsMismatch : of_value.
-
-  Lemma of_value_with_NonNativeNotSupported :
-    Value.StructTuple "spl_token_interface::error::TokenError::NonNativeNotSupported" [] [] [] =
-    φ NonNativeNotSupported.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_NonNativeNotSupported : of_value.
-  Definition of_value_NonNativeNotSupported :
-    OfValue.t (Value.StructTuple "spl_token_interface::error::TokenError::NonNativeNotSupported" [] [] []).
-  Proof. econstructor; apply of_value_with_NonNativeNotSupported. Defined.
-  Smpl Add apply of_value_NonNativeNotSupported : of_value.
+  Global Instance IsOfValueWith_NonNativeNotSupported :
+    OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::NonNativeNotSupported" [] [] []) :=
+  {
+    value := NonNativeNotSupported;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_NonNativeNotSupported :
+    OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::NonNativeNotSupported" [] [] []) :=
+  {
+    value := NonNativeNotSupported;
+    eq := eq_refl;
+  }.
 End TokenError.
 
 (* impl From<TokenError> for ProgramError *)

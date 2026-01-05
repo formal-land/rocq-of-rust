@@ -106,233 +106,330 @@ Module ProgramError.
   Proof. econstructor; apply of_value_with_Custom. Defined.
   Smpl Add apply of_value_Custom : of_value.
 
-  Lemma of_value_with_InvalidArgument :
-    Value.StructTuple "solana_program_error::ProgramError::InvalidArgument" [] [] [] = φ InvalidArgument.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_InvalidArgument : of_value.
-  Definition of_value_InvalidArgument :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::InvalidArgument" [] [] []).
-  Proof. econstructor; apply of_value_with_InvalidArgument. Defined.
-  Smpl Add apply of_value_InvalidArgument : of_value.
+  Global Instance IsOfValueWith_InvalidArgument :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::InvalidArgument" [] [] []) :=
+  {
+    value := InvalidArgument;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_InvalidArgument :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::InvalidArgument" [] [] []) :=
+  {
+    value := InvalidArgument;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_InvalidInstructionData :
-    Value.StructTuple "solana_program_error::ProgramError::InvalidInstructionData" [] [] [] = φ InvalidInstructionData.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_InvalidInstructionData : of_value.
-  Definition of_value_InvalidInstructionData :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::InvalidInstructionData" [] [] []).
-  Proof. econstructor; apply of_value_with_InvalidInstructionData. Defined.
-  Smpl Add apply of_value_InvalidInstructionData : of_value.
+  Global Instance IsOfValueWith_InvalidInstructionData :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::InvalidInstructionData" [] [] []) :=
+  {
+    value := InvalidInstructionData;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_InvalidInstructionData :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::InvalidInstructionData" [] [] []) :=
+  {
+    value := InvalidInstructionData;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_InvalidAccountData :
-    Value.StructTuple "solana_program_error::ProgramError::InvalidAccountData" [] [] [] = φ InvalidAccountData.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_InvalidAccountData : of_value.
-  Definition of_value_InvalidAccountData :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::InvalidAccountData" [] [] []).
-  Proof. econstructor; apply of_value_with_InvalidAccountData. Defined.
-  Smpl Add apply of_value_InvalidAccountData : of_value.
+  Global Instance IsOfValueWith_InvalidAccountData :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::InvalidAccountData" [] [] []) :=
+  {
+    value := InvalidAccountData;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_InvalidAccountData :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::InvalidAccountData" [] [] []) :=
+  {
+    value := InvalidAccountData;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_AccountDataTooSmall :
-    Value.StructTuple "solana_program_error::ProgramError::AccountDataTooSmall" [] [] [] = φ AccountDataTooSmall.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_AccountDataTooSmall : of_value.
-  Definition of_value_AccountDataTooSmall :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::AccountDataTooSmall" [] [] []).
-  Proof. econstructor; apply of_value_with_AccountDataTooSmall. Defined.
-  Smpl Add apply of_value_AccountDataTooSmall : of_value.
+  Global Instance IsOfValueWith_AccountDataTooSmall :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::AccountDataTooSmall" [] [] []) :=
+  {
+    value := AccountDataTooSmall;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_AccountDataTooSmall :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::AccountDataTooSmall" [] [] []) :=
+  {
+    value := AccountDataTooSmall;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_InsufficientFunds :
-    Value.StructTuple "solana_program_error::ProgramError::InsufficientFunds" [] [] [] = φ InsufficientFunds.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_InsufficientFunds : of_value.
-  Definition of_value_InsufficientFunds :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::InsufficientFunds" [] [] []).
-  Proof. econstructor; apply of_value_with_InsufficientFunds. Defined.
-  Smpl Add apply of_value_InsufficientFunds : of_value.
+  Global Instance IsOfValueWith_InsufficientFunds :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::InsufficientFunds" [] [] []) :=
+  {
+    value := InsufficientFunds;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_InsufficientFunds :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::InsufficientFunds" [] [] []) :=
+  {
+    value := InsufficientFunds;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_IncorrectProgramId :
-    Value.StructTuple "solana_program_error::ProgramError::IncorrectProgramId" [] [] [] = φ IncorrectProgramId.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_IncorrectProgramId : of_value.
-  Definition of_value_IncorrectProgramId :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::IncorrectProgramId" [] [] []).
-  Proof. econstructor; apply of_value_with_IncorrectProgramId. Defined.
-  Smpl Add apply of_value_IncorrectProgramId : of_value.
+  Global Instance IsOfValueWith_IncorrectProgramId :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::IncorrectProgramId" [] [] []) :=
+  {
+    value := IncorrectProgramId;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_IncorrectProgramId :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::IncorrectProgramId" [] [] []) :=
+  {
+    value := IncorrectProgramId;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_MissingRequiredSignature :
-    Value.StructTuple "solana_program_error::ProgramError::MissingRequiredSignature" [] [] [] = φ MissingRequiredSignature.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_MissingRequiredSignature : of_value.
-  Definition of_value_MissingRequiredSignature :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::MissingRequiredSignature" [] [] []).
-  Proof. econstructor; apply of_value_with_MissingRequiredSignature. Defined.
-  Smpl Add apply of_value_MissingRequiredSignature : of_value.
+  Global Instance IsOfValueWith_MissingRequiredSignature :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::MissingRequiredSignature" [] [] []) :=
+  {
+    value := MissingRequiredSignature;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_MissingRequiredSignature :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::MissingRequiredSignature" [] [] []) :=
+  {
+    value := MissingRequiredSignature;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_AccountAlreadyInitialized :
-    Value.StructTuple "solana_program_error::ProgramError::AccountAlreadyInitialized" [] [] [] = φ AccountAlreadyInitialized.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_AccountAlreadyInitialized : of_value.
-  Definition of_value_AccountAlreadyInitialized :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::AccountAlreadyInitialized" [] [] []).
-  Proof. econstructor; apply of_value_with_AccountAlreadyInitialized. Defined.
-  Smpl Add apply of_value_AccountAlreadyInitialized : of_value.
+  Global Instance IsOfValueWith_AccountAlreadyInitialized :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::AccountAlreadyInitialized" [] [] []) :=
+  {
+    value := AccountAlreadyInitialized;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_AccountAlreadyInitialized :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::AccountAlreadyInitialized" [] [] []) :=
+  {
+    value := AccountAlreadyInitialized;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_UninitializedAccount :
-    Value.StructTuple "solana_program_error::ProgramError::UninitializedAccount" [] [] [] = φ UninitializedAccount.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_UninitializedAccount : of_value.
-  Definition of_value_UninitializedAccount :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::UninitializedAccount" [] [] []).
-  Proof. econstructor; apply of_value_with_UninitializedAccount. Defined.
-  Smpl Add apply of_value_UninitializedAccount : of_value.
+  Global Instance IsOfValueWith_UninitializedAccount :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::UninitializedAccount" [] [] []) :=
+  {
+    value := UninitializedAccount;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_UninitializedAccount :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::UninitializedAccount" [] [] []) :=
+  {
+    value := UninitializedAccount;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_NotEnoughAccountKeys :
-    Value.StructTuple "solana_program_error::ProgramError::NotEnoughAccountKeys" [] [] [] = φ NotEnoughAccountKeys.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_NotEnoughAccountKeys : of_value.
-  Definition of_value_NotEnoughAccountKeys :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::NotEnoughAccountKeys" [] [] []).
-  Proof. econstructor; apply of_value_with_NotEnoughAccountKeys. Defined.
-  Smpl Add apply of_value_NotEnoughAccountKeys : of_value.
+  Global Instance IsOfValueWith_NotEnoughAccountKeys :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::NotEnoughAccountKeys" [] [] []) :=
+  {
+    value := NotEnoughAccountKeys;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_NotEnoughAccountKeys :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::NotEnoughAccountKeys" [] [] []) :=
+  {
+    value := NotEnoughAccountKeys;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_AccountBorrowFailed :
-    Value.StructTuple "solana_program_error::ProgramError::AccountBorrowFailed" [] [] [] = φ AccountBorrowFailed.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_AccountBorrowFailed : of_value.
-  Definition of_value_AccountBorrowFailed :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::AccountBorrowFailed" [] [] []).
-  Proof. econstructor; apply of_value_with_AccountBorrowFailed. Defined.
-  Smpl Add apply of_value_AccountBorrowFailed : of_value.
+  Global Instance IsOfValueWith_AccountBorrowFailed :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::AccountBorrowFailed" [] [] []) :=
+  {
+    value := AccountBorrowFailed;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_AccountBorrowFailed :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::AccountBorrowFailed" [] [] []) :=
+  {
+    value := AccountBorrowFailed;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_MaxSeedLengthExceeded :
-    Value.StructTuple "solana_program_error::ProgramError::MaxSeedLengthExceeded" [] [] [] = φ MaxSeedLengthExceeded.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_MaxSeedLengthExceeded : of_value.
-  Definition of_value_MaxSeedLengthExceeded :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::MaxSeedLengthExceeded" [] [] []).
-  Proof. econstructor; apply of_value_with_MaxSeedLengthExceeded. Defined.
-  Smpl Add apply of_value_MaxSeedLengthExceeded : of_value.
+  Global Instance IsOfValueWith_MaxSeedLengthExceeded :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::MaxSeedLengthExceeded" [] [] []) :=
+  {
+    value := MaxSeedLengthExceeded;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_MaxSeedLengthExceeded :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::MaxSeedLengthExceeded" [] [] []) :=
+  {
+    value := MaxSeedLengthExceeded;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_InvalidSeeds :
-    Value.StructTuple "solana_program_error::ProgramError::InvalidSeeds" [] [] [] = φ InvalidSeeds.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_InvalidSeeds : of_value.
-  Definition of_value_InvalidSeeds :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::InvalidSeeds" [] [] []).
-  Proof. econstructor; apply of_value_with_InvalidSeeds. Defined.
-  Smpl Add apply of_value_InvalidSeeds : of_value.
+  Global Instance IsOfValueWith_InvalidSeeds :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::InvalidSeeds" [] [] []) :=
+  {
+    value := InvalidSeeds;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_InvalidSeeds :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::InvalidSeeds" [] [] []) :=
+  {
+    value := InvalidSeeds;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_BorshIoError :
-    Value.StructTuple "solana_program_error::ProgramError::BorshIoError" [] [] [] = φ BorshIoError.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_BorshIoError : of_value.
-  Definition of_value_BorshIoError :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::BorshIoError" [] [] []).
-  Proof. econstructor; apply of_value_with_BorshIoError. Defined.
-  Smpl Add apply of_value_BorshIoError : of_value.
+  Global Instance IsOfValueWith_BorshIoError :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::BorshIoError" [] [] []) :=
+  {
+    value := BorshIoError;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_BorshIoError :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::BorshIoError" [] [] []) :=
+  {
+    value := BorshIoError;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_AccountNotRentExempt :
-    Value.StructTuple "solana_program_error::ProgramError::AccountNotRentExempt" [] [] [] = φ AccountNotRentExempt.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_AccountNotRentExempt : of_value.
-  Definition of_value_AccountNotRentExempt :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::AccountNotRentExempt" [] [] []).
-  Proof. econstructor; apply of_value_with_AccountNotRentExempt. Defined.
-  Smpl Add apply of_value_AccountNotRentExempt : of_value.
+  Global Instance IsOfValueWith_AccountNotRentExempt :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::AccountNotRentExempt" [] [] []) :=
+  {
+    value := AccountNotRentExempt;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_AccountNotRentExempt :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::AccountNotRentExempt" [] [] []) :=
+  {
+    value := AccountNotRentExempt;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_UnsupportedSysvar :
-    Value.StructTuple "solana_program_error::ProgramError::UnsupportedSysvar" [] [] [] = φ UnsupportedSysvar.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_UnsupportedSysvar : of_value.
-  Definition of_value_UnsupportedSysvar :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::UnsupportedSysvar" [] [] []).
-  Proof. econstructor; apply of_value_with_UnsupportedSysvar. Defined.
-  Smpl Add apply of_value_UnsupportedSysvar : of_value.
+  Global Instance IsOfValueWith_UnsupportedSysvar :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::UnsupportedSysvar" [] [] []) :=
+  {
+    value := UnsupportedSysvar;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_UnsupportedSysvar :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::UnsupportedSysvar" [] [] []) :=
+  {
+    value := UnsupportedSysvar;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_IllegalOwner :
-    Value.StructTuple "solana_program_error::ProgramError::IllegalOwner" [] [] [] = φ IllegalOwner.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_IllegalOwner : of_value.
-  Definition of_value_IllegalOwner :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::IllegalOwner" [] [] []).
-  Proof. econstructor; apply of_value_with_IllegalOwner. Defined.
-  Smpl Add apply of_value_IllegalOwner : of_value.
+  Global Instance IsOfValueWith_IllegalOwner :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::IllegalOwner" [] [] []) :=
+  {
+    value := IllegalOwner;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_IllegalOwner :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::IllegalOwner" [] [] []) :=
+  {
+    value := IllegalOwner;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_MaxAccountsDataAllocationsExceeded :
-    Value.StructTuple "solana_program_error::ProgramError::MaxAccountsDataAllocationsExceeded" [] [] [] =
-    φ MaxAccountsDataAllocationsExceeded.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_MaxAccountsDataAllocationsExceeded : of_value.
-  Definition of_value_MaxAccountsDataAllocationsExceeded :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::MaxAccountsDataAllocationsExceeded" [] [] []).
-  Proof. econstructor; apply of_value_with_MaxAccountsDataAllocationsExceeded. Defined.
-  Smpl Add apply of_value_MaxAccountsDataAllocationsExceeded : of_value.
+  Global Instance IsOfValueWith_MaxAccountsDataAllocationsExceeded :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::MaxAccountsDataAllocationsExceeded" [] [] []) :=
+  {
+    value := MaxAccountsDataAllocationsExceeded;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_MaxAccountsDataAllocationsExceeded :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::MaxAccountsDataAllocationsExceeded" [] [] []) :=
+  {
+    value := MaxAccountsDataAllocationsExceeded;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_InvalidRealloc :
-    Value.StructTuple "solana_program_error::ProgramError::InvalidRealloc" [] [] [] = φ InvalidRealloc.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_InvalidRealloc : of_value.
-  Definition of_value_InvalidRealloc :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::InvalidRealloc" [] [] []).
-  Proof. econstructor; apply of_value_with_InvalidRealloc. Defined.
-  Smpl Add apply of_value_InvalidRealloc : of_value.
+  Global Instance IsOfValueWith_InvalidRealloc :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::InvalidRealloc" [] [] []) :=
+  {
+    value := InvalidRealloc;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_InvalidRealloc :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::InvalidRealloc" [] [] []) :=
+  {
+    value := InvalidRealloc;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_MaxInstructionTraceLengthExceeded :
-    Value.StructTuple "solana_program_error::ProgramError::MaxInstructionTraceLengthExceeded" [] [] [] =
-    φ MaxInstructionTraceLengthExceeded.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_MaxInstructionTraceLengthExceeded : of_value.
-  Definition of_value_MaxInstructionTraceLengthExceeded :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::MaxInstructionTraceLengthExceeded" [] [] []).
-  Proof. econstructor; apply of_value_with_MaxInstructionTraceLengthExceeded. Defined.
-  Smpl Add apply of_value_MaxInstructionTraceLengthExceeded : of_value.
+  Global Instance IsOfValueWith_MaxInstructionTraceLengthExceeded :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::MaxInstructionTraceLengthExceeded" [] [] []) :=
+  {
+    value := MaxInstructionTraceLengthExceeded;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_MaxInstructionTraceLengthExceeded :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::MaxInstructionTraceLengthExceeded" [] [] []) :=
+  {
+    value := MaxInstructionTraceLengthExceeded;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_BuiltinProgramsMustConsumeComputeUnits :
-    Value.StructTuple "solana_program_error::ProgramError::BuiltinProgramsMustConsumeComputeUnits" [] [] [] =
-    φ BuiltinProgramsMustConsumeComputeUnits.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_BuiltinProgramsMustConsumeComputeUnits : of_value.
-  Definition of_value_BuiltinProgramsMustConsumeComputeUnits :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::BuiltinProgramsMustConsumeComputeUnits" [] [] []).
-  Proof. econstructor; apply of_value_with_BuiltinProgramsMustConsumeComputeUnits. Defined.
-  Smpl Add apply of_value_BuiltinProgramsMustConsumeComputeUnits : of_value.
+  Global Instance IsOfValueWith_BuiltinProgramsMustConsumeComputeUnits :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::BuiltinProgramsMustConsumeComputeUnits" [] [] []) :=
+  {
+    value := BuiltinProgramsMustConsumeComputeUnits;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_BuiltinProgramsMustConsumeComputeUnits :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::BuiltinProgramsMustConsumeComputeUnits" [] [] []) :=
+  {
+    value := BuiltinProgramsMustConsumeComputeUnits;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_InvalidAccountOwner :
-    Value.StructTuple "solana_program_error::ProgramError::InvalidAccountOwner" [] [] [] = φ InvalidAccountOwner.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_InvalidAccountOwner : of_value.
-  Definition of_value_InvalidAccountOwner :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::InvalidAccountOwner" [] [] []).
-  Proof. econstructor; apply of_value_with_InvalidAccountOwner. Defined.
-  Smpl Add apply of_value_InvalidAccountOwner : of_value.
+  Global Instance IsOfValueWith_InvalidAccountOwner :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::InvalidAccountOwner" [] [] []) :=
+  {
+    value := InvalidAccountOwner;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_InvalidAccountOwner :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::InvalidAccountOwner" [] [] []) :=
+  {
+    value := InvalidAccountOwner;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_ArithmeticOverflow :
-    Value.StructTuple "solana_program_error::ProgramError::ArithmeticOverflow" [] [] [] = φ ArithmeticOverflow.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_ArithmeticOverflow : of_value.
-  Definition of_value_ArithmeticOverflow :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::ArithmeticOverflow" [] [] []).
-  Proof. econstructor; apply of_value_with_ArithmeticOverflow. Defined.
-  Smpl Add apply of_value_ArithmeticOverflow : of_value.
+  Global Instance IsOfValueWith_ArithmeticOverflow :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::ArithmeticOverflow" [] [] []) :=
+  {
+    value := ArithmeticOverflow;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_ArithmeticOverflow :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::ArithmeticOverflow" [] [] []) :=
+  {
+    value := ArithmeticOverflow;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_Immutable :
-    Value.StructTuple "solana_program_error::ProgramError::Immutable" [] [] [] = φ Immutable.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_Immutable : of_value.
-  Definition of_value_Immutable :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::Immutable" [] [] []).
-  Proof. econstructor; apply of_value_with_Immutable. Defined.
-  Smpl Add apply of_value_Immutable : of_value.
+  Global Instance IsOfValueWith_Immutable :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::Immutable" [] [] []) :=
+  {
+    value := Immutable;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_Immutable :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::Immutable" [] [] []) :=
+  {
+    value := Immutable;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_IncorrectAuthority :
-    Value.StructTuple "solana_program_error::ProgramError::IncorrectAuthority" [] [] [] = φ IncorrectAuthority.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_IncorrectAuthority : of_value.
-  Definition of_value_IncorrectAuthority :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::IncorrectAuthority" [] [] []).
-  Proof. econstructor; apply of_value_with_IncorrectAuthority. Defined.
-  Smpl Add apply of_value_IncorrectAuthority : of_value.
+  Global Instance IsOfValueWith_IncorrectAuthority :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::IncorrectAuthority" [] [] []) :=
+  {
+    value := IncorrectAuthority;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_IncorrectAuthority :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::IncorrectAuthority" [] [] []) :=
+  {
+    value := IncorrectAuthority;
+    eq := eq_refl;
+  }.
 
   Module SubPointer.
     Definition get_Custom_0 : SubPointer.Runner.t t

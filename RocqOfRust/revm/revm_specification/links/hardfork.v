@@ -81,278 +81,278 @@ Module SpecId.
   Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
   Smpl Add simple apply of_ty : of_ty.
 
-  Lemma of_value_with_FRONTIER :
-    Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER" [] [] [] =
-    φ FRONTIER.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_FRONTIER : of_value.
+  Global Instance IsOfValueWith_FRONTIER :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER" [] [] []) :=
+  {
+    value := FRONTIER;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_FRONTIER :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER" [] [] []) :=
+  {
+    value := FRONTIER;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_FRONTIER_THAWING :
-    Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER_THAWING" [] [] [] =
-    φ FRONTIER_THAWING.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_FRONTIER_THAWING : of_value.
+  Global Instance IsOfValueWith_FRONTIER_THAWING :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER_THAWING" [] [] []) :=
+  {
+    value := FRONTIER_THAWING;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_FRONTIER_THAWING :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER_THAWING" [] [] []) :=
+  {
+    value := FRONTIER_THAWING;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_HOMESTEAD :
-    Value.StructTuple "revm_specification::hardfork::SpecId::HOMESTEAD" [] [] [] =
-    φ HOMESTEAD.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_HOMESTEAD : of_value.
+  Global Instance IsOfValueWith_HOMESTEAD :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::HOMESTEAD" [] [] []) :=
+  {
+    value := HOMESTEAD;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_HOMESTEAD :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::HOMESTEAD" [] [] []) :=
+  {
+    value := HOMESTEAD;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_DAO_FORK :
-    Value.StructTuple "revm_specification::hardfork::SpecId::DAO_FORK" [] [] [] =
-    φ DAO_FORK.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_DAO_FORK : of_value.
+  Global Instance IsOfValueWith_DAO_FORK :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::DAO_FORK" [] [] []) :=
+  {
+    value := DAO_FORK;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_DAO_FORK :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::DAO_FORK" [] [] []) :=
+  {
+    value := DAO_FORK;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_TANGERINE :
-    Value.StructTuple "revm_specification::hardfork::SpecId::TANGERINE" [] [] [] =
-    φ TANGERINE.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_TANGERINE : of_value.
+  Global Instance IsOfValueWith_TANGERINE :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::TANGERINE" [] [] []) :=
+  {
+    value := TANGERINE;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_TANGERINE :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::TANGERINE" [] [] []) :=
+  {
+    value := TANGERINE;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_SPURIOUS_DRAGON :
-    Value.StructTuple "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON" [] [] [] =
-    φ SPURIOUS_DRAGON.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_SPURIOUS_DRAGON : of_value.
+  Global Instance IsOfValueWith_SPURIOUS_DRAGON :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON" [] [] []) :=
+  {
+    value := SPURIOUS_DRAGON;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_SPURIOUS_DRAGON :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON" [] [] []) :=
+  {
+    value := SPURIOUS_DRAGON;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_BYZANTIUM :
-    Value.StructTuple "revm_specification::hardfork::SpecId::BYZANTIUM" [] [] [] =
-    φ BYZANTIUM.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_BYZANTIUM : of_value.
+  Global Instance IsOfValueWith_BYZANTIUM :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::BYZANTIUM" [] [] []) :=
+  {
+    value := BYZANTIUM;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_BYZANTIUM :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::BYZANTIUM" [] [] []) :=
+  {
+    value := BYZANTIUM;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_CONSTANTINOPLE :
-    Value.StructTuple "revm_specification::hardfork::SpecId::CONSTANTINOPLE" [] [] [] =
-    φ CONSTANTINOPLE.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_CONSTANTINOPLE : of_value.
+  Global Instance IsOfValueWith_CONSTANTINOPLE :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::CONSTANTINOPLE" [] [] []) :=
+  {
+    value := CONSTANTINOPLE;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_CONSTANTINOPLE :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::CONSTANTINOPLE" [] [] []) :=
+  {
+    value := CONSTANTINOPLE;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_PETERSBURG :
-    Value.StructTuple "revm_specification::hardfork::SpecId::PETERSBURG" [] [] [] =
-    φ PETERSBURG.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_PETERSBURG : of_value.
+  Global Instance IsOfValueWith_PETERSBURG :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::PETERSBURG" [] [] []) :=
+  {
+    value := PETERSBURG;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_PETERSBURG :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::PETERSBURG" [] [] []) :=
+  {
+    value := PETERSBURG;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_ISTANBUL :
-    Value.StructTuple "revm_specification::hardfork::SpecId::ISTANBUL" [] [] [] =
-    φ ISTANBUL.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_ISTANBUL : of_value.
+  Global Instance IsOfValueWith_ISTANBUL :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::ISTANBUL" [] [] []) :=
+  {
+    value := ISTANBUL;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_ISTANBUL :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::ISTANBUL" [] [] []) :=
+  {
+    value := ISTANBUL;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_MUIR_GLACIER :
-    Value.StructTuple "revm_specification::hardfork::SpecId::MUIR_GLACIER" [] [] [] =
-    φ MUIR_GLACIER.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_MUIR_GLACIER : of_value.
+  Global Instance IsOfValueWith_MUIR_GLACIER :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::MUIR_GLACIER" [] [] []) :=
+  {
+    value := MUIR_GLACIER;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_MUIR_GLACIER :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::MUIR_GLACIER" [] [] []) :=
+  {
+    value := MUIR_GLACIER;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_BERLIN :
-    Value.StructTuple "revm_specification::hardfork::SpecId::BERLIN" [] [] [] =
-    φ BERLIN.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_BERLIN : of_value.
+  Global Instance IsOfValueWith_BERLIN :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::BERLIN" [] [] []) :=
+  {
+    value := BERLIN;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_BERLIN :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::BERLIN" [] [] []) :=
+  {
+    value := BERLIN;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_LONDON :
-    Value.StructTuple "revm_specification::hardfork::SpecId::LONDON" [] [] [] =
-    φ LONDON.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_LONDON : of_value.
+  Global Instance IsOfValueWith_LONDON :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::LONDON" [] [] []) :=
+  {
+    value := LONDON;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_LONDON :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::LONDON" [] [] []) :=
+  {
+    value := LONDON;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_ARROW_GLACIER :
-    Value.StructTuple "revm_specification::hardfork::SpecId::ARROW_GLACIER" [] [] [] =
-    φ ARROW_GLACIER.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_ARROW_GLACIER : of_value.
+  Global Instance IsOfValueWith_ARROW_GLACIER :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::ARROW_GLACIER" [] [] []) :=
+  {
+    value := ARROW_GLACIER;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_ARROW_GLACIER :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::ARROW_GLACIER" [] [] []) :=
+  {
+    value := ARROW_GLACIER;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_GRAY_GLACIER :
-    Value.StructTuple "revm_specification::hardfork::SpecId::GRAY_GLACIER" [] [] [] =
-    φ GRAY_GLACIER.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_GRAY_GLACIER : of_value.
+  Global Instance IsOfValueWith_GRAY_GLACIER :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::GRAY_GLACIER" [] [] []) :=
+  {
+    value := GRAY_GLACIER;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_GRAY_GLACIER :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::GRAY_GLACIER" [] [] []) :=
+  {
+    value := GRAY_GLACIER;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_MERGE :
-    Value.StructTuple "revm_specification::hardfork::SpecId::MERGE" [] [] [] =
-    φ MERGE.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_MERGE : of_value.
+  Global Instance IsOfValueWith_MERGE :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::MERGE" [] [] []) :=
+  {
+    value := MERGE;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_MERGE :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::MERGE" [] [] []) :=
+  {
+    value := MERGE;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_SHANGHAI :
-    Value.StructTuple "revm_specification::hardfork::SpecId::SHANGHAI" [] [] [] =
-    φ SHANGHAI.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_SHANGHAI : of_value.
+  Global Instance IsOfValueWith_SHANGHAI :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::SHANGHAI" [] [] []) :=
+  {
+    value := SHANGHAI;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_SHANGHAI :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::SHANGHAI" [] [] []) :=
+  {
+    value := SHANGHAI;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_CANCUN :
-    Value.StructTuple "revm_specification::hardfork::SpecId::CANCUN" [] [] [] =
-    φ CANCUN.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_CANCUN : of_value.
+  Global Instance IsOfValueWith_CANCUN :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::CANCUN" [] [] []) :=
+  {
+    value := CANCUN;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_CANCUN :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::CANCUN" [] [] []) :=
+  {
+    value := CANCUN;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_PRAGUE :
-    Value.StructTuple "revm_specification::hardfork::SpecId::PRAGUE" [] [] [] =
-    φ PRAGUE.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_PRAGUE : of_value.
+  Global Instance IsOfValueWith_PRAGUE :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::PRAGUE" [] [] []) :=
+  {
+    value := PRAGUE;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_PRAGUE :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::PRAGUE" [] [] []) :=
+  {
+    value := PRAGUE;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_OSAKA :
-    Value.StructTuple "revm_specification::hardfork::SpecId::OSAKA" [] [] [] =
-    φ OSAKA.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_OSAKA : of_value.
+  Global Instance IsOfValueWith_OSAKA :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::OSAKA" [] [] []) :=
+  {
+    value := OSAKA;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_OSAKA :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::OSAKA" [] [] []) :=
+  {
+    value := OSAKA;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_LATEST :
-    Value.StructTuple "revm_specification::hardfork::SpecId::LATEST" [] [] [] =
-    φ LATEST.
-  Proof. now intros; subst. Qed.
-  Smpl Add simple apply of_value_with_LATEST : of_value.
-
-  Definition of_value_FRONTIER :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_FRONTIER; eassumption. Defined.
-  Smpl Add simple apply of_value_FRONTIER : of_value.
-
-  Definition of_value_FRONTIER_THAWING :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::FRONTIER_THAWING" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_FRONTIER_THAWING; eassumption. Defined.
-  Smpl Add simple apply of_value_FRONTIER_THAWING : of_value.
-
-  Definition of_value_HOMESTEAD :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::HOMESTEAD" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_HOMESTEAD; eassumption. Defined.
-  Smpl Add simple apply of_value_HOMESTEAD : of_value.
-
-  Definition of_value_DAO_FORK :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::DAO_FORK" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_DAO_FORK; eassumption. Defined.
-  Smpl Add simple apply of_value_DAO_FORK : of_value.
-
-  Definition of_value_TANGERINE :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::TANGERINE" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_TANGERINE; eassumption. Defined.
-  Smpl Add simple apply of_value_TANGERINE : of_value.
-
-  Definition of_value_SPURIOUS_DRAGON :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_SPURIOUS_DRAGON; eassumption. Defined.
-  Smpl Add simple apply of_value_SPURIOUS_DRAGON : of_value.
-
-  Definition of_value_BYZANTIUM :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::BYZANTIUM" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_BYZANTIUM; eassumption. Defined.
-  Smpl Add simple apply of_value_BYZANTIUM : of_value.
-
-  Definition of_value_CONSTANTINOPLE :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::CONSTANTINOPLE" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_CONSTANTINOPLE; eassumption. Defined.
-  Smpl Add simple apply of_value_CONSTANTINOPLE : of_value.
-
-  Definition of_value_PETERSBURG :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::PETERSBURG" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_PETERSBURG; eassumption. Defined.
-  Smpl Add simple apply of_value_PETERSBURG : of_value.
-
-  Definition of_value_ISTANBUL :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::ISTANBUL" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_ISTANBUL; eassumption. Defined.
-  Smpl Add simple apply of_value_ISTANBUL : of_value.
-
-  Definition of_value_MUIR_GLACIER :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::MUIR_GLACIER" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_MUIR_GLACIER; eassumption. Defined.
-  Smpl Add simple apply of_value_MUIR_GLACIER : of_value.
-
-  Definition of_value_BERLIN :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::BERLIN" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_BERLIN; eassumption. Defined.
-  Smpl Add simple apply of_value_BERLIN : of_value.
-
-  Definition of_value_LONDON :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::LONDON" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_LONDON; eassumption. Defined.
-  Smpl Add simple apply of_value_LONDON : of_value.
-
-  Definition of_value_ARROW_GLACIER :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::ARROW_GLACIER" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_ARROW_GLACIER; eassumption. Defined.
-  Smpl Add simple apply of_value_ARROW_GLACIER : of_value.
-
-  Definition of_value_GRAY_GLACIER :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::GRAY_GLACIER" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_GRAY_GLACIER; eassumption. Defined.
-  Smpl Add simple apply of_value_GRAY_GLACIER : of_value.
-
-  Definition of_value_MERGE :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::MERGE" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_MERGE; eassumption. Defined.
-  Smpl Add simple apply of_value_MERGE : of_value.
-
-  Definition of_value_SHANGHAI :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::SHANGHAI" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_SHANGHAI; eassumption. Defined.
-  Smpl Add simple apply of_value_SHANGHAI : of_value.
-
-  Definition of_value_CANCUN :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::CANCUN" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_CANCUN; eassumption. Defined.
-  Smpl Add simple apply of_value_CANCUN : of_value.
-
-  Definition of_value_PRAGUE :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::PRAGUE" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_PRAGUE; eassumption. Defined.
-  Smpl Add simple apply of_value_PRAGUE : of_value.
-
-  Definition of_value_OSAKA :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::OSAKA" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_OSAKA; eassumption. Defined.
-  Smpl Add simple apply of_value_OSAKA : of_value.
-
-  Definition of_value_LATEST :
-    OfValue.t (
-      Value.StructTuple "revm_specification::hardfork::SpecId::LATEST" [] [] []
-    ).
-  Proof. econstructor; apply of_value_with_LATEST; eassumption. Defined.
-  Smpl Add simple apply of_value_LATEST : of_value.
+  Global Instance IsOfValueWith_LATEST :
+    OfValueWith.C t (Value.StructTuple "revm_specification::hardfork::SpecId::LATEST" [] [] []) :=
+  {
+    value := LATEST;
+    eq := eq_refl;
+  }.
+  Global Instance IsOfValue_LATEST :
+    OfValue.C (Value.StructTuple "revm_specification::hardfork::SpecId::LATEST" [] [] []) :=
+  {
+    value := LATEST;
+    eq := eq_refl;
+  }.
 
   Definition get_discriminant (x : t) : Z :=
     match x with
