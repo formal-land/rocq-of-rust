@@ -1,0 +1,47 @@
+{# Template for panicking links file #}
+Require Import RocqOfRust.RocqOfRust.
+Require Import RocqOfRust.links.M.
+Require Import core.fmt.links.mod.
+Require Import core.links.option.
+Require Import core.panicking.
+
+Require Export core.links.panickingAux.
+
+(*
+pub enum AssertKind {
+    Eq,
+    Ne,
+    Match,
+}
+*)
+Module AssertKind.
+{{ macros.enum_body("core::panicking::AssertKind", [
+  ("Eq", []),
+  ("Ne", []),
+  ("Match", []),
+]) }}
+End AssertKind.
+
+(*
+pub fn assert_failed<T, U>(
+    kind: AssertKind,
+    left: &T,
+    right: &U,
+    args: Option<fmt::Arguments<'_>>,
+) -> !
+*)
+Instance run_assert_failed
+  (T : Set) `{Link T}
+  (U : Set) `{Link U}
+  (kind : AssertKind.t)
+  (left : '& T)
+  (right : '& U)
+  (args : option Arguments.t) :
+  Run.Trait
+    panicking.assert_failed [] [ Φ T; Φ U ] [φ kind; φ left; φ right; φ args]
+    Empty_set.
+Proof.
+  constructor.
+  run_symbolic.
+Admitted.
+Global Opaque run_assert_failed.

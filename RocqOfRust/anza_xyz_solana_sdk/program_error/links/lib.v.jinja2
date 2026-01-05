@@ -1,6 +1,11 @@
 {# Template for ProgramError links file #}
-{% set path = "solana_program_error::ProgramError" %}
-{% set variants = [
+Require Import RocqOfRust.RocqOfRust.
+Require Import RocqOfRust.links.M.
+Require Import core.links.result.
+Require Import anza_xyz_solana_sdk.program_error.lib.
+
+Module ProgramError.
+{{ macros.enum_body("solana_program_error::ProgramError", [
   ("Custom", [("n", "u32")]),
   ("InvalidArgument", []),
   ("InvalidInstructionData", []),
@@ -27,14 +32,7 @@
   ("ArithmeticOverflow", []),
   ("Immutable", []),
   ("IncorrectAuthority", []),
-] %}
-Require Import RocqOfRust.RocqOfRust.
-Require Import RocqOfRust.links.M.
-Require Import core.links.result.
-Require Import anza_xyz_solana_sdk.program_error.lib.
-
-Module ProgramError.
-{{ macros.enum_body(path, variants) }}
+]) }}
 End ProgramError.
 
 (* ProgramResult = Result<(), ProgramError> *)
