@@ -48,8 +48,8 @@ Module Impl_Address.
       H: Borrow<[u8; 32]>,
   *)
   Instance run_create2 (S H : Set) `{Link S} `{Link H}
-    {run_Borrow_for_S : Borrow.Run S (array.t U8.t {| Integer.value := 32 |})}
-    {run_Borrow_for_H : Borrow.Run H (array.t U8.t {| Integer.value := 32 |})}
+    {run_Borrow_for_S : Borrow.Run S (array.t u8 {| Integer.value := 32 |})}
+    {run_Borrow_for_H : Borrow.Run H (array.t u8 {| Integer.value := 32 |})}
     (self : Ref.t Pointer.Kind.Ref Self)
     (salt : S)
     (init_code_hash : H) :

@@ -14,7 +14,7 @@ Require Import revm_bytecode.eof.body.
 Module EofBody.
   Record t : Set := {
     code : Bytes.t;
-    code_section : Vec.t Usize.t Global.t;
+    code_section : Vec.t usize Global.t;
     container_section : Vec.t Bytes.t Global.t;
     data_section : Bytes.t;
     is_data_filled : bool;
@@ -40,7 +40,7 @@ Module EofBody.
 
   Lemma of_value_with
       (code : Bytes.t) code'
-      (code_section : Vec.t Usize.t Global.t) code_section'
+      (code_section : Vec.t usize Global.t) code_section'
       (container_section : Vec.t Bytes.t Global.t) container_section'
       (data_section : Bytes.t) data_section'
       (is_data_filled : bool) is_data_filled'
@@ -71,7 +71,7 @@ Module EofBody.
 
   Definition of_value
       (code : Bytes.t)
-      (code_section : Vec.t Usize.t Global.t)
+      (code_section : Vec.t usize Global.t)
       (container_section : Vec.t Bytes.t Global.t)
       (data_section : Bytes.t)
       (is_data_filled : bool)

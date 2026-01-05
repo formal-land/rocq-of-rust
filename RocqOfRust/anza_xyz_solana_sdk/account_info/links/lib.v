@@ -8,7 +8,7 @@ Require Import anza_xyz_solana_sdk.account_info.lib.
 Instance run_MAX_PERMITTED_DATA_INCREASE :
   Run.Trait
     lib.value_MAX_PERMITTED_DATA_INCREASE [] [] []
-    (Ref.t Pointer.Kind.Raw Usize.t).
+    (Ref.t Pointer.Kind.Raw usize).
 Proof.
   constructor.
   run_symbolic.
@@ -43,7 +43,7 @@ Module AccountInfo.
     lamports : Rc_RefCell_mut_u64;
     data : Rc_RefCell_mut_slice_u8;
     owner : Ref.t Pointer.Kind.Ref Address.t;
-    _unused : U64.t;
+    _unused : u64;
     is_signer : bool;
     is_writable : bool;
     executable : bool;
@@ -73,7 +73,7 @@ Module AccountInfo.
     (lamports : Rc_RefCell_mut_u64) (lamports' : Value.t)
     (data : Rc_RefCell_mut_slice_u8) (data' : Value.t)
     (owner : Ref.t Pointer.Kind.Ref Address.t) (owner' : Value.t)
-    (_unused : U64.t) (_unused' : Value.t)
+    (_unused : u64) (_unused' : Value.t)
     (is_signer : bool) (is_signer' : Value.t)
     (is_writable : bool) (is_writable' : Value.t)
     (executable : bool) (executable' : Value.t)
@@ -104,7 +104,7 @@ Module AccountInfo.
     (lamports : Rc_RefCell_mut_u64) (lamports' : Value.t)
     (data : Rc_RefCell_mut_slice_u8) (data' : Value.t)
     (owner : Ref.t Pointer.Kind.Ref Address.t) (owner' : Value.t)
-    (_unused : U64.t) (_unused' : Value.t)
+    (_unused : u64) (_unused' : Value.t)
     (is_signer : bool) (is_signer' : Value.t)
     (is_writable : bool) (is_writable' : Value.t)
     (executable : bool) (executable' : Value.t)

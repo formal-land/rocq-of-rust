@@ -37,7 +37,7 @@ Module Eip4844Tx.
     Set :=
     TraitMethod.C (trait Self) "max_fee_per_blob_gas" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] U128.t
+      Run.Trait method [] [] [ φ self ] u128
     ).
 
   Definition Run_total_blob_gas
@@ -45,7 +45,7 @@ Module Eip4844Tx.
     Set :=
     TraitMethod.C (trait Self) "total_blob_gas" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] U64.t
+      Run.Trait method [] [] [ φ self ] u64
     ).
 
   Definition Run_calc_max_data_fee

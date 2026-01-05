@@ -69,7 +69,7 @@ Instance run_instruction
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
     (run_Host_for_H : Host.Run H H_types)
-    (opcode : U8.t) :
+    (opcode : u8) :
   Run.Trait
     instructions.instruction [] [ Φ WIRE; Φ H ] [ φ opcode ]
     (Instruction.t WIRE H WIRE_types).

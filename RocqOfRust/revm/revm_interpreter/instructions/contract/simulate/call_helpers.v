@@ -13,7 +13,7 @@ Parameter get_memory_input_and_out_ranges :
     {WIRE : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types},
   Interpreter.t WIRE WIRE_types ->
-  option (Bytes.t * Range.t Usize.t) *
+  option (Bytes.t * Range.t usize) *
   Interpreter.t WIRE WIRE_types.
 
 Lemma get_memory_input_and_out_ranges_eq
@@ -44,8 +44,8 @@ Parameter calc_call_gas :
   Interpreter.t WIRE WIRE_types ->
   AccountLoad.t ->
   bool ->
-  U64.t ->
-  option U64.t * Interpreter.t WIRE WIRE_types.
+  u64 ->
+  option u64 * Interpreter.t WIRE WIRE_types.
 
 Lemma calc_call_gas_eq
     {WIRE : Set} `{Link WIRE}
@@ -54,7 +54,7 @@ Lemma calc_call_gas_eq
     (interpreter : Interpreter.t WIRE WIRE_types)
     (account_load : AccountLoad.t)
     (has_transfer : bool)
-    (local_gas_limit : U64.t)
+    (local_gas_limit : u64)
     (stack : Stack.t) :
   let ref_interpreter := make_ref 0 in
   {{

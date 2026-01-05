@@ -59,15 +59,15 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_LoopControl_for_Control.
   destruct Impl_From_U256_for_FixedBytes_32.run.
-  destruct (Impl_Iterator_for_Iter.run U8.t).
-  destruct (Impl_Index_for_FixedBytes_N.run {| Integer.value := 32 |} (RangeTo.t Usize.t)).
+  destruct (Impl_Iterator_for_Iter.run u8).
+  destruct (Impl_Index_for_FixedBytes_N.run {| Integer.value := 32 |} (RangeTo.t usize)).
   run_symbolic.
   match goal with
   | |- context[Value.Closure (existS (_, _) ?closure)] =>
     set (any_callback := closure)
   end.
   assert (run_any_callback :
-    forall (i : Ref.t Pointer.Kind.Ref U8.t),
+    forall (i : Ref.t Pointer.Kind.Ref u8),
     Run.Trait (fun _ _ => any_callback) [] [] [φ i] bool
   ). {
     intros.

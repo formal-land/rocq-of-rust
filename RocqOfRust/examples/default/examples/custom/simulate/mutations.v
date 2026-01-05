@@ -54,7 +54,7 @@ Proof.
   ).
 Qed.
 
-Lemma duplicate_eq (a b c : U64.t) :
+Lemma duplicate_eq (a b c : u64) :
   let ref_a := make_ref 0 in
   let ref_b := make_ref 1 in
   let ref_c := make_ref 2 in

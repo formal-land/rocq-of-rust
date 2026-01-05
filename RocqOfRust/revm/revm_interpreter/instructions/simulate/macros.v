@@ -13,7 +13,7 @@ Definition gas_macro {WIRE K : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types)
-    (cost : U64.t)
+    (cost : u64)
     (k_exit : Interpreter.t WIRE WIRE_types -> K)
     (k : Interpreter.t WIRE WIRE_types -> K) :
     K :=
@@ -78,7 +78,7 @@ Definition popn_macro {WIRE K : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types)
-    (N : Usize.t)
+    (N : usize)
     (k_exit : Interpreter.t WIRE WIRE_types -> K)
     (k : array.t aliases.U256.t N -> Interpreter.t WIRE WIRE_types -> K) :
     K :=
@@ -121,7 +121,7 @@ Definition popn_top_macro {WIRE K : Set} `{Link WIRE}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     {IInterpreterTypes : InterpreterTypes.C WIRE_types}
     (interpreter : Interpreter.t WIRE WIRE_types)
-    (N : Usize.t)
+    (N : usize)
     (k_exit : Interpreter.t WIRE WIRE_types -> K)
     (k :
       array.t aliases.U256.t N ->

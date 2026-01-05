@@ -47,7 +47,7 @@ Module Impl_Slice.
       (T : Set) `{Link T}
       (self : Ref.t Pointer.Kind.Ref (Self T)) :
     Run.Trait (slice.Impl_slice_T.len (Φ T)) [] [] [φ self]
-      Usize.t.
+      usize.
   Admitted.
   Global Opaque run_len.
 
@@ -103,7 +103,7 @@ Module Impl_Slice.
   Instance run_chunks_exact
       (T : Set) `{Link T}
       (self : Ref.t Pointer.Kind.Ref (Self T))
-      (chunk_size : Usize.t) :
+      (chunk_size : usize) :
     Run.Trait (slice.Impl_slice_T.chunks_exact (Φ T)) [] [] [φ self; φ chunk_size]
       (ChunksExact.t T).
   Admitted.
@@ -113,7 +113,7 @@ Module Impl_Slice.
   Instance run_rchunks_exact
       (T : Set) `{Link T}
       (self : Ref.t Pointer.Kind.Ref (Self T))
-      (chunk_size : Usize.t) :
+      (chunk_size : usize) :
     Run.Trait (slice.Impl_slice_T.rchunks_exact (Φ T)) [] [] [φ self; φ chunk_size]
       (RChunksExact.t T).
   Admitted.

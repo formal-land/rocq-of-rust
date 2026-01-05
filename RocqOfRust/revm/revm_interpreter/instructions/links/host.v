@@ -330,7 +330,7 @@ pub fn log<const N: usize, H: Host + ?Sized>(
 )
 *)
 Instance run_log
-    {N : Usize.t}
+    {N : usize}
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
@@ -350,7 +350,7 @@ Proof.
   destruct run_InputsTrait_for_Input.
   destruct run_LoopControl_for_Control.
   destruct run_Host_for_H.
-  destruct (Impl_AsRef_for_Slice.run U8.t).
+  destruct (Impl_AsRef_for_Slice.run u8).
   destruct run_Deref_for_Synthetic1.
   destruct (
     let B := FixedBytes.t {| Integer.value := 32 |} in

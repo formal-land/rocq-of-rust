@@ -4,16 +4,16 @@ Require Import RocqOfRust.simulate.M.
 Require Import ruint.links.lib.
 
 Module Impl_Uint.
-  Definition Self (BITS LIMBS : Usize.t) : Set :=
+  Definition Self (BITS LIMBS : usize) : Set :=
     Uint.t BITS LIMBS.
 
   Parameter from_limbs :
-    forall {BITS LIMBS : Usize.t} (limbs : array.t U64.t LIMBS),
+    forall {BITS LIMBS : usize} (limbs : array.t u64 LIMBS),
     Self BITS LIMBS.
 
   Lemma from_limbs_eq
       (stack : Stack.t)
-      (BITS LIMBS : Usize.t) (limbs : array.t U64.t LIMBS) :
+      (BITS LIMBS : usize) (limbs : array.t u64 LIMBS) :
     {{
       SimulateM.eval_f
         (Impl_Uint.run_from_limbs BITS LIMBS limbs)
@@ -26,12 +26,12 @@ Module Impl_Uint.
   Admitted.
 
   Parameter BITS :
-    forall (BITS LIMBS : Usize.t),
-    Usize.t.
+    forall (BITS LIMBS : usize),
+    usize.
 
   Lemma BITS_eq
       (stack : Stack.t)
-      (BITS LIMBS : Usize.t) :
+      (BITS LIMBS : usize) :
     {{
       SimulateM.eval_f
         (Impl_Uint.run_BITS BITS LIMBS)
@@ -44,12 +44,12 @@ Module Impl_Uint.
   Admitted.
 
   Parameter ZERO :
-    forall {BITS LIMBS : Usize.t},
+    forall {BITS LIMBS : usize},
     Self BITS LIMBS.
 
   Lemma ZERO_eq
       (stack : Stack.t)
-      (BITS LIMBS : Usize.t) :
+      (BITS LIMBS : usize) :
     {{
       SimulateM.eval_f
         (Impl_Uint.run_ZERO BITS LIMBS)
@@ -62,12 +62,12 @@ Module Impl_Uint.
   Admitted.
 
   Parameter MIN :
-    forall {BITS LIMBS : Usize.t},
+    forall {BITS LIMBS : usize},
     Self BITS LIMBS.
 
   Lemma MIN_eq
       (stack : Stack.t)
-      (BITS LIMBS : Usize.t) :
+      (BITS LIMBS : usize) :
     {{
       SimulateM.eval_f
         (Impl_Uint.run_MIN BITS LIMBS)
@@ -80,12 +80,12 @@ Module Impl_Uint.
   Admitted.
 
   Parameter MAX :
-    forall {BITS LIMBS : Usize.t},
+    forall {BITS LIMBS : usize},
     Self BITS LIMBS.
 
   Lemma MAX_eq
       (stack : Stack.t)
-      (BITS LIMBS : Usize.t) :
+      (BITS LIMBS : usize) :
     {{
       SimulateM.eval_f
         (Impl_Uint.run_MAX BITS LIMBS)

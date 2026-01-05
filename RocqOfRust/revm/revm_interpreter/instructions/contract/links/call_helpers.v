@@ -22,7 +22,7 @@ Instance run_get_memory_input_and_out_ranges
   Run.Trait
     instructions.contract.call_helpers.get_memory_input_and_out_ranges
     [] [Φ WIRE] [φ interpreter]
-    (option (Bytes.t * Range.t Usize.t)).
+    (option (Bytes.t * Range.t usize)).
 Proof.
   constructor.
 Admitted.
@@ -44,7 +44,7 @@ Instance run_resize_memory
   Run.Trait
     instructions.contract.call_helpers.resize_memory
     [] [Φ WIRE] [φ interpreter; φ offset; φ len]
-    (option (Range.t Usize.t)).
+    (option (Range.t usize)).
 Proof.
   constructor.
 Admitted.
@@ -65,11 +65,11 @@ Instance run_calc_call_gas
   (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
   (account_load : AccountLoad.t)
   (has_transfer : bool)
-  (local_gas_limit : U64.t) :
+  (local_gas_limit : u64) :
   Run.Trait
     instructions.contract.call_helpers.calc_call_gas
     [] [Φ WIRE] [φ interpreter; φ account_load; φ has_transfer; φ local_gas_limit]
-    (option U64.t).
+    (option u64).
 Proof.
   constructor.
 Admitted.

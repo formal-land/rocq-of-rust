@@ -6,7 +6,7 @@ Require Import pinocchio.links.lib.
 Instance run_sol_memcpy
   (dst : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8)))
   (src : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8)))
-  (n : Usize.t) :
+  (n : usize) :
   Run.Trait
     memory.sol_memcpy
     [] []
@@ -34,9 +34,9 @@ Admitted.
 Global Opaque run_copy_val.
 
 Instance run_sol_memmove
-  (dst : Ref.t Pointer.Kind.Raw U8.t)
-  (src : Ref.t Pointer.Kind.Raw U8.t)
-  (n : Usize.t) :
+  (dst : Ref.t Pointer.Kind.Raw u8)
+  (src : Ref.t Pointer.Kind.Raw u8)
+  (n : usize) :
   Run.Trait
     memory.sol_memmove
     [] []
@@ -51,12 +51,12 @@ Global Opaque run_sol_memmove.
 Instance run_sol_memcmp
   (s1 : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8)))
   (s2 : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8)))
-  (n : Usize.t) :
+  (n : usize) :
   Run.Trait
     memory.sol_memcmp
     [] []
     [φ s1; φ s2; φ n]
-    I32.t.
+    i32.
 Proof.
   constructor.
   admit.
@@ -65,8 +65,8 @@ Global Opaque run_sol_memcmp.
 
 Instance run_sol_memset
   (s : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8)))
-  (c : U8.t)
-  (n : Usize.t) :
+  (c : u8)
+  (n : usize) :
   Run.Trait
     memory.sol_memset
     [] []

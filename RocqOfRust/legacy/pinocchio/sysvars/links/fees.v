@@ -10,7 +10,7 @@ Require Import core.links.marker.
 Instance run_DEFAULT_TARGET_LAMPORTS_PER_SIGNATURE :
   Run.Trait
     pinocchio.sysvars.fees.sysvars.fees.value_DEFAULT_TARGET_LAMPORTS_PER_SIGNATURE [] [] []
-    (Ref.t Pointer.Kind.Raw U64.t).
+    (Ref.t Pointer.Kind.Raw u64).
 Proof.
   constructor. run_symbolic.
 Defined.
@@ -19,7 +19,7 @@ Global Opaque run_DEFAULT_TARGET_LAMPORTS_PER_SIGNATURE.
 Instance run_DEFAULT_TARGET_SIGNATURES_PER_SLOT :
   Run.Trait
     pinocchio.sysvars.fees.sysvars.fees.value_DEFAULT_TARGET_SIGNATURES_PER_SLOT [] [] []
-    (Ref.t Pointer.Kind.Raw U64.t).
+    (Ref.t Pointer.Kind.Raw u64).
 Proof.
   constructor. 
   run_symbolic.
@@ -30,7 +30,7 @@ Global Opaque run_DEFAULT_TARGET_SIGNATURES_PER_SLOT.
 Instance run_DEFAULT_BURN_PERCENT :
   Run.Trait
     pinocchio.sysvars.fees.sysvars.fees.value_DEFAULT_BURN_PERCENT [] [] []
-    (Ref.t Pointer.Kind.Raw U8.t).
+    (Ref.t Pointer.Kind.Raw u8).
 Proof.
   constructor. run_symbolic.
 Defined.
@@ -38,7 +38,7 @@ Global Opaque run_DEFAULT_BURN_PERCENT.
 
 Module FeeCalculator.
   Record t : Set := {
-    lamports_per_signature : U64.t
+    lamports_per_signature : u64
   }.
 
   Global Instance IsLink : Link t := {
@@ -52,12 +52,12 @@ End FeeCalculator.
 
 Module FeeRateGovernor.
   Record t : Set := {
-    lamports_per_signature : U64.t;
-    target_lamports_per_signature : U64.t;
-    target_signatures_per_slot : U64.t;
-    min_lamports_per_signature : U64.t;
-    max_lamports_per_signature : U64.t;
-    burn_percent : U8.t
+    lamports_per_signature : u64;
+    target_lamports_per_signature : u64;
+    target_signatures_per_slot : u64;
+    min_lamports_per_signature : u64;
+    max_lamports_per_signature : u64;
+    burn_percent : u8
   }.
 
   Global Instance IsLink : Link t := {
@@ -94,7 +94,7 @@ Module Impl_FeeCalculator.
   Definition Self : Set := FeeCalculator.t.
 
   Instance run_new
-    (lamports_per_signature : U64.t) :
+    (lamports_per_signature : u64) :
     Run.Trait
       pinocchio.sysvars.fees.sysvars.fees.Impl_pinocchio_sysvars_fees_FeeCalculator.new
       [] []
@@ -134,12 +134,12 @@ Module Impl_FeeRateGovernor.
 
   Instance run_burn
     (self : Ref.t Pointer.Kind.Ref Self)
-    (fees : U64.t) :
+    (fees : u64) :
     Run.Trait
       pinocchio.sysvars.fees.sysvars.fees.Impl_pinocchio_sysvars_fees_FeeRateGovernor.burn
       [] []
       [φ self; φ fees]
-      (U64.t * U64.t)%type.
+      (u64 * u64)%type.
   Proof.
     constructor. admit.
   Admitted.

@@ -9,7 +9,7 @@ Module Impl_pointer_const_T.
   Instance run_add
       (T : Set) `{Link T}
       (self : Self T)
-      (count : Usize.t) :
+      (count : usize) :
     Run.Trait (ptr.const_ptr.Impl_pointer_const_T.add (Φ T)) [] [] [ φ self; φ count ] (Self T).
   Proof.
     constructor.

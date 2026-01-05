@@ -28,10 +28,10 @@ Module UintTryFrom.
 End UintTryFrom.
 
 Module Impl_Uint.
-  Definition Self (BITS LIMBS : Usize.t) : Set :=
+  Definition Self (BITS LIMBS : usize) : Set :=
     Uint.t BITS LIMBS.
 
-  Definition from {BITS LIMBS : Usize.t} {T : Set} `{UintTryFrom.C (Self BITS LIMBS) T}
+  Definition from {BITS LIMBS : usize} {T : Set} `{UintTryFrom.C (Self BITS LIMBS) T}
       (value : T) :
       Self BITS LIMBS :=
     match UintTryFrom.uint_try_from value with
@@ -39,7 +39,7 @@ Module Impl_Uint.
     | Result.Err e => Impl_Uint.ZERO
     end.
 
-  Lemma from_eq (BITS LIMBS : Usize.t) (T : Set) `{Link T}
+  Lemma from_eq (BITS LIMBS : usize) (T : Set) `{Link T}
       `{UintTryFrom.C (Self BITS LIMBS) T}
       `{!UintTryFrom.Run (Self BITS LIMBS) T}
       `{!UintTryFrom.Eq.C (Self BITS LIMBS) T}
@@ -73,14 +73,14 @@ End Impl_Uint.
 
 Module TryFrom_Uint_for_u64.
   Definition Self : Set :=
-    U64.t.
+    u64.
 
   Parameter try_from :
-    forall {BITS LIMBS : Usize.t},
+    forall {BITS LIMBS : usize},
     Impl_Uint.Self BITS LIMBS ->
-    Result.t Self (FromUintError.t U64.t).
+    Result.t Self (FromUintError.t u64).
 
-  Lemma try_from_eq (BITS LIMBS : Usize.t) (value : Impl_Uint.Self BITS LIMBS) (stack : Stack.t) :
+  Lemma try_from_eq (BITS LIMBS : usize) (value : Impl_Uint.Self BITS LIMBS) (stack : Stack.t) :
     {{
       SimulateM.eval_f
         (TryFrom_Uint_for_u64.run_try_from BITS LIMBS value)

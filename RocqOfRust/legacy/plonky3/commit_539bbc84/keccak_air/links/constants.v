@@ -12,7 +12,7 @@ pub(crate) const R: [[u8; 5]; 5] = [
     [27, 20, 39, 8, 14],
 ];
 *)
-Definition R : array.t (array.t U8.t {| Integer.value := 5 |}) {| Integer.value := 5 |} :=
+Definition R : array.t (array.t u8 {| Integer.value := 5 |}) {| Integer.value := 5 |} :=
   array.Build_t _ {| Integer.value := 5 |} (ArrayPairs.of_list [
     array.Build_t _ {| Integer.value := 5 |} (
       ArrayPairs.of_list (List.map (Integer.Build_t IntegerKind.U8) [0; 36; 3; 41; 18])
@@ -33,7 +33,7 @@ Definition R : array.t (array.t U8.t {| Integer.value := 5 |}) {| Integer.value 
 
 Instance run_value_R :
   Run.Trait constants.value_R [] [] []
-    (Ref.t Pointer.Kind.Raw (array.t (array.t U8.t {| Integer.value := 5 |}) {| Integer.value := 5 |})).
+    (Ref.t Pointer.Kind.Raw (array.t (array.t u8 {| Integer.value := 5 |}) {| Integer.value := 5 |})).
 Proof.
   constructor.
   run_symbolic.
@@ -96,12 +96,12 @@ Definition RC_list : list (Integer.t IntegerKind.U64) :=
     0x8000000080008008
   ].
 
-Definition RC : array.t U64.t {| Integer.value := 24 |} :=
+Definition RC : array.t u64 {| Integer.value := 24 |} :=
   array.Build_t _ {| Integer.value := 24 |} (ArrayPairs.of_list RC_list).
 
 Instance run_value_RC :
   Run.Trait constants.value_RC [] [] []
-    (Ref.t Pointer.Kind.Raw (array.t U64.t {| Integer.value := 24 |})).
+    (Ref.t Pointer.Kind.Raw (array.t u64 {| Integer.value := 24 |})).
 Proof.
   constructor.
   run_symbolic.
@@ -111,7 +111,7 @@ Defined.
 Global Opaque run_value_RC.
 
 (* const RC_BITS: [[u8; 64]; 24] *)
-Definition RC_BITS : array.t (array.t U8.t {| Integer.value := 64 |}) {| Integer.value := 24 |} :=
+Definition RC_BITS : array.t (array.t u8 {| Integer.value := 64 |}) {| Integer.value := 24 |} :=
   array.Build_t _ {| Integer.value := 24 |} (
     ArrayPairs.of_list (
       List.map
@@ -128,7 +128,7 @@ Definition RC_BITS : array.t (array.t U8.t {| Integer.value := 64 |}) {| Integer
 
 Instance run_value_RC_BITS :
   Run.Trait constants.value_RC_BITS [] [] []
-    (Ref.t Pointer.Kind.Raw (array.t (array.t U8.t {| Integer.value := 64 |}) {| Integer.value := 24 |})).
+    (Ref.t Pointer.Kind.Raw (array.t (array.t u8 {| Integer.value := 64 |}) {| Integer.value := 24 |})).
 Proof.
   constructor.
   run_symbolic.
@@ -138,8 +138,8 @@ Defined.
 Global Opaque run_value_RC_BITS.
 
 (* pub(crate) const fn rc_value_bit(round: usize, bit_index: usize) -> u8 *)
-Instance run_value_rc_value_bit (round bit_index : Usize.t) :
-  Run.Trait constants.rc_value_bit [] [] [ φ round; φ bit_index ] U8.t.
+Instance run_value_rc_value_bit (round bit_index : usize) :
+  Run.Trait constants.rc_value_bit [] [] [ φ round; φ bit_index ] u8.
 Proof.
   constructor.
   run_symbolic.

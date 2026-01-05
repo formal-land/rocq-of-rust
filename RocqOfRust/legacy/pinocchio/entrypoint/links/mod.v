@@ -7,14 +7,14 @@ Require Import pinocchio.entrypoint.mod.
 Module entrypoint.
   Module deserialize.
 
-    Parameter MAX_ACCOUNTS : Usize.t.
+    Parameter MAX_ACCOUNTS : usize.
 
-    Definition Self : Set := (Ref.t Pointer.Kind.Ref U8.t *
-                              Usize.t *
-                              Ref.t Pointer.Kind.Ref (list U8.t))%type.
+    Definition Self : Set := (Ref.t Pointer.Kind.Ref u8 *
+                              usize *
+                              Ref.t Pointer.Kind.Ref (list u8))%type.
 
     Instance run_deserialize
-      (input : Ref.t Pointer.Kind.Raw U8.t)
+      (input : Ref.t Pointer.Kind.Raw u8)
       (accounts : Ref.t Pointer.Kind.Ref (array.t AccountInfo.t MAX_ACCOUNTS)) :
       Run.Trait
         pinocchio.entrypoint.mod.entrypoint.deserialize
@@ -32,14 +32,14 @@ Module entrypoint.
   End deserialize.
 
   Module parse.
-    Parameter MAX_ACCOUNTS : Usize.t.
+    Parameter MAX_ACCOUNTS : usize.
 
-    Definition Self : Set := (Ref.t Pointer.Kind.Raw U8.t *
-                              Usize.t *
-                              Ref.t Pointer.Kind.Ref (list U8.t))%type.
+    Definition Self : Set := (Ref.t Pointer.Kind.Raw u8 *
+                              usize *
+                              Ref.t Pointer.Kind.Ref (list u8))%type.
 
     Instance run
-      (input : Ref.t Pointer.Kind.Raw U8.t)
+      (input : Ref.t Pointer.Kind.Raw u8)
       (accounts : Ref.t Pointer.Kind.Ref (array.t AccountInfo.t MAX_ACCOUNTS)) :
       Run.Trait
         pinocchio.entrypoint.mod.entrypoint.parse

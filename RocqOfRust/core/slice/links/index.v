@@ -107,7 +107,7 @@ End SliceIndex.
 Module Impl_SliceIndex_for_Usize.
   Instance run
     (T : Set) `{Link T} :
-    SliceIndex.Run Usize.t (list T) T.
+    SliceIndex.Run usize (list T) T.
   Admitted.
 End Impl_SliceIndex_for_Usize.
 Export Impl_SliceIndex_for_Usize.
@@ -115,7 +115,7 @@ Export Impl_SliceIndex_for_Usize.
 (* unsafe impl<T> SliceIndex<[T]> for ops::RangeTo<usize> *)
 Module Impl_SliceIndex_for_RangeTo.
   Definition Self (T : Set) : Set :=
-    RangeTo.t Usize.t.
+    RangeTo.t usize.
 
   (* type Output = [T]; *)
   Definition Output (T : Set) : Set :=
@@ -134,7 +134,7 @@ Export Impl_SliceIndex_for_RangeTo.
 *)
 Module Impl_SliceIndex_for_Range.
   Definition Self (T : Set) : Set :=
-    Range.t Usize.t.
+    Range.t usize.
 
   (* type Output = [T]; *)
   Definition Output (T : Set) : Set :=

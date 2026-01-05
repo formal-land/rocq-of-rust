@@ -10,7 +10,7 @@ Import pinocchio.pubkey.pubkey.
 
 Module Pubkey.
   Definition t : Set :=
-    array.t U8.t {| Integer.value := 32 |}.
+    array.t u8 {| Integer.value := 32 |}.
 
     Global Instance Link_Pubkey : Link Pubkey.t.
     Proof.
@@ -36,7 +36,7 @@ Instance run_find_program_address
   (pubkey : Ref.t Pointer.Kind.Ref Pubkey.t) :
 Run.Trait
   find_program_address [] [] [φ seeds; φ pubkey]
-  (Ref.t Pointer.Kind.Ref Pubkey.t * U8.t).
+  (Ref.t Pointer.Kind.Ref Pubkey.t * u8).
 Proof.
   constructor.
   run_symbolic.
@@ -49,7 +49,7 @@ Instance run_try_find_program_address
   (program_id : Ref.t Pointer.Kind.Ref Pubkey.t) :
 Run.Trait
   try_find_program_address [] [] [φ seeds; φ program_id]
-  (option (Ref.t Pointer.Kind.Ref Pubkey.t * U8.t)).
+  (option (Ref.t Pointer.Kind.Ref Pubkey.t * u8)).
 Proof.
   constructor.
   run_symbolic.

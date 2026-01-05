@@ -34,7 +34,7 @@ Module Impl_Bytes.
   Instance run_len (self : Ref.t Pointer.Kind.Ref Self) :
     Run.Trait
       bytes.Impl_bytes_bytes_Bytes.len [] [] [ φ self ]
-      Usize.t.
+      usize.
   Admitted.
   Global Opaque run_len.
 
@@ -57,7 +57,7 @@ Module Impl_Deref_for_Bytes.
   Definition Self : Set :=
     Bytes.t.
 
-  Instance run : Deref.Run Self (list U8.t).
+  Instance run : Deref.Run Self (list u8).
   Admitted.
 End Impl_Deref_for_Bytes.
 Export Impl_Deref_for_Bytes.

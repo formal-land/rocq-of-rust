@@ -243,7 +243,7 @@ Module Host.
   (* fn block_hash(&mut self, number: u64) -> Option<B256>; *)
   Definition Run_block_hash (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "block_hash" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (number : U64.t),
+      forall (self : Ref.t Pointer.Kind.MutRef Self) (number : u64),
         Run.Trait method [] [] [ φ self; φ number ] (option aliases.B256.t)
     ).
 

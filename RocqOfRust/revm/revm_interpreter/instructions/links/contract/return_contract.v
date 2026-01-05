@@ -66,7 +66,7 @@ Proof.
   destruct Impl_Clone_for_Bytes.run.
   destruct links.mod.Impl_Deref_for_Bytes.run.
   destruct bytes.Impl_Deref_for_Bytes.run.
-  destruct (Impl_AsRef_for_Slice.run U8.t).
+  destruct (Impl_AsRef_for_Slice.run u8).
   destruct run_Deref_for_Synthetic1.
   Time run_symbolic.
 Admitted.

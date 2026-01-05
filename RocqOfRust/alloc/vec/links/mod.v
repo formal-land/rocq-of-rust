@@ -18,7 +18,7 @@ pub struct Vec<T, A: Allocator = Global> {
 Module Vec.
   Record t {T A : Set} : Set := {
     buf : RawVec.t T A;
-    len : Usize.t;
+    len : usize;
   }.
   Arguments t : clear implicits.
 
@@ -44,7 +44,7 @@ Module Vec.
 
   Lemma of_value_with {T A : Set} `{Link T} `{Link A}
     (buf' : Value.t) (buf : RawVec.t T A)
-    (len' : Value.t) (len : Usize.t) :
+    (len' : Value.t) (len : usize) :
     buf' = φ buf ->
     len' = φ len ->
     Value.StructRecord "alloc::vec::Vec" [] [Φ T; Φ A] [("buf", buf'); ("len", len')] =
@@ -59,7 +59,7 @@ Module Vec.
     (H_T : OfTy.t T')
     (H_A : OfTy.t A')
     (buf' : Value.t) (buf : RawVec.t (OfTy.get_Set H_T) (OfTy.get_Set H_A))
-    (len' : Value.t) (len : Usize.t) :
+    (len' : Value.t) (len : usize) :
     buf' = φ buf ->
     len' = φ len ->
     OfValue.t (Value.StructRecord "alloc::vec::Vec" [] [T'; A'] [
@@ -134,7 +134,7 @@ Module Impl_Vec_T.
   Global Opaque run_new.
 
   (* pub fn with_capacity(capacity: usize) -> Self *)
-  Instance run_with_capacity {T : Set} `{Link T} (capacity : Usize.t) :
+  Instance run_with_capacity {T : Set} `{Link T} (capacity : usize) :
     Run.Trait
       (vec.Impl_alloc_vec_Vec_T_alloc_alloc_Global.with_capacity (Φ T)) [] [] [φ capacity]
       (Self T).
@@ -151,7 +151,7 @@ Module Impl_Vec_T_A.
     pub const fn len(&self) -> usize
   *)
   Instance run_len {T A : Set} `{Link T} `{Link A} (self : Ref.t Pointer.Kind.Ref (Self T A)) :
-    Run.Trait (vec.Impl_alloc_vec_Vec_T_A.len (Φ T) (Φ A)) [] [] [φ self] Usize.t.
+    Run.Trait (vec.Impl_alloc_vec_Vec_T_A.len (Φ T) (Φ A)) [] [] [φ self] usize.
   Admitted.
   Global Opaque run_len.
 
@@ -169,7 +169,7 @@ Module Impl_Vec_T_A.
 
   (* pub const fn capacity(&self) -> usize *)
   Instance run_capacity {T A : Set} `{Link T} `{Link A} (self : Ref.t Pointer.Kind.Ref (Self T A)) :
-    Run.Trait (vec.Impl_alloc_vec_Vec_T_A.capacity (Φ T) (Φ A)) [] [] [φ self] Usize.t.
+    Run.Trait (vec.Impl_alloc_vec_Vec_T_A.capacity (Φ T) (Φ A)) [] [] [φ self] usize.
   Admitted.
   Global Opaque run_capacity.
 

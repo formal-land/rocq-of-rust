@@ -7,23 +7,23 @@ Require Import ruint.links.lib.
 
 Module Impl_Uint.
   (* Uint<BITS, LIMBS> *)
-  Definition Self (BITS LIMBS : Usize.t) : Set :=
+  Definition Self (BITS LIMBS : usize) : Set :=
     Uint.t BITS LIMBS.
 
   (* pub const fn to_be_bytes<const BYTES: usize>(&self) -> [u8; BYTES] *)
   Instance run_to_be_bytes
-      (BITS LIMBS BYTES : Usize.t)
+      (BITS LIMBS BYTES : usize)
       (x : Ref.t Pointer.Kind.Ref (Self BITS LIMBS)) :
     Run.Trait
       (bytes.Impl_ruint_Uint_BITS_LIMBS.to_be_bytes (φ BITS) (φ LIMBS)) [ φ BYTES ] [] [ φ x ]
-      (array.t U8.t BYTES).
+      (array.t u8 BYTES).
   Admitted.
   Global Opaque run_to_be_bytes.
 
   (* pub const fn from_be_bytes<const BYTES: usize>(bytes: [u8; BYTES]) -> Self *)
   Instance run_from_be_bytes
-      (BITS LIMBS BYTES : Usize.t)
-      (bytes : array.t U8.t BYTES) :
+      (BITS LIMBS BYTES : usize)
+      (bytes : array.t u8 BYTES) :
     Run.Trait
       (bytes.Impl_ruint_Uint_BITS_LIMBS.from_be_bytes (φ BITS) (φ LIMBS)) [ φ BYTES ] [] [ φ bytes ]
       (Self BITS LIMBS).
@@ -32,8 +32,8 @@ Module Impl_Uint.
 
   (* pub const fn try_from_be_slice(bytes: &[u8]) -> Option<Self> *)
   Instance run_try_from_be_slice
-      (BITS LIMBS : Usize.t)
-      (bytes : Ref.t Pointer.Kind.Ref (list U8.t)) :
+      (BITS LIMBS : usize)
+      (bytes : Ref.t Pointer.Kind.Ref (list u8)) :
     Run.Trait
       (bytes.Impl_ruint_Uint_BITS_LIMBS.try_from_be_slice (φ BITS) (φ LIMBS)) [] [] [ φ bytes ]
       (option (Self BITS LIMBS)).

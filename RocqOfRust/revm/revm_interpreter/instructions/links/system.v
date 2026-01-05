@@ -52,7 +52,7 @@ Proof.
   destruct run_MemoryTrait_for_Memory.
   destruct run_Deref_for_Synthetic1.
   destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
-  destruct (Impl_AsRef_for_Slice.run U8.t).
+  destruct (Impl_AsRef_for_Slice.run u8).
   run_symbolic.
 Defined.
 Global Opaque run_keccak256.
@@ -147,10 +147,10 @@ Instance run_memory_resize
   {run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types}
   (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
   (memory_offset : aliases.U256.t)
-  (len : Usize.t) :
+  (len : usize) :
   Run.Trait
     instructions.system.memory_resize [] [ Φ WIRE ] [ φ interpreter; φ memory_offset; φ len ]
-    (option Usize.t).
+    (option usize).
 Proof.
   constructor.
   destruct run_InterpreterTypes_for_WIRE.
@@ -375,18 +375,18 @@ Proof.
   destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
   destruct (Impl_From_Array_u8_N_for_FixedBytes_N.run {| Integer.value := 32 |}).
   destruct (Impl_IndexMut_for_Array.run
-    U8.t
-    (RangeTo.t Usize.t)
+    u8
+    (RangeTo.t usize)
     {| Integer.value := 32 |}
-    (list U8.t)
+    (list u8)
   ). {
     apply Impl_IndexMut_for_Slice.run.
     apply Impl_SliceIndex_for_RangeTo.run.
   }
   destruct (Impl_Index_for_Slice.run
-    U8.t
-    (Range.t Usize.t)
-    (Index_Output := list U8.t)
+    u8
+    (Range.t usize)
+    (Index_Output := list u8)
   ). {
     apply Impl_SliceIndex_for_Range.run.
   }

@@ -415,7 +415,7 @@ End SpecId.
 Module Impl_SpecId.
   Definition Self : Set := SpecId.t.
 
-  Instance run_n (spec_id : U8.t) :
+  Instance run_n (spec_id : u8) :
     Run.Trait
       hardfork.Impl_revm_specification_hardfork_SpecId.n [] [] [ φ spec_id ]
       (option Self).
@@ -425,7 +425,7 @@ Module Impl_SpecId.
   Defined.
   Global Opaque run_n.
 
-  Instance run_try_from_u8 (spec_id : U8.t) :
+  Instance run_try_from_u8 (spec_id : u8) :
     Run.Trait
       hardfork.Impl_revm_specification_hardfork_SpecId.try_from_u8 [] [] [ φ spec_id ]
       (option Self).

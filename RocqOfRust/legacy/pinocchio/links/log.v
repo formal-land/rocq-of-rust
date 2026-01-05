@@ -19,7 +19,7 @@ Admitted.
 Global Opaque run_sol_log.
 
 Instance run_sol_log_64
-  (arg1 arg2 arg3 arg4 arg5 : U64.t) :
+  (arg1 arg2 arg3 arg4 arg5 : u64) :
   Run.Trait
     log.sol_log_64
     [] []

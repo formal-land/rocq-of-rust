@@ -300,9 +300,9 @@ Module Impl_KeccakCols.
   (* pub fn b(&self, x: usize, y: usize, z: usize) -> T *)
   Instance run_b {T : Set} `{Link T}
       (self : Ref.t Pointer.Kind.Ref (Self T))
-      (x : Usize.t)
-      (y : Usize.t)
-      (z : Usize.t) :
+      (x : usize)
+      (y : usize)
+      (z : usize) :
     Run.Trait (columns.Impl_p3_keccak_air_columns_KeccakCols_T.b (Φ T))
       [] [] [φ self; φ x; φ y; φ z]
       T.
@@ -315,9 +315,9 @@ Module Impl_KeccakCols.
   (* pub fn a_prime_prime_prime(&self, y: usize, x: usize, limb: usize) -> T *)
   Instance run_a_prime_prime_prime {T : Set} `{Link T}
       (self : Ref.t Pointer.Kind.Ref (Self T))
-      (y : Usize.t)
-      (x : Usize.t)
-      (limb : Usize.t) :
+      (y : usize)
+      (x : usize)
+      (limb : usize) :
     Run.Trait (columns.Impl_p3_keccak_air_columns_KeccakCols_T.a_prime_prime_prime (Φ T))
       [] [] [φ self; φ y; φ x; φ limb]
       T.

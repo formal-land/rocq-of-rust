@@ -156,7 +156,7 @@ Module Transaction.
     Set :=
     TraitMethod.C (trait Self) "max_fee" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] U128.t
+      Run.Trait method [] [] [ φ self ] u128
     ).
 
   Definition Run_effective_gas_price
@@ -164,8 +164,8 @@ Module Transaction.
     (types : Types.t) `{Types.AreLinks types} :
     Set :=
     TraitMethod.C (trait Self) "effective_gas_price" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (base_fee : U128.t),
-      Run.Trait method [] [] [ φ self; φ base_fee ] U128.t
+      forall (self : Ref.t Pointer.Kind.Ref Self) (base_fee : u128),
+      Run.Trait method [] [] [ φ self; φ base_fee ] u128
     ).
 
   Definition Run_kind

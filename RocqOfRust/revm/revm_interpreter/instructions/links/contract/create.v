@@ -67,7 +67,7 @@ Proof.
   destruct run_Host_for_H.
   destruct run_CfgGetter_for_Self.
   destruct run_Cfg_for_Cfg.
-  destruct (Impl_AsRef_for_Slice.run U8.t).
+  destruct (Impl_AsRef_for_Slice.run u8).
   destruct run_Deref_for_Synthetic1.
   run_symbolic.
 Defined.

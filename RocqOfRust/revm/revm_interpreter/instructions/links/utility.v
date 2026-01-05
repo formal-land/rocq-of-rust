@@ -18,18 +18,18 @@ Require Import ruint.links.lib.
 
 (* pub fn cast_slice_to_u256(slice: &[u8], dest: &mut U256) *)
 Instance run_cast_slice_to_u256
-  (slice : Ref.t Pointer.Kind.Ref (list U8.t))
+  (slice : Ref.t Pointer.Kind.Ref (list u8))
   (dest : Ref.t Pointer.Kind.MutRef aliases.U256.t) :
   Run.Trait instructions.utility.cast_slice_to_u256 [] [] [ φ slice; φ dest ] unit.
 Proof.
   constructor.
-  destruct (Impl_IntoIterator_for_Iterator_I.run (ChunksExact.t U8.t) U8.t).
-  destruct (Impl_Iterator_for_ChunksExact.run U8.t).
-  destruct (Impl_IntoIterator_for_Iterator_I.run (RChunksExact.t U8.t) U8.t).
-  destruct (Impl_Iterator_for_RChunksExact.run U8.t).
+  destruct (Impl_IntoIterator_for_Iterator_I.run (ChunksExact.t u8) u8).
+  destruct (Impl_Iterator_for_ChunksExact.run u8).
+  destruct (Impl_IntoIterator_for_Iterator_I.run (RChunksExact.t u8) u8).
+  destruct (Impl_Iterator_for_RChunksExact.run u8).
   destruct (
     let run_TryFrom :=
-      Impl_TryFrom_Ref_for_Array.run U8.t {| Integer.value := 8 |} in
+      Impl_TryFrom_Ref_for_Array.run u8 {| Integer.value := 8 |} in
     Impl_TryInto_for_TryFrom_T.run _ _ _ (run_TryFrom_for_U := run_TryFrom)
   ).
   (* Pointer cast and closures *)

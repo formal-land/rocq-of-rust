@@ -28,7 +28,7 @@ Module BaseAir.
   Definition Run_width (Self F : Set) `{Link Self} `{Link F} : Set :=
   TraitMethod.C (trait Self F) "width" (fun method =>
     forall (self : Ref.t Pointer.Kind.Ref Self),
-    Run.Trait method [] [] [ φ self ] Usize.t
+    Run.Trait method [] [] [ φ self ] usize
   ).
 
   (* fn preprocessed_trace(&self) -> Option<RowMajorMatrix<F>> *)
@@ -180,7 +180,7 @@ Module AirBuilder.
       (types : AssociatedTypes.t) `{AssociatedTypes.AreLinks types} :
       Set :=
     TraitMethod.C (trait Self) "is_transition_window" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (size : Usize.t),
+      forall (self : Ref.t Pointer.Kind.Ref Self) (size : usize),
       Run.Trait method [] [] [ φ self; φ size ] types.(AssociatedTypes.Expr)
     ).
 
@@ -257,7 +257,7 @@ Module AirBuilder.
       (types : AssociatedTypes.t) `{AssociatedTypes.AreLinks types} :
       Set :=
     TraitMethod.C (trait Self) "when_transition_window" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (size : Usize.t),
+      forall (self : Ref.t Pointer.Kind.MutRef Self) (size : usize),
       Run.Trait method [] [] [ φ self; φ size ]
         (FilteredAirBuilder.t Self types.(AssociatedTypes.Expr))
     ).
@@ -283,7 +283,7 @@ Module AirBuilder.
       Set :=
     TraitMethod.C (trait Self) "assert_zeros" (fun method =>
       forall
-        (N : Usize.t)
+        (N : usize)
         (I : Set) `(Link I)
         (run_Into_for_I : Into.Run I types.(AssociatedTypes.Expr))
         (self : Ref.t Pointer.Kind.MutRef Self)
@@ -298,7 +298,7 @@ Module AirBuilder.
       Set :=
     TraitMethod.C (trait Self) "assert_bools" (fun method =>
       forall
-        (N : Usize.t)
+        (N : usize)
         (I : Set) `(Link I)
         (run_Into_for_I : Into.Run I types.(AssociatedTypes.Expr))
         (self : Ref.t Pointer.Kind.MutRef Self)

@@ -5,10 +5,10 @@ Require Import ruint.links.cmp.
 
 Module Impl_Uint.
   Parameter is_zero :
-    forall {BITS LIMBS : Usize.t} (self : Self BITS LIMBS),
+    forall {BITS LIMBS : usize} (self : Self BITS LIMBS),
     bool.
 
-  Lemma is_zero_like {BITS LIMBS : Usize.t}
+  Lemma is_zero_like {BITS LIMBS : usize}
       (stack : Stack.t)
       (ref_self : Ref.t Pointer.Kind.Ref (Self BITS LIMBS)) :
     SimulateM.eval_f

@@ -19,8 +19,8 @@ pub struct MemoryGas {
 *)
 Module MemoryGas.
   Record t : Set := {
-    expansion_cost : U64.t;
-    words_num : Usize.t;
+    expansion_cost : u64;
+    words_num : usize;
   }.
 
   Global Instance IsLink : Link t := {
@@ -46,7 +46,7 @@ Module MemoryGas.
   Proof. now intros; subst. Qed.
   Smpl Add apply of_value_with : of_value.
 
-  Definition of_value (words_num : Usize.t) words_num' (expansion_cost : U64.t) expansion_cost' :
+  Definition of_value (words_num : usize) words_num' (expansion_cost : u64) expansion_cost' :
     words_num' = φ words_num ->
     expansion_cost' = φ expansion_cost ->
     OfValue.t (
@@ -143,10 +143,10 @@ Module Impl_MemoryGas.
   *)
   Instance run_record_new_len
       (self : Ref.t Pointer.Kind.MutRef MemoryGas.t)
-      (new_num : Usize.t) :
+      (new_num : usize) :
     Run.Trait
       gas.Impl_revm_interpreter_gas_MemoryGas.record_new_len [] [] [φ self; φ new_num]
-      (option U64.t).
+      (option u64).
   Proof.
     constructor.
     run_symbolic.
@@ -233,10 +233,10 @@ End MemoryExtensionResult.
 *)
 Module Gas.
   Record t : Set := {
-    limit : U64.t;
+    limit : u64;
     memory : MemoryGas.t;
-    refunded : I64.t;
-    remaining : U64.t;
+    refunded : i64;
+    remaining : u64;
   }.
 
   Global Instance IsLink : Link t := {
@@ -273,10 +273,10 @@ Module Gas.
   Smpl Add apply of_value_with : of_value.
 
   Definition of_value
-      (limit : U64.t) limit'
+      (limit : u64) limit'
       (memory : MemoryGas.t) memory'
-      (refunded : I64.t) refunded'
-      (remaining : U64.t) remaining' :
+      (refunded : i64) refunded'
+      (remaining : u64) remaining' :
     limit' = φ limit ->
     memory' = φ memory ->
     refunded' = φ refunded ->
@@ -403,7 +403,7 @@ Module Impl_Gas.
           }
       }
   *)
-  Instance run_new (limit : U64.t) :
+  Instance run_new (limit : u64) :
     Run.Trait gas.Impl_revm_interpreter_gas_Gas.new [] [] [φ limit] Self.
   Proof.
     constructor.
@@ -421,7 +421,7 @@ Module Impl_Gas.
           }
       }
   *)
-  Instance run_new_spent (limit : U64.t) :
+  Instance run_new_spent (limit : u64) :
     Run.Trait gas.Impl_revm_interpreter_gas_Gas.new_spent [] [] [φ limit] Self.
   Proof.
     constructor.
@@ -435,7 +435,7 @@ Module Impl_Gas.
       }
   *)
   Instance run_limit (self : Ref.t Pointer.Kind.Ref Self) :
-    Run.Trait gas.Impl_revm_interpreter_gas_Gas.limit [] [] [φ self] U64.t.
+    Run.Trait gas.Impl_revm_interpreter_gas_Gas.limit [] [] [φ self] u64.
   Proof.
     constructor.
     run_symbolic.
@@ -448,7 +448,7 @@ Module Impl_Gas.
       }
   *)
   Instance run_memory (self : Ref.t Pointer.Kind.Ref Self) :
-    Run.Trait gas.Impl_revm_interpreter_gas_Gas.memory [] [] [φ self] U64.t.
+    Run.Trait gas.Impl_revm_interpreter_gas_Gas.memory [] [] [φ self] u64.
   Proof.
     constructor.
     run_symbolic.
@@ -461,7 +461,7 @@ Module Impl_Gas.
       }
   *)
   Instance run_refunded (self : Ref.t Pointer.Kind.Ref Self) :
-    Run.Trait gas.Impl_revm_interpreter_gas_Gas.refunded [] [] [φ self] I64.t.
+    Run.Trait gas.Impl_revm_interpreter_gas_Gas.refunded [] [] [φ self] i64.
   Proof.
     constructor.
     run_symbolic.
@@ -474,7 +474,7 @@ Module Impl_Gas.
       }
   *)
   Instance run_spent (self : Ref.t Pointer.Kind.Ref Self) :
-    Run.Trait gas.Impl_revm_interpreter_gas_Gas.spent [] [] [φ self] U64.t.
+    Run.Trait gas.Impl_revm_interpreter_gas_Gas.spent [] [] [φ self] u64.
   Proof.
     constructor.
     run_symbolic.
@@ -487,7 +487,7 @@ Module Impl_Gas.
       }
   *)
   Instance run_remaining (self : Ref.t Pointer.Kind.Ref Self) :
-    Run.Trait gas.Impl_revm_interpreter_gas_Gas.remaining [] [] [φ self] U64.t.
+    Run.Trait gas.Impl_revm_interpreter_gas_Gas.remaining [] [] [φ self] u64.
   Proof.
     constructor.
     run_symbolic.
@@ -500,7 +500,7 @@ Module Impl_Gas.
       }
   *)
   Instance run_remaining_63_of_64_parts (self : Ref.t Pointer.Kind.Ref Self) :
-    Run.Trait gas.Impl_revm_interpreter_gas_Gas.remaining_63_of_64_parts [] [] [φ self] U64.t.
+    Run.Trait gas.Impl_revm_interpreter_gas_Gas.remaining_63_of_64_parts [] [] [φ self] u64.
   Proof.
     constructor.
     run_symbolic.
@@ -512,7 +512,7 @@ Module Impl_Gas.
           self.remaining += returned;
       }
   *)
-  Instance run_erase_cost (self : Ref.t Pointer.Kind.MutRef Self) (returned : U64.t) :
+  Instance run_erase_cost (self : Ref.t Pointer.Kind.MutRef Self) (returned : u64) :
     Run.Trait gas.Impl_revm_interpreter_gas_Gas.erase_cost [] [] [φ self; φ returned] unit.
   Proof.
     constructor.
@@ -538,7 +538,7 @@ Module Impl_Gas.
           self.refunded += refund;
       }
   *)
-  Instance run_record_refund (self : Ref.t Pointer.Kind.MutRef Self) (refund : I64.t) :
+  Instance run_record_refund (self : Ref.t Pointer.Kind.MutRef Self) (refund : i64) :
     Run.Trait gas.Impl_revm_interpreter_gas_Gas.record_refund [] [] [φ self; φ refund] unit.
   Proof.
     constructor.
@@ -566,7 +566,7 @@ Module Impl_Gas.
           self.refunded = refund;
       }
   *)
-  Instance run_set_refund (self : Ref.t Pointer.Kind.MutRef Self) (refund : I64.t) :
+  Instance run_set_refund (self : Ref.t Pointer.Kind.MutRef Self) (refund : i64) :
     Run.Trait gas.Impl_revm_interpreter_gas_Gas.set_refund [] [] [φ self; φ refund] unit.
   Proof.
     constructor.
@@ -584,7 +584,7 @@ Module Impl_Gas.
         success
     }
   *)
-  Instance run_record_cost (self : Ref.t Pointer.Kind.MutRef Self) (cost : U64.t) :
+  Instance run_record_cost (self : Ref.t Pointer.Kind.MutRef Self) (cost : u64) :
     Run.Trait gas.Impl_revm_interpreter_gas_Gas.record_cost [] [] [φ self; φ cost] bool.
   Proof.
     constructor.
@@ -607,7 +607,7 @@ Module Impl_Gas.
   *)
   Instance run_record_memory_expansion
       (self : Ref.t Pointer.Kind.MutRef Self)
-      (new_len : Usize.t) :
+      (new_len : usize) :
     Run.Trait
       gas.Impl_revm_interpreter_gas_Gas.record_memory_expansion [] [] [φ self; φ new_len]
       MemoryExtensionResult.t.

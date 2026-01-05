@@ -5,7 +5,7 @@ Require Import anza_xyz_solana_sdk.program_error.lib.
 
 Module ProgramError.
   Inductive t : Set :=
-  | Custom (n : U32.t)
+  | Custom (n : u32)
   | InvalidArgument
   | InvalidInstructionData
   | InvalidAccountData
@@ -96,12 +96,12 @@ Module ProgramError.
   Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
   Smpl Add apply of_ty : of_ty.
 
-  Lemma of_value_with_Custom (n : U32.t) :
+  Lemma of_value_with_Custom (n : u32) :
     Value.StructTuple "solana_program_error::ProgramError::Custom" [] [] [φ n]
     = φ (Custom n).
   Proof. reflexivity. Qed.
   Smpl Add apply of_value_with_Custom : of_value.
-  Definition of_value_Custom (n : U32.t) :
+  Definition of_value_Custom (n : u32) :
     OfValue.t (Value.StructTuple "solana_program_error::ProgramError::Custom" [] [] [φ n]).
   Proof. econstructor; apply of_value_with_Custom. Defined.
   Smpl Add apply of_value_Custom : of_value.

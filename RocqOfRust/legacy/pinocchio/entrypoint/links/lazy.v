@@ -9,8 +9,8 @@ Require Import pinocchio.links.program_error.
 
 Module InstructionContext.
   Record t : Set := {
-    buffer   : Ref.t Pointer.Kind.Raw U8.t;
-    remaining: U64.t
+    buffer   : Ref.t Pointer.Kind.Raw u8;
+    remaining: u64
   }.
 
   Global Instance IsLink : Link t := {
@@ -26,7 +26,7 @@ End InstructionContext.
 Module MaybeAccount.
   Inductive t : Set :=
   | Account    (a : AccountInfo.t)
-  | Duplicated (i : U8.t).
+  | Duplicated (i : u8).
 
   Global Instance IsLink : Link t := {
     Φ := Ty.path "pinocchio::entrypoint::lazy::MaybeAccount";
@@ -46,7 +46,7 @@ Module Impl_InstructionContext.
   Definition Self : Set := InstructionContext.t.
   
   Instance run_new
-    (input : Ref.t Pointer.Kind.Raw U8.t) :
+    (input : Ref.t Pointer.Kind.Raw u8) :
     Run.Trait
       pinocchio.entrypoint.lazy.entrypoint.lazy.Impl_pinocchio_entrypoint_lazy_InstructionContext.new
       [] [] [φ input] Self.
@@ -56,7 +56,7 @@ Module Impl_InstructionContext.
   Global Opaque run_new.
 
   Instance run_new_unchecked
-    (input : Ref.t Pointer.Kind.Raw U8.t) :
+    (input : Ref.t Pointer.Kind.Raw u8) :
     Run.Trait
     pinocchio.entrypoint.lazy.entrypoint.lazy.Impl_pinocchio_entrypoint_lazy_InstructionContext.new_unchecked
       [] [] [φ input] Self.
@@ -89,7 +89,7 @@ Module Impl_InstructionContext.
     (self : Ref.t Pointer.Kind.Ref Self) :
     Run.Trait
     pinocchio.entrypoint.lazy.entrypoint.lazy.Impl_pinocchio_entrypoint_lazy_InstructionContext.remaining
-      [] [] [φ self] U64.t.
+      [] [] [φ self] u64.
   Proof.
     constructor. admit.
   Admitted.

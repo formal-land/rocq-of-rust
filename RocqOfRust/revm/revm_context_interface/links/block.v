@@ -32,7 +32,7 @@ Module Block.
   Definition Run_number (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "number" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-        Run.Trait method [] [] [ φ self ] U64.t
+        Run.Trait method [] [] [ φ self ] u64
     ).
 
   Definition Run_beneficiary (Self : Set) `{Link Self} : Set :=
@@ -44,19 +44,19 @@ Module Block.
   Definition Run_timestamp (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "timestamp" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-        Run.Trait method [] [] [ φ self ] U64.t
+        Run.Trait method [] [] [ φ self ] u64
     ).
 
   Definition Run_gas_limit (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "gas_limit" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-        Run.Trait method [] [] [ φ self ] U64.t
+        Run.Trait method [] [] [ φ self ] u64
     ).
 
   Definition Run_basefee (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "basefee" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-        Run.Trait method [] [] [ φ self ] U64.t
+        Run.Trait method [] [] [ φ self ] u64
     ).
 
   Definition Run_difficulty (Self : Set) `{Link Self} : Set :=
@@ -80,13 +80,13 @@ Module Block.
   Definition Run_blob_gasprice (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "blob_gasprice" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-        Run.Trait method [] [] [ φ self ] (option U128.t)
+        Run.Trait method [] [] [ φ self ] (option u128)
     ).
 
   Definition Run_blob_excess_gas (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "blob_excess_gas" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-        Run.Trait method [] [] [ φ self ] (option U64.t)
+        Run.Trait method [] [] [ φ self ] (option u64)
     ).
 
   Class Run (Self : Set) `{Link Self} : Set := {

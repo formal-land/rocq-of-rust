@@ -59,7 +59,7 @@ Instance run_extcall_gas_calc
   Run.Trait
     instructions.contract.extcall_gas_calc
       [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host; φ target; φ transfers_value ]
-    (option U64.t).
+    (option u64).
 Proof.
   constructor.
   destruct run_InterpreterTypes_for_WIRE.

@@ -4,7 +4,7 @@ Require Import RocqOfRust.simulate.M.
 Require Import core.num.links.mod.
 
 Module Impl_u64.
-  Definition Self : Set := U64.t.
+  Definition Self : Set := u64.
 
   Definition MIN : Self := {| Integer.value := 0 |}.
 

@@ -7,9 +7,9 @@ Require Import core.num.links.error.
 
 Module Impl_TryFrom_u64_for_usize.
   Definition Self : Set :=
-    Usize.t.
+    usize.
 
-  Definition run_try_from : TryFrom.Run_try_from Self U64.t TryFromIntError.t.
+  Definition run_try_from : TryFrom.Run_try_from Self u64 TryFromIntError.t.
   Proof.
     eexists.
     { eapply IsTraitMethod.Defined.
@@ -23,16 +23,16 @@ Module Impl_TryFrom_u64_for_usize.
     }
   Defined.
 
-  Instance run : TryFrom.Run Self U64.t TryFromIntError.t := {
+  Instance run : TryFrom.Run Self u64 TryFromIntError.t := {
     TryFrom.try_from := run_try_from;
   }.
 End Impl_TryFrom_u64_for_usize.
 
 Module Impl_TryFrom_u64_for_isize.
   Definition Self : Set :=
-    Isize.t.
+    isize.
 
-  Definition run_try_from : TryFrom.Run_try_from Self U64.t TryFromIntError.t.
+  Definition run_try_from : TryFrom.Run_try_from Self u64 TryFromIntError.t.
   Proof.
     eexists.
     { eapply IsTraitMethod.Defined.
@@ -45,7 +45,7 @@ Module Impl_TryFrom_u64_for_isize.
     }
   Admitted.
 
-  Instance run : TryFrom.Run Self U64.t TryFromIntError.t := {
+  Instance run : TryFrom.Run Self u64 TryFromIntError.t := {
     TryFrom.try_from := run_try_from;
   }.
 End Impl_TryFrom_u64_for_isize.

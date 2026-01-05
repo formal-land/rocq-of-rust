@@ -58,7 +58,7 @@ Global Opaque run_discriminant_value.
 Instance run_copy_nonoverlapping {T : Set} `{Link T}
   (src : Ref.t Pointer.Kind.ConstPointer T)
   (dst : Ref.t Pointer.Kind.MutPointer T)
-  (count : Usize.t) :
+  (count : usize) :
   Run.Trait
     intrinsics.copy_nonoverlapping [] [ Φ T ] [ φ src; φ dst; φ count ]
     unit.

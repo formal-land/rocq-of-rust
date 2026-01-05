@@ -9,8 +9,8 @@ pub struct BlobExcessGasAndPrice {
 *)
 Module BlobExcessGasAndPrice.
   Record t : Set := {
-    excess_blob_gas : U64.t;
-    blob_gasprice : U128.t;
+    excess_blob_gas : u64;
+    blob_gasprice : u128;
   }.
 
   Global Instance IsLink : Link t := {
@@ -40,8 +40,8 @@ Module BlobExcessGasAndPrice.
   Smpl Add eapply of_value_with : of_value.
 
   Definition of_value
-      (excess_blob_gas : U64.t) excess_blob_gas'
-      (blob_gasprice : U128.t) blob_gasprice' :
+      (excess_blob_gas : u64) excess_blob_gas'
+      (blob_gasprice : u128) blob_gasprice' :
     excess_blob_gas' = φ excess_blob_gas ->
     blob_gasprice' = φ blob_gasprice ->
     OfValue.t (

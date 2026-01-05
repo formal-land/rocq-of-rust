@@ -36,7 +36,7 @@ Module StackTrait.
   Definition Run_len (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "len" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] Usize.t
+      Run.Trait method [] [] [ φ self ] usize
     ).
 
   Definition Run_is_empty (Self : Set) `{Link Self} : Set :=
@@ -59,13 +59,13 @@ Module StackTrait.
 
   Definition Run_popn (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "popn" (fun method =>
-      forall (N : Usize.t) (self : Ref.t Pointer.Kind.MutRef Self),
+      forall (N : usize) (self : Ref.t Pointer.Kind.MutRef Self),
       Run.Trait method [ φ N ] [] [ φ self ] (option (array.t aliases.U256.t N))
     ).
 
   Definition Run_popn_top (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "popn_top" (fun method =>
-      forall (POPN : Usize.t) (self : Ref.t Pointer.Kind.MutRef Self),
+      forall (POPN : usize) (self : Ref.t Pointer.Kind.MutRef Self),
       Run.Trait method [ φ POPN ] [] [ φ self ]
         (option (array.t aliases.U256.t POPN * Ref.t Pointer.Kind.MutRef aliases.U256.t))
     ).
@@ -90,13 +90,13 @@ Module StackTrait.
 
   Definition Run_exchange (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "exchange" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (n m : Usize.t),
+      forall (self : Ref.t Pointer.Kind.MutRef Self) (n m : usize),
       Run.Trait method [] [] [ φ self; φ n; φ m ] bool
     ).
 
   Definition Run_dup (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "dup" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (n : Usize.t),
+      forall (self : Ref.t Pointer.Kind.MutRef Self) (n : usize),
       Run.Trait method [] [] [ φ self; φ n ] bool
     ).
 
@@ -134,8 +134,8 @@ Module MemoryTrait.
     TraitMethod.C (trait Self) "set_data" (fun method =>
       forall
         (self : Ref.t Pointer.Kind.MutRef Self)
-        (memory_offset data_offset len : Usize.t)
-        (data : Ref.t Pointer.Kind.Ref (list U8.t)),
+        (memory_offset data_offset len : usize)
+        (data : Ref.t Pointer.Kind.Ref (list u8)),
       Run.Trait method [] [] [ φ self; φ memory_offset; φ data_offset; φ len; φ data ] unit
     ).
 
@@ -143,22 +143,22 @@ Module MemoryTrait.
     TraitMethod.C (trait Self) "set" (fun method =>
       forall
         (self : Ref.t Pointer.Kind.MutRef Self)
-        (memory_offset : Usize.t)
-        (data : Ref.t Pointer.Kind.Ref (list U8.t)),
+        (memory_offset : usize)
+        (data : Ref.t Pointer.Kind.Ref (list u8)),
       Run.Trait method [] [] [ φ self; φ memory_offset; φ data ] unit
     ).
 
   Definition Run_size (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "size" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] Usize.t
+      Run.Trait method [] [] [ φ self ] usize
     ).
 
   Definition Run_copy (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "copy" (fun method =>
       forall
         (self : Ref.t Pointer.Kind.MutRef Self)
-        (destination source len : Usize.t),
+        (destination source len : usize),
       Run.Trait method [] [] [ φ self; φ destination; φ source; φ len ] unit
     ).
 
@@ -166,7 +166,7 @@ Module MemoryTrait.
     TraitMethod.C (trait Self) "slice" (fun method =>
       forall
         (self : Ref.t Pointer.Kind.Ref Self)
-        (range : range.Range.t Usize.t),
+        (range : range.Range.t usize),
       Run.Trait method [] [] [ φ self; φ range ] Synthetic
     ).
 
@@ -174,13 +174,13 @@ Module MemoryTrait.
     TraitMethod.C (trait Self) "slice_len" (fun method =>
       forall
         (self : Ref.t Pointer.Kind.Ref Self)
-        (offset len : Usize.t),
+        (offset len : usize),
       Run.Trait method [] [] [ φ self; φ offset; φ len ] Synthetic1
     ).
 
   Definition Run_resize (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "resize" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (new_size : Usize.t),
+      forall (self : Ref.t Pointer.Kind.MutRef Self) (new_size : usize),
       Run.Trait method [] [] [ φ self; φ new_size ] bool
     ).
 
@@ -194,12 +194,12 @@ Module MemoryTrait.
     Synthetic_IsAssociated :
       IsTraitAssociatedType "revm_interpreter::interpreter_types::MemoryTrait" [] [] (Φ Self)
       "{{synthetic}}" (Φ Synthetic);
-    run_Deref_for_Synthetic : deref.Deref.Run Synthetic (list U8.t);
+    run_Deref_for_Synthetic : deref.Deref.Run Synthetic (list u8);
     slice : Run_slice Self Synthetic;
     Synthetic1_IsAssociated :
       IsTraitAssociatedType "revm_interpreter::interpreter_types::MemoryTrait" [] [] (Φ Self)
       "{{synthetic}}'1" (Φ Synthetic1);
-    run_Deref_for_Synthetic1 : deref.Deref.Run Synthetic1 (list U8.t);
+    run_Deref_for_Synthetic1 : deref.Deref.Run Synthetic1 (list u8);
     slice_len : Run_slice_len Self Synthetic1;
     resize : Run_resize Self;
   }.
@@ -220,32 +220,32 @@ Module Jumps.
 
   Definition Run_relative_jump (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "relative_jump" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (offset : Isize.t),
+      forall (self : Ref.t Pointer.Kind.MutRef Self) (offset : isize),
       Run.Trait method [] [] [ φ self; φ offset ] unit
     ).
 
   Definition Run_absolute_jump (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "absolute_jump" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (offset : Usize.t),
+      forall (self : Ref.t Pointer.Kind.MutRef Self) (offset : usize),
       Run.Trait method [] [] [ φ self; φ offset ] unit
     ).
 
   Definition Run_is_valid_legacy_jump (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "is_valid_legacy_jump" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (offset : Usize.t),
+      forall (self : Ref.t Pointer.Kind.MutRef Self) (offset : usize),
       Run.Trait method [] [] [ φ self; φ offset ] bool
     ).
 
   Definition Run_pc (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "pc" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] Usize.t
+      Run.Trait method [] [] [ φ self ] usize
     ).
 
   Definition Run_opcode (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "opcode" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] U8.t
+      Run.Trait method [] [] [ φ self ] u8
     ).
 
   Class Run (Self : Set) `{Link Self} : Set := {
@@ -275,43 +275,43 @@ Module Immediates.
   Definition Run_read_i16 (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "read_i16" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] I16.t
+      Run.Trait method [] [] [ φ self ] i16
     ).
 
   Definition Run_read_u16 (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "read_u16" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] U16.t
+      Run.Trait method [] [] [ φ self ] u16
     ).
 
   Definition Run_read_i8 (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "read_i8" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] I8.t
+      Run.Trait method [] [] [ φ self ] i8
     ).
 
   Definition Run_read_u8 (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "read_u8" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] U8.t
+      Run.Trait method [] [] [ φ self ] u8
     ).
 
   Definition Run_read_offset_i16 (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "read_offset_i16" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (offset : Isize.t),
-      Run.Trait method [] [] [ φ self; φ offset ] I16.t
+      forall (self : Ref.t Pointer.Kind.Ref Self) (offset : isize),
+      Run.Trait method [] [] [ φ self; φ offset ] i16
     ).
 
   Definition Run_read_offset_u16 (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "read_offset_u16" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (offset : Isize.t),
-      Run.Trait method [] [] [ φ self; φ offset ] U16.t
+      forall (self : Ref.t Pointer.Kind.Ref Self) (offset : isize),
+      Run.Trait method [] [] [ φ self; φ offset ] u16
     ).
 
   Definition Run_read_slice (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "read_slice" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (len : Usize.t),
-      Run.Trait method [] [] [ φ self; φ len ] (Ref.t Pointer.Kind.Ref (list U8.t))
+      forall (self : Ref.t Pointer.Kind.Ref Self) (len : usize),
+      Run.Trait method [] [] [ φ self; φ len ] (Ref.t Pointer.Kind.Ref (list u8))
     ).
 
   Class Run (Self : Set) `{Link Self} : Set := {
@@ -338,13 +338,13 @@ Module LegacyBytecode.
   Definition Run_bytecode_len (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "bytecode_len" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] Usize.t
+      Run.Trait method [] [] [ φ self ] usize
     ).
 
   Definition Run_bytecode_slice (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "bytecode_slice" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref (list U8.t))
+      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref (list u8))
     ).
 
   Class Run (Self : Set) `{Link Self} : Set := {
@@ -367,19 +367,19 @@ Module EofData.
   Definition Run_data (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "data" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref (list U8.t))
+      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref (list u8))
     ).
 
   Definition Run_data_slice (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "data_slice" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (offset len : Usize.t),
-      Run.Trait method [] [] [ φ self; φ offset; φ len ] (Ref.t Pointer.Kind.Ref (list U8.t))
+      forall (self : Ref.t Pointer.Kind.Ref Self) (offset len : usize),
+      Run.Trait method [] [] [ φ self; φ offset; φ len ] (Ref.t Pointer.Kind.Ref (list u8))
     ).
 
   Definition Run_data_size (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "data_size" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] Usize.t
+      Run.Trait method [] [] [ φ self ] usize
     ).
 
   Class Run (Self : Set) `{Link Self} : Set := {
@@ -400,7 +400,7 @@ Module EofContainer.
 
   Definition Run_eof_container (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "eof_container" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (index : Usize.t),
+      forall (self : Ref.t Pointer.Kind.Ref Self) (index : usize),
       Run.Trait method [] [] [ φ self; φ index ] (option (Ref.t Pointer.Kind.Ref Bytes.t))
     ).
 
@@ -421,14 +421,14 @@ Module EofCodeInfo.
 
   Definition Run_code_section_info (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "code_section_info" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (idx : Usize.t),
+      forall (self : Ref.t Pointer.Kind.Ref Self) (idx : usize),
       Run.Trait method [] [] [ φ self; φ idx ] (option (Ref.t Pointer.Kind.Ref TypesSection.t))
     ).
 
   Definition Run_code_section_pc (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "code_section_pc" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (idx : Usize.t),
-      Run.Trait method [] [] [ φ self; φ idx ] (option Usize.t)
+      forall (self : Ref.t Pointer.Kind.Ref Self) (idx : usize),
+      Run.Trait method [] [] [ φ self; φ idx ] (option usize)
     ).
 
   Class Run (Self : Set) `{Link Self} : Set := {
@@ -450,7 +450,7 @@ Module ReturnData.
   Definition Run_buffer (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "buffer" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref (list U8.t))
+      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref (list u8))
     ).
 
   Definition Run_buffer_mut (Self : Set) `{Link Self} : Set :=
@@ -492,7 +492,7 @@ Module InputsTrait.
   Definition Run_input (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "input" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref (list U8.t))
+      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref (list u8))
     ).
 
   Definition Run_call_value (Self : Set) `{Link Self} : Set :=
@@ -526,7 +526,7 @@ Module SubRoutineStack.
   Definition Run_len (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "len" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] Usize.t
+      Run.Trait method [] [] [ φ self ] usize
     ).
 
   Definition Run_is_empty (Self : Set) `{Link Self} : Set :=
@@ -538,25 +538,25 @@ Module SubRoutineStack.
   Definition Run_routine_idx (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "routine_idx" (fun method =>
       forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] Usize.t
+      Run.Trait method [] [] [ φ self ] usize
     ).
 
   Definition Run_set_routine_idx (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "set_routine_idx" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (idx : Usize.t),
+      forall (self : Ref.t Pointer.Kind.MutRef Self) (idx : usize),
       Run.Trait method [] [] [ φ self; φ idx ] unit
     ).
 
   Definition Run_push (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "push" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (old_program_counter new_idx : Usize.t),
+      forall (self : Ref.t Pointer.Kind.MutRef Self) (old_program_counter new_idx : usize),
       Run.Trait method [] [] [ φ self; φ old_program_counter; φ new_idx ] bool
     ).
 
   Definition Run_pop (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "pop" (fun method =>
       forall (self : Ref.t Pointer.Kind.MutRef Self),
-      Run.Trait method [] [] [ φ self ] (option Usize.t)
+      Run.Trait method [] [] [ φ self ] (option usize)
     ).
 
   Class Run (Self : Set) `{Link Self} : Set := {

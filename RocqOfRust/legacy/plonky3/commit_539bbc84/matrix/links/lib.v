@@ -11,8 +11,8 @@ pub struct Dimensions {
 *)
 Module Dimensions.
   Record t : Set := {
-    width : Usize.t;
-    height : Usize.t;
+    width : usize;
+    height : usize;
   }.
 
   Global Instance IsLink : Link t := {
@@ -149,7 +149,7 @@ Module Matrix.
     TraitMethod.C (trait Self T) "width" (fun method =>
       forall
         (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] Usize.t
+      Run.Trait method [] [] [ φ self ] usize
     ).
 
   Definition Run_height
@@ -158,7 +158,7 @@ Module Matrix.
     TraitMethod.C (trait Self T) "height" (fun method =>
       forall
         (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] Usize.t
+      Run.Trait method [] [] [ φ self ] usize
     ).
 
   Definition Run_dimensions
@@ -176,7 +176,7 @@ Module Matrix.
     TraitMethod.C (trait Self T) "get" (fun method =>
       forall
         (self : Ref.t Pointer.Kind.Ref Self)
-        (r c : Usize.t),
+        (r c : usize),
       Run.Trait method [] [] [ φ self; φ r; φ c ] T
     ).
 
@@ -187,7 +187,7 @@ Module Matrix.
     TraitMethod.C (trait Self T) "row" (fun method =>
       forall
         (self : Ref.t Pointer.Kind.Ref Self)
-        (r : Usize.t),
+        (r : usize),
       Run.Trait method [] [] [ φ self; φ r ] types.(AssociatedTypes.Row)
     ).
 
@@ -214,7 +214,7 @@ Module Matrix.
       (types : AssociatedTypes.t) `{AssociatedTypes.AreLinks types} :
       Set :=
     TraitMethod.C (trait Self T) "row_slice" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (r : Usize.t),
+      forall (self : Ref.t Pointer.Kind.Ref Self) (r : usize),
       Run.Trait method [] [] [ φ self; φ r ] types.(AssociatedTypes.Synthetic2)
     ).
 

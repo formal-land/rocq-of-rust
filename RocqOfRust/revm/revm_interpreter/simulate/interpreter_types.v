@@ -28,7 +28,7 @@ Module InputTraits.
     input :
       forall
         (self : WIRE_types.(InterpreterTypes.Types.Input)),
-      Ref.t Pointer.Kind.Ref (list U8.t);
+      Ref.t Pointer.Kind.Ref (list u8);
     (* fn call_value(&self) -> U256; *)
     call_value :
       forall
@@ -74,14 +74,14 @@ Module Stack.
     (* fn popn<const N: usize>(&mut self) -> Option<[U256; N]>; *)
     popn :
       forall
-        (N : Usize.t)
+        (N : usize)
         (self : WIRE_types.(InterpreterTypes.Types.Stack)),
       option (array.t aliases.U256.t N) *
       WIRE_types.(InterpreterTypes.Types.Stack);
     (* fn popn_top<const POPN: usize>(&mut self) -> Option<([U256; POPN], &mut U256)>; *)
     popn_top :
       forall
-        (POPN : Usize.t)
+        (POPN : usize)
         (self : WIRE_types.(InterpreterTypes.Types.Stack)),
       option (
         array.t aliases.U256.t POPN *
@@ -100,7 +100,7 @@ Module Stack.
       popn
         (interpreter : Interpreter.t WIRE WIRE_types)
         (stack_rest : Stack.t)
-        (N : Usize.t) :
+        (N : usize) :
         let ref_interpreter : Ref.t Pointer.Kind.MutRef _ := make_ref 0 in
         let ref_self := {| Ref.core :=
           SubPointer.Runner.apply
@@ -123,7 +123,7 @@ Module Stack.
       popn_top
           (interpreter : Interpreter.t WIRE WIRE_types)
           (stack_rest : Stack.t)
-          (POPN : Usize.t) :
+          (POPN : usize) :
         let ref_interpreter : Ref.t Pointer.Kind.MutRef _ := make_ref 0 in
         let ref_self := {| Ref.core :=
           SubPointer.Runner.apply

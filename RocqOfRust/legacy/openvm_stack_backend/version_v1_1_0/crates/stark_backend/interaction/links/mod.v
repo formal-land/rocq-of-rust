@@ -5,7 +5,7 @@ Require Import plonky3.commit_539bbc84.air.links.air.
 
 (* pub type BusIndex = u16; *)
 Module BusIndex.
-  Definition t : Set := U16.t.
+  Definition t : Set := u16.
 End BusIndex.
 
 (*

@@ -59,14 +59,14 @@ End BorrowState.
 
 Module Account.
   Record t : Set := {
-    borrow_state : U8.t;
-    is_signer: U8.t;
-    is_writable: U8.t;
-    executable: U8.t;
+    borrow_state : u8;
+    is_signer: u8;
+    is_writable: u8;
+    executable: u8;
     key: Pubkey.t;
     owner: Pubkey.t;
-    lamports: U64.t;
-    data_len: U64.t
+    lamports: u64;
+    data_len: u64
   }.
 
   Global Instance IsLink : Link t := {
@@ -92,14 +92,14 @@ Module Account.
   Smpl Add apply of_ty : of_ty.
 
   Lemma of_value_with
-    (borrow_state : U8.t) (borrow_state' : Value.t)
-    (is_signer : U8.t) (is_signer' : Value.t)
-    (is_writable : U8.t) (is_writable' : Value.t)
-    (executable : U8.t) (executable' : Value.t)
+    (borrow_state : u8) (borrow_state' : Value.t)
+    (is_signer : u8) (is_signer' : Value.t)
+    (is_writable : u8) (is_writable' : Value.t)
+    (executable : u8) (executable' : Value.t)
     (key : Pubkey.t) (key' : Value.t)
     (owner : Pubkey.t) (owner' : Value.t)
-    (lamports : U64.t) (lamports' : Value.t)
-    (data_len : U64.t) (data_len' : Value.t)
+    (lamports : u64) (lamports' : Value.t)
+    (data_len : u64) (data_len' : Value.t)
     :
     borrow_state' = φ borrow_state ->
     is_signer' = φ is_signer ->
@@ -123,14 +123,14 @@ Module Account.
   Smpl Add apply of_value_with : of_value.
 
   Definition of_value
-    (borrow_state : U8.t) (borrow_state' : Value.t)
-    (is_signer : U8.t) (is_signer' : Value.t)
-    (is_writable : U8.t) (is_writable' : Value.t)
-    (executable : U8.t) (executable' : Value.t)
+    (borrow_state : u8) (borrow_state' : Value.t)
+    (is_signer : u8) (is_signer' : Value.t)
+    (is_writable : u8) (is_writable' : Value.t)
+    (executable : u8) (executable' : Value.t)
     (key : Pubkey.t) (key' : Value.t)
     (owner : Pubkey.t) (owner' : Value.t)
-    (lamports : U64.t) (lamports' : Value.t)
-    (data_len : U64.t) (data_len' : Value.t):
+    (lamports : u64) (lamports' : Value.t)
+    (data_len : u64) (data_len' : Value.t):
     borrow_state' = φ borrow_state ->
     is_signer' = φ is_signer ->
     is_writable' = φ is_writable ->
@@ -366,7 +366,7 @@ Module Impl_AccountInfo.
       (self : Ref.t Pointer.Kind.Ref Self) :
     Run.Trait
       data_len [] [] [φ self]
-      Usize.t.
+      usize.
   Proof.
     constructor.
     run_symbolic.
@@ -377,7 +377,7 @@ Module Impl_AccountInfo.
       (self : Ref.t Pointer.Kind.Ref Self) :
     Run.Trait
       lamports [] [] [φ self]
-      U64.t.
+      u64.
   Proof.
     constructor.
     run_symbolic.
@@ -404,7 +404,7 @@ Module Impl_AccountInfo.
   Proof.
     constructor.
     run_symbolic.
-    destruct (core.links.cmp.Impl_PartialEq_for_Ref.run (array.t U8.t {| Integer.value := 32 |}) (array.t U8.t {| Integer.value := 32 |})).
+    destruct (core.links.cmp.Impl_PartialEq_for_Ref.run (array.t u8 {| Integer.value := 32 |}) (array.t u8 {| Integer.value := 32 |})).
     admit.
   Admitted.
   Global Opaque run_is_owned_by.

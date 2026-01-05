@@ -5,12 +5,12 @@ Require Import ruint.mul.
 
 Module Impl_Uint.
   (* Uint<BITS, LIMBS> *)
-  Definition Self (BITS LIMBS : Usize.t) : Set :=
+  Definition Self (BITS LIMBS : usize) : Set :=
     Uint.t BITS LIMBS.
 
   (* pub const fn wrapping_mul(self, rhs: Self) -> Self *)
   Instance run_wrapping_mul
-      (BITS LIMBS : Usize.t)
+      (BITS LIMBS : usize)
       (x1 x2 : Self BITS LIMBS) :
     Run.Trait
       (mul.Impl_ruint_Uint_BITS_LIMBS.wrapping_mul (φ BITS) (φ LIMBS)) [] [] [ φ x1; φ x2 ]

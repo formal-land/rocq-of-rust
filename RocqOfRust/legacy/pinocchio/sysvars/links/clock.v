@@ -20,7 +20,7 @@ Global Opaque run_CLOCK_ID.
 Instance run_DEFAULT_TICKS_PER_SLOT :
   Run.Trait
     pinocchio.sysvars.clock.sysvars.clock.value_DEFAULT_TICKS_PER_SLOT [] [] []
-    (Ref.t Pointer.Kind.Raw U64.t).
+    (Ref.t Pointer.Kind.Raw u64).
 Proof.
   constructor.
   run_symbolic.
@@ -30,7 +30,7 @@ Global Opaque run_DEFAULT_TICKS_PER_SLOT.
 Instance run_DEFAULT_TICKS_PER_SECOND :
   Run.Trait
     pinocchio.sysvars.clock.sysvars.clock.value_DEFAULT_TICKS_PER_SECOND [] [] []
-    (Ref.t Pointer.Kind.Raw U64.t).
+    (Ref.t Pointer.Kind.Raw u64).
 Proof.
   constructor.
   run_symbolic.
@@ -40,7 +40,7 @@ Global Opaque run_DEFAULT_TICKS_PER_SECOND.
 Instance run_DEFAULT_MS_PER_SLOT :
   Run.Trait
     pinocchio.sysvars.clock.sysvars.clock.value_DEFAULT_MS_PER_SLOT [] [] []
-    (Ref.t Pointer.Kind.Raw U64.t).
+    (Ref.t Pointer.Kind.Raw u64).
 Proof.
   constructor.
   run_symbolic.
@@ -49,11 +49,11 @@ Global Opaque run_DEFAULT_MS_PER_SLOT.
 
 Module Clock.
   Record t : Set := {
-    slot : U64.t;
-    epoch_start_timestamp : I64.t;
-    epoch : U64.t;
-    leader_schedule_epoch : U64.t;
-    unix_timestamp : I64.t
+    slot : u64;
+    epoch_start_timestamp : i64;
+    epoch : u64;
+    leader_schedule_epoch : u64;
+    unix_timestamp : i64
   }.
 
   Global Instance IsLink : Link t := {
@@ -75,7 +75,7 @@ Module Impl_Clock.
   Instance run_LEN :
   Run.Trait
     pinocchio.sysvars.clock.sysvars.clock.Impl_pinocchio_sysvars_clock_Clock.value_LEN [] [] []
-    (Ref.t Pointer.Kind.Raw Usize.t).
+    (Ref.t Pointer.Kind.Raw usize).
   Proof.
     constructor.
     run_symbolic.

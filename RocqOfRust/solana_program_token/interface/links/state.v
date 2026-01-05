@@ -76,8 +76,8 @@ End AccountState.
 Module Mint.
   Record t : Set := {
     mint_authority : COption.t Address.t;
-    supply : U64.t;
-    decimals : U8.t;
+    supply : u64;
+    decimals : u8;
     is_initialized : bool;
     freeze_authority : COption.t Address.t;
   }.
@@ -100,8 +100,8 @@ Module Mint.
 
   Lemma of_value_with
     (mint_authority : COption.t Address.t) (mint_authority' : Value.t)
-    (supply : U64.t) (supply' : Value.t)
-    (decimals : U8.t) (decimals' : Value.t)
+    (supply : u64) (supply' : Value.t)
+    (decimals : u8) (decimals' : Value.t)
     (is_initialized : bool) (is_initialized' : Value.t)
     (freeze_authority : COption.t Address.t) (freeze_authority' : Value.t)
     :
@@ -199,11 +199,11 @@ Module Account.
   Record t : Set := {
     mint : Address.t;
     owner : Address.t;
-    amount : U64.t;
+    amount : u64;
     delegate : COption.t Address.t;
     state : AccountState.t;
-    is_native : COption.t U64.t;
-    delegated_amount : U64.t;
+    is_native : COption.t u64;
+    delegated_amount : u64;
     close_authority : COption.t Address.t;
   }.
 
@@ -229,11 +229,11 @@ Module Account.
   Lemma of_value_with
     (mint : Address.t) (mint' : Value.t)
     (owner : Address.t) (owner' : Value.t)
-    (amount : U64.t) (amount' : Value.t)
+    (amount : u64) (amount' : Value.t)
     (delegate : COption.t Address.t) (delegate' : Value.t)
     (state : AccountState.t) (state' : Value.t)
-    (is_native : COption.t U64.t) (is_native' : Value.t)
-    (delegated_amount : U64.t) (delegated_amount' : Value.t)
+    (is_native : COption.t u64) (is_native' : Value.t)
+    (delegated_amount : u64) (delegated_amount' : Value.t)
     (close_authority : COption.t Address.t) (close_authority' : Value.t)
     :
     mint' = φ mint ->

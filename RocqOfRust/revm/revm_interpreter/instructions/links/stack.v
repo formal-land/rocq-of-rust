@@ -67,7 +67,7 @@ pub fn push<const N: usize, WIRE: InterpreterTypes, H: Host + ?Sized>(
 )
 *)
 Instance run_push
-  (N : Usize.t)
+  (N : usize)
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
@@ -94,7 +94,7 @@ pub fn dup<const N: usize, WIRE: InterpreterTypes, H: Host + ?Sized>(
 )
 *)
 Instance run_dup
-  (N : Usize.t)
+  (N : usize)
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
@@ -119,7 +119,7 @@ pub fn swap<const N: usize, WIRE: InterpreterTypes, H: Host + ?Sized>(
 )
 *)
 Instance run_swap
-  (N : Usize.t)
+  (N : usize)
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)

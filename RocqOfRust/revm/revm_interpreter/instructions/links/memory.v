@@ -39,7 +39,7 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct run_MemoryTrait_for_Memory.
   destruct run_Deref_for_Synthetic1.
-  destruct (Impl_AsRef_for_Slice.run U8.t).
+  destruct (Impl_AsRef_for_Slice.run u8).
   run_symbolic.
 Defined.
 Global Opaque run_mload.

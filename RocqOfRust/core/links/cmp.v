@@ -168,7 +168,7 @@ Defined.
 Global Opaque run_max.
 
 Module Impl_Ord_for_u64.
-  Definition Self : Set := U64.t.
+  Definition Self : Set := u64.
 
   Definition run_cmp : Ord.Run_cmp Self.
   Proof.
@@ -234,7 +234,7 @@ End Impl_Ord_for_u64.
 Export Impl_Ord_for_u64.
 
 Module Impl_Ord_for_usize.
-  Definition Self : Set := Usize.t.
+  Definition Self : Set := usize.
 
   Definition run_cmp : Ord.Run_cmp Self.
   Proof.
@@ -359,18 +359,18 @@ Module Impl_PartialEq_for_Ordering.
 End Impl_PartialEq_for_Ordering.
 
 Module Impl_PartialEq_for_U8.
-  Definition Self : Set := U8.t.
+  Definition Self : Set := u8.
 
   Instance run : PartialEq.Run Self Self.
   Admitted.
 End Impl_PartialEq_for_U8.
 
 Module Impl_PartialEq_for_Array.
-  Definition Self (T U : Set) (N : Usize.t) `{Link T} `{Link U} : Set :=
+  Definition Self (T U : Set) (N : usize) `{Link T} `{Link U} : Set :=
     array.t T N.
 
   Instance run
-    (T U : Set) (N : Usize.t) `{Link T} `{Link U} `{PartialEq.Run T U}
+    (T U : Set) (N : usize) `{Link T} `{Link U} `{PartialEq.Run T U}
     : PartialEq.Run (array.t T N) (array.t U N).
   Admitted.
 End Impl_PartialEq_for_Array.
@@ -387,7 +387,7 @@ End Impl_PartialEq_for_Ref.
 Export Impl_PartialEq_for_Ref.
 
 Module Impl_PartialOrd_for_U32.
-  Definition Self : Set := U32.t.
+  Definition Self : Set := u32.
 
   Instance run : PartialOrd.Run Self Self.
   Admitted.

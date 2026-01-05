@@ -423,12 +423,12 @@ Module aliases.
 
   Module BlockNumber.
     Definition t : Set :=
-      U64.t.
+      u64.
   End BlockNumber.
 
   Module BlockTimestamp.
     Definition t : Set :=
-      U64.t.
+      u64.
   End BlockTimestamp.
 
   Module TxHash.
@@ -438,22 +438,22 @@ Module aliases.
 
   Module TxNumber.
     Definition t : Set :=
-      U64.t.
+      u64.
   End TxNumber.
 
   Module TxNonce.
     Definition t : Set :=
-      U64.t.
+      u64.
   End TxNonce.
 
   Module TxIndex.
     Definition t : Set :=
-      U64.t.
+      u64.
   End TxIndex.
 
   Module ChainId.
     Definition t : Set :=
-      U64.t.
+      u64.
   End ChainId.
 
   Module StorageKey.

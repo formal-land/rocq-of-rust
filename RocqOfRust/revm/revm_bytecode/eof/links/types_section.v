@@ -5,9 +5,9 @@ Require alloc.vec.links.mod.
 
 Module TypesSection.
   Record t : Set := {
-    inputs: U8.t;
-    outputs: U8.t;
-    max_stack_size: U16.t;
+    inputs: u8;
+    outputs: u8;
+    max_stack_size: u16;
   }.
 
   Global Instance IsLink : Link t := {
@@ -37,9 +37,9 @@ Module TypesSection.
   Smpl Add apply of_value_with : of_value.
 
   Definition of_value
-    (inputs : U8.t) inputs'
-    (outputs : U8.t) outputs'
-    (max_stack_size : U16.t) max_stack_size' :
+    (inputs : u8) inputs'
+    (outputs : u8) outputs'
+    (max_stack_size : u16) max_stack_size' :
     inputs' = φ inputs ->
     outputs' = φ outputs ->
     max_stack_size' = φ max_stack_size ->

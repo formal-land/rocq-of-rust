@@ -235,53 +235,18 @@ Module Integer.
 End Integer.
 
 (** ** Integer kinds for better readability *)
-Module U8.
-  Definition t : Set := Integer.t IntegerKind.U8.
-End U8.
-
-Module U16.
-  Definition t : Set := Integer.t IntegerKind.U16.
-End U16.
-
-Module U32.
-  Definition t : Set := Integer.t IntegerKind.U32.
-End U32.
-
-Module U64.
-  Definition t : Set := Integer.t IntegerKind.U64.
-End U64.
-
-Module U128.
-  Definition t : Set := Integer.t IntegerKind.U128.
-End U128.
-
-Module Usize.
-  Definition t : Set := Integer.t IntegerKind.Usize.
-End Usize.
-
-Module I8.
-  Definition t : Set := Integer.t IntegerKind.I8.
-End I8.
-
-Module I16.
-  Definition t : Set := Integer.t IntegerKind.I16.
-End I16.
-
-Module I32.
-  Definition t : Set := Integer.t IntegerKind.I32.
-End I32.
-
-Module I64.
-  Definition t : Set := Integer.t IntegerKind.I64.
-End I64.
-
-Module I128.
-  Definition t : Set := Integer.t IntegerKind.I128.
-End I128.
-
-Module Isize.
-  Definition t : Set := Integer.t IntegerKind.Isize.
-End Isize.
+Definition u8 : Set := Integer.t IntegerKind.U8.
+Definition u16 : Set := Integer.t IntegerKind.U16.
+Definition u32 : Set := Integer.t IntegerKind.U32.
+Definition u64 : Set := Integer.t IntegerKind.U64.
+Definition u128 : Set := Integer.t IntegerKind.U128.
+Definition usize : Set := Integer.t IntegerKind.Usize.
+Definition i8 : Set := Integer.t IntegerKind.I8.
+Definition i16 : Set := Integer.t IntegerKind.I16.
+Definition i32 : Set := Integer.t IntegerKind.I32.
+Definition i64 : Set := Integer.t IntegerKind.I64.
+Definition i128 : Set := Integer.t IntegerKind.I128.
+Definition isize : Set := Integer.t IntegerKind.Isize.
 
 Module Char.
   Inductive t : Set :=
@@ -1501,18 +1466,18 @@ Ltac run_main_rewrites :=
 Ltac change_cast_integer :=
   match goal with
   | |- context [ M.cast (Ty.path ?x) _ ] =>
-    change (Ty.path x) with (Φ U8.t) ||
-    change (Ty.path x) with (Φ U16.t) ||
-    change (Ty.path x) with (Φ U32.t) ||
-    change (Ty.path x) with (Φ U64.t) ||
-    change (Ty.path x) with (Φ U128.t) ||
-    change (Ty.path x) with (Φ Usize.t) ||
-    change (Ty.path x) with (Φ I8.t) ||
-    change (Ty.path x) with (Φ I16.t) ||
-    change (Ty.path x) with (Φ I32.t) ||
-    change (Ty.path x) with (Φ I64.t) ||
-    change (Ty.path x) with (Φ I128.t) ||
-    change (Ty.path x) with (Φ Isize.t)
+    change (Ty.path x) with (Φ u8) ||
+    change (Ty.path x) with (Φ u16) ||
+    change (Ty.path x) with (Φ u32) ||
+    change (Ty.path x) with (Φ u64) ||
+    change (Ty.path x) with (Φ u128) ||
+    change (Ty.path x) with (Φ usize) ||
+    change (Ty.path x) with (Φ i8) ||
+    change (Ty.path x) with (Φ i16) ||
+    change (Ty.path x) with (Φ i32) ||
+    change (Ty.path x) with (Φ i64) ||
+    change (Ty.path x) with (Φ i128) ||
+    change (Ty.path x) with (Φ isize)
   end.
 
 Definition cast_bool (kind_target : IntegerKind.t) (value : bool) : Integer.t kind_target :=

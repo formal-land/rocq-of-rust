@@ -112,7 +112,7 @@ Global Opaque run_MIN_NEGATIVE_VALUE.
 
 (* const FLIPH_BITMASK_U64: u64 *)
 Instance run_FLIPH_BITMASK_U64 :
-  Run.Trait instructions.i256.value_FLIPH_BITMASK_U64 [] [] [] (Ref.t Pointer.Kind.Raw U64.t).
+  Run.Trait instructions.i256.value_FLIPH_BITMASK_U64 [] [] [] (Ref.t Pointer.Kind.Raw u64).
 Proof.
   constructor.
   run_symbolic.

@@ -46,10 +46,10 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct Impl_TryFrom_u64_for_usize.run.
   destruct (Impl_IndexMut_for_Array.run
-    U8.t
-    (RangeTo.t Usize.t)
+    u8
+    (RangeTo.t usize)
     {| Integer.value := 32 |}
-    (list U8.t)
+    (list u8)
   ). {
     apply Impl_IndexMut_for_Slice.run.
     apply Impl_SliceIndex_for_RangeTo.run.
@@ -88,10 +88,10 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
   destruct (Impl_IndexMut_for_Array.run
-    U8.t
-    (RangeTo.t Usize.t)
+    u8
+    (RangeTo.t usize)
     {| Integer.value := 32 |}
-    (list U8.t)
+    (list u8)
   ). {
     apply Impl_IndexMut_for_Slice.run.
     apply Impl_SliceIndex_for_RangeTo.run.

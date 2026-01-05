@@ -60,7 +60,7 @@ where
 Module Instruction.
   Record t : Set := {
     program_id : Ref.t Pointer.Kind.Ref Pubkey.t;
-    data: Ref.t Pointer.Kind.Ref (list U8.t);
+    data: Ref.t Pointer.Kind.Ref (list u8);
     accounts: Ref.t Pointer.Kind.Ref (list AccountMeta.t);
   }.
 
@@ -81,8 +81,8 @@ End Instruction.
 
 Module ProcessedSiblingInstruction.
   Record t : Set := {
-    data_len     : U64.t;
-    accounts_len : U64.t;
+    data_len     : u64;
+    accounts_len : u64;
   }.
 
   Global Instance IsLink : Link t :=
@@ -103,11 +103,11 @@ Module cpi.
   Module Account.
     Record t : Set := {
       key         : Ref.t Pointer.Kind.Raw Pubkey.t;
-      lamports    : Ref.t Pointer.Kind.Raw U64.t;
-      data_len    : U64.t;
-      data        : Ref.t Pointer.Kind.Raw U8.t;
+      lamports    : Ref.t Pointer.Kind.Raw u64;
+      data_len    : u64;
+      data        : Ref.t Pointer.Kind.Raw u8;
       owner       : Ref.t Pointer.Kind.Raw Pubkey.t;
-      rent_epoch  : U64.t;
+      rent_epoch  : u64;
       is_signer   : bool;
       is_writable : bool;
       executable  : bool;
@@ -136,13 +136,13 @@ End cpi.
 Instance run_offset
   (T U : Set) `{Link T} `{Link U} 
   (ptr : Ref.t Pointer.Kind.ConstPointer T) 
-  (offset : Usize.t) :
+  (offset : usize) :
   Run.Trait
     pinocchio.instruction.instruction.offset
     []
     [Φ T; Φ U]
     [ φ (ptr : Ref.t Pointer.Kind.ConstPointer T)
-    ; φ (offset : Usize.t)
+    ; φ (offset : usize)
     ]
     (Ref.t Pointer.Kind.ConstPointer U).
 Proof.
@@ -249,9 +249,9 @@ Global Instance PointeeSized_Run_list (A : Set) `{Link A} :
 
 Module Seed.
   Record t : Set := {
-    seed   : Ref.t Pointer.Kind.Raw U8.t;
-    len    : U64.t;
-    _bytes : PhantomData.t (Ref.t Pointer.Kind.Ref (list U8.t));
+    seed   : Ref.t Pointer.Kind.Raw u8;
+    len    : u64;
+    _bytes : PhantomData.t (Ref.t Pointer.Kind.Ref (list u8));
   }.
 
   Global Instance IsLink : Link t :=
@@ -288,7 +288,7 @@ End Impl_From_ref_slice_u8_for_Seed.
 
 Module Impl_From_ref_array_u8_SIZE_for_Seed.
   Definition run_from
-    : forall (SIZE : Usize.t),
+    : forall (SIZE : usize),
       From.Run_from Seed.t (Ref.t Pointer.Kind.Ref (array.t (Integer.t IntegerKind.U8) SIZE)).
   Proof.
     intros SIZE.
@@ -300,7 +300,7 @@ Module Impl_From_ref_array_u8_SIZE_for_Seed.
       admit. }
   Admitted.
 
-  Instance run (SIZE : Usize.t)
+  Instance run (SIZE : usize)
     : From.Run Seed.t (Ref.t Pointer.Kind.Ref (array.t (Integer.t IntegerKind.U8) SIZE)) :=
     { From.from := run_from SIZE }.
 End Impl_From_ref_array_u8_SIZE_for_Seed.
@@ -378,7 +378,7 @@ End Impl_From_ref_slice_Seed_for_Signer.
 
 Module Impl_From_ref_array_Seed_SIZE_for_Signer.
   Definition run_from
-    : forall (SIZE : Usize.t),
+    : forall (SIZE : usize),
       From.Run_from Signer.t (Ref.t Pointer.Kind.Ref (array.t Seed.t SIZE)).
   Proof.
     intros SIZE.
