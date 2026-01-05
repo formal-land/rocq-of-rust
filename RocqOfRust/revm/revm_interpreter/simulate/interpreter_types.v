@@ -28,7 +28,7 @@ Module InputTraits.
     input :
       forall
         (self : WIRE_types.(InterpreterTypes.Types.Input)),
-      Ref.t Pointer.Kind.Ref (list U8.t);
+      '& (list u8);
     (* fn call_value(&self) -> U256; *)
     call_value :
       forall
@@ -46,7 +46,7 @@ Module InputTraits.
       target_address
         (interpreter : Interpreter.t WIRE WIRE_types)
         (stack : Stack.t) :
-        let ref_interpreter : Ref.t Pointer.Kind.Ref _ := make_ref 0 in
+        let ref_interpreter : '& _ := make_ref 0 in
         let ref_self := {| Ref.core :=
           SubPointer.Runner.apply
             ref_interpreter.(Ref.core)
@@ -74,14 +74,14 @@ Module Stack.
     (* fn popn<const N: usize>(&mut self) -> Option<[U256; N]>; *)
     popn :
       forall
-        (N : Usize.t)
+        (N : usize)
         (self : WIRE_types.(InterpreterTypes.Types.Stack)),
       option (array.t aliases.U256.t N) *
       WIRE_types.(InterpreterTypes.Types.Stack);
     (* fn popn_top<const POPN: usize>(&mut self) -> Option<([U256; POPN], &mut U256)>; *)
     popn_top :
       forall
-        (POPN : Usize.t)
+        (POPN : usize)
         (self : WIRE_types.(InterpreterTypes.Types.Stack)),
       option (
         array.t aliases.U256.t POPN *
@@ -100,8 +100,8 @@ Module Stack.
       popn
         (interpreter : Interpreter.t WIRE WIRE_types)
         (stack_rest : Stack.t)
-        (N : Usize.t) :
-        let ref_interpreter : Ref.t Pointer.Kind.MutRef _ := make_ref 0 in
+        (N : usize) :
+        let ref_interpreter : '&mut _ := make_ref 0 in
         let ref_self := {| Ref.core :=
           SubPointer.Runner.apply
             ref_interpreter.(Ref.core)
@@ -123,8 +123,8 @@ Module Stack.
       popn_top
           (interpreter : Interpreter.t WIRE WIRE_types)
           (stack_rest : Stack.t)
-          (POPN : Usize.t) :
-        let ref_interpreter : Ref.t Pointer.Kind.MutRef _ := make_ref 0 in
+          (POPN : usize) :
+        let ref_interpreter : '&mut _ := make_ref 0 in
         let ref_self := {| Ref.core :=
           SubPointer.Runner.apply
             ref_interpreter.(Ref.core)
@@ -184,7 +184,7 @@ Module Loop.
           (interpreter : Interpreter.t WIRE WIRE_types)
           (stack_rest : Stack.t)
           (result : InstructionResult.t) :
-        let ref_interpreter : Ref.t Pointer.Kind.MutRef _ := make_ref 0 in
+        let ref_interpreter : '&mut _ := make_ref 0 in
         let ref_self := {| Ref.core :=
             SubPointer.Runner.apply
               ref_interpreter.(Ref.core)
@@ -209,7 +209,7 @@ Module Loop.
         (stack_rest : Stack.t)
         (action : InterpreterAction.t)
         (result : InstructionResult.t) :
-        let ref_interpreter : Ref.t Pointer.Kind.MutRef _ := make_ref 0 in
+        let ref_interpreter : '&mut _ := make_ref 0 in
         let ref_self := {| Ref.core :=
             SubPointer.Runner.apply
               ref_interpreter.(Ref.core)
@@ -233,7 +233,7 @@ Module Loop.
       gas
           (interpreter : Interpreter.t WIRE WIRE_types)
           (stack_rest : Stack.t) :
-        let ref_interpreter : Ref.t Pointer.Kind.MutRef _ := make_ref 0 in
+        let ref_interpreter : '&mut _ := make_ref 0 in
         let ref_self := {| Ref.core :=
             SubPointer.Runner.apply
               ref_interpreter.(Ref.core)

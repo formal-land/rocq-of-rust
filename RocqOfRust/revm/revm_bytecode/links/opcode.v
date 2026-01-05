@@ -5,7 +5,7 @@ Require Import revm.revm_bytecode.opcode.
 (* pub struct OpCode(u8); *)
 Module OpCode.
   Record t : Set := {
-    value : U8.t;
+    value : u8;
   }.
 
   Global Instance IsLink : Link t := {
@@ -23,7 +23,7 @@ Module OpCode.
   Proof. now intros; subst. Qed.
   Smpl Add apply of_value_with : of_value.
 
-  Definition of_value (value : U8.t) value' :
+  Definition of_value (value : u8) value' :
     value' = φ value ->
     OfValue.t (Value.StructTuple "revm_bytecode::opcode::OpCode" [] [] [value']).
   Proof. econstructor; apply of_value_with; eassumption. Defined.
@@ -50,7 +50,7 @@ Module Impl_OpCode.
   Instance run_STOP :
     Run.Trait
       opcode.Impl_revm_bytecode_opcode_OpCode.value_STOP [] [] []
-      (Ref.t Pointer.Kind.Raw OpCode.t).
+      ('* OpCode.t).
   Proof.
     constructor.
     run_symbolic.
@@ -60,7 +60,7 @@ Module Impl_OpCode.
   Instance run_ADD :
     Run.Trait
       opcode.Impl_revm_bytecode_opcode_OpCode.value_ADD [] [] []
-      (Ref.t Pointer.Kind.Raw OpCode.t).
+      ('* OpCode.t).
   Proof.
     constructor.
     run_symbolic.
@@ -70,7 +70,7 @@ Module Impl_OpCode.
   Instance run_BALANCE :
     Run.Trait
       opcode.Impl_revm_bytecode_opcode_OpCode.value_BALANCE [] [] []
-      (Ref.t Pointer.Kind.Raw OpCode.t).
+      ('* OpCode.t).
   Proof.
     constructor.
     run_symbolic.
@@ -81,7 +81,7 @@ End Impl_OpCode.
 Instance run_STOP :
   Run.Trait
     opcode.value_STOP [] [] []
-    (Ref.t Pointer.Kind.Raw U8.t).
+    ('* u8).
 Proof.
   constructor.
   run_symbolic.
@@ -91,7 +91,7 @@ Global Opaque run_STOP.
 Instance run_ADD :
   Run.Trait
     opcode.value_ADD [] [] []
-    (Ref.t Pointer.Kind.Raw U8.t).
+    ('* u8).
 Proof.
   constructor.
   run_symbolic.
@@ -101,7 +101,7 @@ Global Opaque run_ADD.
 Instance run_BALANCE :
   Run.Trait
     opcode.value_BALANCE [] [] []
-    (Ref.t Pointer.Kind.Raw U8.t).
+    ('* u8).
 Proof.
   constructor.
   run_symbolic.

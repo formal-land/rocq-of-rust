@@ -26,7 +26,7 @@ Require Import openvm_stack_backend.version_v1_1_0.crates.stark_backend.interact
   }
 *)
 Module BranchEqualCoreCols.
-  Record t {T : Set} {NUM_LIMBS : Usize.t} : Set := {
+  Record t {T : Set} {NUM_LIMBS : usize} : Set := {
     a : array.t T NUM_LIMBS;
     b : array.t T NUM_LIMBS;
     cmp_result : T;
@@ -37,7 +37,7 @@ Module BranchEqualCoreCols.
   }.
   Arguments t : clear implicits.
 
-  Global Instance IsLink (T : Set) `{Link T} (N : Usize.t) : Link (t T N) := {
+  Global Instance IsLink (T : Set) `{Link T} (N : usize) : Link (t T N) := {
     Φ := Ty.apply (Ty.path "openvm_rv32im_circuit::branch_eq::core::BranchEqualCoreCols") [φ N] [Φ T];
     φ x :=
       Value.StructRecord "openvm_rv32im_circuit::branch_eq::core::BranchEqualCoreCols" [φ N] [Φ T] [
@@ -51,7 +51,7 @@ Module BranchEqualCoreCols.
       ];
   }.
 
-  Definition of_ty (T' : Ty.t) (N' : Value.t) (N : Usize.t)
+  Definition of_ty (T' : Ty.t) (N' : Value.t) (N : usize)
       (H_T : OfTy.t T') :
     N' = φ N ->
     OfTy.t (
@@ -66,98 +66,98 @@ Module BranchEqualCoreCols.
   Smpl Add unshelve eapply of_ty : of_ty.
 
   Module SubPointer.
-    Definition get_a (T : Set) `{Link T} (N : Usize.t) : SubPointer.Runner.t (t T N)
+    Definition get_a (T : Set) `{Link T} (N : usize) : SubPointer.Runner.t (t T N)
       (Pointer.Index.StructRecord "openvm_rv32im_circuit::branch_eq::core::BranchEqualCoreCols" "a") :=
     {|
       SubPointer.Runner.projection x := Some x.(a);
       SubPointer.Runner.injection x y := Some (x <| a := y |>);
     |}.
 
-    Lemma get_a_is_valid (T : Set) `{Link T} (N : Usize.t) :
+    Lemma get_a_is_valid (T : Set) `{Link T} (N : usize) :
       SubPointer.Runner.Valid.t (get_a T N).
     Proof.
       now constructor.
     Qed.
     Smpl Add apply get_a_is_valid : run_sub_pointer.
 
-    Definition get_b (T : Set) `{Link T} (N : Usize.t) : SubPointer.Runner.t (t T N)
+    Definition get_b (T : Set) `{Link T} (N : usize) : SubPointer.Runner.t (t T N)
       (Pointer.Index.StructRecord "openvm_rv32im_circuit::branch_eq::core::BranchEqualCoreCols" "b") :=
     {|
       SubPointer.Runner.projection x := Some x.(b);
       SubPointer.Runner.injection x y := Some (x <| b := y |>);
     |}.
 
-    Lemma get_b_is_valid (T : Set) `{Link T} (N : Usize.t) :
+    Lemma get_b_is_valid (T : Set) `{Link T} (N : usize) :
       SubPointer.Runner.Valid.t (get_b T N).
     Proof.
       now constructor.
     Qed.
     Smpl Add apply get_b_is_valid : run_sub_pointer.
 
-    Definition get_cmp_result (T : Set) `{Link T} (N : Usize.t) : SubPointer.Runner.t (t T N)
+    Definition get_cmp_result (T : Set) `{Link T} (N : usize) : SubPointer.Runner.t (t T N)
       (Pointer.Index.StructRecord "openvm_rv32im_circuit::branch_eq::core::BranchEqualCoreCols" "cmp_result") :=
     {|
       SubPointer.Runner.projection x := Some x.(cmp_result);
       SubPointer.Runner.injection x y := Some (x <| cmp_result := y |>);
     |}.
 
-    Lemma get_cmp_result_is_valid (T : Set) `{Link T} (N : Usize.t) :
+    Lemma get_cmp_result_is_valid (T : Set) `{Link T} (N : usize) :
       SubPointer.Runner.Valid.t (get_cmp_result T N).
     Proof.
       now constructor.
     Qed.
     Smpl Add apply get_cmp_result_is_valid : run_sub_pointer.
 
-    Definition get_imm (T : Set) `{Link T} (N : Usize.t) : SubPointer.Runner.t (t T N)
+    Definition get_imm (T : Set) `{Link T} (N : usize) : SubPointer.Runner.t (t T N)
       (Pointer.Index.StructRecord "openvm_rv32im_circuit::branch_eq::core::BranchEqualCoreCols" "imm") :=
     {|
       SubPointer.Runner.projection x := Some x.(imm);
       SubPointer.Runner.injection x y := Some (x <| imm := y |>);
     |}.
 
-    Lemma get_imm_is_valid (T : Set) `{Link T} (N : Usize.t) :
+    Lemma get_imm_is_valid (T : Set) `{Link T} (N : usize) :
       SubPointer.Runner.Valid.t (get_imm T N).
     Proof.
       now constructor.
     Qed.
     Smpl Add apply get_imm_is_valid : run_sub_pointer.
 
-    Definition get_opcode_beq_flag (T : Set) `{Link T} (N : Usize.t) : SubPointer.Runner.t (t T N)
+    Definition get_opcode_beq_flag (T : Set) `{Link T} (N : usize) : SubPointer.Runner.t (t T N)
       (Pointer.Index.StructRecord "openvm_rv32im_circuit::branch_eq::core::BranchEqualCoreCols" "opcode_beq_flag") :=
     {|
       SubPointer.Runner.projection x := Some x.(opcode_beq_flag);
       SubPointer.Runner.injection x y := Some (x <| opcode_beq_flag := y |>);
     |}.
 
-    Lemma get_opcode_beq_flag_is_valid (T : Set) `{Link T} (N : Usize.t) :
+    Lemma get_opcode_beq_flag_is_valid (T : Set) `{Link T} (N : usize) :
       SubPointer.Runner.Valid.t (get_opcode_beq_flag T N).
     Proof.
       now constructor.
     Qed.
     Smpl Add apply get_opcode_beq_flag_is_valid : run_sub_pointer.
 
-    Definition get_opcode_bne_flag (T : Set) `{Link T} (N : Usize.t) : SubPointer.Runner.t (t T N)
+    Definition get_opcode_bne_flag (T : Set) `{Link T} (N : usize) : SubPointer.Runner.t (t T N)
       (Pointer.Index.StructRecord "openvm_rv32im_circuit::branch_eq::core::BranchEqualCoreCols" "opcode_bne_flag") :=
     {|
       SubPointer.Runner.projection x := Some x.(opcode_bne_flag);
       SubPointer.Runner.injection x y := Some (x <| opcode_bne_flag := y |>);
     |}.
 
-    Lemma get_opcode_bne_flag_is_valid (T : Set) `{Link T} (N : Usize.t) :
+    Lemma get_opcode_bne_flag_is_valid (T : Set) `{Link T} (N : usize) :
       SubPointer.Runner.Valid.t (get_opcode_bne_flag T N).
     Proof.
       now constructor.
     Qed.
     Smpl Add apply get_opcode_bne_flag_is_valid : run_sub_pointer.
 
-    Definition get_diff_inv_marker (T : Set) `{Link T} (N : Usize.t) : SubPointer.Runner.t (t T N)
+    Definition get_diff_inv_marker (T : Set) `{Link T} (N : usize) : SubPointer.Runner.t (t T N)
       (Pointer.Index.StructRecord "openvm_rv32im_circuit::branch_eq::core::BranchEqualCoreCols" "diff_inv_marker") :=
     {|
       SubPointer.Runner.projection x := Some x.(diff_inv_marker);
       SubPointer.Runner.injection x y := Some (x <| diff_inv_marker := y |>);
     |}.
 
-    Lemma get_diff_inv_marker_is_valid (T : Set) `{Link T} (N : Usize.t) :
+    Lemma get_diff_inv_marker_is_valid (T : Set) `{Link T} (N : usize) :
       SubPointer.Runner.Valid.t (get_diff_inv_marker T N).
     Proof.
       now constructor.
@@ -170,7 +170,7 @@ Module Impl_Borrow_BranchEqualCoreCols_for_slice_T.
   Definition Self (T : Set) : Set :=
     list T.
 
-  Instance run (T : Set) `{Link T} (NUM_LIMBS : Usize.t) :
+  Instance run (T : Set) `{Link T} (NUM_LIMBS : usize) :
     Borrow.Run (Self T) (BranchEqualCoreCols.t T NUM_LIMBS).
   Admitted.
 End Impl_Borrow_BranchEqualCoreCols_for_slice_T.
@@ -183,13 +183,13 @@ Export Impl_Borrow_BranchEqualCoreCols_for_slice_T.
   }
 *)
 Module BranchEqualCoreAir.
-  Record t {NUM_LIMBS : Usize.t} : Set := {
-    offset : Usize.t;
-    pc_step : U32.t;
+  Record t {NUM_LIMBS : usize} : Set := {
+    offset : usize;
+    pc_step : u32;
   }.
   Arguments t : clear implicits.
 
-  Global Instance IsLink (N : Usize.t) : Link (t N) := {
+  Global Instance IsLink (N : usize) : Link (t N) := {
     Φ := Ty.apply (Ty.path "openvm_rv32im_circuit::branch_eq::core::BranchEqualCoreAir") [φ N] [];
     φ x :=
       Value.StructRecord "openvm_rv32im_circuit::branch_eq::core::BranchEqualCoreAir" [φ N] [] [
@@ -198,7 +198,7 @@ Module BranchEqualCoreAir.
       ];
   }.
 
-  Definition of_ty (N' : Value.t) (N : Usize.t) :
+  Definition of_ty (N' : Value.t) (N : usize) :
     N' = φ N ->
     OfTy.t (
       Ty.apply (Ty.path "openvm_rv32im_circuit::branch_eq::core::BranchEqualCoreAir") [N'] []
@@ -224,7 +224,7 @@ Module Impl_VmCoreAir_for_BranchEqualCoreAir.
   (* We import the module as its name is very long. *)
   Import branch_eq.core.Impl_openvm_circuit_arch_integration_api_VmCoreAir_where_openvm_stark_backend_interaction_InteractionBuilder_AB_where_openvm_circuit_arch_integration_api_VmAdapterInterface_I_associated_in_trait_p3_air_air_AirBuilder___AB_Expr_where_core_convert_From_associated_in_trait_openvm_circuit_arch_integration_api_VmAdapterInterface__associated_in_trait_p3_air_air_AirBuilder___AB_Expr_I_Reads_array_Usize_2_array_NUM_LIMBS_associated_in_trait_p3_air_air_AirBuilder___AB_Expr_where_core_default_Default_associated_in_trait_openvm_circuit_arch_integration_api_VmAdapterInterface__associated_in_trait_p3_air_air_AirBuilder___AB_Expr_I_Writes_where_core_convert_From_associated_in_trait_openvm_circuit_arch_integration_api_VmAdapterInterface__associated_in_trait_p3_air_air_AirBuilder___AB_Expr_I_ProcessedInstruction_openvm_circuit_arch_integration_api_ImmInstruction_associated_in_trait_p3_air_air_AirBuilder___AB_Expr_AB_I_for_openvm_rv32im_circuit_branch_eq_core_BranchEqualCoreAir_NUM_LIMBS.
 
-  Definition Self (NUM_LIMBS : Usize.t) : Set :=
+  Definition Self (NUM_LIMBS : usize) : Set :=
     BranchEqualCoreAir.t NUM_LIMBS.
 
   (*
@@ -236,16 +236,16 @@ Module Impl_VmCoreAir_for_BranchEqualCoreAir.
     ) -> AdapterAirContext<AB::Expr, I>
   *)
   Instance run_eval
-      (AB I : Set) (NUM_LIMBS : Usize.t) `{Link AB} `{Link I}
+      (AB I : Set) (NUM_LIMBS : usize) `{Link AB} `{Link I}
       (AirBuilder_types : AirBuilder.AssociatedTypes.t) `{AirBuilder.AssociatedTypes.AreLinks AirBuilder_types}
       (VmAdapterInterface_types :
         VmAdapterInterface.AssociatedTypes.t) `{VmAdapterInterface.AssociatedTypes.AreLinks VmAdapterInterface_types}
       (run_InteractionBuilder_for_AB : InteractionBuilder.Run AB AirBuilder_types)
       (run_VmAdapterInterface_for_I :
         VmAdapterInterface.Run I AirBuilder_types.(AirBuilder.AssociatedTypes.Expr) VmAdapterInterface_types)
-      (self : Ref.t Pointer.Kind.Ref (Self NUM_LIMBS))
-      (builder : Ref.t Pointer.Kind.MutRef AB)
-      (local : Ref.t Pointer.Kind.Ref (list AirBuilder_types.(AirBuilder.AssociatedTypes.Var)))
+      (self : '& (Self NUM_LIMBS))
+      (builder : '&mut AB)
+      (local : '& (list AirBuilder_types.(AirBuilder.AssociatedTypes.Var)))
       (from_pc : AirBuilder_types.(AirBuilder.AssociatedTypes.Var)) :
     Run.Trait (eval (φ NUM_LIMBS) (Φ AB) (Φ I)) [] [] [φ self; φ builder; φ local; φ from_pc] unit.
   Proof.
@@ -278,7 +278,7 @@ Module Impl_VmCoreAir_for_BranchEqualCoreAir.
         assert (run_handler :
           forall
             (acc : AirBuilder_types.(AirBuilder.AssociatedTypes.Expr))
-            (flag : Ref.t Pointer.Kind.Ref AirBuilder_types.(AirBuilder.AssociatedTypes.Var)),
+            (flag : '& AirBuilder_types.(AirBuilder.AssociatedTypes.Var)),
           Run.Trait (fun _ _ => handler) [] [] [φ acc; φ flag]
             AirBuilder_types.(AirBuilder.AssociatedTypes.Expr)
         ). {
@@ -292,7 +292,7 @@ Module Impl_VmCoreAir_for_BranchEqualCoreAir.
           AirBuilder_types.(AirBuilder.AssociatedTypes.Expr)
           (Function2.t
             AirBuilder_types.(AirBuilder.AssociatedTypes.Expr)
-            (Ref.t Pointer.Kind.Ref AirBuilder_types.(AirBuilder.AssociatedTypes.Var))
+            ('& AirBuilder_types.(AirBuilder.AssociatedTypes.Var))
             AirBuilder_types.(AirBuilder.AssociatedTypes.Expr)
           )
           _ _

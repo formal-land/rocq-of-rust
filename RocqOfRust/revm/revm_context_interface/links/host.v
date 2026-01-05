@@ -236,42 +236,42 @@ Module Host.
   (* fn load_account_delegated(&mut self, address: Address) -> Option<AccountLoad>; *)
   Definition Run_load_account_delegated (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "load_account_delegated" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (address : Address.t),
+      forall (self : '&mut Self) (address : Address.t),
         Run.Trait method [] [] [ φ self; φ address ] (option AccountLoad.t)
     ).
 
   (* fn block_hash(&mut self, number: u64) -> Option<B256>; *)
   Definition Run_block_hash (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "block_hash" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (number : U64.t),
+      forall (self : '&mut Self) (number : u64),
         Run.Trait method [] [] [ φ self; φ number ] (option aliases.B256.t)
     ).
 
   (* fn balance(&mut self, address: Address) -> Option<StateLoad<U256>>; *)
   Definition Run_balance (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "balance" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (address : Address.t),
+      forall (self : '&mut Self) (address : Address.t),
         Run.Trait method [] [] [ φ self; φ address ] (option (StateLoad.t aliases.U256.t))
     ).
 
   (* fn code(&mut self, address: Address) -> Option<Eip7702CodeLoad<Bytes>>; *)
   Definition Run_code (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "code" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (address : Address.t),
+      forall (self : '&mut Self) (address : Address.t),
         Run.Trait method [] [] [ φ self; φ address ] (option (Eip7702CodeLoad.t Bytes.t))
     ).
 
   (* fn code_hash(&mut self, address: Address) -> Option<Eip7702CodeLoad<B256>>; *)
   Definition Run_code_hash (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "code_hash" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (address : Address.t),
+      forall (self : '&mut Self) (address : Address.t),
         Run.Trait method [] [] [ φ self; φ address ] (option (Eip7702CodeLoad.t aliases.B256.t))
     ).
 
   (* fn sload(&mut self, address: Address, index: U256) -> Option<StateLoad<U256>>; *)
   Definition Run_sload (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "sload" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self)
+      forall (self : '&mut Self)
              (address : Address.t)
              (index : aliases.U256.t),
         Run.Trait method [] [] [ φ self; φ address; φ index ] (option (StateLoad.t aliases.U256.t))
@@ -287,7 +287,7 @@ Module Host.
   *)
   Definition Run_sstore (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "sstore" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self)
+      forall (self : '&mut Self)
              (address : Address.t)
              (index : aliases.U256.t)
              (value : aliases.U256.t),
@@ -297,7 +297,7 @@ Module Host.
   (* fn tload(&mut self, address: Address, index: U256) -> U256; *)
   Definition Run_tload (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "tload" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self)
+      forall (self : '&mut Self)
              (address : Address.t)
              (index : aliases.U256.t),
         Run.Trait method [] [] [ φ self; φ address; φ index ] aliases.U256.t
@@ -306,7 +306,7 @@ Module Host.
   (* fn tstore(&mut self, address: Address, index: U256, value: U256); *)
   Definition Run_tstore (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "tstore" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self)
+      forall (self : '&mut Self)
              (address : Address.t)
              (index : aliases.U256.t)
              (value : aliases.U256.t),
@@ -316,7 +316,7 @@ Module Host.
   (* fn log(&mut self, log: Log); *)
   Definition Run_log (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "log" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self)
+      forall (self : '&mut Self)
              (log' : Log.t LogData.t),
         Run.Trait method [] [] [ φ self; φ log' ] unit
     ).
@@ -331,7 +331,7 @@ Module Host.
   Definition Run_selfdestruct (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "selfdestruct" (fun method =>
       forall
-        (self : Ref.t Pointer.Kind.MutRef Self)
+        (self : '&mut Self)
         (address : Address.t)
         (target : Address.t),
       Run.Trait method [] [] [ φ self; φ address; φ target ]

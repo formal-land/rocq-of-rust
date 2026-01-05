@@ -4,9 +4,9 @@ Require Import pinocchio.memory.
 Require Import pinocchio.links.lib.
 
 Instance run_sol_memcpy
-  (dst : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8)))
-  (src : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8)))
-  (n : Usize.t) :
+  (dst : '& (list (Integer.t IntegerKind.U8)))
+  (src : '& (list (Integer.t IntegerKind.U8)))
+  (n : usize) :
   Run.Trait
     memory.sol_memcpy
     [] []
@@ -20,8 +20,8 @@ Global Opaque run_sol_memcpy.
 
 Instance run_copy_val
   (A : Set) `{Link A}
-  (dst : Ref.t Pointer.Kind.Ref A)
-  (src : Ref.t Pointer.Kind.Ref A) :
+  (dst : '& A)
+  (src : '& A) :
   Run.Trait
     memory.copy_val
     [] []
@@ -34,9 +34,9 @@ Admitted.
 Global Opaque run_copy_val.
 
 Instance run_sol_memmove
-  (dst : Ref.t Pointer.Kind.Raw U8.t)
-  (src : Ref.t Pointer.Kind.Raw U8.t)
-  (n : Usize.t) :
+  (dst : '* u8)
+  (src : '* u8)
+  (n : usize) :
   Run.Trait
     memory.sol_memmove
     [] []
@@ -49,14 +49,14 @@ Admitted.
 Global Opaque run_sol_memmove.
 
 Instance run_sol_memcmp
-  (s1 : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8)))
-  (s2 : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8)))
-  (n : Usize.t) :
+  (s1 : '& (list (Integer.t IntegerKind.U8)))
+  (s2 : '& (list (Integer.t IntegerKind.U8)))
+  (n : usize) :
   Run.Trait
     memory.sol_memcmp
     [] []
     [φ s1; φ s2; φ n]
-    I32.t.
+    i32.
 Proof.
   constructor.
   admit.
@@ -64,9 +64,9 @@ Admitted.
 Global Opaque run_sol_memcmp.
 
 Instance run_sol_memset
-  (s : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8)))
-  (c : U8.t)
-  (n : Usize.t) :
+  (s : '& (list (Integer.t IntegerKind.U8)))
+  (c : u8)
+  (n : usize) :
   Run.Trait
     memory.sol_memset
     [] []

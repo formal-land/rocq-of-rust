@@ -8,12 +8,12 @@ Require Import revm_bytecode.eof.header.
 
 Module EofHeader.
   Record t : Set := {
-    types_size: U16.t;
-    code_sizes: Vec.t U16.t Global.t;
-    container_sizes: Vec.t U16.t Global.t;
-    data_size: U16.t;
-    sum_code_sizes: Usize.t;
-    sum_container_sizes: Usize.t;
+    types_size: u16;
+    code_sizes: Vec.t u16 Global.t;
+    container_sizes: Vec.t u16 Global.t;
+    data_size: u16;
+    sum_code_sizes: usize;
+    sum_container_sizes: usize;
   }.
 
   Global Instance IsLink : Link t := {
@@ -61,12 +61,12 @@ Module EofHeader.
   Smpl Add unshelve eapply of_value_with : of_value.
 
   Definition of_value
-      types_size' (types_size : U16.t)
-      code_sizes' (code_sizes : Vec.t U16.t Global.t)
-      container_sizes' (container_sizes : Vec.t U16.t Global.t)
-      data_size' (data_size : U16.t)
-      sum_code_sizes' (sum_code_sizes : Usize.t)
-      sum_container_sizes' (sum_container_sizes : Usize.t) :
+      types_size' (types_size : u16)
+      code_sizes' (code_sizes : Vec.t u16 Global.t)
+      container_sizes' (container_sizes : Vec.t u16 Global.t)
+      data_size' (data_size : u16)
+      sum_code_sizes' (sum_code_sizes : usize)
+      sum_container_sizes' (sum_container_sizes : usize) :
     types_size' = φ types_size ->
     code_sizes' = φ code_sizes ->
     container_sizes' = φ container_sizes ->
@@ -179,30 +179,30 @@ Module Impl_EofHeader.
   (*
     pub fn size(&self) -> usize
   *)
-  Instance run_size (self : Ref.t Pointer.Kind.Ref Self) : 
-    Run.Trait header.eof.header.Impl_revm_bytecode_eof_header_EofHeader.size [] [] [φ self] Usize.t.
+  Instance run_size (self : '& Self) : 
+    Run.Trait header.eof.header.Impl_revm_bytecode_eof_header_EofHeader.size [] [] [φ self] usize.
   Admitted.
   Global Opaque run_size.
 
   (* pub fn eof_size(&self) -> usize *)
-  Instance run_eof_size (self : Ref.t Pointer.Kind.Ref Self) :
+  Instance run_eof_size (self : '& Self) :
     Run.Trait header.eof.header.Impl_revm_bytecode_eof_header_EofHeader.eof_size [] [] [φ self]
-      Usize.t.
+      usize.
   Admitted.
   Global Opaque run_eof_size.
 
   (*
     pub fn encode(&self, buffer: &mut Vec<u8>)
   *)
-  Instance run_encode (self : Ref.t Pointer.Kind.Ref Self) (buffer : Ref.t Pointer.Kind.MutPointer (Vec.t U8.t Global.t)) :
+  Instance run_encode (self : '& Self) (buffer : '*mut (Vec.t u8 Global.t)) :
     Run.Trait header.eof.header.Impl_revm_bytecode_eof_header_EofHeader.encode [] [] [φ self; φ buffer] unit.
   Admitted.
   Global Opaque run_encode.
 
   (* pub fn decode(input: &[u8]) -> Result<(Self, &[u8]), EofDecodeError> *)
-  Instance run_decode (input : Ref.t Pointer.Kind.Ref (list U8.t)) :
+  Instance run_decode (input : '& (list u8)) :
     Run.Trait header.eof.header.Impl_revm_bytecode_eof_header_EofHeader.decode [] [] [φ input]
-      (Result.t Self (Ref.t Pointer.Kind.Ref (list U8.t))).
+      (Result.t Self ('& (list u8))).
   Admitted.
   Global Opaque run_decode.
 End Impl_EofHeader.

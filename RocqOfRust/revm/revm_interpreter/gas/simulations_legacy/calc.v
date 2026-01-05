@@ -1,5 +1,5 @@
 Require Import RocqOfRust.RocqOfRust.
-Require Import revm_interpreter.gas.simulations.constants.
+Require Import revm_interpreter.gas.simulations_legacy.constants.
 
 (*
     /// `EXP` opcode cost calculation.

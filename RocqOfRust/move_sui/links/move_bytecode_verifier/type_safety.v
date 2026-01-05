@@ -12,8 +12,8 @@ struct TypeSafetyChecker<'a> {
 *)
 Module TypeSafetyChecker.
   Record t : Set := {
-    module : Ref.t Pointer.Kind.Ref CompiledModule.t;
-    function_context : Ref.t Pointer.Kind.Ref (FunctionContext.t t);
+    module : '& CompiledModule.t;
+    function_context : '& (FunctionContext.t t);
     locals : Locals.t;
     stack : AbstractStack.t SignatureToken.t;
   }.
@@ -28,10 +28,10 @@ fn verify_instr(
 ) -> PartialVMResult<()>
 *)
 Definition run_verify_instr
-    (verifier : Ref.t Pointer.Kind.MutRef TypeSafetyChecker.t)
-    (bytecode : Ref.t Pointer.Kind.Ref Bytecode.t)
+    (verifier : '&mut TypeSafetyChecker.t)
+    (bytecode : '& Bytecode.t)
     (offset : CodeOffset.t)
-    (meter : Ref.t Pointer.Kind.MutRef (Meter.t + ?Sized)) :
+    (meter : '&mut (Meter.t + ?Sized)) :
   {{
     move_bytecode_verifier::type_safety::verify_instr
       [TypeSafetyChecker_ty; Bytecode_ty; CodeOffset_ty; Meter_ty]

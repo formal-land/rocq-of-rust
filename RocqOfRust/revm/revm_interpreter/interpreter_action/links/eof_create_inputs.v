@@ -38,7 +38,7 @@ Module EOFCreateInputs.
   Record t : Set := {
     caller: Address.t;
     value: aliases.U256.t;
-    gas_limit: U64.t;
+    gas_limit: u64;
     kind: EOFCreateKind.t;
   }.
 
@@ -76,7 +76,7 @@ Module Impl_EOFCreateInputs.
       (created_address : Address.t)
       (value : aliases.U256.t)
       (eof_init_code : Eof.t)
-      (gas_limit : U64.t)
+      (gas_limit : u64)
       (input : Bytes.t) :
     Run.Trait interpreter_action.eof_create_inputs.Impl_revm_interpreter_interpreter_action_eof_create_inputs_EOFCreateInputs.new_opcode
       [] [] [ φ caller; φ created_address; φ value; φ eof_init_code; φ gas_limit; φ input ]

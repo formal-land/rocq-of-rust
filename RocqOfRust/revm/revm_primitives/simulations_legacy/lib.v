@@ -9,10 +9,10 @@ Module U256.
   Definition eqb (a b : t) : bool :=
     a.(value) =? b.(value).
 
-  Definition BITS : Usize.t :=
+  Definition BITS : usize :=
     {| Integer.value := 256 |}.
 
-  Parameter bit : t -> Usize.t -> bool.
+  Parameter bit : t -> usize -> bool.
 
   Parameter add : t -> t -> t.
   Parameter sub : t -> t -> t.

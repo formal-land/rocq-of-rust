@@ -11,21 +11,21 @@ Require Import core.ops.links.index.
 Require Import ruint.links.bytes.
 
 Module Impl_FixedBytes.
-  Definition Self (N : Usize.t) : Set :=
+  Definition Self (N : usize) : Set :=
     FixedBytes.t N.
 
   (* pub const ZERO: Self *)
-  Instance run_zero (N : Usize.t) :
+  Instance run_zero (N : usize) :
     Run.Trait
       (bits.fixed.Impl_alloy_primitives_bits_fixed_FixedBytes_N.value_ZERO (φ N)) [] [] []
-      (Ref.t Pointer.Kind.Raw (Self N)).
+      ('* (Self N)).
   Proof.
     constructor.
   Admitted.
   Global Opaque run_zero.
 
   (* pub fn new(bytes: [u8; N]) -> Self *)
-  Instance run_new (N : Usize.t) (bytes: array.t U8.t N) :
+  Instance run_new (N : usize) (bytes: array.t u8 N) :
     Run.Trait
       (bits.fixed.Impl_alloy_primitives_bits_fixed_FixedBytes_N.new (φ N)) [] [] [φ bytes]
       (Self N).
@@ -95,46 +95,46 @@ Export Impl_From_U256_for_FixedBytes_32.
 
 (* impl<'a, const N: usize> From<&'a [u8; N]> for &'a FixedBytes<N> *)
 Module Impl_From_Array_u8_N_for_FixedBytes_N.
-  Definition Self (N : Usize.t) : Set :=
+  Definition Self (N : usize) : Set :=
     FixedBytes.t N.
 
-  Instance run (N : Usize.t) : From.Run (Self N) (array.t U8.t N).
+  Instance run (N : usize) : From.Run (Self N) (array.t u8 N).
   Admitted.
 End Impl_From_Array_u8_N_for_FixedBytes_N.
 Export Impl_From_Array_u8_N_for_FixedBytes_N.
 
 (* impl<const N: usize> Borrow<[u8; N]> for FixedBytes<N> *)
 Module Impl_Borrow_Array_u8_N_for_FixedBytes_N.
-  Definition Self (N : Usize.t) : Set :=
+  Definition Self (N : usize) : Set :=
     FixedBytes.t N.
 
-  Instance run (N : Usize.t) : Borrow.Run (Self N) (array.t U8.t N).
+  Instance run (N : usize) : Borrow.Run (Self N) (array.t u8 N).
   Admitted.
 End Impl_Borrow_Array_u8_N_for_FixedBytes_N.
 Export Impl_Borrow_Array_u8_N_for_FixedBytes_N.
 
 (* impl<const N: usize> DerefMut for FixedBytes<N> *)
 Module Impl_DerefMut_for_FixedBytes_N.
-  Definition Self (N : Usize.t) : Set :=
+  Definition Self (N : usize) : Set :=
     FixedBytes.t N.
 
-  Definition Target (N : Usize.t) : Set :=
-    array.t U8.t N.
+  Definition Target (N : usize) : Set :=
+    array.t u8 N.
 
-  Instance run (N : Usize.t) : DerefMut.Run (Self N) (Target N).
+  Instance run (N : usize) : DerefMut.Run (Self N) (Target N).
   Admitted.
 End Impl_DerefMut_for_FixedBytes_N.
 Export Impl_DerefMut_for_FixedBytes_N.
 
 Module Impl_Index_for_FixedBytes_N.
-  Definition Self (N : Usize.t) : Set :=
+  Definition Self (N : usize) : Set :=
     FixedBytes.t N.
 
   (* type Output = <[u8; N] as Index<__IdxT>>::Output *)
   Definition Output : Set :=
-    list U8.t.
+    list u8.
 
-  Instance run (N : Usize.t) (__IdxT : Set) `{Link __IdxT} : Index.Run (Self N) __IdxT Output.
+  Instance run (N : usize) (__IdxT : Set) `{Link __IdxT} : Index.Run (Self N) __IdxT Output.
   Admitted.
 End Impl_Index_for_FixedBytes_N.
 Export Impl_Index_for_FixedBytes_N.

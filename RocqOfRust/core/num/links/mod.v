@@ -6,11 +6,11 @@ Require Import core.links.option.
 Require Import core.num.mod.
 
 Module Impl_u16.
-  Definition Self : Set := U16.t.
+  Definition Self : Set := u16.
 
   (* pub const fn to_be_bytes(self) -> [u8; 2] *)
   Instance run_to_be_bytes (self: Self) :
-    Run.Trait num.Impl_u16.to_be_bytes [] [] [ φ self ] (array.t U8.t {| Integer.value := 2 |}).
+    Run.Trait num.Impl_u16.to_be_bytes [] [] [ φ self ] (array.t u8 {| Integer.value := 2 |}).
   Proof.
     constructor.
     run_symbolic.
@@ -20,11 +20,11 @@ End Impl_u16.
 Export Impl_u16.
 
 Module Impl_u64.
-  Definition Self : Set := U64.t.
+  Definition Self : Set := u64.
 
   (* pub const MIN: Self *)
   Instance run_min :
-    Run.Trait num.Impl_u64.value_MIN [] [] [] (Ref.t Pointer.Kind.Raw Self).
+    Run.Trait num.Impl_u64.value_MIN [] [] [] ('* Self).
   Proof.
     constructor.
     run_symbolic.
@@ -33,7 +33,7 @@ Module Impl_u64.
 
   (* pub const MAX: Self *)
   Instance run_max :
-    Run.Trait num.Impl_u64.value_MAX [] [] [] (Ref.t Pointer.Kind.Raw Self).
+    Run.Trait num.Impl_u64.value_MAX [] [] [] ('* Self).
   Proof.
     constructor.
     run_symbolic.
@@ -72,7 +72,7 @@ Module Impl_u64.
   Global Opaque run_overflowing_sub.
 
   (* pub const fn from_be_bytes(bytes: [u8; 8]) -> Self *)
-  Instance run_from_be_bytes (bytes: array.t U8.t {| Integer.value := 8 |}) :
+  Instance run_from_be_bytes (bytes: array.t u8 {| Integer.value := 8 |}) :
     Run.Trait num.Impl_u64.from_be_bytes [] [] [ φ bytes ] Self.
   Proof.
     constructor.
@@ -101,11 +101,11 @@ End Impl_u64.
 Export Impl_u64.
 
 Module Impl_usize.
-  Definition Self : Set := Usize.t.
+  Definition Self : Set := usize.
 
   (* pub const MIN: Self *)
   Instance run_min :
-    Run.Trait num.Impl_usize.value_MIN [] [] [] (Ref.t Pointer.Kind.Raw Self).
+    Run.Trait num.Impl_usize.value_MIN [] [] [] ('* Self).
   Proof.
     constructor.
     run_symbolic.
@@ -114,7 +114,7 @@ Module Impl_usize.
 
   (* pub const MAX: Self *)
   Instance run_max :
-    Run.Trait num.Impl_usize.value_MAX [] [] [] (Ref.t Pointer.Kind.Raw Self).
+    Run.Trait num.Impl_usize.value_MAX [] [] [] ('* Self).
   Proof.
     constructor.
     run_symbolic.
@@ -157,11 +157,11 @@ Export Impl_usize.
 Module Impl_isize.
   Import Impl_usize.
 
-  Definition Self : Set := Isize.t.
+  Definition Self : Set := isize.
 
   (* pub const MAX: Self *)
   Instance run_max :
-    Run.Trait num.Impl_isize.value_MAX [] [] [] (Ref.t Pointer.Kind.Raw Self).
+    Run.Trait num.Impl_isize.value_MAX [] [] [] ('* Self).
   Proof.
     constructor.
     run_symbolic.
@@ -170,7 +170,7 @@ Module Impl_isize.
 
   (* pub const MIN: Self *)
   Instance run_min :
-    Run.Trait num.Impl_isize.value_MIN [] [] [] (Ref.t Pointer.Kind.Raw Self).
+    Run.Trait num.Impl_isize.value_MIN [] [] [] ('* Self).
   Proof.
     constructor.
     run_symbolic.

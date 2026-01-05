@@ -9,7 +9,7 @@ Require Import core.mem.mod.
         unsafe { intrinsics::typed_swap(x, y) }
     }
 *)
-Instance run_swap {T : Set} `{Link T} (x y : Ref.t Pointer.Kind.MutRef T) :
+Instance run_swap {T : Set} `{Link T} (x y : '&mut T) :
   Run.Trait mem.swap [] [ Φ T ] [ φ x; φ y ] unit.
 Proof.
 Admitted.

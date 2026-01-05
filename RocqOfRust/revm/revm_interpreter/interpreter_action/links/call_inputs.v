@@ -249,11 +249,11 @@ Module CallInputs.
   Record t : Set := {
     bytecode_address : Address.t;
     caller : Address.t;
-    gas_limit : U64.t;
+    gas_limit : u64;
     input : Bytes.t;
     is_eof : bool;
     is_static : bool;
-    return_memory_offset : Range.t Usize.t;
+    return_memory_offset : Range.t usize;
     scheme : CallScheme.t;
     target_address : Address.t;
     value : CallValue.t;
@@ -335,11 +335,11 @@ Module CallInputs.
   Definition of_value
       (bytecode_address : Address.t) bytecode_address'
       (caller : Address.t) caller'
-      (gas_limit : U64.t) gas_limit'
+      (gas_limit : u64) gas_limit'
       (input : Bytes.t) input'
       (is_eof : bool) is_eof'
       (is_static : bool) is_static'
-      (return_memory_offset : Range.t Usize.t) return_memory_offset'
+      (return_memory_offset : Range.t usize) return_memory_offset'
       (scheme : CallScheme.t) scheme'
       (target_address : Address.t) target_address'
       (value : CallValue.t) value' :

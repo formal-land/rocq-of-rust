@@ -14,7 +14,7 @@ pub const MAX_CPI_ACCOUNTS: usize = 64;
 Instance run_MAX_CPI_ACCOUNTS :
   Run.Trait
   cpi.value_MAX_CPI_ACCOUNTS [] [] []
-    (Ref.t Pointer.Kind.Raw Usize.t).
+    ('* usize).
 Proof.
   constructor.
   run_symbolic.
@@ -30,10 +30,10 @@ pub fn invoke<const ACCOUNTS: usize>(
 }
 *)
 Instance run_invoke 
-  (ACCOUNTS : Usize.t) 
-  (instruction : Ref.t Pointer.Kind.Ref Instruction.t)
+  (ACCOUNTS : usize) 
+  (instruction : '& Instruction.t)
   (account_infos : 
-    Ref.t Pointer.Kind.Ref (array.t (Ref.t Pointer.Kind.Ref AccountInfo.t) ACCOUNTS)) :
+    '& (array.t ('& AccountInfo.t) ACCOUNTS)) :
   Run.Trait
     cpi.invoke 
     [φ ACCOUNTS] 
@@ -55,10 +55,10 @@ pub fn invoke_with_bounds<const MAX_ACCOUNTS: usize>(
 }
 *)
 Instance run_invoke_with_bounds
-  (MAX_ACCOUNTS : Usize.t)
-  (instruction : Ref.t Pointer.Kind.Ref Instruction.t)
+  (MAX_ACCOUNTS : usize)
+  (instruction : '& Instruction.t)
   (account_infos :
-     Ref.t Pointer.Kind.Ref (array.t (Ref.t Pointer.Kind.Ref AccountInfo.t) MAX_ACCOUNTS)) :
+     '& (array.t ('& AccountInfo.t) MAX_ACCOUNTS)) :
   Run.Trait
     cpi.invoke_with_bounds
     [φ MAX_ACCOUNTS]              
@@ -77,10 +77,10 @@ pub fn slice_invoke(instruction: &Instruction, account_infos: &[&AccountInfo]) -
 }
 *)
 Instance run_slice_invoke
-  (MAX_CPI_ACCOUNTS : Usize.t)
-  (instruction : Ref.t Pointer.Kind.Ref Instruction.t)
+  (MAX_CPI_ACCOUNTS : usize)
+  (instruction : '& Instruction.t)
   (account_infos :
-     Ref.t Pointer.Kind.Ref (array.t (Ref.t Pointer.Kind.Ref AccountInfo.t) MAX_CPI_ACCOUNTS)) :
+     '& (array.t ('& AccountInfo.t) MAX_CPI_ACCOUNTS)) :
   Run.Trait
     cpi.slice_invoke
     []
@@ -101,13 +101,13 @@ pub fn invoke_signed<const ACCOUNTS: usize>(
 ) -> ProgramResult { ... }
 *)
 Instance run_invoke_signed
-  (ACCOUNTS : Usize.t)
-  (SIGNERS : Usize.t)
-  (instruction : Ref.t Pointer.Kind.Ref Instruction.t)
+  (ACCOUNTS : usize)
+  (SIGNERS : usize)
+  (instruction : '& Instruction.t)
   (account_infos :
-     Ref.t Pointer.Kind.Ref (array.t (Ref.t Pointer.Kind.Ref AccountInfo.t) ACCOUNTS))
+     '& (array.t ('& AccountInfo.t) ACCOUNTS))
   (signers_seeds :
-     Ref.t Pointer.Kind.Ref (list Signer.t)) :
+     '& (list Signer.t)) :
   Run.Trait
     cpi.invoke_signed
     [φ ACCOUNTS]
@@ -128,13 +128,13 @@ pub fn invoke_signed_with_bounds<const MAX_ACCOUNTS: usize>(
 ) -> ProgramResult {
 *)
 Instance run_invoke_signed_with_bounds
-  (MAX_ACCOUNTS : Usize.t)
-  (SIGNERS : Usize.t)
-  (instruction : Ref.t Pointer.Kind.Ref Instruction.t)
+  (MAX_ACCOUNTS : usize)
+  (SIGNERS : usize)
+  (instruction : '& Instruction.t)
   (account_infos :
-     Ref.t Pointer.Kind.Ref (array.t (Ref.t Pointer.Kind.Ref AccountInfo.t) MAX_ACCOUNTS))
+     '& (array.t ('& AccountInfo.t) MAX_ACCOUNTS))
   (signers_seeds :
-     Ref.t Pointer.Kind.Ref (array.t Signer.t SIGNERS)) :
+     '& (array.t Signer.t SIGNERS)) :
   Run.Trait
     cpi.invoke_signed_with_bounds
     [φ MAX_ACCOUNTS]
@@ -155,13 +155,13 @@ pub fn slice_invoke_signed(
 ) -> ProgramResult { ... }
 *)
 Instance run_slice_invoke_signed
-  (MAX_CPI_ACCOUNTS : Usize.t)
-  (SIGNERS : Usize.t)
-  (instruction : Ref.t Pointer.Kind.Ref Instruction.t)
+  (MAX_CPI_ACCOUNTS : usize)
+  (SIGNERS : usize)
+  (instruction : '& Instruction.t)
   (account_infos :
-     Ref.t Pointer.Kind.Ref (array.t (Ref.t Pointer.Kind.Ref AccountInfo.t) MAX_CPI_ACCOUNTS))
+     '& (array.t ('& AccountInfo.t) MAX_CPI_ACCOUNTS))
   (signers_seeds :
-     Ref.t Pointer.Kind.Ref (array.t Signer.t SIGNERS)) :
+     '& (array.t Signer.t SIGNERS)) :
   Run.Trait
     cpi.slice_invoke_signed
     []
@@ -182,13 +182,13 @@ unsafe fn inner_invoke_signed_with_bounds<const MAX_ACCOUNTS: usize>(
 ) -> ProgramResult { ... }
 *)
 Instance run_inner_invoke_signed_with_bounds
-  (MAX_ACCOUNTS : Usize.t)
-  (SIGNERS : Usize.t)
-  (instruction : Ref.t Pointer.Kind.Ref Instruction.t)
+  (MAX_ACCOUNTS : usize)
+  (SIGNERS : usize)
+  (instruction : '& Instruction.t)
   (account_infos :
-     Ref.t Pointer.Kind.Ref (array.t (Ref.t Pointer.Kind.Ref AccountInfo.t) MAX_ACCOUNTS))
+     '& (array.t ('& AccountInfo.t) MAX_ACCOUNTS))
   (signers_seeds :
-     Ref.t Pointer.Kind.Ref (array.t Signer.t SIGNERS)) :
+     '& (array.t Signer.t SIGNERS)) :
   Run.Trait
     cpi.inner_invoke_signed_with_bounds
     [φ MAX_ACCOUNTS]
@@ -207,10 +207,10 @@ pub unsafe fn invoke_unchecked(instruction: &Instruction, accounts: &[Account]) 
 }
 *)
 Instance run_invoke_unchecked
-  (ACCOUNTS : Usize.t)
-  (instruction : Ref.t Pointer.Kind.Ref Instruction.t)
+  (ACCOUNTS : usize)
+  (instruction : '& Instruction.t)
   (accounts :
-     Ref.t Pointer.Kind.Ref (array.t Account.t ACCOUNTS)) :
+     '& (array.t Account.t ACCOUNTS)) :
   Run.Trait
     cpi.invoke_unchecked
     []
@@ -233,13 +233,13 @@ pub unsafe fn invoke_signed_unchecked(
   }
 *)
 Instance run_invoke_signed_unchecked
-  (ACCOUNTS : Usize.t)
-  (SIGNERS : Usize.t)
-  (instruction : Ref.t Pointer.Kind.Ref Instruction.t)
+  (ACCOUNTS : usize)
+  (SIGNERS : usize)
+  (instruction : '& Instruction.t)
   (accounts :
-     Ref.t Pointer.Kind.Ref (array.t Account.t ACCOUNTS))
+     '& (array.t Account.t ACCOUNTS))
   (signers_seeds :
-     Ref.t Pointer.Kind.Ref (array.t Signer.t SIGNERS)) :
+     '& (array.t Signer.t SIGNERS)) :
   Run.Trait
     cpi.invoke_signed_unchecked
     []
@@ -263,8 +263,8 @@ Global Opaque run_invoke_signed_unchecked.
 }
 *)
 Instance run_set_return_data
-  (N : Usize.t)
-  (data : Ref.t Pointer.Kind.Ref (array.t U8.t N)) :
+  (N : usize)
+  (data : '& (array.t u8 N)) :
   Run.Trait
     cpi.set_return_data
     []
@@ -285,7 +285,7 @@ pub fn get_return_data() -> Option<ReturnData> {
 Instance run_MAX_RETURN_DATA :
   Run.Trait
   cpi.value_MAX_RETURN_DATA [] [] []
-    (Ref.t Pointer.Kind.Raw Usize.t).
+    ('* usize).
 Proof.
   constructor.
   run_symbolic.
@@ -304,12 +304,12 @@ pub struct ReturnData {
 
 Module ReturnData.
 
-  Parameter (MAX_RETURN_DATA : Usize.t).
+  Parameter (MAX_RETURN_DATA : usize).
 
   Record t : Set := {
     program_id : Pubkey.t;
-    data : array.t U8.t MAX_RETURN_DATA;
-    size : Usize.t
+    data : array.t u8 MAX_RETURN_DATA;
+    size : usize
   }.
 
   Global Instance IsLink : Link t := {
@@ -353,12 +353,12 @@ Module Impl_ReturnData.
   Definition Self : Set := ReturnData.t.
 
   Instance run_program_id
-    (self : Ref.t Pointer.Kind.Ref Self) :
+    (self : '& Self) :
     Run.Trait
       pinocchio.cpi.cpi.Impl_pinocchio_cpi_ReturnData.program_id
       [] []
       [ φ self ]
-      (Ref.t Pointer.Kind.Ref Pubkey.t).
+      ('& Pubkey.t).
   Proof.
     constructor.
     run_symbolic.
@@ -367,7 +367,7 @@ Module Impl_ReturnData.
   Global Opaque run_program_id.
 
   Instance run_as_slice
-    (self : Ref.t Pointer.Kind.Ref Self) :
+    (self : '& Self) :
     Run.Trait
       pinocchio.cpi.cpi.Impl_pinocchio_cpi_ReturnData.as_slice
       [] []

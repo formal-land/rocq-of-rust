@@ -75,7 +75,7 @@ End Stack.
 Instance run_STACK_LIMIT :
   Run.Trait
     interpreter.stack.value_STACK_LIMIT [] [] []
-    (Ref.t Pointer.Kind.Raw Usize.t).
+    ('* usize).
 Proof.
   constructor.
   run_symbolic.
@@ -96,10 +96,10 @@ Module Impl_Stack.
   Global Opaque run_self.
 
   (* pub fn len(&self) -> usize *)
-  Instance run_len (self : Ref.t Pointer.Kind.Ref Self) :
+  Instance run_len (self : '& Self) :
     Run.Trait
       interpreter.stack.Impl_revm_interpreter_interpreter_stack_Stack.len [] [] [φ self]
-      Usize.t.
+      usize.
   Proof.
     constructor.
     run_symbolic.
@@ -107,7 +107,7 @@ Module Impl_Stack.
   Global Opaque run_len.
 
   (* pub fn is_empty(&self) -> bool *)
-  Instance run_is_empty (self : Ref.t Pointer.Kind.Ref Self) :
+  Instance run_is_empty (self : '& Self) :
     Run.Trait
       interpreter.stack.Impl_revm_interpreter_interpreter_stack_Stack.is_empty [] [] [φ self]
       bool.
@@ -118,10 +118,10 @@ Module Impl_Stack.
   Global Opaque run_is_empty.
 
   (* pub fn data(&self) -> &Vec<U256> *)
-  Instance run_data (self : Ref.t Pointer.Kind.Ref Self) :
+  Instance run_data (self : '& Self) :
     Run.Trait
       interpreter.stack.Impl_revm_interpreter_interpreter_stack_Stack.data [] [] [φ self]
-      (Ref.t Pointer.Kind.Ref (Vec.t aliases.U256.t Global.t)).
+      ('& (Vec.t aliases.U256.t Global.t)).
   Proof.
     constructor.
     run_symbolic.
@@ -129,10 +129,10 @@ Module Impl_Stack.
   Global Opaque run_data.
 
   (* pub fn data_mut(&mut self) -> &mut Vec<U256> *)
-  Instance run_data_mut (self : Ref.t Pointer.Kind.MutRef Self) :
+  Instance run_data_mut (self : '&mut Self) :
     Run.Trait
       interpreter.stack.Impl_revm_interpreter_interpreter_stack_Stack.data_mut [] [] [φ self]
-      (Ref.t Pointer.Kind.MutRef (Vec.t aliases.U256.t Global.t)).
+      ('&mut (Vec.t aliases.U256.t Global.t)).
   Proof.
     constructor.
     run_symbolic.
@@ -151,7 +151,7 @@ Module Impl_Stack.
   Global Opaque run_into_data.
 
   (* pub fn pop(&mut self) -> Result<U256, InstructionResult> *)
-  Instance run_pop (self : Ref.t Pointer.Kind.MutRef Self) :
+  Instance run_pop (self : '&mut Self) :
     Run.Trait
       interpreter.stack.Impl_revm_interpreter_interpreter_stack_Stack.pop [] [] [φ self]
       (Result.t aliases.U256.t InstructionResult.t).
@@ -162,7 +162,7 @@ Module Impl_Stack.
   Global Opaque run_pop.
 
   (* pub unsafe fn pop_unsafe(&mut self) -> U256 *)
-  Instance run_pop_unsafe (self : Ref.t Pointer.Kind.MutRef Self) :
+  Instance run_pop_unsafe (self : '&mut Self) :
     Run.Trait
       interpreter.stack.Impl_revm_interpreter_interpreter_stack_Stack.pop_unsafe [] [] [φ self]
       aliases.U256.t.
@@ -173,10 +173,10 @@ Module Impl_Stack.
   Global Opaque run_pop_unsafe.
 
   (* pub unsafe fn top_unsafe(&mut self) -> &mut U256 *)
-  Instance run_top_unsafe (self : Ref.t Pointer.Kind.MutRef Self) :
+  Instance run_top_unsafe (self : '&mut Self) :
     Run.Trait
       interpreter.stack.Impl_revm_interpreter_interpreter_stack_Stack.top_unsafe [] [] [φ self]
-      (Ref.t Pointer.Kind.MutRef aliases.U256.t).
+      ('&mut aliases.U256.t).
   Proof.
     constructor.
     destruct (Impl_DerefMut_for_Vec.run (T := aliases.U256.t) (A := Global.t)).
@@ -185,7 +185,7 @@ Module Impl_Stack.
   Global Opaque run_top_unsafe.
 
   (* pub unsafe fn popn<const N: usize>(&mut self) -> [U256; N] *)
-  Instance run_popn (N : Usize.t) (self : Ref.t Pointer.Kind.MutRef Self) :
+  Instance run_popn (N : usize) (self : '&mut Self) :
     Run.Trait
       interpreter.stack.Impl_revm_interpreter_interpreter_stack_Stack.popn [φ N] [] [φ self]
       (array.t aliases.U256.t N).
@@ -197,10 +197,10 @@ Module Impl_Stack.
   Global Opaque run_popn.
 
   (* pub unsafe fn popn_top<const POPN: usize>(&mut self) -> ([U256; POPN], &mut U256) *)
-  Instance run_popn_top (self : Ref.t Pointer.Kind.MutRef Self) (POPN : Usize.t) :
+  Instance run_popn_top (self : '&mut Self) (POPN : usize) :
     Run.Trait
       interpreter.stack.Impl_revm_interpreter_interpreter_stack_Stack.popn_top [φ POPN] [] [φ self]
-      (array.t aliases.U256.t POPN * Ref.t Pointer.Kind.MutRef aliases.U256.t).
+      (array.t aliases.U256.t POPN * '&mut aliases.U256.t).
   Proof.
     constructor.
     run_symbolic.
@@ -208,7 +208,7 @@ Module Impl_Stack.
   Global Opaque run_popn_top.
 
   (* pub fn push(&mut self, value: U256) -> bool *)
-  Instance run_push (self : Ref.t Pointer.Kind.MutRef Self) (value : aliases.U256.t) :
+  Instance run_push (self : '&mut Self) (value : aliases.U256.t) :
     Run.Trait
       interpreter.stack.Impl_revm_interpreter_interpreter_stack_Stack.push [] [] [φ self; φ value]
       bool.
@@ -219,20 +219,20 @@ Module Impl_Stack.
   Global Opaque run_push.
 
   (* pub fn peek(&self, no_from_top: usize) -> Result<U256, InstructionResult> *)
-  Instance run_peek (self : Ref.t Pointer.Kind.Ref Self) (no_from_top : Usize.t) :
+  Instance run_peek (self : '& Self) (no_from_top : usize) :
     Run.Trait
       interpreter.stack.Impl_revm_interpreter_interpreter_stack_Stack.peek
         [] [] [φ self; φ no_from_top]
       (Result.t aliases.U256.t InstructionResult.t).
   Proof.
     constructor.
-    destruct (Impl_Index_for_Vec_T_A.run aliases.U256.t Usize.t Global.t aliases.U256.t).
+    destruct (Impl_Index_for_Vec_T_A.run aliases.U256.t usize Global.t aliases.U256.t).
     run_symbolic.
   Admitted.
   Global Opaque run_peek.
 
   (* pub fn dup(&mut self, n: usize) -> bool *)
-  Instance run_dup (self : Ref.t Pointer.Kind.MutRef Self) (n : Usize.t) :
+  Instance run_dup (self : '&mut Self) (n : usize) :
     Run.Trait
       interpreter.stack.Impl_revm_interpreter_interpreter_stack_Stack.dup [] [] [φ self; φ n]
       bool.
@@ -243,7 +243,7 @@ Module Impl_Stack.
   Global Opaque run_dup.
 
   (* pub fn exchange(&mut self, n: usize, m: usize) -> bool *)
-  Instance run_exchange (self : Ref.t Pointer.Kind.MutRef Self) (n m : Usize.t) :
+  Instance run_exchange (self : '&mut Self) (n m : usize) :
     Run.Trait
       interpreter.stack.Impl_revm_interpreter_interpreter_stack_Stack.exchange
         [] [] [φ self; φ n; φ m]
@@ -255,7 +255,7 @@ Module Impl_Stack.
   Global Opaque run_exchange.
 
   (* pub fn swap(&mut self, n: usize) -> bool *)
-  Instance run_swap (self : Ref.t Pointer.Kind.MutRef Self) (n : Usize.t) :
+  Instance run_swap (self : '&mut Self) (n : usize) :
     Run.Trait
       interpreter.stack.Impl_revm_interpreter_interpreter_stack_Stack.swap [] [] [φ self; φ n]
       bool.
@@ -267,8 +267,8 @@ Module Impl_Stack.
 
   (* pub fn push_slice(&mut self, slice: &[u8]) -> Result<(), InstructionResult> *)
   Instance run_push_slice
-      (self : Ref.t Pointer.Kind.MutRef Self)
-      (slice : Ref.t Pointer.Kind.Ref (list U8.t)) :
+      (self : '&mut Self)
+      (slice : '& (list u8)) :
     Run.Trait
       interpreter.stack.Impl_revm_interpreter_interpreter_stack_Stack.push_slice
         [] [] [φ self; φ slice]
@@ -280,8 +280,8 @@ Module Impl_Stack.
 
   (* pub fn set(&mut self, no_from_top: usize, val: U256) -> Result<(), InstructionResult> *)
   Instance run_set
-      (self : Ref.t Pointer.Kind.MutRef Self)
-      (no_from_top : Usize.t)
+      (self : '&mut Self)
+      (no_from_top : usize)
       (val : aliases.U256.t) :
     Run.Trait
       interpreter.stack.Impl_revm_interpreter_interpreter_stack_Stack.set

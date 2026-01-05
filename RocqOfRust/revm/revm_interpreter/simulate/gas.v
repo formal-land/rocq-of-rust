@@ -30,7 +30,7 @@ Module Impl_Gas.
   Definition Self : Set :=
     Gas.t.
 
-  Definition new (limit : U64.t) : Self :=
+  Definition new (limit : u64) : Self :=
     {|
       Gas.limit := limit;
       Gas.remaining := limit;
@@ -38,7 +38,7 @@ Module Impl_Gas.
       Gas.memory := Impl_MemoryGas.new;
     |}.
 
-  Lemma new_eq (limit : U64.t) :
+  Lemma new_eq (limit : u64) :
     {{
       SimulateM.eval_f (Impl_Gas.run_new limit) []%stack 🌲
       (Output.Success (new limit), []%stack)
@@ -57,7 +57,7 @@ Module Impl_Gas.
           self.limit
       }
   *)
-  Definition limit (self : Self) : U64.t :=
+  Definition limit (self : Self) : u64 :=
     self.(Gas.limit).
 
   Lemma limit_eq (self : Self) :
@@ -79,7 +79,7 @@ Module Impl_Gas.
           self.remaining += returned;
       }
   *)
-  Definition erase_cost (self : Self) (returned : U64.t) : Self :=
+  Definition erase_cost (self : Self) (returned : u64) : Self :=
     {|
       Gas.limit := self.(Gas.limit);
       Gas.remaining :=
@@ -91,7 +91,7 @@ Module Impl_Gas.
       Gas.memory := self.(Gas.memory);
     |}.
 
-  Lemma erase_cost_eq (self : Self) (returned : U64.t) :
+  Lemma erase_cost_eq (self : Self) (returned : u64) :
     let ref_self := {|
       Ref.core := Ref.Core.Mutable (A := Self) 0%nat [] φ Some (fun _ => Some)
     |} in
@@ -110,10 +110,10 @@ Module Impl_Gas.
     apply Run.Pure.
   Qed.
 
-  Parameter u64_overflowing_sub : forall (self other : U64.t), U64.t * bool.
+  Parameter u64_overflowing_sub : forall (self other : u64), u64 * bool.
 
   Axiom u64_overflowing_sub_eq :
-    forall (stack : Stack.t) (self other : U64.t),
+    forall (stack : Stack.t) (self other : u64),
     {{
       SimulateM.eval_f (core.num.links.mod.Impl_u64.run_overflowing_sub self other) stack 🌲
       (Output.Success (u64_overflowing_sub self other), stack)
@@ -129,7 +129,7 @@ Module Impl_Gas.
         success
     }
   *)
-  Definition record_cost (self : Self) (cost : U64.t) : option Self :=
+  Definition record_cost (self : Self) (cost : u64) : option Self :=
     let (remaining, overflow) := u64_overflowing_sub self.(Gas.remaining) cost in
     let success := negb overflow in
     if success then
@@ -142,10 +142,10 @@ Module Impl_Gas.
       {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
       (interpreter : Interpreter.t WIRE WIRE_types)
       (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
-      (cost : U64.t)
+      (cost : u64)
       (stack : Stack.t) :
-    let ref_interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types) := make_ref 0 in
-    let ref_control : Ref.t Pointer.Kind.MutRef _ := {| Ref.core :=
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_control : '&mut _ := {| Ref.core :=
         SubPointer.Runner.apply
           ref_interpreter.(Ref.core)
           Interpreter.SubPointer.get_control
@@ -199,10 +199,10 @@ Module Impl_Gas.
       {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
       (interpreter : Interpreter.t WIRE WIRE_types)
       (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
-      (cost : U64.t)
+      (cost : u64)
       (stack : Stack.t) :
-    let ref_interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types) := make_ref 0 in
-    let ref_control : Ref.t Pointer.Kind.MutRef _ := {| Ref.core :=
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_control : '&mut _ := {| Ref.core :=
         SubPointer.Runner.apply
           ref_interpreter.(Ref.core)
           Interpreter.SubPointer.get_control
@@ -283,10 +283,10 @@ Module Impl_Gas.
       {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
       (interpreter : Interpreter.t WIRE WIRE_types)
       (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
-      (cost : U64.t)
+      (cost : u64)
       (stack : Stack.t) :
-    let ref_interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types) := make_ref 0 in
-    let ref_control : Ref.t Pointer.Kind.MutRef _ := {| Ref.core :=
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_control : '&mut _ := {| Ref.core :=
         SubPointer.Runner.apply
           ref_interpreter.(Ref.core)
           Interpreter.SubPointer.get_control

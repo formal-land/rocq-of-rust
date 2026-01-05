@@ -21,7 +21,7 @@ Module CreateInputs.
     scheme : CreateScheme.t;
     value : aliases.U256.t;
     init_code : Bytes.t;
-    gas_limit : U64.t;
+    gas_limit : u64;
   }.
 
   Global Instance IsLink : Link t := {
@@ -46,7 +46,7 @@ Module CreateInputs.
     (scheme : CreateScheme.t) scheme'
     (value : aliases.U256.t) value'
     (init_code : Bytes.t) init_code'
-    (gas_limit : U64.t) gas_limit' :
+    (gas_limit : u64) gas_limit' :
     caller' = φ caller ->
     scheme' = φ scheme ->
     value' = φ value ->
@@ -67,7 +67,7 @@ Module CreateInputs.
     (scheme : CreateScheme.t) scheme'
     (value : aliases.U256.t) value'
     (init_code : Bytes.t) init_code'
-    (gas_limit : U64.t) gas_limit' :
+    (gas_limit : u64) gas_limit' :
     caller' = φ caller ->
     scheme' = φ scheme ->
     value' = φ value ->

@@ -5259,7 +5259,7 @@ End EthInterpreter.
 
 Module EthInstructionProvider.
   Record t {WIRE HOST: Set} : Set := {
-    instruction_table: rc.Rc.t (array.t 256 (Function2.t (Ref.t Pointer.Kind.MutRef (interpreter.Interpreter.t WIRE)) (Ref.t Pointer.Kind.MutRef HOST) ())) alloc.Global.t;
+    instruction_table: rc.Rc.t (array.t 256 (Function2.t ('&mut (interpreter.Interpreter.t WIRE)) ('&mut HOST) ())) alloc.Global.t;
   }.
   Arguments Build_t {_ _}.
   Arguments t : clear implicits.
@@ -5576,7 +5576,7 @@ End InterpreterAction.
 Module InstructionTables.
   Inductive t (W H CI: Set) : Set :=
   | Plain
-    (_ : boxed.Box.t (array.t 256 (Function2.t (Ref.t Pointer.Kind.MutRef (interpreter.Interpreter.t W)) (Ref.t Pointer.Kind.MutRef H) ())) alloc.Global.t)
+    (_ : boxed.Box.t (array.t 256 (Function2.t ('&mut (interpreter.Interpreter.t W)) ('&mut H) ())) alloc.Global.t)
   | Custom
     (_ : boxed.Box.t (array.t 256 CI) alloc.Global.t)
   .
@@ -5602,7 +5602,7 @@ Module InstructionTables.
   Smpl Add simple apply of_ty : of_ty.
 
   Lemma of_value_with_Plain
-    (γ0 : boxed.Box.t (array.t 256 (Function2.t (Ref.t Pointer.Kind.MutRef (interpreter.Interpreter.t W)) (Ref.t Pointer.Kind.MutRef H) ())) alloc.Global.t) (γ0' : Value.t) :
+    (γ0 : boxed.Box.t (array.t 256 (Function2.t ('&mut (interpreter.Interpreter.t W)) ('&mut H) ())) alloc.Global.t) (γ0' : Value.t) :
     γ0' = φ γ0 ->
     Value.StructTuple "revm_interpreter::table::InstructionTables::Plain" [
       γ0
@@ -5622,7 +5622,7 @@ Module InstructionTables.
   Smpl Add simple apply of_value_with_Custom : of_value.
 
   Definition of_value_Plain
-    (γ0 : boxed.Box.t (array.t 256 (Function2.t (Ref.t Pointer.Kind.MutRef (interpreter.Interpreter.t W)) (Ref.t Pointer.Kind.MutRef H) ())) alloc.Global.t) (γ0' : Value.t) :
+    (γ0 : boxed.Box.t (array.t 256 (Function2.t ('&mut (interpreter.Interpreter.t W)) ('&mut H) ())) alloc.Global.t) (γ0' : Value.t) :
     γ0' = φ γ0 ->
     OfValue.t (
       Value.StructTuple "revm_interpreter::table::InstructionTables::Plain" [
@@ -5652,7 +5652,7 @@ Module InstructionTables.
         | Plain γ_0 => Some γ_0
         | _ => None
         end;
-      SubPointer.Runner.injection (γ : t) (γ_0 : boxed.Box.t (array.t 256 (Function2.t (Ref.t Pointer.Kind.MutRef (interpreter.Interpreter.t W)) (Ref.t Pointer.Kind.MutRef H) ())) alloc.Global.t) :=
+      SubPointer.Runner.injection (γ : t) (γ_0 : boxed.Box.t (array.t 256 (Function2.t ('&mut (interpreter.Interpreter.t W)) ('&mut H) ())) alloc.Global.t) :=
         match γ with
         | Plain _ => Some (Plain γ_0)
         | _ => None
@@ -5755,7 +5755,7 @@ End Sign.
 Module ExtBytecode.
   Record t : Set := {
     base: bytecode.Bytecode.t;
-    instruction_pointer: Ref.t Pointer.Kind.ConstPointer U8.t;
+    instruction_pointer: '*const U8.t;
   }.
 
   Global Instance IsLink : Link t := {
@@ -6786,7 +6786,7 @@ End PrecompileError.
 
 Module Precompiles.
   Record t : Set := {
-    inner: map.HashMap.t address.Address.t (Function2.t (Ref.t Pointer.Kind.Ref bytes_.Bytes.t) U64.t (result.Result.t interface.PrecompileOutput.t interface.PrecompileErrors.t)) random.RandomState.t;
+    inner: map.HashMap.t address.Address.t (Function2.t ('& bytes_.Bytes.t) U64.t (result.Result.t interface.PrecompileOutput.t interface.PrecompileErrors.t)) random.RandomState.t;
     addresses: set.HashSet.t address.Address.t random.RandomState.t;
   }.
 

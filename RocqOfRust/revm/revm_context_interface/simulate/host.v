@@ -31,7 +31,7 @@ Module Host.
           (self : Self)
           (address : Address.t)
           (stack : Stack.t) :
-        let ref_self : Ref.t Pointer.Kind.MutRef Self := make_ref 1 in
+        let ref_self : '&mut Self := make_ref 1 in
         {{
           SimulateM.eval_f
             (run_Host_for_Self.(links.host.Host.load_account_delegated).(TraitMethod.run)

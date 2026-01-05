@@ -6,7 +6,7 @@ Require Import core.links.array.
 (* pub struct Address(pub(crate) [u8; 32]); *)
 Module Address.
   Record t : Set := {
-    value : array.t U8.t {| Integer.value := 32 |};
+    value : array.t u8 {| Integer.value := 32 |};
   }.
 
   Global Instance IsLink : Link t := {
@@ -24,7 +24,7 @@ Module Address.
   Proof. now intros; subst. Qed.
   Smpl Add apply of_value_with : of_value.
 
-  Definition of_value (value : array.t U8.t {| Integer.value := 32 |}) value' :
+  Definition of_value (value : array.t u8 {| Integer.value := 32 |}) value' :
     value' = φ value ->
     OfValue.t (Value.StructTuple "solana_address::Address" [] [] [φ value]).
   Proof. econstructor; eapply of_value_with; eassumption. Defined.

@@ -49,7 +49,7 @@ Instance run_pop_extcall_target_address
   {WIRE : Set} `{Link WIRE}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types)) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types)) :
   Run.Trait
     instructions.contract.pop_extcall_target_address [] [ Φ WIRE ] [ φ interpreter ]
     (option Address.t).
@@ -59,15 +59,15 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_LoopControl_for_Control.
   destruct Impl_From_U256_for_FixedBytes_32.run.
-  destruct (Impl_Iterator_for_Iter.run U8.t).
-  destruct (Impl_Index_for_FixedBytes_N.run {| Integer.value := 32 |} (RangeTo.t Usize.t)).
+  destruct (Impl_Iterator_for_Iter.run u8).
+  destruct (Impl_Index_for_FixedBytes_N.run {| Integer.value := 32 |} (RangeTo.t usize)).
   run_symbolic.
   match goal with
   | |- context[Value.Closure (existS (_, _) ?closure)] =>
     set (any_callback := closure)
   end.
   assert (run_any_callback :
-    forall (i : Ref.t Pointer.Kind.Ref U8.t),
+    forall (i : '& u8),
     Run.Trait (fun _ _ => any_callback) [] [] [φ i] bool
   ). {
     intros.

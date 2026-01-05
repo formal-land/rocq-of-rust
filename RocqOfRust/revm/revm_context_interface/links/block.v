@@ -31,62 +31,62 @@ Module Block.
 
   Definition Run_number (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "number" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-        Run.Trait method [] [] [ φ self ] U64.t
+      forall (self : '& Self),
+        Run.Trait method [] [] [ φ self ] u64
     ).
 
   Definition Run_beneficiary (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "beneficiary" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
         Run.Trait method [] [] [ φ self ] Address.t
     ).
 
   Definition Run_timestamp (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "timestamp" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-        Run.Trait method [] [] [ φ self ] U64.t
+      forall (self : '& Self),
+        Run.Trait method [] [] [ φ self ] u64
     ).
 
   Definition Run_gas_limit (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "gas_limit" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-        Run.Trait method [] [] [ φ self ] U64.t
+      forall (self : '& Self),
+        Run.Trait method [] [] [ φ self ] u64
     ).
 
   Definition Run_basefee (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "basefee" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-        Run.Trait method [] [] [ φ self ] U64.t
+      forall (self : '& Self),
+        Run.Trait method [] [] [ φ self ] u64
     ).
 
   Definition Run_difficulty (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "difficulty" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
         Run.Trait method [] [] [ φ self ] aliases.U256.t
     ).
 
   Definition Run_prevrandao (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "prevrandao" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
         Run.Trait method [] [] [ φ self ] (option aliases.B256.t)
     ).
 
   Definition Run_blob_excess_gas_and_price (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "blob_excess_gas_and_price" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
         Run.Trait method [] [] [ φ self ] (option BlobExcessGasAndPrice.t)
     ).
 
   Definition Run_blob_gasprice (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "blob_gasprice" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-        Run.Trait method [] [] [ φ self ] (option U128.t)
+      forall (self : '& Self),
+        Run.Trait method [] [] [ φ self ] (option u128)
     ).
 
   Definition Run_blob_excess_gas (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "blob_excess_gas" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-        Run.Trait method [] [] [ φ self ] (option U64.t)
+      forall (self : '& Self),
+        Run.Trait method [] [] [ φ self ] (option u64)
     ).
 
   Class Run (Self : Set) `{Link Self} : Set := {
@@ -130,8 +130,8 @@ Module BlockGetter.
 
   Definition Run_block (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set :=
     TraitMethod.C (trait Self) "block" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-        Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref types.(Types.Block))
+      forall (self : '& Self),
+        Run.Trait method [] [] [ φ self ] ('& types.(Types.Block))
     ).
 
   Class Run (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set := {

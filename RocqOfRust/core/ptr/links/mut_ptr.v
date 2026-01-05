@@ -5,7 +5,7 @@ Require Import core.links.option.
 Require Import core.mem.links.maybe_uninit.
 
 Module Impl_pointer_mut_T.
-  Definition Self (T : Set) `{Link T} : Set := Ref.t Pointer.Kind.MutPointer T.
+  Definition Self (T : Set) `{Link T} : Set := '*mut T.
 
   (* pub const fn is_null(self) -> bool *)
   Instance run_is_null
@@ -34,7 +34,7 @@ Module Impl_pointer_mut_T.
   Instance run_with_addr
       (T : Set) `{Link T}
       (self : Self T)
-      (addr : Usize.t) :
+      (addr : usize) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.with_addr (Φ T)) [] [] [ φ self; φ addr ] (Self T).
   Proof.
     constructor.
@@ -47,7 +47,7 @@ Module Impl_pointer_mut_T.
       (T : Set) `{Link T}
       (self : Self T) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.as_mut (Φ T)) [] [] [ φ self ]
-      (option (Ref.t Pointer.Kind.MutRef T)).
+      (option ('&mut T)).
   Proof.
     constructor.
     run_symbolic.
@@ -59,7 +59,7 @@ Module Impl_pointer_mut_T.
       (T : Set) `{Link T}
       (self : Self T) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.as_uninit_mut (Φ T)) [] [] [ φ self ]
-      (option (Ref.t Pointer.Kind.MutRef (maybe_uninit.MaybeUninit.t T))).
+      (option ('&mut (maybe_uninit.MaybeUninit.t T))).
   Proof.
     constructor.
     run_symbolic.
@@ -96,7 +96,7 @@ Module Impl_pointer_mut_T.
   Instance run_offset
       (T : Set) `{Link T}
       (self : Self T)
-      (count : Isize.t) :
+      (count : isize) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.offset (Φ T)) [] [] [ φ self; φ count ] (Self T).
   Proof.
     constructor.
@@ -108,7 +108,7 @@ Module Impl_pointer_mut_T.
   Instance run_wrapping_offset
       (T : Set) `{Link T}
       (self : Self T)
-      (count : Isize.t) :
+      (count : isize) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.wrapping_offset (Φ T)) [] [] [ φ self; φ count ] (Self T).
   Proof.
     constructor.
@@ -120,7 +120,7 @@ Module Impl_pointer_mut_T.
   Instance run_wrapping_byte_offset
       (T : Set) `{Link T}
       (self : Self T)
-      (count : Isize.t) :
+      (count : isize) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.wrapping_byte_offset (Φ T)) [] [] [ φ self; φ count ] (Self T).
   Proof.
     constructor.
@@ -132,7 +132,7 @@ Module Impl_pointer_mut_T.
   Instance run_mask
       (T : Set) `{Link T}
       (self : Self T)
-      (mask : Usize.t) :
+      (mask : usize) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.mask (Φ T)) [] [] [ φ self; φ mask ] (Self T).
   Proof.
     constructor.
@@ -145,7 +145,7 @@ Module Impl_pointer_mut_T.
       (T : Set) `{Link T}
       (self : Self T) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.as_mut_unchecked (Φ T)) [] [] [ φ self ]
-      (Ref.t Pointer.Kind.MutRef T).
+      ('&mut T).
   Proof.
     constructor.
     run_symbolic.
@@ -156,7 +156,7 @@ Module Impl_pointer_mut_T.
   Instance run_add
       (T : Set) `{Link T}
       (self : Self T)
-      (count : Usize.t) :
+      (count : usize) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.add (Φ T)) [] [] [ φ self; φ count ] (Self T).
   Proof.
     constructor.
@@ -168,7 +168,7 @@ Module Impl_pointer_mut_T.
   Instance run_wrapping_add
       (T : Set) `{Link T}
       (self : Self T)
-      (count : Usize.t) :
+      (count : usize) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.wrapping_add (Φ T)) [] [] [ φ self; φ count ] (Self T).
   Proof.
     constructor.
@@ -180,7 +180,7 @@ Module Impl_pointer_mut_T.
   Instance run_sub
       (T : Set) `{Link T}
       (self : Self T)
-      (count : Usize.t) :
+      (count : usize) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.sub (Φ T)) [] [] [ φ self; φ count ] (Self T).
   Proof.
     constructor.
@@ -192,7 +192,7 @@ Module Impl_pointer_mut_T.
   Instance run_wrapping_sub
       (T : Set) `{Link T}
       (self : Self T)
-      (count : Usize.t) :
+      (count : usize) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.wrapping_sub (Φ T)) [] [] [ φ self; φ count ] (Self T).
   Proof.
     constructor.
@@ -204,7 +204,7 @@ Module Impl_pointer_mut_T.
   Instance run_addr
       (T : Set) `{Link T}
       (self : Self T) :
-    Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.addr (Φ T)) [] [] [ φ self ] Usize.t.
+    Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.addr (Φ T)) [] [] [ φ self ] usize.
   Proof.
     constructor.
     run_symbolic.
@@ -216,7 +216,7 @@ Module Impl_pointer_mut_T.
       (T : Set) `{Link T}
       (self : Self T) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.cast_const (Φ T)) [] [] [ φ self ]
-      (Ref.t Pointer.Kind.ConstPointer T).
+      ('*const T).
   Proof.
     constructor.
     run_symbolic.
@@ -228,9 +228,9 @@ Module Impl_pointer_mut_T.
       (T : Set) `{Link T}
       (U : Set) `{Link U}
       (self : Self T)
-      (val : Ref.t Pointer.Kind.MutPointer U) :
+      (val : '*mut U) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.with_metadata_of (Φ T)) [] [Φ U] [ φ self; φ val ]
-      (Ref.t Pointer.Kind.MutPointer U).
+      ('*mut U).
   Proof.
     constructor.
     run_symbolic.
@@ -252,8 +252,8 @@ Module Impl_pointer_mut_T.
   Instance run_write_bytes
       (T : Set) `{Link T}
       (self : Self T)
-      (val : U8.t)
-      (count : Usize.t) :
+      (val : u8)
+      (count : usize) :
     Run.Trait
       (ptr.mut_ptr.Impl_pointer_mut_T.write_bytes (Φ T)) [] [] [ φ self; φ val; φ count ]
       unit.

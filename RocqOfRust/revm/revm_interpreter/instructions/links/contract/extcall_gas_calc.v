@@ -52,14 +52,14 @@ Instance run_extcall_gas_calc
   {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   (run_Host_for_H : Host.Run H H_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (host : Ref.t Pointer.Kind.MutRef H)
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (host : '&mut H)
   (target : Address.t)
   (transfers_value : bool) :
   Run.Trait
     instructions.contract.extcall_gas_calc
       [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host; φ target; φ transfers_value ]
-    (option U64.t).
+    (option u64).
 Proof.
   constructor.
   destruct run_InterpreterTypes_for_WIRE.

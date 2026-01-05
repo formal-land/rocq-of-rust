@@ -76,8 +76,8 @@ Instance run_assert_failed
   (T : Set) `{Link T}
   (U : Set) `{Link U}
   (kind : AssertKind.t)
-  (left : Ref.t Pointer.Kind.Ref T)
-  (right : Ref.t Pointer.Kind.Ref U)
+  (left : '& T)
+  (right : '& U)
   (args : option Arguments.t) :
   Run.Trait
     panicking.assert_failed [] [ Φ T; Φ U ] [φ kind; φ left; φ right; φ args]

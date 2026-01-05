@@ -17,8 +17,8 @@ Module Borrow.
 
   Definition Run_borrow (Self Borrowed : Set) `{Link Self} `{Link Borrowed} : Set :=
     TraitMethod.C (trait Self Borrowed) "borrow" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref Borrowed)).
+      forall (self : '& Self),
+      Run.Trait method [] [] [ φ self ] ('& Borrowed)).
 
   Class Run (Self Borrowed : Set) `{Link Self} `{Link Borrowed} : Set := {
     borrow : Run_borrow Self Borrowed;
@@ -46,8 +46,8 @@ Module BorrowMut.
 
   Definition Run_borrow_mut (Self Borrowed : Set) `{Link Self} `{Link Borrowed} : Set :=
     TraitMethod.C (trait Self Borrowed) "borrow_mut" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.MutRef Borrowed)).
+      forall (self : '&mut Self),
+      Run.Trait method [] [] [ φ self ] ('&mut Borrowed)).
 
   Class Run (Self Borrowed : Set) `{Link Self} `{Link Borrowed} : Set := {
     run_Borrow_for_Self : Borrow.Run Self Borrowed;

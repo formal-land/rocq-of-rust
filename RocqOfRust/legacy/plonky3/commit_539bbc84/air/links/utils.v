@@ -34,7 +34,7 @@ pub fn add2<AB: AirBuilder>(
   {AB : Set} `{Link AB}
   {AB_types : AirBuilder.AssociatedTypes.t}
   {run_AirBuilder_for_AB : AirBuilder.Run AB}
-  (builder : Ref.t Pointer.Kind.MutRef AB) 
+  (builder : '&mut AB) 
   (a : array.t AB_types.(Var) {| Integer.value := 2 |})
   (b : array.t AB_types.(Var) {| Integer.value := 2 |})
   (c : array.t AB_types.(Expr) {| Integer.value := 2 |})
@@ -59,11 +59,11 @@ pub fn xor_32_shift<AB: AirBuilder>(
   {AB : Set} `{Link AB}
   {AB_types : AirBuilder.AssociatedTypes.t}
   {run_AirBuilder_for_AB : AirBuilder.Run AB}
-  (builder : Ref.t Pointer.Kind.MutRef AB) 
+  (builder : '&mut AB) 
   (a : array.t AB_types.(Var) {| Integer.value := 2 |})
   (b : array.t AB_types.(Var) {| Integer.value := 2 |})
   (c : array.t AB_types.(Expr) {| Integer.value := 2 |})
-  (shift : Usize.t)
+  (shift : usize)
   :
   Run.Trait
     air.utils.run_add2 [] [ Φ AB ] [ φ builder; φ a; φ b; φ c; φ shift ]

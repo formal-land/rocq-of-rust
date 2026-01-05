@@ -45,7 +45,7 @@ Instance run_extcall_input
   {WIRE : Set} `{Link WIRE}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types)) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types)) :
   Run.Trait
     instructions.contract.extcall_input [] [ Φ WIRE ] [ φ interpreter ]
     (option alloy_primitives.bytes.links.mod.Bytes.t).
@@ -57,11 +57,11 @@ Proof.
   destruct run_MemoryTrait_for_Memory.
   destruct (Impl_Try_for_Option.run alloy_primitives.bytes.links.mod.Bytes.t).
   destruct run_FromResidual_for_Self.
-  destruct (Impl_Try_for_Option.run (Range.t Usize.t)).
-  destruct (Impl_AsRef_for_Slice.run U8.t).
+  destruct (Impl_Try_for_Option.run (Range.t usize)).
+  destruct (Impl_AsRef_for_Slice.run u8).
   destruct run_Deref_for_Synthetic.
   destruct (Impl_FromResidual_Infallible_for_Option.run alloy_primitives.bytes.links.mod.Bytes.t).
-  destruct (Impl_Clone_for_Range.run Usize.t).
+  destruct (Impl_Clone_for_Range.run usize).
   run_symbolic.
 Defined.
 Global Opaque run_extcall_input.

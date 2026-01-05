@@ -32,8 +32,8 @@ Instance run_gasprice
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   (H_types : Host.Types.t) `{Host.Types.AreLinks H_types}
   (run_Host_for_H : Host.Run H H_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (host : '&mut H) :
   Run.Trait
     instructions.tx_info.gasprice [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -63,8 +63,8 @@ Instance run_origin
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   (H_types : Host.Types.t) `{Host.Types.AreLinks H_types}
   (run_Host_for_H : Host.Run H H_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (host : '&mut H) :
   Run.Trait
     instructions.tx_info.origin [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -93,8 +93,8 @@ Instance run_blob_hash
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   (H_types : Host.Types.t) `{Host.Types.AreLinks H_types}
   (run_Host_for_H : Host.Run H H_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (host : '&mut H) :
   Run.Trait
     instructions.tx_info.blob_hash [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.

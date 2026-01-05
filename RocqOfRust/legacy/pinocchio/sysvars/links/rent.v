@@ -13,7 +13,7 @@ Require Import pinocchio.links.program_error.
 Instance run_RENT_ID :
   Run.Trait
     pinocchio.sysvars.rent.sysvars.rent.value_RENT_ID [] [] []
-    (Ref.t Pointer.Kind.Raw Pubkey.t).
+    ('* Pubkey.t).
 Proof.
   constructor. 
   run_symbolic.
@@ -25,7 +25,7 @@ Global Opaque run_RENT_ID.
 Instance run_DEFAULT_LAMPORTS_PER_BYTE_YEAR :
   Run.Trait
     pinocchio.sysvars.rent.sysvars.rent.value_DEFAULT_LAMPORTS_PER_BYTE_YEAR [] [] []
-    (Ref.t Pointer.Kind.Raw U64.t).
+    ('* u64).
 Proof.
   constructor. run_symbolic.
 Defined.
@@ -34,7 +34,7 @@ Global Opaque run_DEFAULT_LAMPORTS_PER_BYTE_YEAR.
 Instance run_DEFAULT_EXEMPTION_THRESHOLD :
   Run.Trait
     pinocchio.sysvars.rent.sysvars.rent.value_DEFAULT_EXEMPTION_THRESHOLD [] [] []
-    (Ref.t Pointer.Kind.Raw F64.t).
+    ('* F64.t).
 Proof.
   constructor. admit.
 Admitted.
@@ -43,7 +43,7 @@ Global Opaque run_DEFAULT_EXEMPTION_THRESHOLD.
 Instance run_DEFAULT_EXEMPTION_THRESHOLD_AS_U64 :
   Run.Trait
     pinocchio.sysvars.rent.sysvars.rent.value_DEFAULT_EXEMPTION_THRESHOLD_AS_U64 [] [] []
-    (Ref.t Pointer.Kind.Raw U64.t).
+    ('* u64).
 Proof.
   constructor. run_symbolic.
 Defined.
@@ -52,7 +52,7 @@ Global Opaque run_DEFAULT_EXEMPTION_THRESHOLD_AS_U64.
 Instance run_F64_EXEMPTION_THRESHOLD_AS_U64 :
   Run.Trait
     pinocchio.sysvars.rent.sysvars.rent.value_F64_EXEMPTION_THRESHOLD_AS_U64 [] [] []
-    (Ref.t Pointer.Kind.Raw U64.t).
+    ('* u64).
 Proof.
   constructor. run_symbolic.
 Defined.
@@ -61,7 +61,7 @@ Global Opaque run_F64_EXEMPTION_THRESHOLD_AS_U64.
 Instance run_DEFAULT_BURN_PERCENT :
   Run.Trait
     pinocchio.sysvars.rent.sysvars.rent.value_DEFAULT_BURN_PERCENT [] [] []
-    (Ref.t Pointer.Kind.Raw U8.t).
+    ('* u8).
 Proof.
   constructor. run_symbolic.
 Defined.
@@ -70,7 +70,7 @@ Global Opaque run_DEFAULT_BURN_PERCENT.
 Instance run_ACCOUNT_STORAGE_OVERHEAD :
   Run.Trait
     pinocchio.sysvars.rent.sysvars.rent.value_ACCOUNT_STORAGE_OVERHEAD [] [] []
-    (Ref.t Pointer.Kind.Raw U64.t).
+    ('* u64).
 Proof.
   constructor. run_symbolic.
 Defined.
@@ -78,9 +78,9 @@ Global Opaque run_ACCOUNT_STORAGE_OVERHEAD.
 
 Module Rent.
   Record t : Set := {
-    lamports_per_byte_year : U64.t;
+    lamports_per_byte_year : u64;
     exemption_threshold : F64.t;
-    burn_percent : U8.t
+    burn_percent : u8
   }.
 
   Global Instance IsLink : Link t := {
@@ -97,7 +97,7 @@ End Rent.
 Module RentDue.
   Inductive t : Set :=
   | Exempt
-  | Paying (x : U64.t).
+  | Paying (x : u64).
 
   Global Instance IsLink : Link t := {
     Φ := Ty.path "pinocchio::sysvars::rent::RentDue";
@@ -118,70 +118,70 @@ Module Impl_Rent.
   Definition Self : Set := Rent.t.
 
   Instance run_from_account_info
-    (account_info : Ref.t Pointer.Kind.Ref AccountInfo.t) :
+    (account_info : '& AccountInfo.t) :
     Run.Trait
       pinocchio.sysvars.rent.sysvars.rent.Impl_pinocchio_sysvars_rent_Rent.from_account_info
       [] []
       [φ account_info]
-      (Result.t (Ref.t Pointer.Kind.Ref Self) ProgramError.t).
+      (Result.t ('& Self) ProgramError.t).
   Proof.
     constructor. admit.
   Admitted.
   Global Opaque run_from_account_info.
 
   Instance run_from_account_info_unchecked
-    (account_info : Ref.t Pointer.Kind.Ref AccountInfo.t) :
+    (account_info : '& AccountInfo.t) :
     Run.Trait
       pinocchio.sysvars.rent.sysvars.rent.Impl_pinocchio_sysvars_rent_Rent.from_account_info_unchecked
       [] []
       [φ account_info]
-      (Result.t (Ref.t Pointer.Kind.Ref Self) ProgramError.t).
+      (Result.t ('& Self) ProgramError.t).
   Proof.
     constructor. admit.
   Admitted.
   Global Opaque run_from_account_info_unchecked.
 
   Instance run_from_bytes
-    (bytes : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8))) :
+    (bytes : '& (list (Integer.t IntegerKind.U8))) :
     Run.Trait
       pinocchio.sysvars.rent.sysvars.rent.Impl_pinocchio_sysvars_rent_Rent.from_bytes
       [] []
       [φ bytes]
-      (Result.t (Ref.t Pointer.Kind.Ref Self) ProgramError.t).
+      (Result.t ('& Self) ProgramError.t).
   Proof.
     constructor. admit.
   Admitted.
   Global Opaque run_from_bytes.
 
   Instance run_from_bytes_unchecked
-    (bytes : Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8))) :
+    (bytes : '& (list (Integer.t IntegerKind.U8))) :
     Run.Trait
       pinocchio.sysvars.rent.sysvars.rent.Impl_pinocchio_sysvars_rent_Rent.from_bytes_unchecked
       [] []
       [φ bytes]
-      (Ref.t Pointer.Kind.Ref Self).
+      ('& Self).
   Proof.
     constructor. admit.
   Admitted.
   Global Opaque run_from_bytes_unchecked.
 
   Instance run_calculate_burn
-    (self : Ref.t Pointer.Kind.Ref Self)
-    (rent_collected : U64.t) :
+    (self : '& Self)
+    (rent_collected : u64) :
     Run.Trait
       pinocchio.sysvars.rent.sysvars.rent.Impl_pinocchio_sysvars_rent_Rent.calculate_burn
       [] []
       [φ self; φ rent_collected]
-      (U64.t * U64.t)%type.
+      (u64 * u64)%type.
   Proof.
     constructor. admit.
   Admitted.
   Global Opaque run_calculate_burn.
 
   Instance run_due
-    (self : Ref.t Pointer.Kind.Ref Self)
-    (balance : U64.t)
-    (data_len : Usize.t)
+    (self : '& Self)
+    (balance : u64)
+    (data_len : usize)
     (years_elapsed : F64.t) :
     Run.Trait
       pinocchio.sysvars.rent.sysvars.rent.Impl_pinocchio_sysvars_rent_Rent.due
@@ -194,36 +194,36 @@ Module Impl_Rent.
   Global Opaque run_due.
 
   Instance run_due_amount
-    (self : Ref.t Pointer.Kind.Ref Self)
-    (data_len : Usize.t)
+    (self : '& Self)
+    (data_len : usize)
     (years_elapsed : F64.t) :
     Run.Trait
       pinocchio.sysvars.rent.sysvars.rent.Impl_pinocchio_sysvars_rent_Rent.due_amount
       [] []
       [φ self; φ data_len; φ years_elapsed]
-      U64.t.
+      u64.
   Proof.
     constructor. admit.
   Admitted.
   Global Opaque run_due_amount.
 
   Instance run_minimum_balance
-    (self : Ref.t Pointer.Kind.Ref Self)
-    (data_len : Usize.t) :
+    (self : '& Self)
+    (data_len : usize) :
     Run.Trait
       pinocchio.sysvars.rent.sysvars.rent.Impl_pinocchio_sysvars_rent_Rent.minimum_balance
       [] []
       [φ self; φ data_len]
-      U64.t.
+      u64.
   Proof.
     constructor. admit.
   Admitted.
   Global Opaque run_minimum_balance.
 
   Instance run_is_exempt
-    (self : Ref.t Pointer.Kind.Ref Self)
-    (lamports : U64.t)
-    (data_len : Usize.t) :
+    (self : '& Self)
+    (lamports : u64)
+    (data_len : usize) :
     Run.Trait
       pinocchio.sysvars.rent.sysvars.rent.Impl_pinocchio_sysvars_rent_Rent.is_exempt
       [] []
@@ -235,7 +235,7 @@ Module Impl_Rent.
   Global Opaque run_is_exempt.
 
   Instance run_is_default_rent_threshold
-    (self : Ref.t Pointer.Kind.Ref Self) :
+    (self : '& Self) :
     Run.Trait
       pinocchio.sysvars.rent.sysvars.rent.Impl_pinocchio_sysvars_rent_Rent.is_default_rent_threshold
       [] []
@@ -251,19 +251,19 @@ Module Impl_RentDue.
   Definition Self : Set := RentDue.t.
 
   Instance run_lamports
-    (self : Ref.t Pointer.Kind.Ref Self) :
+    (self : '& Self) :
     Run.Trait
       pinocchio.sysvars.rent.sysvars.rent.Impl_pinocchio_sysvars_rent_RentDue.lamports
       [] []
       [φ self]
-      U64.t.
+      u64.
   Proof.
     constructor. admit.
   Admitted.
   Global Opaque run_lamports.
 
   Instance run_is_exempt
-    (self : Ref.t Pointer.Kind.Ref Self) :
+    (self : '& Self) :
     Run.Trait
       pinocchio.sysvars.rent.sysvars.rent.Impl_pinocchio_sysvars_rent_RentDue.is_exempt
       [] []

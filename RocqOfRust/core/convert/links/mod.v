@@ -97,8 +97,8 @@ Module AsRef.
 
   Definition Run_as_ref (Self T : Set) `{Link Self} `{Link T} : Set :=
     TraitMethod.C (trait Self T) "as_ref" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-        Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref T)
+      forall (self : '& Self),
+        Run.Trait method [] [] [ φ self ] ('& T)
     ).
 
   Class Run (Self : Set) (T : Set) `{Link Self} `{Link T} : Set := {

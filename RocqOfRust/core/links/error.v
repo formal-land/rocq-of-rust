@@ -32,15 +32,15 @@ Module Error.
 
   Definition Run_description (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "description" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref string)
+      forall (self : '& Self),
+      Run.Trait method [] [] [ φ self ] ('& string)
     ).
 
   Definition Run_provide (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "provide" (fun method =>
       forall
-        (self : Ref.t Pointer.Kind.Ref Self)
-        (request : Ref.t Pointer.Kind.MutRef Request.t),
+        (self : '& Self)
+        (request : '&mut Request.t),
       Run.Trait method [] [] [ φ self; φ request ] unit
     ).
 

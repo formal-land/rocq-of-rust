@@ -22,7 +22,7 @@ pub struct AccountMeta<'a> {
 *)
 Module AccountMeta.
   Record t : Set := {
-    pubkey : Ref.t Pointer.Kind.Ref Pubkey.t;
+    pubkey : '& Pubkey.t;
     is_writable : bool;
     is_signer : bool;
   }.
@@ -59,9 +59,9 @@ where
 *)
 Module Instruction.
   Record t : Set := {
-    program_id : Ref.t Pointer.Kind.Ref Pubkey.t;
-    data: Ref.t Pointer.Kind.Ref (list U8.t);
-    accounts: Ref.t Pointer.Kind.Ref (list AccountMeta.t);
+    program_id : '& Pubkey.t;
+    data: '& (list u8);
+    accounts: '& (list AccountMeta.t);
   }.
 
   Global Instance IsLink : Link t :=
@@ -81,8 +81,8 @@ End Instruction.
 
 Module ProcessedSiblingInstruction.
   Record t : Set := {
-    data_len     : U64.t;
-    accounts_len : U64.t;
+    data_len     : u64;
+    accounts_len : u64;
   }.
 
   Global Instance IsLink : Link t :=
@@ -102,16 +102,16 @@ End ProcessedSiblingInstruction.
 Module cpi.
   Module Account.
     Record t : Set := {
-      key         : Ref.t Pointer.Kind.Raw Pubkey.t;
-      lamports    : Ref.t Pointer.Kind.Raw U64.t;
-      data_len    : U64.t;
-      data        : Ref.t Pointer.Kind.Raw U8.t;
-      owner       : Ref.t Pointer.Kind.Raw Pubkey.t;
-      rent_epoch  : U64.t;
+      key         : '* Pubkey.t;
+      lamports    : '* u64;
+      data_len    : u64;
+      data        : '* u8;
+      owner       : '* Pubkey.t;
+      rent_epoch  : u64;
       is_signer   : bool;
       is_writable : bool;
       executable  : bool;
-      _account_info : PhantomData.t (Ref.t Pointer.Kind.Ref AccountInfo.t);
+      _account_info : PhantomData.t ('& AccountInfo.t);
     }.
 
     Global Instance IsLink : Link t :=
@@ -135,16 +135,16 @@ End cpi.
 
 Instance run_offset
   (T U : Set) `{Link T} `{Link U} 
-  (ptr : Ref.t Pointer.Kind.ConstPointer T) 
-  (offset : Usize.t) :
+  (ptr : '*const T) 
+  (offset : usize) :
   Run.Trait
     pinocchio.instruction.instruction.offset
     []
     [Φ T; Φ U]
-    [ φ (ptr : Ref.t Pointer.Kind.ConstPointer T)
-    ; φ (offset : Usize.t)
+    [ φ (ptr : '*const T)
+    ; φ (offset : usize)
     ]
-    (Ref.t Pointer.Kind.ConstPointer U).
+    ('*const U).
 Proof.
   constructor.
   admit.
@@ -155,7 +155,7 @@ Module Impl_AccountMeta.
   Definition Self : Set := AccountMeta.t.
 
   Instance run_new
-    (pubkey : Ref.t Pointer.Kind.Ref Pubkey.t)
+    (pubkey : '& Pubkey.t)
     (is_writable : bool)
     (is_signer : bool) :
     Run.Trait
@@ -171,7 +171,7 @@ Module Impl_AccountMeta.
   Global Opaque run_new.
 
   Instance run_readonly
-    (pubkey : Ref.t Pointer.Kind.Ref Pubkey.t) :
+    (pubkey : '& Pubkey.t) :
     Run.Trait
     pinocchio.instruction.instruction.Impl_pinocchio_instruction_AccountMeta.readonly
       [] []
@@ -185,7 +185,7 @@ Module Impl_AccountMeta.
   Global Opaque run_readonly.
 
   Instance run_writable
-    (pubkey : Ref.t Pointer.Kind.Ref Pubkey.t) :
+    (pubkey : '& Pubkey.t) :
     Run.Trait
     pinocchio.instruction.instruction.Impl_pinocchio_instruction_AccountMeta.writable
       [] []
@@ -199,7 +199,7 @@ Module Impl_AccountMeta.
   Global Opaque run_writable.
 
   Instance run_readonly_signer
-    (pubkey : Ref.t Pointer.Kind.Ref Pubkey.t) :
+    (pubkey : '& Pubkey.t) :
     Run.Trait
     pinocchio.instruction.instruction.Impl_pinocchio_instruction_AccountMeta.readonly_signer
       [] []
@@ -212,7 +212,7 @@ Module Impl_AccountMeta.
   Global Opaque run_readonly_signer.
 
   Instance run_writable_signer
-    (pubkey : Ref.t Pointer.Kind.Ref Pubkey.t) :
+    (pubkey : '& Pubkey.t) :
     Run.Trait
     pinocchio.instruction.instruction.Impl_pinocchio_instruction_AccountMeta.writable_signer
       [] []
@@ -227,7 +227,7 @@ Module Impl_AccountMeta.
 End Impl_AccountMeta.
 
 Module Impl_From_ref_AccountInfo_for_Account.
-  Definition run_from : From.Run_from cpi.Account.t (Ref.t Pointer.Kind.Ref AccountInfo.t).
+  Definition run_from : From.Run_from cpi.Account.t ('& AccountInfo.t).
   Proof.
     eexists.
     { eapply IsTraitMethod.Defined.
@@ -239,7 +239,7 @@ Module Impl_From_ref_AccountInfo_for_Account.
     }
   Admitted.
 
-  Instance run : From.Run cpi.Account.t (Ref.t Pointer.Kind.Ref AccountInfo.t) :=
+  Instance run : From.Run cpi.Account.t ('& AccountInfo.t) :=
     { From.from := run_from }.
 End Impl_From_ref_AccountInfo_for_Account.
 
@@ -249,9 +249,9 @@ Global Instance PointeeSized_Run_list (A : Set) `{Link A} :
 
 Module Seed.
   Record t : Set := {
-    seed   : Ref.t Pointer.Kind.Raw U8.t;
-    len    : U64.t;
-    _bytes : PhantomData.t (Ref.t Pointer.Kind.Ref (list U8.t));
+    seed   : '* u8;
+    len    : u64;
+    _bytes : PhantomData.t ('& (list u8));
   }.
 
   Global Instance IsLink : Link t :=
@@ -271,7 +271,7 @@ End Seed.
 
 Module Impl_From_ref_slice_u8_for_Seed.
   Definition run_from
-    : From.Run_from Seed.t (Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8))).
+    : From.Run_from Seed.t ('& (list (Integer.t IntegerKind.U8))).
   Proof.
     eexists.
     { eapply IsTraitMethod.Defined.
@@ -282,14 +282,14 @@ Module Impl_From_ref_slice_u8_for_Seed.
   Admitted.
 
   Instance run
-    : From.Run Seed.t (Ref.t Pointer.Kind.Ref (list (Integer.t IntegerKind.U8))) :=
+    : From.Run Seed.t ('& (list (Integer.t IntegerKind.U8))) :=
     { From.from := run_from }.
 End Impl_From_ref_slice_u8_for_Seed.
 
 Module Impl_From_ref_array_u8_SIZE_for_Seed.
   Definition run_from
-    : forall (SIZE : Usize.t),
-      From.Run_from Seed.t (Ref.t Pointer.Kind.Ref (array.t (Integer.t IntegerKind.U8) SIZE)).
+    : forall (SIZE : usize),
+      From.Run_from Seed.t ('& (array.t (Integer.t IntegerKind.U8) SIZE)).
   Proof.
     intros SIZE.
     eexists.
@@ -300,8 +300,8 @@ Module Impl_From_ref_array_u8_SIZE_for_Seed.
       admit. }
   Admitted.
 
-  Instance run (SIZE : Usize.t)
-    : From.Run Seed.t (Ref.t Pointer.Kind.Ref (array.t (Integer.t IntegerKind.U8) SIZE)) :=
+  Instance run (SIZE : usize)
+    : From.Run Seed.t ('& (array.t (Integer.t IntegerKind.U8) SIZE)) :=
     { From.from := run_from SIZE }.
 End Impl_From_ref_array_u8_SIZE_for_Seed.
 
@@ -339,9 +339,9 @@ pub struct Signer<'a, 'b> {
 *)
 Module Signer.
   Record t : Set := {
-    seeds : Ref.t Pointer.Kind.ConstPointer Seed.t;
+    seeds : '*const Seed.t;
     len   : Integer.t IntegerKind.U64;
-    _seeds : PhantomData.t (Ref.t Pointer.Kind.Ref (list Seed.t));
+    _seeds : PhantomData.t ('& (list Seed.t));
   }.
 
   Global Instance IsLink : Link t :=
@@ -361,7 +361,7 @@ End Signer.
 
 Module Impl_From_ref_slice_Seed_for_Signer.
   Definition run_from
-    : From.Run_from Signer.t (Ref.t Pointer.Kind.Ref (list Seed.t)).
+    : From.Run_from Signer.t ('& (list Seed.t)).
   Proof.
     eexists.
     { eapply IsTraitMethod.Defined.
@@ -372,14 +372,14 @@ Module Impl_From_ref_slice_Seed_for_Signer.
   Admitted.
 
   Instance run
-    : From.Run Signer.t (Ref.t Pointer.Kind.Ref (list Seed.t)) :=
+    : From.Run Signer.t ('& (list Seed.t)) :=
     { From.from := run_from }.
 End Impl_From_ref_slice_Seed_for_Signer.
 
 Module Impl_From_ref_array_Seed_SIZE_for_Signer.
   Definition run_from
-    : forall (SIZE : Usize.t),
-      From.Run_from Signer.t (Ref.t Pointer.Kind.Ref (array.t Seed.t SIZE)).
+    : forall (SIZE : usize),
+      From.Run_from Signer.t ('& (array.t Seed.t SIZE)).
   Proof.
     intros SIZE.
     eexists.

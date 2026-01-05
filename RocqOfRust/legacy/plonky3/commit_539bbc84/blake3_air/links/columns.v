@@ -34,20 +34,20 @@ Module QuarterRound.
   Is there some way to avoid this, since this will cause much inconvenience when other
   types are calling this? *)
   Record t {T U : Set} `{Link T} `{Link U} : Set := {
-    a : Ref.t Pointer.Kind.Ref (array.t T U32_LIMBS); 
-    b : Ref.t Pointer.Kind.Ref (array.t T {| Integer.value := 32 |});
-    c : Ref.t Pointer.Kind.Ref (array.t T U32_LIMBS); 
-    d : Ref.t Pointer.Kind.Ref (array.t T {| Integer.value := 32 |});
-    m_two_i : Ref.t Pointer.Kind.Ref (array.t U {| Integer.value := 32 |});
-    a_prime : Ref.t Pointer.Kind.Ref (array.t T U32_LIMBS); 
-    b_prime : Ref.t Pointer.Kind.Ref (array.t T {| Integer.value := 32 |});
-    c_prime : Ref.t Pointer.Kind.Ref (array.t T U32_LIMBS); 
-    d_prime : Ref.t Pointer.Kind.Ref (array.t T {| Integer.value := 32 |});
-    m_two_i_plus_one : Ref.t Pointer.Kind.Ref (array.t U {| Integer.value := 32 |});
-    a_output : Ref.t Pointer.Kind.Ref (array.t T U32_LIMBS); 
-    b_output : Ref.t Pointer.Kind.Ref (array.t T {| Integer.value := 32 |});
-    c_output : Ref.t Pointer.Kind.Ref (array.t T U32_LIMBS); 
-    d_output : Ref.t Pointer.Kind.Ref (array.t T {| Integer.value := 32 |});
+    a : '& (array.t T U32_LIMBS); 
+    b : '& (array.t T {| Integer.value := 32 |});
+    c : '& (array.t T U32_LIMBS); 
+    d : '& (array.t T {| Integer.value := 32 |});
+    m_two_i : '& (array.t U {| Integer.value := 32 |});
+    a_prime : '& (array.t T U32_LIMBS); 
+    b_prime : '& (array.t T {| Integer.value := 32 |});
+    c_prime : '& (array.t T U32_LIMBS); 
+    d_prime : '& (array.t T {| Integer.value := 32 |});
+    m_two_i_plus_one : '& (array.t U {| Integer.value := 32 |});
+    a_output : '& (array.t T U32_LIMBS); 
+    b_output : '& (array.t T {| Integer.value := 32 |});
+    c_output : '& (array.t T U32_LIMBS); 
+    d_output : '& (array.t T {| Integer.value := 32 |});
   }.
   Arguments t T U {_} {_}.
 
@@ -132,20 +132,20 @@ Module QuarterRound.
 
   (* NOTE: for future reference, deleting link instances will report errors about undefined evars *)
   Definition of_value {T U : Set} `{Link T} `{Link U}
-    (a : Ref.t Pointer.Kind.Ref (array.t T U32_LIMBS)) (a' : Value.t)
-    (b : Ref.t Pointer.Kind.Ref (array.t T {| Integer.value := 32|}))  (b' : Value.t)
-    (c : Ref.t Pointer.Kind.Ref (array.t T U32_LIMBS))  (c' : Value.t)
-    (d : Ref.t Pointer.Kind.Ref (array.t T {| Integer.value := 32|}))  (d' : Value.t)
-    (m_two_i : Ref.t Pointer.Kind.Ref (array.t U {| Integer.value := 32 |})) (m_two_i' : Value.t)
-    (a_prime : Ref.t Pointer.Kind.Ref (array.t T U32_LIMBS)) (a_prime' : Value.t)
-    (b_prime : Ref.t Pointer.Kind.Ref (array.t T {| Integer.value := 32 |})) (b_prime' : Value.t)
-    (c_prime : Ref.t Pointer.Kind.Ref (array.t T U32_LIMBS)) (c_prime' : Value.t)
-    (d_prime : Ref.t Pointer.Kind.Ref (array.t T {| Integer.value := 32 |})) (d_prime' : Value.t)
-    (m_two_i_plus_one : Ref.t Pointer.Kind.Ref (array.t U {| Integer.value := 32 |})) (m_two_i_plus_one' : Value.t)
-    (a_output : Ref.t Pointer.Kind.Ref (array.t T U32_LIMBS)) (a_output' : Value.t)
-    (b_output : Ref.t Pointer.Kind.Ref (array.t T {| Integer.value := 32 |})) (b_output' : Value.t)
-    (c_output : Ref.t Pointer.Kind.Ref (array.t T U32_LIMBS)) (c_output' : Value.t)
-    (d_output : Ref.t Pointer.Kind.Ref (array.t T {| Integer.value := 32 |})) (d_output' : Value.t)
+    (a : '& (array.t T U32_LIMBS)) (a' : Value.t)
+    (b : '& (array.t T {| Integer.value := 32|}))  (b' : Value.t)
+    (c : '& (array.t T U32_LIMBS))  (c' : Value.t)
+    (d : '& (array.t T {| Integer.value := 32|}))  (d' : Value.t)
+    (m_two_i : '& (array.t U {| Integer.value := 32 |})) (m_two_i' : Value.t)
+    (a_prime : '& (array.t T U32_LIMBS)) (a_prime' : Value.t)
+    (b_prime : '& (array.t T {| Integer.value := 32 |})) (b_prime' : Value.t)
+    (c_prime : '& (array.t T U32_LIMBS)) (c_prime' : Value.t)
+    (d_prime : '& (array.t T {| Integer.value := 32 |})) (d_prime' : Value.t)
+    (m_two_i_plus_one : '& (array.t U {| Integer.value := 32 |})) (m_two_i_plus_one' : Value.t)
+    (a_output : '& (array.t T U32_LIMBS)) (a_output' : Value.t)
+    (b_output : '& (array.t T {| Integer.value := 32 |})) (b_output' : Value.t)
+    (c_output : '& (array.t T U32_LIMBS)) (c_output' : Value.t)
+    (d_output : '& (array.t T {| Integer.value := 32 |})) (d_output' : Value.t)
     :
       a' = φ a ->
       b' = φ b ->

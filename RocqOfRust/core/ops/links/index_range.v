@@ -10,8 +10,8 @@ pub struct IndexRange {
 *)
 Module IndexRange.
   Record t : Set := {
-    start : Usize.t;
-    end_ : Usize.t;
+    start : usize;
+    end_ : usize;
   }.
 
   Global Instance IsLink : Link t := {
@@ -36,7 +36,7 @@ Module IndexRange.
   Proof. now intros; subst. Qed.
   Smpl Add apply of_value_with : of_value.
 
-  Definition of_value (start : Usize.t) start' (end_ : Usize.t) end_' :
+  Definition of_value (start : usize) start' (end_ : usize) end_' :
     start' = φ start ->
     end_' = φ end_ ->
     OfValue.t (Value.StructRecord "core::ops::index_range::IndexRange" [] [] [

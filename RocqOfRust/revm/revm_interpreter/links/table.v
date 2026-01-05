@@ -13,8 +13,8 @@ Module Instruction.
       (W_types : InterpreterTypes.Types.t) `{InterpreterTypes.Types.AreLinks W_types} :
       Set :=
     Function2.t
-      (Ref.t Pointer.Kind.MutRef (Interpreter.t W W_types))
-      (Ref.t Pointer.Kind.MutRef H)
+      ('&mut (Interpreter.t W W_types))
+      ('&mut H)
       unit.
 End Instruction.
 
@@ -41,9 +41,9 @@ Module CustomInstruction.
       Set :=
     TraitMethod.C (trait Self Wire Host) "exec" (fun method =>
       forall
-        (self : Ref.t Pointer.Kind.Ref Self)
-        (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t Wire Wire_types))
-        (host : Ref.t Pointer.Kind.MutRef Host),
+        (self : '& Self)
+        (interpreter : '&mut (Interpreter.t Wire Wire_types))
+        (host : '&mut Host),
       Run.Trait method [] [] [ φ self; φ interpreter; φ host ] unit
     ).
 
@@ -55,8 +55,8 @@ Module CustomInstruction.
       Set :=
     TraitMethod.C (trait Self Wire Host) "from_base" (fun method =>
       forall
-        (instruction : Ref.t Pointer.Kind.Ref (Instruction.t Wire Host Wire_types)),
-      Run.Trait method [] [] [ φ instruction ] (Ref.t Pointer.Kind.Ref Self)
+        (instruction : '& (Instruction.t Wire Host Wire_types)),
+      Run.Trait method [] [] [ φ instruction ] ('& Self)
     ).
 
 

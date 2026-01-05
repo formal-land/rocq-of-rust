@@ -32,8 +32,8 @@ Instance run_data_load
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.data.data_load [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -46,10 +46,10 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct Impl_TryFrom_u64_for_usize.run.
   destruct (Impl_IndexMut_for_Array.run
-    U8.t
-    (RangeTo.t Usize.t)
+    u8
+    (RangeTo.t usize)
     {| Integer.value := 32 |}
-    (list U8.t)
+    (list u8)
   ). {
     apply Impl_IndexMut_for_Slice.run.
     apply Impl_SliceIndex_for_RangeTo.run.
@@ -72,8 +72,8 @@ Instance run_data_loadn
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.data.data_loadn [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -88,10 +88,10 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
   destruct (Impl_IndexMut_for_Array.run
-    U8.t
-    (RangeTo.t Usize.t)
+    u8
+    (RangeTo.t usize)
     {| Integer.value := 32 |}
-    (list U8.t)
+    (list u8)
   ). {
     apply Impl_IndexMut_for_Slice.run.
     apply Impl_SliceIndex_for_RangeTo.run.
@@ -114,8 +114,8 @@ Instance run_data_size
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.data.data_size [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -140,8 +140,8 @@ Instance run_data_copy
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.data.data_copy [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.

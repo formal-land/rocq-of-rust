@@ -92,7 +92,7 @@ Module Transaction.
     (types : Types.t) `{Types.AreLinks types} :
     Set :=
     TraitMethod.C (trait Self) "tx_type" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] types.(Types.TransactionType)
     ).
 
@@ -101,8 +101,8 @@ Module Transaction.
     (types : Types.t) `{Types.AreLinks types} :
     Set :=
     TraitMethod.C (trait Self) "legacy" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref types.(Types.Legacy))
+      forall (self : '& Self),
+      Run.Trait method [] [] [ φ self ] ('& types.(Types.Legacy))
     ).
 
   Definition Run_eip2930
@@ -110,8 +110,8 @@ Module Transaction.
     (types : Types.t) `{Types.AreLinks types} :
     Set :=
     TraitMethod.C (trait Self) "eip2930" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref types.(Types.Eip2930))
+      forall (self : '& Self),
+      Run.Trait method [] [] [ φ self ] ('& types.(Types.Eip2930))
     ).
 
   Definition Run_eip1559
@@ -119,8 +119,8 @@ Module Transaction.
     (types : Types.t) `{Types.AreLinks types} :
     Set :=
     TraitMethod.C (trait Self) "eip1559" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref types.(Types.Eip1559))
+      forall (self : '& Self),
+      Run.Trait method [] [] [ φ self ] ('& types.(Types.Eip1559))
     ).
 
   Definition Run_eip4844
@@ -128,8 +128,8 @@ Module Transaction.
     (types : Types.t) `{Types.AreLinks types} :
     Set :=
     TraitMethod.C (trait Self) "eip4844" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref types.(Types.Eip4844))
+      forall (self : '& Self),
+      Run.Trait method [] [] [ φ self ] ('& types.(Types.Eip4844))
     ).
 
   Definition Run_eip7702
@@ -137,8 +137,8 @@ Module Transaction.
     (types : Types.t) `{Types.AreLinks types} :
     Set :=
     TraitMethod.C (trait Self) "eip7702" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref types.(Types.Eip7702))
+      forall (self : '& Self),
+      Run.Trait method [] [] [ φ self ] ('& types.(Types.Eip7702))
     ).
 
   (* Definition Run_common_fields
@@ -146,8 +146,8 @@ Module Transaction.
     (types : Types.t) `{Types.AreLinks types} :
     Set :=
     TraitMethod.C (trait Self) "common_fields" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref types.(Types.CommonTxFields))
+      forall (self : '& Self),
+      Run.Trait method [] [] [ φ self ] ('& types.(Types.CommonTxFields))
     ). *)
 
   Definition Run_max_fee
@@ -155,8 +155,8 @@ Module Transaction.
     (types : Types.t) `{Types.AreLinks types} :
     Set :=
     TraitMethod.C (trait Self) "max_fee" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] U128.t
+      forall (self : '& Self),
+      Run.Trait method [] [] [ φ self ] u128
     ).
 
   Definition Run_effective_gas_price
@@ -164,8 +164,8 @@ Module Transaction.
     (types : Types.t) `{Types.AreLinks types} :
     Set :=
     TraitMethod.C (trait Self) "effective_gas_price" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (base_fee : U128.t),
-      Run.Trait method [] [] [ φ self; φ base_fee ] U128.t
+      forall (self : '& Self) (base_fee : u128),
+      Run.Trait method [] [] [ φ self; φ base_fee ] u128
     ).
 
   Definition Run_kind
@@ -173,7 +173,7 @@ Module Transaction.
     (types : Types.t) `{Types.AreLinks types} :
     Set :=
     TraitMethod.C (trait Self) "kind" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] TxKind.t
     ).
 
@@ -182,8 +182,8 @@ Module Transaction.
     (types : Types.t) `{Types.AreLinks types} :
     Set :=
     TraitMethod.C (trait Self) "access_list" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (option (Ref.t Pointer.Kind.Ref types.(Types.AccessList)))
+      forall (self : '& Self),
+      Run.Trait method [] [] [ φ self ] (option ('& types.(Types.AccessList)))
     ).
 
   Class Run
@@ -244,7 +244,7 @@ Module Impl_Transaction_for_Ref_Transaction.
     (Self : Set) `{Link Self}
     (types : Transaction.Types.t) `{Transaction.Types.AreLinks types}
     (run_Transaction_for_Self : Transaction.Run Self types) :
-    Transaction.Run (Ref.t Pointer.Kind.Ref Self) types.
+    Transaction.Run ('& Self) types.
   Admitted.
 End Impl_Transaction_for_Ref_Transaction.
 
@@ -264,8 +264,8 @@ Module TransactionGetter.
     (Transaction : Set) `{Link Transaction} :
     Set :=
     TraitMethod.C (trait Self) "tx" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref Transaction)
+      forall (self : '& Self),
+      Run.Trait method [] [] [ φ self ] ('& Transaction)
     ).
 
   Class Run
@@ -297,7 +297,7 @@ Module TransactionSetter.
     (Transaction : Set) `{Link Transaction} :
     Set :=
     TraitMethod.C (trait Self) "set_tx" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (tx : Transaction),
+      forall (self : '&mut Self) (tx : Transaction),
       Run.Trait method [] [] [ φ self; φ tx ] unit
     ).
 

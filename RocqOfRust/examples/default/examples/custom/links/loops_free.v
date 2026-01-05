@@ -4,14 +4,14 @@ Require Import core.links.array.
 Require Import examples.default.examples.custom.loops_free.
 Require Import core.links.array.
 
-Instance run_max2 (a b : U32.t) : Run.Trait max2 [] [] [φ a; φ b] U32.t.
+Instance run_max2 (a b : u32) : Run.Trait max2 [] [] [φ a; φ b] u32.
 Proof.
   constructor.
   run_symbolic.
 Defined.
 Global Opaque run_max2.
 
-Instance run_abs_i32 (x : I32.t) : Run.Trait abs_i32 [] [] [φ x] I32.t.
+Instance run_abs_i32 (x : i32) : Run.Trait abs_i32 [] [] [φ x] i32.
 Proof.
   constructor.
   run_symbolic.
@@ -27,9 +27,9 @@ Global Opaque run_bool_and.
 
 (* pub fn get_or_zero(xs: &[u32; 4], i: usize) -> u32 *)
 Instance run_get_or_zero
-    (xs : Ref.t Pointer.Kind.Ref (array.t U32.t {| Integer.value := 4 |}))
-    (i : Usize.t) :
-  Run.Trait get_or_zero [] [] [φ xs; φ i] U32.t.
+    (xs : '& (array.t u32 {| Integer.value := 4 |}))
+    (i : usize) :
+  Run.Trait get_or_zero [] [] [φ xs; φ i] u32.
 Proof.
   constructor.
   run_symbolic.
@@ -38,8 +38,8 @@ Global Opaque run_get_or_zero.
 
 (* pub fn eq2(a: &[u32; 2], b: &[u32; 2]) -> bool *)
 Instance run_eq2
-    (a : Ref.t Pointer.Kind.Ref (array.t U32.t {| Integer.value := 2 |}))
-    (b : Ref.t Pointer.Kind.Ref (array.t U32.t {| Integer.value := 2 |})) :
+    (a : '& (array.t u32 {| Integer.value := 2 |}))
+    (b : '& (array.t u32 {| Integer.value := 2 |})) :
   Run.Trait eq2 [] [] [φ a; φ b] bool.
 Proof.
   constructor.
@@ -49,8 +49,8 @@ Global Opaque run_eq2.
 
 (* pub fn eq_pair(x: (u32, u32), y: (u32, u32)) -> bool *)
 Instance run_eq_pair
-    (x : U32.t * U32.t)
-    (y : U32.t * U32.t) :
+    (x : u32 * u32)
+    (y : u32 * u32) :
   Run.Trait eq_pair [] [] [φ x; φ y] bool.
 Proof.
   constructor.
@@ -59,7 +59,7 @@ Defined.
 Global Opaque run_eq_pair.
 
 (* pub fn min3(a: u32, b: u32, c: u32) -> u32 *)
-Instance run_min3 (a b c : U32.t) : Run.Trait min3 [] [] [φ a; φ b; φ c] U32.t.
+Instance run_min3 (a b c : u32) : Run.Trait min3 [] [] [φ a; φ b; φ c] u32.
 Proof.
   constructor.
   run_symbolic.
@@ -67,8 +67,8 @@ Defined.
 Global Opaque run_min3.
 
 (* pub fn choose_ref<'a>(choice: bool, a: &'a u32, b: &'a u32) -> &'a u32 *)
-Instance run_choose_ref (choice : bool) (a b : Ref.t Pointer.Kind.Ref U32.t) :
-  Run.Trait choose_ref [] [] [φ choice; φ a; φ b] U32.t.
+Instance run_choose_ref (choice : bool) (a b : '& u32) :
+  Run.Trait choose_ref [] [] [φ choice; φ a; φ b] u32.
 Proof.
   constructor.
   run_symbolic.

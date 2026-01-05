@@ -3,13 +3,13 @@ Require Import links.M.
 Require Import core.ptr.const_ptr.
 
 Module Impl_pointer_const_T.
-  Definition Self (T : Set) `{Link T} : Set := Ref.t Pointer.Kind.ConstPointer T.
+  Definition Self (T : Set) `{Link T} : Set := '*const T.
 
   (* pub const unsafe fn add(self, count: usize) -> Self *)
   Instance run_add
       (T : Set) `{Link T}
       (self : Self T)
-      (count : Usize.t) :
+      (count : usize) :
     Run.Trait (ptr.const_ptr.Impl_pointer_const_T.add (Φ T)) [] [] [ φ self; φ count ] (Self T).
   Proof.
     constructor.

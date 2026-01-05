@@ -1,5 +1,5 @@
 Require Import RocqOfRust.RocqOfRust.
-Require Import revm_primitives.simulations.lib.
+Require Import revm_primitives.simulations_legacy.lib.
 
 (*
 pub enum Sign {

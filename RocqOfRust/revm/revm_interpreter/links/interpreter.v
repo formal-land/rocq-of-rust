@@ -31,9 +31,9 @@ Module Impl_Interpreter.
       {IW_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks IW_types}
       {run_InterpreterTypes_for_IW : InterpreterTypes.Run IW IW_types}
       {run_CustomInstruction_for_FN : CustomInstruction.Run FN IW IW_types H}
-      (self : Ref.t Pointer.Kind.MutRef (Self IW run_InterpreterTypes_for_IW))
-      (instruction_table : Ref.t Pointer.Kind.Ref (array.t FN {| Integer.value := 256 |}))
-      (host : Ref.t Pointer.Kind.MutRef H) :
+      (self : '&mut (Self IW run_InterpreterTypes_for_IW))
+      (instruction_table : '& (array.t FN {| Integer.value := 256 |}))
+      (host : '&mut H) :
     Run.Trait
       (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.step (Φ IW))
         []
@@ -63,9 +63,9 @@ Module Impl_Interpreter.
       {IW_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks IW_types}
       {run_InterpreterTypes_for_IW : InterpreterTypes.Run IW IW_types}
       {run_CustomInstruction_for_FN : CustomInstruction.Run FN IW IW_types H}
-      (self : Ref.t Pointer.Kind.MutRef (Self IW run_InterpreterTypes_for_IW))
-      (instruction_table : Ref.t Pointer.Kind.Ref (array.t FN {| Integer.value := 256 |}))
-      (host : Ref.t Pointer.Kind.MutRef H) :
+      (self : '&mut (Self IW run_InterpreterTypes_for_IW))
+      (instruction_table : '& (array.t FN {| Integer.value := 256 |}))
+      (host : '&mut H) :
     Run.Trait
       (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.run (Φ IW))
         []

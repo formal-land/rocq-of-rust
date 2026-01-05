@@ -18,9 +18,9 @@ Require Import ruint.from.
 *)
 Module ToUintError.
   Inductive t (T : Set) : Set :=
-  | ValueTooLarge (size : Usize.t) (value : T)
-  | ValueNegative (size : Usize.t) (value : T)
-  | NotANumber (size : Usize.t)
+  | ValueTooLarge (size : usize) (value : T)
+  | ValueNegative (size : usize) (value : T)
+  | NotANumber (size : usize)
   .
   Arguments ValueTooLarge {T} size value.
   Arguments ValueNegative {T} size value.
@@ -31,9 +31,9 @@ Module ToUintError.
     Φ := Ty.apply (Ty.path "ruint::from::ToUintError") [] [ Φ T ];
     φ x :=
       match x with
-      | ValueTooLarge size value => Value.StructTuple "ruint::from::ToUintError::ValueTooLarge" [] [ Φ Usize.t; Φ T ] [ φ size; φ value ]
-      | ValueNegative size value => Value.StructTuple "ruint::from::ToUintError::ValueNegative" [] [ Φ Usize.t; Φ T ] [ φ size; φ value ]
-      | NotANumber size => Value.StructTuple "ruint::from::ToUintError::NotANumber" [] [ Φ Usize.t ] [ φ size ]
+      | ValueTooLarge size value => Value.StructTuple "ruint::from::ToUintError::ValueTooLarge" [] [ Φ usize; Φ T ] [ φ size; φ value ]
+      | ValueNegative size value => Value.StructTuple "ruint::from::ToUintError::ValueNegative" [] [ Φ usize; Φ T ] [ φ size; φ value ]
+      | NotANumber size => Value.StructTuple "ruint::from::ToUintError::NotANumber" [] [ Φ usize ] [ φ size ]
       end
   }.
 
@@ -77,10 +77,10 @@ End UintTryFrom.
       Self: TryFrom<T, Error = ToUintError<Self>>,
 *)
 Module UintTryFrom_T_for_Uint_where_TryFrom.
-  Definition Self (BITS LIMBS : Usize.t) : Set :=
+  Definition Self (BITS LIMBS : usize) : Set :=
     Uint.t BITS LIMBS.
 
-  Instance run_uint_try_from {BITS LIMBS : Usize.t} {T : Set} `{Link T}
+  Instance run_uint_try_from {BITS LIMBS : usize} {T : Set} `{Link T}
       {run_TryFrom_for_Self : TryFrom.Run (Self BITS LIMBS) T (ToUintError.t (Self BITS LIMBS))}
       (value : T) :
     Trait
@@ -94,7 +94,7 @@ Module UintTryFrom_T_for_Uint_where_TryFrom.
   Qed.
   Global Opaque run_uint_try_from.
 
-  Definition Run_uint_try_from {BITS LIMBS : Usize.t} {T : Set} `{Link T}
+  Definition Run_uint_try_from {BITS LIMBS : usize} {T : Set} `{Link T}
       `{!TryFrom.Run (Self BITS LIMBS) T (ToUintError.t (Self BITS LIMBS))} :
     UintTryFrom.Run_uint_try_from (Self BITS LIMBS) T.
   Proof.
@@ -106,7 +106,7 @@ Module UintTryFrom_T_for_Uint_where_TryFrom.
     { apply run_uint_try_from. }
   Defined.
 
-  Instance run (BITS LIMBS : Usize.t) (T : Set) `{Link T}
+  Instance run (BITS LIMBS : usize) (T : Set) `{Link T}
       `{!TryFrom.Run (Self BITS LIMBS) T (ToUintError.t (Self BITS LIMBS))} :
     UintTryFrom.Run (Self BITS LIMBS) T :=
   {
@@ -117,15 +117,15 @@ Export (hints) UintTryFrom_T_for_Uint_where_TryFrom.
 
 (* impl<const BITS: usize, const LIMBS: usize> TryFrom<u64> for Uint<BITS, LIMBS> *)
 Module TryFrom_u64_for_Uint.
-  Definition Self (BITS LIMBS : Usize.t) : Set :=
+  Definition Self (BITS LIMBS : usize) : Set :=
     Uint.t BITS LIMBS.
 
-  Definition Error (BITS LIMBS : Usize.t) : Set :=
+  Definition Error (BITS LIMBS : usize) : Set :=
     ToUintError.t (Self BITS LIMBS).
 
-  Lemma Error_IsAssociated (BITS LIMBS : Usize.t) :
+  Lemma Error_IsAssociated (BITS LIMBS : usize) :
     IsTraitAssociatedType
-      "core::convert::TryFrom" [] [Φ U64.t] (Φ (Self BITS LIMBS)) "Error"
+      "core::convert::TryFrom" [] [Φ u64] (Φ (Self BITS LIMBS)) "Error"
       (Φ (Error BITS LIMBS)).
   Proof.
     eexists; split.
@@ -133,7 +133,7 @@ Module TryFrom_u64_for_Uint.
     { reflexivity. }
   Qed.
 
-  Instance run_try_from (BITS LIMBS : Usize.t) (value : U64.t) :
+  Instance run_try_from (BITS LIMBS : usize) (value : u64) :
     Run.Trait
       (from.Impl_core_convert_TryFrom_u64_for_ruint_Uint_BITS_LIMBS.try_from (φ BITS) (φ LIMBS))
       [] [] [ φ value ]
@@ -146,8 +146,8 @@ Module TryFrom_u64_for_Uint.
   Admitted.
   Global Opaque run_try_from.
 
-  Definition Run_try_from {BITS LIMBS : Usize.t} :
-    TryFrom.Run_try_from (Self BITS LIMBS) U64.t (Error BITS LIMBS).
+  Definition Run_try_from {BITS LIMBS : usize} :
+    TryFrom.Run_try_from (Self BITS LIMBS) u64 (Error BITS LIMBS).
   Proof.
     eexists.
     { eapply IsTraitMethod.Defined.
@@ -157,8 +157,8 @@ Module TryFrom_u64_for_Uint.
     { typeclasses eauto. }
   Defined.
 
-  Instance Run (BITS LIMBS : Usize.t) :
-    TryFrom.Run (Self BITS LIMBS) U64.t (Error BITS LIMBS) :=
+  Instance Run (BITS LIMBS : usize) :
+    TryFrom.Run (Self BITS LIMBS) u64 (Error BITS LIMBS) :=
   {
     TryFrom.try_from := Run_try_from;
   }.
@@ -167,13 +167,13 @@ Export (hints) TryFrom_u64_for_Uint.
 
 (* impl_from_unsigned_int!(bool); *)
 Module TryFrom_bool_for_Uint.
-  Definition Self (BITS LIMBS : Usize.t) : Set :=
+  Definition Self (BITS LIMBS : usize) : Set :=
     Uint.t BITS LIMBS.
 
-  Definition Error (BITS LIMBS : Usize.t) : Set :=
+  Definition Error (BITS LIMBS : usize) : Set :=
     ToUintError.t (Self BITS LIMBS).
 
-  Instance run_try_from (BITS LIMBS : Usize.t) (value : bool) :
+  Instance run_try_from (BITS LIMBS : usize) (value : bool) :
     Run.Trait
       (from.Impl_core_convert_TryFrom_bool_for_ruint_Uint_BITS_LIMBS.try_from (φ BITS) (φ LIMBS))
       [] [] [ φ value ]
@@ -185,7 +185,7 @@ Module TryFrom_bool_for_Uint.
   Defined.
   Global Opaque run_try_from.
 
-  Definition Run_try_from {BITS LIMBS : Usize.t} :
+  Definition Run_try_from {BITS LIMBS : usize} :
     TryFrom.Run_try_from (Self BITS LIMBS) bool (Error BITS LIMBS).
   Proof.
     eexists.
@@ -196,7 +196,7 @@ Module TryFrom_bool_for_Uint.
     { typeclasses eauto. }
   Defined.
 
-  Instance Run (BITS LIMBS : Usize.t) :
+  Instance Run (BITS LIMBS : usize) :
     TryFrom.Run (Self BITS LIMBS) bool (Error BITS LIMBS) :=
   {
     TryFrom.try_from := Run_try_from;
@@ -206,7 +206,7 @@ Export (hints) TryFrom_bool_for_Uint.
 
 Module Impl_Uint.
   (* Uint<BITS, LIMBS> *)
-  Definition Self (BITS LIMBS : Usize.t) : Set :=
+  Definition Self (BITS LIMBS : usize) : Set :=
     Uint.t BITS LIMBS.
 
   (* 
@@ -215,7 +215,7 @@ Module Impl_Uint.
             Self: UintTryFrom<T>,
   *)
   Instance run_from
-    (BITS LIMBS : Usize.t)
+    (BITS LIMBS : usize)
     (T : Set) `{Link T}
     (* {run_UintTryFrom_for_Self : UintTryFrom.Run (Self BITS LIMBS) T} *)
     (value : T) :
@@ -262,21 +262,21 @@ End FromUintError.
 
 Module TryFrom_Uint_for_u64.
   Definition Self : Set :=
-    U64.t.
+    u64.
 
-  Instance run_try_from (BITS LIMBS : Usize.t) (value : Impl_Uint.Self BITS LIMBS) :
+  Instance run_try_from (BITS LIMBS : usize) (value : Impl_Uint.Self BITS LIMBS) :
     Run.Trait
       (from.Impl_core_convert_TryFrom_ruint_Uint_BITS_LIMBS_for_u64.try_from (φ BITS) (φ LIMBS))
       [] [] [ φ value ]
-      (Result.t Self (FromUintError.t U64.t)).
+      (Result.t Self (FromUintError.t u64)).
   Proof.
     constructor.
     run_symbolic.
   Admitted.
   Global Opaque run_try_from.
 
-  Definition Run_try_from (BITS LIMBS : Usize.t) :
-    TryFrom.Run_try_from Self (Impl_Uint.Self BITS LIMBS) (FromUintError.t U64.t).
+  Definition Run_try_from (BITS LIMBS : usize) :
+    TryFrom.Run_try_from Self (Impl_Uint.Self BITS LIMBS) (FromUintError.t u64).
   Proof.
     eexists.
     { eapply IsTraitMethod.Defined.
@@ -286,8 +286,8 @@ Module TryFrom_Uint_for_u64.
     { typeclasses eauto. }
   Defined.
 
-  Instance run (BITS LIMBS : Usize.t) :
-    TryFrom.Run Self (Impl_Uint.Self BITS LIMBS) (FromUintError.t U64.t) :=
+  Instance run (BITS LIMBS : usize) :
+    TryFrom.Run Self (Impl_Uint.Self BITS LIMBS) (FromUintError.t u64) :=
   {
     TryFrom.try_from := Run_try_from BITS LIMBS;
   }.

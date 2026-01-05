@@ -6,9 +6,9 @@ Require Import plonky3.commit_539bbc84.blake3_air.constants.
 pub const BITS_PER_LIMB: usize = 16;
 pub const U32_LIMBS: usize = 32 / BITS_PER_LIMB;
 *)
-Definition BITS_PER_LIMB : Usize.t := {|
+Definition BITS_PER_LIMB : usize := {|
   Integer.value := 16;
 |}.
-Definition U32_LIMBS : Usize.t := {|
+Definition U32_LIMBS : usize := {|
   Integer.value := 2;
 |}.

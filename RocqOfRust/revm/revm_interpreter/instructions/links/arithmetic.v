@@ -30,8 +30,8 @@ Instance run_add
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.arithmetic.add [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -58,8 +58,8 @@ Instance run_mul
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.arithmetic.mul [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -82,8 +82,8 @@ Instance run_sub
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.arithmetic.sub [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -106,8 +106,8 @@ Instance run_div
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.arithmetic.div [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -130,8 +130,8 @@ Instance run_sdiv
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.arithmetic.sdiv [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -154,8 +154,8 @@ Instance run_rem
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.arithmetic.rem [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -178,8 +178,8 @@ Instance run_smod
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.arithmetic.smod [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -202,8 +202,8 @@ Instance run_addmod
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.arithmetic.addmod [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -226,8 +226,8 @@ Instance run_mulmod
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.arithmetic.mulmod [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -250,8 +250,8 @@ Instance run_exp
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.arithmetic.exp [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -275,8 +275,8 @@ Instance run_signextend
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.arithmetic.signextend [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.

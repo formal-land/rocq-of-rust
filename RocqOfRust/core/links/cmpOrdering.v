@@ -24,34 +24,50 @@ Module Ordering.
       end;
   }.
 
-  Definition of_ty : OfTy.t (Ty.path "core::cmp::Ordering").
-  Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
-  Smpl Add apply of_ty : of_ty.
+  Global Instance IsOfTy : OfTy.C (Ty.path "core::cmp::Ordering") := {
+    A := t;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_Less :
-    Value.StructTuple "core::cmp::Ordering::Less" [] [] [] = φ Less.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_Less : of_value.
+  Global Instance IsOfValueWith_Less :
+    OfValueWith.C t (Value.StructTuple "core::cmp::Ordering::Less" [] [] []) :=
+  {
+    value := Less;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_Equal :
-    Value.StructTuple "core::cmp::Ordering::Equal" [] [] [] = φ Equal.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_Equal : of_value.
+  Global Instance IsOfValueWith_Equal :
+    OfValueWith.C t (Value.StructTuple "core::cmp::Ordering::Equal" [] [] []) :=
+  {
+    value := Equal;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with_Greater :
-    Value.StructTuple "core::cmp::Ordering::Greater" [] [] [] = φ Greater.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_Greater : of_value.
+  Global Instance IsOfValueWith_Greater :
+    OfValueWith.C t (Value.StructTuple "core::cmp::Ordering::Greater" [] [] []) :=
+  {
+    value := Greater;
+    eq := eq_refl;
+  }.
 
-  Definition of_value_Less : OfValue.t (Value.StructTuple "core::cmp::Ordering::Less" [] [] []).
-  Proof. eapply OfValue.Make with (value := Less); reflexivity. Defined.
-  Smpl Add apply of_value_Less : of_value.
+  Global Instance IsOfValue_Less :
+    OfValue.C (Value.StructTuple "core::cmp::Ordering::Less" [] [] []) :=
+  {
+    value := Less;
+    eq := eq_refl;
+  }.
 
-  Definition of_value_Equal : OfValue.t (Value.StructTuple "core::cmp::Ordering::Equal" [] [] []).
-  Proof. eapply OfValue.Make with (value := Equal); reflexivity. Defined.
-  Smpl Add apply of_value_Equal : of_value.
+  Global Instance IsOfValue_Equal :
+    OfValue.C (Value.StructTuple "core::cmp::Ordering::Equal" [] [] []) :=
+  {
+    value := Equal;
+    eq := eq_refl;
+  }.
 
-  Definition of_value_Greater : OfValue.t (Value.StructTuple "core::cmp::Ordering::Greater" [] [] []).
-  Proof. eapply OfValue.Make with (value := Greater); reflexivity. Defined.
-  Smpl Add apply of_value_Greater : of_value.
+  Global Instance IsOfValue_Greater :
+    OfValue.C (Value.StructTuple "core::cmp::Ordering::Greater" [] [] []) :=
+  {
+    value := Greater;
+    eq := eq_refl;
+  }.
 End Ordering.

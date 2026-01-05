@@ -18,7 +18,7 @@ pub struct Vec<T, A: Allocator = Global> {
 Module Vec.
   Record t {T A : Set} : Set := {
     buf : RawVec.t T A;
-    len : Usize.t;
+    len : usize;
   }.
   Arguments t : clear implicits.
 
@@ -44,7 +44,7 @@ Module Vec.
 
   Lemma of_value_with {T A : Set} `{Link T} `{Link A}
     (buf' : Value.t) (buf : RawVec.t T A)
-    (len' : Value.t) (len : Usize.t) :
+    (len' : Value.t) (len : usize) :
     buf' = φ buf ->
     len' = φ len ->
     Value.StructRecord "alloc::vec::Vec" [] [Φ T; Φ A] [("buf", buf'); ("len", len')] =
@@ -59,7 +59,7 @@ Module Vec.
     (H_T : OfTy.t T')
     (H_A : OfTy.t A')
     (buf' : Value.t) (buf : RawVec.t (OfTy.get_Set H_T) (OfTy.get_Set H_A))
-    (len' : Value.t) (len : Usize.t) :
+    (len' : Value.t) (len : usize) :
     buf' = φ buf ->
     len' = φ len ->
     OfValue.t (Value.StructRecord "alloc::vec::Vec" [] [T'; A'] [
@@ -134,7 +134,7 @@ Module Impl_Vec_T.
   Global Opaque run_new.
 
   (* pub fn with_capacity(capacity: usize) -> Self *)
-  Instance run_with_capacity {T : Set} `{Link T} (capacity : Usize.t) :
+  Instance run_with_capacity {T : Set} `{Link T} (capacity : usize) :
     Run.Trait
       (vec.Impl_alloc_vec_Vec_T_alloc_alloc_Global.with_capacity (Φ T)) [] [] [φ capacity]
       (Self T).
@@ -150,32 +150,32 @@ Module Impl_Vec_T_A.
   (*
     pub const fn len(&self) -> usize
   *)
-  Instance run_len {T A : Set} `{Link T} `{Link A} (self : Ref.t Pointer.Kind.Ref (Self T A)) :
-    Run.Trait (vec.Impl_alloc_vec_Vec_T_A.len (Φ T) (Φ A)) [] [] [φ self] Usize.t.
+  Instance run_len {T A : Set} `{Link T} `{Link A} (self : '& (Self T A)) :
+    Run.Trait (vec.Impl_alloc_vec_Vec_T_A.len (Φ T) (Φ A)) [] [] [φ self] usize.
   Admitted.
   Global Opaque run_len.
 
   (* pub const fn is_empty(&self) -> bool *)
-  Instance run_is_empty {T A : Set} `{Link T} `{Link A} (self : Ref.t Pointer.Kind.Ref (Self T A)) :
+  Instance run_is_empty {T A : Set} `{Link T} `{Link A} (self : '& (Self T A)) :
     Run.Trait (vec.Impl_alloc_vec_Vec_T_A.is_empty (Φ T) (Φ A)) [] [] [φ self] bool.
   Admitted.
   Global Opaque run_is_empty.
 
   (* pub fn pop(&mut self) -> Option<T> *)
-  Instance run_pop {T A : Set} `{Link T} `{Link A} (self : Ref.t Pointer.Kind.MutRef (Self T A)) :
+  Instance run_pop {T A : Set} `{Link T} `{Link A} (self : '&mut (Self T A)) :
     Run.Trait (vec.Impl_alloc_vec_Vec_T_A.pop (Φ T) (Φ A)) [] [] [φ self] (option T).
   Admitted.
   Global Opaque run_pop.
 
   (* pub const fn capacity(&self) -> usize *)
-  Instance run_capacity {T A : Set} `{Link T} `{Link A} (self : Ref.t Pointer.Kind.Ref (Self T A)) :
-    Run.Trait (vec.Impl_alloc_vec_Vec_T_A.capacity (Φ T) (Φ A)) [] [] [φ self] Usize.t.
+  Instance run_capacity {T A : Set} `{Link T} `{Link A} (self : '& (Self T A)) :
+    Run.Trait (vec.Impl_alloc_vec_Vec_T_A.capacity (Φ T) (Φ A)) [] [] [φ self] usize.
   Admitted.
   Global Opaque run_capacity.
 
   (* pub fn push(&mut self, value: T) *)
   Instance run_push {T A : Set} `{Link T} `{Link A}
-      (self : Ref.t Pointer.Kind.MutRef (Self T A))
+      (self : '&mut (Self T A))
       (value : T) :
     Run.Trait (vec.Impl_alloc_vec_Vec_T_A.push (Φ T) (Φ A)) [] [] [φ self; φ value] unit.
   Admitted.

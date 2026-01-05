@@ -10,7 +10,7 @@ Require Import plonky3.commit_539bbc84.keccak_air.round_flags.
 Instance run_eval_round_flags
     {AB : Set} `{Link AB} types
     `{run_AirBuilder_for_AB : AirBuilder.Run AB types}
-    (builder : Ref.t Pointer.Kind.MutRef AB) :
+    (builder : '&mut AB) :
   Run.Trait round_flags.eval_round_flags
     [] [Φ AB] [φ builder]
     unit.

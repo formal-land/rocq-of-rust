@@ -101,7 +101,7 @@ Defined.
 Global Opaque run_unwrap_failed.
 
 (* const fn expect_failed(msg: &str) -> ! *)
-Instance run_expect_failed (msg : Ref.t Pointer.Kind.Ref string) :
+Instance run_expect_failed (msg : '& string) :
   Run.Trait
     option.expect_failed [] [] [ φ msg ]
     Empty_set.
@@ -193,7 +193,7 @@ Module Impl_Option.
 
   (* pub const fn expect(self, msg: &str) -> T *)
   Instance run_expect {T : Set} `{Link T}
-      (self : Self T) (msg : Ref.t Pointer.Kind.Ref string) :
+      (self : Self T) (msg : '& string) :
     Run.Trait
       (option.Impl_core_option_Option_T.expect (Φ T)) [] [] [ φ self; φ msg ]
       T.

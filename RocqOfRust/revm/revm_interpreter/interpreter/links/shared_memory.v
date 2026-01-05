@@ -17,10 +17,10 @@ Require Import revm_interpreter.interpreter.shared_memory.
 *)
 Module SharedMemory.
   Record t : Set := {
-    buffer : Vec.t U8.t Global.t;
-    checkpoints : Vec.t Usize.t Global.t;
-    last_checkpoint : Usize.t;
-    memory_limit : option U64.t;
+    buffer : Vec.t u8 Global.t;
+    checkpoints : Vec.t usize Global.t;
+    last_checkpoint : usize;
+    memory_limit : option u64;
   }.
 
   Global Instance IsLink : Link t := {
@@ -36,10 +36,10 @@ Module SharedMemory.
 End SharedMemory.
 
 (* pub const fn num_words(len: usize) -> usize *)
-Instance run_num_words (len : Usize.t) :
+Instance run_num_words (len : usize) :
   Run.Trait
     interpreter.shared_memory.num_words [] [] [ φ len ]
-    Usize.t.
+    usize.
 Proof.
   constructor.
   run_symbolic.

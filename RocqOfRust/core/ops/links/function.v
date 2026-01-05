@@ -63,7 +63,7 @@ Module FnMut.
   Definition Run_call_mut (Self Args Output : Set)
       `{Link Self} `{Link Args} `{Link Output} : Set :=
     TraitMethod.C (trait Self Args) "call_mut" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (args : Args),
+      forall (self : '&mut Self) (args : Args),
       Run.Trait method [] [] [ φ self; φ args ] Output
     ).
 

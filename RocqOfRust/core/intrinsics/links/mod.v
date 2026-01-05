@@ -47,7 +47,7 @@ Proof.
 Admitted.
 Global Opaque run_transmute.
 
-Instance run_discriminant_value (ref : Ref.t Pointer.Kind.Ref Ordering.t) :
+Instance run_discriminant_value (ref : '& Ordering.t) :
   Run.Trait intrinsics.discriminant_value [] [Φ Ordering.t] [φ ref]
              (Integer.t IntegerKind.I8).
 Proof.
@@ -56,9 +56,9 @@ Global Opaque run_discriminant_value.
 
 (* pub const unsafe fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: usize) *)
 Instance run_copy_nonoverlapping {T : Set} `{Link T}
-  (src : Ref.t Pointer.Kind.ConstPointer T)
-  (dst : Ref.t Pointer.Kind.MutPointer T)
-  (count : Usize.t) :
+  (src : '*const T)
+  (dst : '*mut T)
+  (count : usize) :
   Run.Trait
     intrinsics.copy_nonoverlapping [] [ Φ T ] [ φ src; φ dst; φ count ]
     unit.

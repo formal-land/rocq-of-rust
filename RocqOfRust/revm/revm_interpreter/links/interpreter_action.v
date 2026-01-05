@@ -237,7 +237,7 @@ Module Impl_InterpreterAction.
     InterpreterAction.t.
 
   (* pub fn is_call(&self) -> bool *)
-  Instance run_is_call (self : Ref.t Pointer.Kind.Ref Self) :
+  Instance run_is_call (self : '& Self) :
     Run.Trait
       interpreter_action.Impl_revm_interpreter_interpreter_action_InterpreterAction.is_call
         [] [] [φ self]
@@ -249,7 +249,7 @@ Module Impl_InterpreterAction.
   Global Opaque run_is_call.
 
   (* pub fn is_create(&self) -> bool *)
-  Instance run_is_create (self : Ref.t Pointer.Kind.Ref Self) :
+  Instance run_is_create (self : '& Self) :
     Run.Trait
       interpreter_action.Impl_revm_interpreter_interpreter_action_InterpreterAction.is_create
         [] [] [φ self]
@@ -261,7 +261,7 @@ Module Impl_InterpreterAction.
   Global Opaque run_is_create.
 
   (* pub fn is_return(&self) -> bool *)
-  Instance run_is_return (self : Ref.t Pointer.Kind.Ref Self) :
+  Instance run_is_return (self : '& Self) :
     Run.Trait
       interpreter_action.Impl_revm_interpreter_interpreter_action_InterpreterAction.is_return
         [] [] [φ self]
@@ -273,7 +273,7 @@ Module Impl_InterpreterAction.
   Global Opaque run_is_return.
 
   (* pub fn is_none(&self) -> bool *)
-  Instance run_is_none (self : Ref.t Pointer.Kind.Ref Self) :
+  Instance run_is_none (self : '& Self) :
     Run.Trait
       interpreter_action.Impl_revm_interpreter_interpreter_action_InterpreterAction.is_none
         [] [] [φ self]
@@ -285,7 +285,7 @@ Module Impl_InterpreterAction.
   Global Opaque run_is_none.
 
   (* pub fn is_some(&self) -> bool *)
-  Instance run_is_some (self : Ref.t Pointer.Kind.Ref Self) :
+  Instance run_is_some (self : '& Self) :
     Run.Trait
       interpreter_action.Impl_revm_interpreter_interpreter_action_InterpreterAction.is_some
         [] [] [φ self]

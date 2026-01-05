@@ -1,6 +1,6 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import links.M.
-Require Import simulations.M.
+Require Import simulations_legacy.M.
 Require Import revm_interpreter.links.gas.
 
 Module Impl_Default_for_MemoryGas.

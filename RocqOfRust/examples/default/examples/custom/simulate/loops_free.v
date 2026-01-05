@@ -5,13 +5,13 @@ Require Import RocqOfRust.lib.simulate.lib.
 Require Import core.links.array.
 Require Import examples.default.examples.custom.links.loops_free.
 
-Definition max2 (a b : U32.t) : U32.t :=
+Definition max2 (a b : u32) : u32 :=
   if a.(Integer.value) <? b.(Integer.value) then
     b
   else
     a.
 
-Lemma max2_eq (stack : Stack.t) (a b : U32.t) :
+Lemma max2_eq (stack : Stack.t) (a b : u32) :
   {{
     SimulateM.eval_f (run_max2 a b) stack 🌲
     (Output.Success (max2 a b), stack)
@@ -27,7 +27,7 @@ Proof.
   ).
 Qed.
 
-Definition abs_i32 (x : I32.t) : I32.t :=
+Definition abs_i32 (x : i32) : i32 :=
   if x.(Integer.value) <? 0 then
     if x.(Integer.value) =? (-(2 ^ 31)) then
       x
@@ -36,7 +36,7 @@ Definition abs_i32 (x : I32.t) : I32.t :=
   else
     x.
 
-Lemma abs_i32_eq (stack : Stack.t) (x : I32.t) :
+Lemma abs_i32_eq (stack : Stack.t) (x : i32) :
   {{
     SimulateM.eval_f (run_abs_i32 x) stack 🌲
     (Output.Success (abs_i32 x), stack)
@@ -74,7 +74,7 @@ Proof.
   ).
 Qed.
 
-Definition get_or_zero (xs : array.t U32.t {| Integer.value := 4 |}) (i : Usize.t) : U32.t :=
+Definition get_or_zero (xs : array.t u32 {| Integer.value := 4 |}) (i : usize) : u32 :=
   let i := i.(Integer.value) in
   let xs := ArrayPairs.to_tuple_rev xs.(array.value) in
   match xs with
@@ -92,7 +92,7 @@ Definition get_or_zero (xs : array.t U32.t {| Integer.value := 4 |}) (i : Usize.
   end.
 
 Lemma get_or_zero_eq
-    (xs : array.t U32.t 4) (i : Usize.t)
+    (xs : array.t u32 4) (i : usize)
     (H_i : 0 <= i.(Integer.value)) :
   let ref_xs := make_ref 0 in
   let stack := [xs]%stack in
@@ -124,7 +124,7 @@ Proof.
   }
 Qed.
 
-Definition eq2 (a b : array.t U32.t {| Integer.value := 2 |}) : bool :=
+Definition eq2 (a b : array.t u32 {| Integer.value := 2 |}) : bool :=
   let '(tt, x1, x0) := ArrayPairs.to_tuple_rev a.(array.value) in
   let '(tt, y1, y0) := ArrayPairs.to_tuple_rev b.(array.value) in
   if (x0.(Integer.value) =? y0.(Integer.value)) &&
@@ -133,7 +133,7 @@ Definition eq2 (a b : array.t U32.t {| Integer.value := 2 |}) : bool :=
   else false.
 
 Lemma eq2_eq
-    (a b : array.t U32.t {| Integer.value := 2 |}) :
+    (a b : array.t u32 {| Integer.value := 2 |}) :
   let ref_a := make_ref 0 in
   let ref_b := make_ref 1 in
   let stack := [a; b]%stack in
@@ -159,7 +159,7 @@ Proof.
   }
 Qed.
 
-Definition eq_pair (x y : U32.t * U32.t) : bool :=
+Definition eq_pair (x y : u32 * u32) : bool :=
   let '(x0, x1) := x in
   let '(y0, y1) := y in
   if (x0.(Integer.value) =? y0.(Integer.value)) &&
@@ -167,7 +167,7 @@ Definition eq_pair (x y : U32.t * U32.t) : bool :=
   then true
   else false.
 
-Lemma eq_pair_eq (stack : Stack.t) (x y : U32.t * U32.t) :
+Lemma eq_pair_eq (stack : Stack.t) (x y : u32 * u32) :
   {{
     SimulateM.eval_f (run_eq_pair x y) stack 🌲
     (Output.Success (eq_pair x y), stack)
@@ -186,11 +186,11 @@ Proof.
   }
 Qed.
 
-Definition min3 (a b c : U32.t) : U32.t :=
+Definition min3 (a b c : u32) : u32 :=
   let m := if a.(Integer.value) <? b.(Integer.value) then a else b in
   if m.(Integer.value) <? c.(Integer.value) then m else c.
 
-Lemma min3_eq (a b c : U32.t) :
+Lemma min3_eq (a b c : u32) :
   {{
     SimulateM.eval_f (run_min3 a b c) []%stack 🌲
     (Output.Success (min3 a b c), []%stack)
@@ -221,13 +221,13 @@ Proof.
   }
 Qed.
 
-Definition choose_ref (choice : bool) (a b : U32.t) : U32.t :=
+Definition choose_ref (choice : bool) (a b : u32) : u32 :=
   if choice then
     a
   else
     b.
 
-Lemma choose_ref_eq (choice : bool) (a b : U32.t) :
+Lemma choose_ref_eq (choice : bool) (a b : u32) :
   let stack := [a; b]%stack in
   let ref_a := make_ref 0 in
   let ref_b := make_ref 1 in

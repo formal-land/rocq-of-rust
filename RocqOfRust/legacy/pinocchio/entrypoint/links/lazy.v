@@ -9,8 +9,8 @@ Require Import pinocchio.links.program_error.
 
 Module InstructionContext.
   Record t : Set := {
-    buffer   : Ref.t Pointer.Kind.Raw U8.t;
-    remaining: U64.t
+    buffer   : '* u8;
+    remaining: u64
   }.
 
   Global Instance IsLink : Link t := {
@@ -26,7 +26,7 @@ End InstructionContext.
 Module MaybeAccount.
   Inductive t : Set :=
   | Account    (a : AccountInfo.t)
-  | Duplicated (i : U8.t).
+  | Duplicated (i : u8).
 
   Global Instance IsLink : Link t := {
     Φ := Ty.path "pinocchio::entrypoint::lazy::MaybeAccount";
@@ -46,7 +46,7 @@ Module Impl_InstructionContext.
   Definition Self : Set := InstructionContext.t.
   
   Instance run_new
-    (input : Ref.t Pointer.Kind.Raw U8.t) :
+    (input : '* u8) :
     Run.Trait
       pinocchio.entrypoint.lazy.entrypoint.lazy.Impl_pinocchio_entrypoint_lazy_InstructionContext.new
       [] [] [φ input] Self.
@@ -56,7 +56,7 @@ Module Impl_InstructionContext.
   Global Opaque run_new.
 
   Instance run_new_unchecked
-    (input : Ref.t Pointer.Kind.Raw U8.t) :
+    (input : '* u8) :
     Run.Trait
     pinocchio.entrypoint.lazy.entrypoint.lazy.Impl_pinocchio_entrypoint_lazy_InstructionContext.new_unchecked
       [] [] [φ input] Self.
@@ -66,7 +66,7 @@ Module Impl_InstructionContext.
   Global Opaque run_new_unchecked.
 
   Instance run_next_account
-    (self : Ref.t Pointer.Kind.Ref Self) :
+    (self : '& Self) :
     Run.Trait
     pinocchio.entrypoint.lazy.entrypoint.lazy.Impl_pinocchio_entrypoint_lazy_InstructionContext.next_account
       [] [] [φ self] (Result.t MaybeAccount.t ProgramError.t).
@@ -76,7 +76,7 @@ Module Impl_InstructionContext.
   Global Opaque run_next_account.
 
   Instance run_next_account_unchecked
-    (self : Ref.t Pointer.Kind.Ref Self) :
+    (self : '& Self) :
     Run.Trait
     pinocchio.entrypoint.lazy.entrypoint.lazy.Impl_pinocchio_entrypoint_lazy_InstructionContext.next_account_unchecked
       [] [] [φ self] MaybeAccount.t.
@@ -86,17 +86,17 @@ Module Impl_InstructionContext.
   Global Opaque run_next_account_unchecked.
 
   Instance run_remaining
-    (self : Ref.t Pointer.Kind.Ref Self) :
+    (self : '& Self) :
     Run.Trait
     pinocchio.entrypoint.lazy.entrypoint.lazy.Impl_pinocchio_entrypoint_lazy_InstructionContext.remaining
-      [] [] [φ self] U64.t.
+      [] [] [φ self] u64.
   Proof.
     constructor. admit.
   Admitted.
   Global Opaque run_remaining.
 
   Instance run_instruction_data
-    (self : Ref.t Pointer.Kind.Ref Self) :
+    (self : '& Self) :
     Run.Trait
      pinocchio.entrypoint.lazy.entrypoint.lazy.Impl_pinocchio_entrypoint_lazy_InstructionContext.instruction_data
       [] [] [φ self] (Result.t (list (Integer.t IntegerKind.U8)) ProgramError.t).
@@ -106,7 +106,7 @@ Module Impl_InstructionContext.
   Global Opaque run_instruction_data.
 
   Instance run_instruction_data_unchecked
-    (self : Ref.t Pointer.Kind.Ref Self) :
+    (self : '& Self) :
     Run.Trait
     pinocchio.entrypoint.lazy.entrypoint.lazy.Impl_pinocchio_entrypoint_lazy_InstructionContext.instruction_data_unchecked
       [] [] [φ self] (list (Integer.t IntegerKind.U8)).
@@ -116,20 +116,20 @@ Module Impl_InstructionContext.
   Global Opaque run_instruction_data_unchecked.
 
   Instance run_program_id
-    (self : Ref.t Pointer.Kind.Ref Self) :
+    (self : '& Self) :
     Run.Trait
      pinocchio.entrypoint.lazy.entrypoint.lazy.Impl_pinocchio_entrypoint_lazy_InstructionContext.program_id
-      [] [] [φ self] (Result.t (Ref.t Pointer.Kind.Ref Pubkey.t) ProgramError.t).
+      [] [] [φ self] (Result.t ('& Pubkey.t) ProgramError.t).
   Proof.
     constructor. admit.
   Admitted.
   Global Opaque run_program_id.
 
   Instance run_program_id_unchecked
-    (self : Ref.t Pointer.Kind.Ref Self) :
+    (self : '& Self) :
     Run.Trait
      pinocchio.entrypoint.lazy.entrypoint.lazy.Impl_pinocchio_entrypoint_lazy_InstructionContext.program_id_unchecked
-      [] [] [φ self] (Ref.t Pointer.Kind.Ref Pubkey.t).
+      [] [] [φ self] ('& Pubkey.t).
   Proof.
     constructor. admit.
   Admitted.

@@ -51,8 +51,8 @@ Instance run_create
   {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   (run_Host_for_H : Host.Run H H_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (host : '&mut H) :
   Run.Trait
     instructions.contract.create [ φ IS_CREATE2 ] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -67,7 +67,7 @@ Proof.
   destruct run_Host_for_H.
   destruct run_CfgGetter_for_Self.
   destruct run_Cfg_for_Cfg.
-  destruct (Impl_AsRef_for_Slice.run U8.t).
+  destruct (Impl_AsRef_for_Slice.run u8).
   destruct run_Deref_for_Synthetic1.
   run_symbolic.
 Defined.

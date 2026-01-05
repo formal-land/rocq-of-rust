@@ -24,10 +24,10 @@ where
     [T]: IndexMut<I>,
 *)
 Module Impl_IndexMut_for_Array.
-  Definition Self (T I : Set) (N : Usize.t) : Set :=
+  Definition Self (T I : Set) (N : usize) : Set :=
     array.t T N.
 
-  Instance run (T I : Set) `{Link T} `{Link I} (N : Usize.t)
+  Instance run (T I : Set) `{Link T} `{Link I} (N : usize)
     (IndexMut_Output : Set) `{Link IndexMut_Output}
     (run_IndexMut_for_slice_T : IndexMut.Run (list T) I IndexMut_Output) :
     IndexMut.Run (Self T I N) I IndexMut_Output.
@@ -43,8 +43,8 @@ where
     try_from_fn(NeverShortCircuit::wrap_mut_1(cb)).0
 }
 *)
-Instance run_from_fn (T : Set) `{Link T} (N : Usize.t) (F : Set) `{Link F}
-    {run_FnMut_for_F : FnMut.Run F Usize.t T}
+Instance run_from_fn (T : Set) `{Link T} (N : usize) (F : Set) `{Link F}
+    {run_FnMut_for_F : FnMut.Run F usize T}
     (cb : F) :
   Run.Trait array.from_fn
     [φ N] [Φ T; Φ F] [φ cb]
@@ -61,14 +61,14 @@ impl<'a, T, const N: usize> TryFrom<&'a [T]> for &'a [T; N] {
 }
 *)
 Module Impl_TryFrom_Ref_for_Ref_Array.
-  Definition Self (T : Set) (N : Usize.t) `{Link T} : Set :=
-    Ref.t Pointer.Kind.Ref (array.t T N).
+  Definition Self (T : Set) (N : usize) `{Link T} : Set :=
+    '& (array.t T N).
 
   Definition Error : Set :=
     TryFromSliceError.t.
 
-  Instance run (T : Set) `{Link T} (N : Usize.t) :
-    TryFrom.Run (Self T N) (Ref.t Pointer.Kind.Ref (list T)) Error.
+  Instance run (T : Set) `{Link T} (N : usize) :
+    TryFrom.Run (Self T N) ('& (list T)) Error.
   Admitted.
 End Impl_TryFrom_Ref_for_Ref_Array.
 Export Impl_TryFrom_Ref_for_Ref_Array.
@@ -81,14 +81,14 @@ where
     type Error = TryFromSliceError;
 *)
 Module Impl_TryFrom_Ref_for_Array.
-  Definition Self (T : Set) (N : Usize.t) `{Link T} : Set :=
+  Definition Self (T : Set) (N : usize) `{Link T} : Set :=
     array.t T N.
 
   Definition Error : Set :=
     TryFromSliceError.t.
 
-  Instance run (T : Set) `{Link T} (N : Usize.t) :
-    TryFrom.Run (Self T N) (Ref.t Pointer.Kind.Ref (list T)) Error.
+  Instance run (T : Set) `{Link T} (N : usize) :
+    TryFrom.Run (Self T N) ('& (list T)) Error.
   Admitted.
 End Impl_TryFrom_Ref_for_Array.
 Export Impl_TryFrom_Ref_for_Array.

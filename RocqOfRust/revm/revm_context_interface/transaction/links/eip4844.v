@@ -20,7 +20,7 @@ Module Eip4844Tx.
     (Self : Set) `{Link Self} :
     Set :=
     TraitMethod.C (trait Self) "destination" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] Address.t
     ).
 
@@ -28,31 +28,31 @@ Module Eip4844Tx.
     (Self : Set) `{Link Self} :
     Set :=
     TraitMethod.C (trait Self) "blob_versioned_hashes" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref (list aliases.B256.t))
+      forall (self : '& Self),
+      Run.Trait method [] [] [ φ self ] ('& (list aliases.B256.t))
     ).
 
   Definition Run_max_fee_per_blob_gas
     (Self : Set) `{Link Self} :
     Set :=
     TraitMethod.C (trait Self) "max_fee_per_blob_gas" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] U128.t
+      forall (self : '& Self),
+      Run.Trait method [] [] [ φ self ] u128
     ).
 
   Definition Run_total_blob_gas
     (Self : Set) `{Link Self} :
     Set :=
     TraitMethod.C (trait Self) "total_blob_gas" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] U64.t
+      forall (self : '& Self),
+      Run.Trait method [] [] [ φ self ] u64
     ).
 
   Definition Run_calc_max_data_fee
     (Self : Set) `{Link Self} :
     Set :=
     TraitMethod.C (trait Self) "calc_max_data_fee" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
       Run.Trait method [] [] [ φ self ] aliases.U256.t
     ).
 

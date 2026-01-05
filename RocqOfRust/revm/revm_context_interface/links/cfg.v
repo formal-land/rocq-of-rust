@@ -33,10 +33,12 @@ Module CreateScheme.
   Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
   Smpl Add apply of_ty : of_ty.
 
-  Lemma of_value_with_Create :
-    Value.StructTuple "revm_context_interface::cfg::CreateScheme::Create" [] [] [] = φ Create.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_Create : of_value.
+  Global Instance IsOfValueWith_Create :
+    OfValueWith.C t (Value.StructTuple "revm_context_interface::cfg::CreateScheme::Create" [] [] []) :=
+  {
+    value := Create;
+    eq := eq_refl;
+  }.
 
   Lemma of_value_with_Create2 (x : aliases.U256.t) x' :
     x' = φ x ->
@@ -48,7 +50,7 @@ Module CreateScheme.
 
   Definition of_value_Create :
     OfValue.t (Value.StructTuple "revm_context_interface::cfg::CreateScheme::Create" [] [] []).
-  Proof. eapply OfValue.Make; apply of_value_with_Create. Defined.
+  Proof. eapply OfValue.Make; smpl of_value. Defined.
   Smpl Add apply of_value_Create : of_value.
 
   Definition of_value_Create2 (x : aliases.U256.t) x' :
@@ -96,55 +98,55 @@ Module Cfg.
 
   Definition Run_chain_id (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "chain_id" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-        Run.Trait method [] [] [ φ self ] U64.t
+      forall (self : '& Self),
+        Run.Trait method [] [] [ φ self ] u64
     ).
 
   Definition Run_spec (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set :=
     TraitMethod.C (trait Self) "spec" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
         Run.Trait method [] [] [ φ self ] types.(Types.Spec)
     ).
 
   Definition Run_blob_max_count (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set :=
     TraitMethod.C (trait Self) "blob_max_count" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-        Run.Trait method [] [] [ φ self] U8.t
+      forall (self : '& Self),
+        Run.Trait method [] [] [ φ self] u8
     ).
 
   Definition Run_max_code_size (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "max_code_size" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-        Run.Trait method [] [] [ φ self] Usize.t
+      forall (self : '& Self),
+        Run.Trait method [] [] [ φ self] usize
     ).
 
   Definition Run_is_eip3607_disabled (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "is_eip3607_disabled" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
         Run.Trait method [] [] [ φ self] bool
     ).
 
   Definition Run_is_balance_check_disabled (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "is_balance_check_disabled" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
         Run.Trait method [] [] [ φ self] bool
     ).
 
   Definition Run_is_block_gas_limit_disabled (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "is_block_gas_limit_disabled" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
         Run.Trait method [] [] [ φ self] bool
     ).
 
   Definition Run_is_nonce_check_disabled (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "is_nonce_check_disabled" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
         Run.Trait method [] [] [ φ self] bool
     ).
 
   Definition Run_is_base_fee_check_disabled (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "is_base_fee_check_disabled" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
+      forall (self : '& Self),
         Run.Trait method [] [] [ φ self] bool
     ).
 
@@ -209,8 +211,8 @@ Module CfgGetter.
 
   Definition Run_cfg (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set :=
     TraitMethod.C (trait Self) "cfg" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-        Run.Trait method [] [] [ φ self] (Ref.t Pointer.Kind.Ref types.(Types.Cfg))
+      forall (self : '& Self),
+        Run.Trait method [] [] [ φ self] ('& types.(Types.Cfg))
     ).
 
   Record Run (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set :=

@@ -207,7 +207,7 @@ Module Pack.
 
   Definition Run_unpack (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "unpack" (fun method =>
-      forall (input : Ref.t Pointer.Kind.Ref (list U8.t)),
+      forall (input : '& (list U8.t)),
         Run.Trait method [] [] [φ input] (Result.t Self ProgramError.t)
     ).
 
@@ -245,7 +245,7 @@ Export Impl_From_TokenError_for_ProgramError.
 
 ```coq
 Instance run_is_frozen
-    (self : Ref.t Pointer.Kind.Ref Account.t) :
+    (self : '& Account.t) :
   Run.Trait module.Impl_crate_Account.is_frozen [] [] [φ self]
     bool.
 Proof.

@@ -23,31 +23,31 @@ Module Pack.
 
   Definition Run_unpack (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "unpack" (fun method =>
-      forall (input : Ref.t Pointer.Kind.Ref (list U8.t)),
+      forall (input : '& (list u8)),
         Run.Trait method [] [] [φ input] (Result.t Self ProgramError.t)
     ).
 
   Definition Run_unpack_unchecked (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "unpack_unchecked" (fun method =>
-      forall (input : Ref.t Pointer.Kind.Ref (list U8.t)),
+      forall (input : '& (list u8)),
         Run.Trait method [] [] [φ input] (Result.t Self ProgramError.t)
     ).
 
   Definition Run_unpack_from_slice (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "unpack_from_slice" (fun method =>
-      forall (src : Ref.t Pointer.Kind.Ref (list U8.t)),
+      forall (src : '& (list u8)),
         Run.Trait method [] [] [φ src] (Result.t Self ProgramError.t)
     ).
 
   Definition Run_pack (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "pack" (fun method =>
-      forall (src : Self) (dst : Ref.t Pointer.Kind.MutRef (list U8.t)),
+      forall (src : Self) (dst : '&mut (list u8)),
         Run.Trait method [] [] [φ src; φ dst] (Result.t unit ProgramError.t)
     ).
 
   Definition Run_pack_into_slice (Self : Set) `{Link Self} : Set :=
     TraitMethod.C (trait Self) "pack_into_slice" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (dst : Ref.t Pointer.Kind.MutRef (list U8.t)),
+      forall (self : '& Self) (dst : '&mut (list u8)),
         Run.Trait method [] [] [φ self; φ dst] unit
     ).
 

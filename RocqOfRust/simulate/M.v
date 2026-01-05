@@ -242,7 +242,7 @@ Module ContextRun.
     | context'; stack' }}
   | LetAllocSuccess {A : Set} `{Link A}
       (e : LinkM.t R A)
-      (k : Output.t R (Ref.t Pointer.Kind.Raw A) -> LinkM.t R Output)
+      (k : Output.t R ('* A) -> LinkM.t R Output)
       (value_e : A)
       (context_e stack_e : Stack.t)
       (result : Output.t R Output)

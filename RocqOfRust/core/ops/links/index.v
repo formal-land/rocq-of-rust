@@ -16,8 +16,8 @@ Module Index.
       (Self Idx Output : Set) `{Link Self} `{Link Idx} `{Link Output} :
       Set :=
     TraitMethod.C (trait Self Idx) "index" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (index : Idx),
-      Run.Trait method [] [] [ φ self; φ index ] (Ref.t Pointer.Kind.Ref Output)
+      forall (self : '& Self) (index : Idx),
+      Run.Trait method [] [] [ φ self; φ index ] ('& Output)
     ).
 
   Class Run
@@ -39,17 +39,17 @@ where
     [T]: Index<I>,
 *)
 Module Impl_Index_for_Array.
-  Definition Self (T I : Set) (N : Usize.t) : Set :=
+  Definition Self (T I : Set) (N : usize) : Set :=
     array.t T N.
 
   (* type Output = <[T] as Index<I>>::Output; *)
-  Definition Output (T I : Set) (N : Usize.t) {Index_Output : Set}
+  Definition Output (T I : Set) (N : usize) {Index_Output : Set}
       `{Link T} `{Link I} `{Link Index_Output}
       {run_Index_for_slice_T : Index.Run T I Index_Output} :
       Set :=
     Index_Output.
 
-  Instance run (T I : Set) (N : Usize.t) {Index_Output : Set}
+  Instance run (T I : Set) (N : usize) {Index_Output : Set}
       `{Link T} `{Link I} `{Link Index_Output}
       {run_Index_for_slice_T : Index.Run T I Index_Output} :
     Index.Run (Self T I N) I (Output T I N).
@@ -73,8 +73,8 @@ Module IndexMut.
       (Self Idx Output : Set) `{Link Self} `{Link Idx} `{Link Output} :
       Set :=
     TraitMethod.C (trait Self Idx) "index_mut" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (index : Idx),
-      Run.Trait method [] [] [ φ self; φ index ] (Ref.t Pointer.Kind.MutRef Output)
+      forall (self : '&mut Self) (index : Idx),
+      Run.Trait method [] [] [ φ self; φ index ] ('&mut Output)
     ).
 
   Class Run

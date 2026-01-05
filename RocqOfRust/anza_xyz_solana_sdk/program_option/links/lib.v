@@ -98,7 +98,7 @@ Module Impl_COption.
   (* pub fn is_some(&self) -> bool *)
   Instance run_is_some
       (T : Set) `{Link T}
-      (self : Ref.t Pointer.Kind.Ref (Self T)) :
+      (self : '& (Self T)) :
     Run.Trait
       (lib.Impl_solana_program_option_COption_T.is_some (Φ T)) [] [] [φ self]
       bool.
@@ -111,7 +111,7 @@ Module Impl_COption.
   (* pub fn is_none(&self) -> bool *)
   Instance run_is_none
       (T : Set) `{Link T}
-      (self : Ref.t Pointer.Kind.Ref (Self T)) :
+      (self : '& (Self T)) :
     Run.Trait
       (lib.Impl_solana_program_option_COption_T.is_none (Φ T)) [] [] [φ self]
       bool.
