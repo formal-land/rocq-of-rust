@@ -97,15 +97,20 @@ Module ProgramError.
   Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
   Smpl Add apply of_ty : of_ty.
 
-  Lemma of_value_with_Custom (n : u32) :
-    Value.StructTuple "solana_program_error::ProgramError::Custom" [] [] [φ n]
-    = φ (Custom n).
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with_Custom : of_value.
-  Definition of_value_Custom (n : u32) :
-    OfValue.t (Value.StructTuple "solana_program_error::ProgramError::Custom" [] [] [φ n]).
-  Proof. econstructor; apply of_value_with_Custom. Defined.
-  Smpl Add apply of_value_Custom : of_value.
+  Global Instance IsOfValueWith_Custom
+      (n' : Value.t) {H_n : OfValueWith.C u32 n'} :
+    OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::Custom" [] [] [n']) :=
+  {
+    value := Custom H_n.(OfValueWith.value);
+    eq := ltac:(sauto lq: on);
+  }.
+  Global Instance IsOfValue_Custom
+      (n' : Value.t) {H_n : OfValueWith.C u32 n'} :
+    OfValue.C (Value.StructTuple "solana_program_error::ProgramError::Custom" [] [] [n']) :=
+  {
+    value := Custom H_n.(OfValueWith.value);
+    eq := ltac:(sauto lq: on);
+  }.
 
   Global Instance IsOfValueWith_InvalidArgument :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::InvalidArgument" [] [] []) :=
@@ -455,7 +460,9 @@ Module ProgramError.
       constructor; intros; destruct a; try reflexivity; discriminate.
     Qed.
     Smpl Add apply get_Custom_0_is_valid : run_sub_pointer.
+
   End SubPointer.
+
 End ProgramError.
 
 (* ProgramResult = Result<(), ProgramError> *)
