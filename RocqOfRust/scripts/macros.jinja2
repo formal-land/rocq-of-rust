@@ -1,0 +1,149 @@
+{#
+  Jinja macros for generating Rocq code.
+  Automatically imported as 'macros' in all templates.
+
+  Variants are specified as tuples: (name, params)
+  where params is a list of (param_name, param_type) tuples.
+
+  Example:
+    {% set variants = [
+      ("Custom", [("n", "u32")]),
+      ("InvalidArgument", []),
+    ] %}
+#}
+
+{# Generate Inductive variant declaration #}
+{% macro inductive_variant(variant) %}
+{% set name, params = variant %}
+  | {{ name }}{% for p in params %} ({{ p[0] }} : {{ p[1] }}){% endfor %}
+
+{% endmacro %}
+
+{# Generate all Inductive variant declarations #}
+{% macro inductive_variants(variants) %}
+{% for variant in variants %}
+{{ inductive_variant(variant) -}}
+{% endfor %}
+{% endmacro %}
+
+{# Generate φ match case for a variant #}
+{% macro phi_case(path, variant) %}
+{% set name, params = variant %}
+      | {{ name }}{% for p in params %} {{ p[0] }}{% endfor %} =>
+          Value.StructTuple "{{ path }}::{{ name }}" [] [] [{% for p in params %}φ {{ p[0] }}{{ "; " if not loop.last else "" }}{% endfor %}]
+{% endmacro %}
+
+{# Generate all φ match cases #}
+{% macro phi_cases(path, variants) %}
+{% for variant in variants %}
+{{ phi_case(path, variant) -}}
+{% endfor %}
+{% endmacro %}
+
+{# Generate IsOfValueWith and IsOfValue instances for a variant #}
+{% macro variant_instances(path, variant) %}
+{% set name, params = variant %}
+{% if params %}
+  Global Instance IsOfValueWith_{{ name }}
+{% for p in params %}      ({{ p[0] }}' : Value.t) {H_{{ p[0] }} : OfValueWith.C {{ p[1] }} {{ p[0] }}'}{% endfor %} :
+    OfValueWith.C t (Value.StructTuple "{{ path }}::{{ name }}" [] [] [{% for p in params %}{{ p[0] }}'{{ "; " if not loop.last else "" }}{% endfor %}]) :=
+  {
+    value := {{ name }}{% for p in params %} H_{{ p[0] }}.(OfValueWith.value){% endfor %};
+    eq := ltac:(sauto lq: on);
+  }.
+
+  Global Instance IsOfValue_{{ name }}
+{% for p in params %}      ({{ p[0] }}' : Value.t) {H_{{ p[0] }} : OfValueWith.C {{ p[1] }} {{ p[0] }}'}{% endfor %} :
+    OfValue.C (Value.StructTuple "{{ path }}::{{ name }}" [] [] [{% for p in params %}{{ p[0] }}'{{ "; " if not loop.last else "" }}{% endfor %}]) :=
+  {
+    value := {{ name }}{% for p in params %} H_{{ p[0] }}.(OfValueWith.value){% endfor %};
+    eq := ltac:(sauto lq: on);
+  }.
+
+{% else %}
+  Global Instance IsOfValueWith_{{ name }} :
+    OfValueWith.C t (Value.StructTuple "{{ path }}::{{ name }}" [] [] []) :=
+  {
+    value := {{ name }};
+    eq := eq_refl;
+  }.
+
+  Global Instance IsOfValue_{{ name }} :
+    OfValue.C (Value.StructTuple "{{ path }}::{{ name }}" [] [] []) :=
+  {
+    value := {{ name }};
+    eq := eq_refl;
+  }.
+
+{% endif %}
+{% endmacro %}
+
+{# Generate instances for all variants #}
+{% macro all_variant_instances(path, variants) %}
+{% for variant in variants %}
+{{ variant_instances(path, variant) -}}
+{% endfor %}
+{% endmacro %}
+
+{# Generate SubPointer for a single parameter of a variant #}
+{% macro subpointer(path, variant, param_index) %}
+{% set name, params = variant %}
+{% set param = params[param_index] %}
+    Definition get_{{ name }}_{{ param_index }} : SubPointer.Runner.t t
+      (Pointer.Index.StructTuple "{{ path }}::{{ name }}" {{ param_index }}) :=
+    {|
+      SubPointer.Runner.projection x :=
+        match x with
+        | {{ name }}{% for p in params %} {{ p[0] }}{% endfor %} => Some {{ param[0] }}
+        | _ => None
+        end;
+      SubPointer.Runner.injection x y :=
+        match x with
+        | {{ name }}{% for p in params %} {% if loop.index0 == param_index %}_{% else %}{{ p[0] }}{% endif %}{% endfor %} => Some ({{ name }}{% for p in params %} {% if loop.index0 == param_index %}y{% else %}{{ p[0] }}{% endif %}{% endfor %})
+        | _ => None
+        end;
+    |}.
+
+    Lemma get_{{ name }}_{{ param_index }}_is_valid :
+      SubPointer.Runner.Valid.t get_{{ name }}_{{ param_index }}.
+    Proof.
+      constructor; intros; destruct a; try reflexivity; discriminate.
+    Qed.
+    Smpl Add apply get_{{ name }}_{{ param_index }}_is_valid : run_sub_pointer.
+{%- endmacro %}
+
+{# Generate all SubPointers for a variant (one per parameter) #}
+{% macro variant_subpointers(path, variant) %}
+{% set name, params = variant %}
+{% for param in params %}
+{{ subpointer(path, variant, loop.index0) }}
+{% endfor %}
+{%- endmacro %}
+
+{# Generate SubPointer module with all subpointers for all variants #}
+{% macro subpointer_module(path, variants) %}
+  Module SubPointer.
+{% for variant in variants %}{{ variant_subpointers(path, variant) }}{% endfor %}  End SubPointer.
+{%- endmacro %}
+
+{# Generate complete enum body (everything inside Module ... End) #}
+{% macro enum_body(path, variants) %}
+  Inductive t : Set :=
+{{ inductive_variants(variants) }}  .
+
+  Global Instance IsLink : Link t := {
+    Φ := Ty.path "{{ path }}";
+    φ x :=
+      match x with
+{{ phi_cases(path, variants) }}      end
+  }.
+
+  Global Instance IsOfTy : OfTy.C (Ty.path "{{ path }}") :=
+  {
+    A := t;
+    eq := eq_refl;
+  }.
+
+{{ all_variant_instances(path, variants) -}}
+{{ subpointer_module(path, variants) -}}
+{% endmacro %}

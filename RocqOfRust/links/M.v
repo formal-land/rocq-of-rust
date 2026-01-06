@@ -161,7 +161,7 @@ Module Bool.
     eq := eq_refl;
   }.
 
-  (* Global Instance IsOfValueWith (b : bool) : OfValueWith.C bool (Value.Bool b) := {
+  Global Instance IsOfValueWith (b : bool) : OfValueWith.C bool (Value.Bool b) := {
     value := b;
     eq := eq_refl;
   }.
@@ -169,7 +169,7 @@ Module Bool.
   Global Instance IsOfValue (b : bool) : OfValue.C (Value.Bool b) := {
     value := b;
     eq := eq_refl;
-  }. *)
+  }.
 
   Global Instance IsPrimitiveEq : PrimitiveEq.Trait bool := {
     PrimitiveEq.eqb := Bool.eqb;
@@ -265,15 +265,19 @@ Module Integer.
     eq := eq_refl;
   }.
 
-  Lemma of_value_with {kind : IntegerKind.t} (value : Z) :
-    Value.Integer kind value = φ (Integer.Build_t kind value).
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with : of_value.
+  Global Instance IsOfValueWith {kind : IntegerKind.t} (value : Z) :
+    OfValueWith.C (t kind) (Value.Integer kind value) :=
+  {
+    value := Integer.Build_t kind value;
+    eq := eq_refl;
+  }.
 
-  Definition of_value {kind : IntegerKind.t} (value : Z) :
-    OfValue.t (Value.Integer kind value).
-  Proof. eapply OfValue.Make with (A := t kind); smpl of_value. Defined.
-  Smpl Add apply of_value : of_value.
+  Global Instance IsOfValue {kind : IntegerKind.t} (value : Z) :
+    OfValue.C (Value.Integer kind value) :=
+  {
+    value := Integer.Build_t kind value;
+    eq := eq_refl;
+  }.
 
   Global Instance IsPrimitiveEq {kind : IntegerKind.t} : PrimitiveEq.Trait (t kind) := {
     PrimitiveEq.eqb x y := x.(value) =? y.(value);
