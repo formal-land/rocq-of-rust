@@ -21,12 +21,12 @@ Module EofHeader.
     Φ := Ty.path "revm_bytecode::eof::header::EofHeader";
     φ x :=
       Value.StructRecord "revm_bytecode::eof::header::EofHeader" [] [] [
-        ("types_size", φ x.(types_size));
         ("code_sizes", φ x.(code_sizes));
         ("container_sizes", φ x.(container_sizes));
         ("data_size", φ x.(data_size));
         ("sum_code_sizes", φ x.(sum_code_sizes));
-        ("sum_container_sizes", φ x.(sum_container_sizes))
+        ("sum_container_sizes", φ x.(sum_container_sizes));
+        ("types_size", φ x.(types_size))
       ];
   }.
 
@@ -37,44 +37,58 @@ Module EofHeader.
   }.
 
   Global Instance IsOfValueWith
-      (types_size' : Value.t) {H_types_size : OfValueWith.C (u16) types_size'}
       (code_sizes' : Value.t) {H_code_sizes : OfValueWith.C (Vec.t u16 Global.t) code_sizes'}
       (container_sizes' : Value.t) {H_container_sizes : OfValueWith.C (Vec.t u16 Global.t) container_sizes'}
       (data_size' : Value.t) {H_data_size : OfValueWith.C (u16) data_size'}
       (sum_code_sizes' : Value.t) {H_sum_code_sizes : OfValueWith.C (usize) sum_code_sizes'}
       (sum_container_sizes' : Value.t) {H_sum_container_sizes : OfValueWith.C (usize) sum_container_sizes'}
+      (types_size' : Value.t) {H_types_size : OfValueWith.C (u16) types_size'}
       :
     OfValueWith.C t (Value.StructRecord "revm_bytecode::eof::header::EofHeader" [] [] [
-      ("types_size", types_size');
       ("code_sizes", code_sizes');
       ("container_sizes", container_sizes');
       ("data_size", data_size');
       ("sum_code_sizes", sum_code_sizes');
-      ("sum_container_sizes", sum_container_sizes')
+      ("sum_container_sizes", sum_container_sizes');
+      ("types_size", types_size')
     ]) :=
   {
-    value := Build_t H_types_size.(OfValueWith.value) H_code_sizes.(OfValueWith.value) H_container_sizes.(OfValueWith.value) H_data_size.(OfValueWith.value) H_sum_code_sizes.(OfValueWith.value) H_sum_container_sizes.(OfValueWith.value);
+    value := Build_t
+      H_types_size.(OfValueWith.value)
+      H_code_sizes.(OfValueWith.value)
+      H_container_sizes.(OfValueWith.value)
+      H_data_size.(OfValueWith.value)
+      H_sum_code_sizes.(OfValueWith.value)
+      H_sum_container_sizes.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 
   Global Instance IsOfValue
-      (types_size' : Value.t) {H_types_size : OfValueWith.C (u16) types_size'}
       (code_sizes' : Value.t) {H_code_sizes : OfValueWith.C (Vec.t u16 Global.t) code_sizes'}
       (container_sizes' : Value.t) {H_container_sizes : OfValueWith.C (Vec.t u16 Global.t) container_sizes'}
       (data_size' : Value.t) {H_data_size : OfValueWith.C (u16) data_size'}
       (sum_code_sizes' : Value.t) {H_sum_code_sizes : OfValueWith.C (usize) sum_code_sizes'}
       (sum_container_sizes' : Value.t) {H_sum_container_sizes : OfValueWith.C (usize) sum_container_sizes'}
+      (types_size' : Value.t) {H_types_size : OfValueWith.C (u16) types_size'}
       :
     OfValue.C (Value.StructRecord "revm_bytecode::eof::header::EofHeader" [] [] [
-      ("types_size", types_size');
       ("code_sizes", code_sizes');
       ("container_sizes", container_sizes');
       ("data_size", data_size');
       ("sum_code_sizes", sum_code_sizes');
-      ("sum_container_sizes", sum_container_sizes')
+      ("sum_container_sizes", sum_container_sizes');
+      ("types_size", types_size')
     ]) :=
   {
-    value := Build_t H_types_size.(OfValueWith.value) H_code_sizes.(OfValueWith.value) H_container_sizes.(OfValueWith.value) H_data_size.(OfValueWith.value) H_sum_code_sizes.(OfValueWith.value) H_sum_container_sizes.(OfValueWith.value);
+    value := Build_t
+      H_types_size.(OfValueWith.value)
+      H_code_sizes.(OfValueWith.value)
+      H_container_sizes.(OfValueWith.value)
+      H_data_size.(OfValueWith.value)
+      H_sum_code_sizes.(OfValueWith.value)
+      H_sum_container_sizes.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 

@@ -19,8 +19,8 @@ Module IndexRange.
     Φ := Ty.path "core::ops::index_range::IndexRange";
     φ x :=
       Value.StructRecord "core::ops::index_range::IndexRange" [] [] [
-        ("start", φ x.(start));
-        ("end_", φ x.(end_))
+        ("end_", φ x.(end_));
+        ("start", φ x.(start))
       ];
   }.
 
@@ -31,28 +31,34 @@ Module IndexRange.
   }.
 
   Global Instance IsOfValueWith
-      (start' : Value.t) {H_start : OfValueWith.C (usize) start'}
       (end_' : Value.t) {H_end_ : OfValueWith.C (usize) end_'}
+      (start' : Value.t) {H_start : OfValueWith.C (usize) start'}
       :
     OfValueWith.C t (Value.StructRecord "core::ops::index_range::IndexRange" [] [] [
-      ("start", start');
-      ("end_", end_')
+      ("end_", end_');
+      ("start", start')
     ]) :=
   {
-    value := Build_t H_start.(OfValueWith.value) H_end_.(OfValueWith.value);
+    value := Build_t
+      H_start.(OfValueWith.value)
+      H_end_.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 
   Global Instance IsOfValue
-      (start' : Value.t) {H_start : OfValueWith.C (usize) start'}
       (end_' : Value.t) {H_end_ : OfValueWith.C (usize) end_'}
+      (start' : Value.t) {H_start : OfValueWith.C (usize) start'}
       :
     OfValue.C (Value.StructRecord "core::ops::index_range::IndexRange" [] [] [
-      ("start", start');
-      ("end_", end_')
+      ("end_", end_');
+      ("start", start')
     ]) :=
   {
-    value := Build_t H_start.(OfValueWith.value) H_end_.(OfValueWith.value);
+    value := Build_t
+      H_start.(OfValueWith.value)
+      H_end_.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 

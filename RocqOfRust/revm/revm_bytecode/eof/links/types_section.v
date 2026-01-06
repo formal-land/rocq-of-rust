@@ -16,8 +16,8 @@ Module TypesSection.
     φ x :=
       Value.StructRecord "revm_bytecode::eof::types_section::TypesSection" [] [] [
         ("inputs", φ x.(inputs));
-        ("outputs", φ x.(outputs));
-        ("max_stack_size", φ x.(max_stack_size))
+        ("max_stack_size", φ x.(max_stack_size));
+        ("outputs", φ x.(outputs))
       ];
   }.
 
@@ -29,31 +29,39 @@ Module TypesSection.
 
   Global Instance IsOfValueWith
       (inputs' : Value.t) {H_inputs : OfValueWith.C (u8) inputs'}
-      (outputs' : Value.t) {H_outputs : OfValueWith.C (u8) outputs'}
       (max_stack_size' : Value.t) {H_max_stack_size : OfValueWith.C (u16) max_stack_size'}
+      (outputs' : Value.t) {H_outputs : OfValueWith.C (u8) outputs'}
       :
     OfValueWith.C t (Value.StructRecord "revm_bytecode::eof::types_section::TypesSection" [] [] [
       ("inputs", inputs');
-      ("outputs", outputs');
-      ("max_stack_size", max_stack_size')
+      ("max_stack_size", max_stack_size');
+      ("outputs", outputs')
     ]) :=
   {
-    value := Build_t H_inputs.(OfValueWith.value) H_outputs.(OfValueWith.value) H_max_stack_size.(OfValueWith.value);
+    value := Build_t
+      H_inputs.(OfValueWith.value)
+      H_outputs.(OfValueWith.value)
+      H_max_stack_size.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 
   Global Instance IsOfValue
       (inputs' : Value.t) {H_inputs : OfValueWith.C (u8) inputs'}
-      (outputs' : Value.t) {H_outputs : OfValueWith.C (u8) outputs'}
       (max_stack_size' : Value.t) {H_max_stack_size : OfValueWith.C (u16) max_stack_size'}
+      (outputs' : Value.t) {H_outputs : OfValueWith.C (u8) outputs'}
       :
     OfValue.C (Value.StructRecord "revm_bytecode::eof::types_section::TypesSection" [] [] [
       ("inputs", inputs');
-      ("outputs", outputs');
-      ("max_stack_size", max_stack_size')
+      ("max_stack_size", max_stack_size');
+      ("outputs", outputs')
     ]) :=
   {
-    value := Build_t H_inputs.(OfValueWith.value) H_outputs.(OfValueWith.value) H_max_stack_size.(OfValueWith.value);
+    value := Build_t
+      H_inputs.(OfValueWith.value)
+      H_outputs.(OfValueWith.value)
+      H_max_stack_size.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 

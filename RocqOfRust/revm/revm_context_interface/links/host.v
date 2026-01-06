@@ -28,9 +28,9 @@ Module SStoreResult.
     Φ := Ty.path "revm_context_interface::host::SStoreResult";
     φ x :=
       Value.StructRecord "revm_context_interface::host::SStoreResult" [] [] [
+        ("new_value", φ x.(new_value));
         ("original_value", φ x.(original_value));
-        ("present_value", φ x.(present_value));
-        ("new_value", φ x.(new_value))
+        ("present_value", φ x.(present_value))
       ];
   }.
 
@@ -41,32 +41,40 @@ Module SStoreResult.
   }.
 
   Global Instance IsOfValueWith
+      (new_value' : Value.t) {H_new_value : OfValueWith.C (aliases.U256.t) new_value'}
       (original_value' : Value.t) {H_original_value : OfValueWith.C (aliases.U256.t) original_value'}
       (present_value' : Value.t) {H_present_value : OfValueWith.C (aliases.U256.t) present_value'}
-      (new_value' : Value.t) {H_new_value : OfValueWith.C (aliases.U256.t) new_value'}
       :
     OfValueWith.C t (Value.StructRecord "revm_context_interface::host::SStoreResult" [] [] [
+      ("new_value", new_value');
       ("original_value", original_value');
-      ("present_value", present_value');
-      ("new_value", new_value')
+      ("present_value", present_value')
     ]) :=
   {
-    value := Build_t H_original_value.(OfValueWith.value) H_present_value.(OfValueWith.value) H_new_value.(OfValueWith.value);
+    value := Build_t
+      H_original_value.(OfValueWith.value)
+      H_present_value.(OfValueWith.value)
+      H_new_value.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 
   Global Instance IsOfValue
+      (new_value' : Value.t) {H_new_value : OfValueWith.C (aliases.U256.t) new_value'}
       (original_value' : Value.t) {H_original_value : OfValueWith.C (aliases.U256.t) original_value'}
       (present_value' : Value.t) {H_present_value : OfValueWith.C (aliases.U256.t) present_value'}
-      (new_value' : Value.t) {H_new_value : OfValueWith.C (aliases.U256.t) new_value'}
       :
     OfValue.C (Value.StructRecord "revm_context_interface::host::SStoreResult" [] [] [
+      ("new_value", new_value');
       ("original_value", original_value');
-      ("present_value", present_value');
-      ("new_value", new_value')
+      ("present_value", present_value')
     ]) :=
   {
-    value := Build_t H_original_value.(OfValueWith.value) H_present_value.(OfValueWith.value) H_new_value.(OfValueWith.value);
+    value := Build_t
+      H_original_value.(OfValueWith.value)
+      H_present_value.(OfValueWith.value)
+      H_new_value.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 
@@ -134,8 +142,8 @@ Module SelfDestructResult.
     φ x :=
       Value.StructRecord "revm_context_interface::host::SelfDestructResult" [] [] [
         ("had_value", φ x.(had_value));
-        ("target_exists", φ x.(target_exists));
-        ("previously_destroyed", φ x.(previously_destroyed))
+        ("previously_destroyed", φ x.(previously_destroyed));
+        ("target_exists", φ x.(target_exists))
       ];
   }.
 
@@ -147,31 +155,39 @@ Module SelfDestructResult.
 
   Global Instance IsOfValueWith
       (had_value' : Value.t) {H_had_value : OfValueWith.C (bool) had_value'}
-      (target_exists' : Value.t) {H_target_exists : OfValueWith.C (bool) target_exists'}
       (previously_destroyed' : Value.t) {H_previously_destroyed : OfValueWith.C (bool) previously_destroyed'}
+      (target_exists' : Value.t) {H_target_exists : OfValueWith.C (bool) target_exists'}
       :
     OfValueWith.C t (Value.StructRecord "revm_context_interface::host::SelfDestructResult" [] [] [
       ("had_value", had_value');
-      ("target_exists", target_exists');
-      ("previously_destroyed", previously_destroyed')
+      ("previously_destroyed", previously_destroyed');
+      ("target_exists", target_exists')
     ]) :=
   {
-    value := Build_t H_had_value.(OfValueWith.value) H_target_exists.(OfValueWith.value) H_previously_destroyed.(OfValueWith.value);
+    value := Build_t
+      H_had_value.(OfValueWith.value)
+      H_target_exists.(OfValueWith.value)
+      H_previously_destroyed.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 
   Global Instance IsOfValue
       (had_value' : Value.t) {H_had_value : OfValueWith.C (bool) had_value'}
-      (target_exists' : Value.t) {H_target_exists : OfValueWith.C (bool) target_exists'}
       (previously_destroyed' : Value.t) {H_previously_destroyed : OfValueWith.C (bool) previously_destroyed'}
+      (target_exists' : Value.t) {H_target_exists : OfValueWith.C (bool) target_exists'}
       :
     OfValue.C (Value.StructRecord "revm_context_interface::host::SelfDestructResult" [] [] [
       ("had_value", had_value');
-      ("target_exists", target_exists');
-      ("previously_destroyed", previously_destroyed')
+      ("previously_destroyed", previously_destroyed');
+      ("target_exists", target_exists')
     ]) :=
   {
-    value := Build_t H_had_value.(OfValueWith.value) H_target_exists.(OfValueWith.value) H_previously_destroyed.(OfValueWith.value);
+    value := Build_t
+      H_had_value.(OfValueWith.value)
+      H_target_exists.(OfValueWith.value)
+      H_previously_destroyed.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 

@@ -19,8 +19,8 @@ Module Eof.
     Φ := Ty.path "revm_bytecode::eof::Eof";
     φ x :=
       Value.StructRecord "revm_bytecode::eof::Eof" [] [] [
-        ("header", φ x.(header));
         ("body", φ x.(body));
+        ("header", φ x.(header));
         ("raw", φ x.(raw))
       ];
   }.
@@ -32,32 +32,40 @@ Module Eof.
   }.
 
   Global Instance IsOfValueWith
-      (header' : Value.t) {H_header : OfValueWith.C (EofHeader.t) header'}
       (body' : Value.t) {H_body : OfValueWith.C (EofBody.t) body'}
+      (header' : Value.t) {H_header : OfValueWith.C (EofHeader.t) header'}
       (raw' : Value.t) {H_raw : OfValueWith.C (Bytes.t) raw'}
       :
     OfValueWith.C t (Value.StructRecord "revm_bytecode::eof::Eof" [] [] [
-      ("header", header');
       ("body", body');
+      ("header", header');
       ("raw", raw')
     ]) :=
   {
-    value := Build_t H_header.(OfValueWith.value) H_body.(OfValueWith.value) H_raw.(OfValueWith.value);
+    value := Build_t
+      H_header.(OfValueWith.value)
+      H_body.(OfValueWith.value)
+      H_raw.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 
   Global Instance IsOfValue
-      (header' : Value.t) {H_header : OfValueWith.C (EofHeader.t) header'}
       (body' : Value.t) {H_body : OfValueWith.C (EofBody.t) body'}
+      (header' : Value.t) {H_header : OfValueWith.C (EofHeader.t) header'}
       (raw' : Value.t) {H_raw : OfValueWith.C (Bytes.t) raw'}
       :
     OfValue.C (Value.StructRecord "revm_bytecode::eof::Eof" [] [] [
-      ("header", header');
       ("body", body');
+      ("header", header');
       ("raw", raw')
     ]) :=
   {
-    value := Build_t H_header.(OfValueWith.value) H_body.(OfValueWith.value) H_raw.(OfValueWith.value);
+    value := Build_t
+      H_header.(OfValueWith.value)
+      H_body.(OfValueWith.value)
+      H_raw.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 

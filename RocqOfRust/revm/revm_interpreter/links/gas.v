@@ -48,7 +48,10 @@ Module MemoryGas.
       ("words_num", words_num')
     ]) :=
   {
-    value := Build_t H_expansion_cost.(OfValueWith.value) H_words_num.(OfValueWith.value);
+    value := Build_t
+      H_expansion_cost.(OfValueWith.value)
+      H_words_num.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 
@@ -61,7 +64,10 @@ Module MemoryGas.
       ("words_num", words_num')
     ]) :=
   {
-    value := Build_t H_expansion_cost.(OfValueWith.value) H_words_num.(OfValueWith.value);
+    value := Build_t
+      H_expansion_cost.(OfValueWith.value)
+      H_words_num.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 
@@ -297,7 +303,12 @@ Module Gas.
       ("remaining", remaining')
     ]) :=
   {
-    value := Build_t H_limit.(OfValueWith.value) H_memory.(OfValueWith.value) H_refunded.(OfValueWith.value) H_remaining.(OfValueWith.value);
+    value := Build_t
+      H_limit.(OfValueWith.value)
+      H_memory.(OfValueWith.value)
+      H_refunded.(OfValueWith.value)
+      H_remaining.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 
@@ -314,7 +325,12 @@ Module Gas.
       ("remaining", remaining')
     ]) :=
   {
-    value := Build_t H_limit.(OfValueWith.value) H_memory.(OfValueWith.value) H_refunded.(OfValueWith.value) H_remaining.(OfValueWith.value);
+    value := Build_t
+      H_limit.(OfValueWith.value)
+      H_memory.(OfValueWith.value)
+      H_refunded.(OfValueWith.value)
+      H_remaining.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 

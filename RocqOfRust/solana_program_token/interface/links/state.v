@@ -108,11 +108,11 @@ Module Mint.
     Φ := Ty.path "spl_token_interface::state::Mint";
     φ x :=
       Value.StructRecord "spl_token_interface::state::Mint" [] [] [
-        ("mint_authority", φ x.(mint_authority));
-        ("supply", φ x.(supply));
         ("decimals", φ x.(decimals));
+        ("freeze_authority", φ x.(freeze_authority));
         ("is_initialized", φ x.(is_initialized));
-        ("freeze_authority", φ x.(freeze_authority))
+        ("mint_authority", φ x.(mint_authority));
+        ("supply", φ x.(supply))
       ];
   }.
 
@@ -123,40 +123,52 @@ Module Mint.
   }.
 
   Global Instance IsOfValueWith
+      (decimals' : Value.t) {H_decimals : OfValueWith.C (u8) decimals'}
+      (freeze_authority' : Value.t) {H_freeze_authority : OfValueWith.C (COption.t Address.t) freeze_authority'}
+      (is_initialized' : Value.t) {H_is_initialized : OfValueWith.C (bool) is_initialized'}
       (mint_authority' : Value.t) {H_mint_authority : OfValueWith.C (COption.t Address.t) mint_authority'}
       (supply' : Value.t) {H_supply : OfValueWith.C (u64) supply'}
-      (decimals' : Value.t) {H_decimals : OfValueWith.C (u8) decimals'}
-      (is_initialized' : Value.t) {H_is_initialized : OfValueWith.C (bool) is_initialized'}
-      (freeze_authority' : Value.t) {H_freeze_authority : OfValueWith.C (COption.t Address.t) freeze_authority'}
       :
     OfValueWith.C t (Value.StructRecord "spl_token_interface::state::Mint" [] [] [
-      ("mint_authority", mint_authority');
-      ("supply", supply');
       ("decimals", decimals');
+      ("freeze_authority", freeze_authority');
       ("is_initialized", is_initialized');
-      ("freeze_authority", freeze_authority')
+      ("mint_authority", mint_authority');
+      ("supply", supply')
     ]) :=
   {
-    value := Build_t H_mint_authority.(OfValueWith.value) H_supply.(OfValueWith.value) H_decimals.(OfValueWith.value) H_is_initialized.(OfValueWith.value) H_freeze_authority.(OfValueWith.value);
+    value := Build_t
+      H_mint_authority.(OfValueWith.value)
+      H_supply.(OfValueWith.value)
+      H_decimals.(OfValueWith.value)
+      H_is_initialized.(OfValueWith.value)
+      H_freeze_authority.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 
   Global Instance IsOfValue
+      (decimals' : Value.t) {H_decimals : OfValueWith.C (u8) decimals'}
+      (freeze_authority' : Value.t) {H_freeze_authority : OfValueWith.C (COption.t Address.t) freeze_authority'}
+      (is_initialized' : Value.t) {H_is_initialized : OfValueWith.C (bool) is_initialized'}
       (mint_authority' : Value.t) {H_mint_authority : OfValueWith.C (COption.t Address.t) mint_authority'}
       (supply' : Value.t) {H_supply : OfValueWith.C (u64) supply'}
-      (decimals' : Value.t) {H_decimals : OfValueWith.C (u8) decimals'}
-      (is_initialized' : Value.t) {H_is_initialized : OfValueWith.C (bool) is_initialized'}
-      (freeze_authority' : Value.t) {H_freeze_authority : OfValueWith.C (COption.t Address.t) freeze_authority'}
       :
     OfValue.C (Value.StructRecord "spl_token_interface::state::Mint" [] [] [
-      ("mint_authority", mint_authority');
-      ("supply", supply');
       ("decimals", decimals');
+      ("freeze_authority", freeze_authority');
       ("is_initialized", is_initialized');
-      ("freeze_authority", freeze_authority')
+      ("mint_authority", mint_authority');
+      ("supply", supply')
     ]) :=
   {
-    value := Build_t H_mint_authority.(OfValueWith.value) H_supply.(OfValueWith.value) H_decimals.(OfValueWith.value) H_is_initialized.(OfValueWith.value) H_freeze_authority.(OfValueWith.value);
+    value := Build_t
+      H_mint_authority.(OfValueWith.value)
+      H_supply.(OfValueWith.value)
+      H_decimals.(OfValueWith.value)
+      H_is_initialized.(OfValueWith.value)
+      H_freeze_authority.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 
@@ -261,14 +273,14 @@ Module Account.
     Φ := Ty.path "spl_token_interface::state::Account";
     φ x :=
       Value.StructRecord "spl_token_interface::state::Account" [] [] [
+        ("amount", φ x.(amount));
+        ("close_authority", φ x.(close_authority));
+        ("delegate", φ x.(delegate));
+        ("delegated_amount", φ x.(delegated_amount));
+        ("is_native", φ x.(is_native));
         ("mint", φ x.(mint));
         ("owner", φ x.(owner));
-        ("amount", φ x.(amount));
-        ("delegate", φ x.(delegate));
-        ("state", φ x.(state));
-        ("is_native", φ x.(is_native));
-        ("delegated_amount", φ x.(delegated_amount));
-        ("close_authority", φ x.(close_authority))
+        ("state", φ x.(state))
       ];
   }.
 
@@ -279,52 +291,70 @@ Module Account.
   }.
 
   Global Instance IsOfValueWith
+      (amount' : Value.t) {H_amount : OfValueWith.C (u64) amount'}
+      (close_authority' : Value.t) {H_close_authority : OfValueWith.C (COption.t Address.t) close_authority'}
+      (delegate' : Value.t) {H_delegate : OfValueWith.C (COption.t Address.t) delegate'}
+      (delegated_amount' : Value.t) {H_delegated_amount : OfValueWith.C (u64) delegated_amount'}
+      (is_native' : Value.t) {H_is_native : OfValueWith.C (COption.t u64) is_native'}
       (mint' : Value.t) {H_mint : OfValueWith.C (Address.t) mint'}
       (owner' : Value.t) {H_owner : OfValueWith.C (Address.t) owner'}
-      (amount' : Value.t) {H_amount : OfValueWith.C (u64) amount'}
-      (delegate' : Value.t) {H_delegate : OfValueWith.C (COption.t Address.t) delegate'}
       (state' : Value.t) {H_state : OfValueWith.C (AccountState.t) state'}
-      (is_native' : Value.t) {H_is_native : OfValueWith.C (COption.t u64) is_native'}
-      (delegated_amount' : Value.t) {H_delegated_amount : OfValueWith.C (u64) delegated_amount'}
-      (close_authority' : Value.t) {H_close_authority : OfValueWith.C (COption.t Address.t) close_authority'}
       :
     OfValueWith.C t (Value.StructRecord "spl_token_interface::state::Account" [] [] [
+      ("amount", amount');
+      ("close_authority", close_authority');
+      ("delegate", delegate');
+      ("delegated_amount", delegated_amount');
+      ("is_native", is_native');
       ("mint", mint');
       ("owner", owner');
-      ("amount", amount');
-      ("delegate", delegate');
-      ("state", state');
-      ("is_native", is_native');
-      ("delegated_amount", delegated_amount');
-      ("close_authority", close_authority')
+      ("state", state')
     ]) :=
   {
-    value := Build_t H_mint.(OfValueWith.value) H_owner.(OfValueWith.value) H_amount.(OfValueWith.value) H_delegate.(OfValueWith.value) H_state.(OfValueWith.value) H_is_native.(OfValueWith.value) H_delegated_amount.(OfValueWith.value) H_close_authority.(OfValueWith.value);
+    value := Build_t
+      H_mint.(OfValueWith.value)
+      H_owner.(OfValueWith.value)
+      H_amount.(OfValueWith.value)
+      H_delegate.(OfValueWith.value)
+      H_state.(OfValueWith.value)
+      H_is_native.(OfValueWith.value)
+      H_delegated_amount.(OfValueWith.value)
+      H_close_authority.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 
   Global Instance IsOfValue
+      (amount' : Value.t) {H_amount : OfValueWith.C (u64) amount'}
+      (close_authority' : Value.t) {H_close_authority : OfValueWith.C (COption.t Address.t) close_authority'}
+      (delegate' : Value.t) {H_delegate : OfValueWith.C (COption.t Address.t) delegate'}
+      (delegated_amount' : Value.t) {H_delegated_amount : OfValueWith.C (u64) delegated_amount'}
+      (is_native' : Value.t) {H_is_native : OfValueWith.C (COption.t u64) is_native'}
       (mint' : Value.t) {H_mint : OfValueWith.C (Address.t) mint'}
       (owner' : Value.t) {H_owner : OfValueWith.C (Address.t) owner'}
-      (amount' : Value.t) {H_amount : OfValueWith.C (u64) amount'}
-      (delegate' : Value.t) {H_delegate : OfValueWith.C (COption.t Address.t) delegate'}
       (state' : Value.t) {H_state : OfValueWith.C (AccountState.t) state'}
-      (is_native' : Value.t) {H_is_native : OfValueWith.C (COption.t u64) is_native'}
-      (delegated_amount' : Value.t) {H_delegated_amount : OfValueWith.C (u64) delegated_amount'}
-      (close_authority' : Value.t) {H_close_authority : OfValueWith.C (COption.t Address.t) close_authority'}
       :
     OfValue.C (Value.StructRecord "spl_token_interface::state::Account" [] [] [
+      ("amount", amount');
+      ("close_authority", close_authority');
+      ("delegate", delegate');
+      ("delegated_amount", delegated_amount');
+      ("is_native", is_native');
       ("mint", mint');
       ("owner", owner');
-      ("amount", amount');
-      ("delegate", delegate');
-      ("state", state');
-      ("is_native", is_native');
-      ("delegated_amount", delegated_amount');
-      ("close_authority", close_authority')
+      ("state", state')
     ]) :=
   {
-    value := Build_t H_mint.(OfValueWith.value) H_owner.(OfValueWith.value) H_amount.(OfValueWith.value) H_delegate.(OfValueWith.value) H_state.(OfValueWith.value) H_is_native.(OfValueWith.value) H_delegated_amount.(OfValueWith.value) H_close_authority.(OfValueWith.value);
+    value := Build_t
+      H_mint.(OfValueWith.value)
+      H_owner.(OfValueWith.value)
+      H_amount.(OfValueWith.value)
+      H_delegate.(OfValueWith.value)
+      H_state.(OfValueWith.value)
+      H_is_native.(OfValueWith.value)
+      H_delegated_amount.(OfValueWith.value)
+      H_close_authority.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 

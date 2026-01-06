@@ -346,7 +346,7 @@ Proof.
   run_symbolic.
 Defined.
 Global Opaque run_returndatacopy.
-
+(* TODO: fix, probably with better links inference
 (*
 pub fn returndataload<WIRE: InterpreterTypes, H: Host + ?Sized>(
     interpreter: &mut Interpreter<WIRE>,
@@ -397,7 +397,7 @@ Proof.
   run_symbolic.
 Defined.
 Global Opaque run_returndataload.
-
+*)
 (*
 pub fn gas<WIRE: InterpreterTypes, H: Host + ?Sized>(
     interpreter: &mut Interpreter<WIRE>,

@@ -100,18 +100,24 @@ Module ProgramError.
   }.
 
   Global Instance IsOfValueWith_Custom
-      (n' : Value.t) {H_n : OfValueWith.C (u32) n'} :
+      (n' : Value.t) {H_n : OfValueWith.C (u32) n'}
+      :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::Custom" [] [] [n']) :=
   {
-    value := Custom H_n.(OfValueWith.value);
+    value := Custom
+      H_n.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 
   Global Instance IsOfValue_Custom
-      (n' : Value.t) {H_n : OfValueWith.C (u32) n'} :
+      (n' : Value.t) {H_n : OfValueWith.C (u32) n'}
+      :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::Custom" [] [] [n']) :=
   {
-    value := Custom H_n.(OfValueWith.value);
+    value := Custom
+      H_n.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 
@@ -487,6 +493,7 @@ Module ProgramError.
       constructor; intros; destruct a; try reflexivity; discriminate.
     Qed.
     Smpl Add apply get_Custom_0_is_valid : run_sub_pointer.
+
   End SubPointer.
 End ProgramError.
 

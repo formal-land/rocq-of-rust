@@ -58,7 +58,14 @@ Module EofBody.
       ("types_section", types_section')
     ]) :=
   {
-    value := Build_t H_code.(OfValueWith.value) H_code_section.(OfValueWith.value) H_container_section.(OfValueWith.value) H_data_section.(OfValueWith.value) H_is_data_filled.(OfValueWith.value) H_types_section.(OfValueWith.value);
+    value := Build_t
+      H_code.(OfValueWith.value)
+      H_code_section.(OfValueWith.value)
+      H_container_section.(OfValueWith.value)
+      H_data_section.(OfValueWith.value)
+      H_is_data_filled.(OfValueWith.value)
+      H_types_section.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 
@@ -79,7 +86,14 @@ Module EofBody.
       ("types_section", types_section')
     ]) :=
   {
-    value := Build_t H_code.(OfValueWith.value) H_code_section.(OfValueWith.value) H_container_section.(OfValueWith.value) H_data_section.(OfValueWith.value) H_is_data_filled.(OfValueWith.value) H_types_section.(OfValueWith.value);
+    value := Build_t
+      H_code.(OfValueWith.value)
+      H_code_section.(OfValueWith.value)
+      H_container_section.(OfValueWith.value)
+      H_data_section.(OfValueWith.value)
+      H_is_data_filled.(OfValueWith.value)
+      H_types_section.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 

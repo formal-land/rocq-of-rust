@@ -1,0 +1,22 @@
+{# Template for interpreter_InterpreterResult.v links file #}
+Require Import RocqOfRust.RocqOfRust.
+Require Import RocqOfRust.links.M.
+Require Import alloy_primitives.bytes.links.mod.
+Require Import revm.revm_interpreter.links.instruction_result.
+Require Import revm_interpreter.links.gas.
+
+(*
+pub struct InterpreterResult {
+    pub result: InstructionResult,
+    pub output: Bytes,
+    pub gas: Gas,
+}
+*)
+Module InterpreterResult.
+{# Fields in Rust struct declaration order (macros sort for StructRecord) #}
+{{ macros.record_body("revm_interpreter::interpreter::InterpreterResult", [
+  ("result", "InstructionResult.t"),
+  ("output", "Bytes.t"),
+  ("gas", "Gas.t"),
+]) }}
+End InterpreterResult.

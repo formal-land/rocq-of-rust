@@ -50,7 +50,9 @@ Module Stack.
       ("data", data')
     ]) :=
   {
-    value := Build_t H_data.(OfValueWith.value);
+    value := Build_t
+      H_data.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 
@@ -61,7 +63,9 @@ Module Stack.
       ("data", data')
     ]) :=
   {
-    value := Build_t H_data.(OfValueWith.value);
+    value := Build_t
+      H_data.(OfValueWith.value)
+;
     eq := ltac:(sauto lq: on);
   }.
 

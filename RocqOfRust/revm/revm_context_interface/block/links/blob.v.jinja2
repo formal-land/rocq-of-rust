@@ -1,0 +1,16 @@
+{# Template for BlobExcessGasAndPrice links file #}
+Require Import RocqOfRust.RocqOfRust.
+Require Import RocqOfRust.links.M.
+
+(*
+pub struct BlobExcessGasAndPrice {
+    pub excess_blob_gas: u64,
+    pub blob_gasprice: u128,
+}
+*)
+Module BlobExcessGasAndPrice.
+{{ macros.record_body("revm_context_interface::block::BlobExcessGasAndPrice", [
+  ("excess_blob_gas", "u64"),
+  ("blob_gasprice", "u128"),
+]) }}
+End BlobExcessGasAndPrice.

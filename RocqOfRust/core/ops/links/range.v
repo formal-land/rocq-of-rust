@@ -27,47 +27,39 @@ Module Range.
       ];
   }.
 
-  Definition of_ty (Idx_ty : Ty.t) :
-    OfTy.t Idx_ty ->
-    OfTy.t (Ty.apply (Ty.path "core::ops::range::Range") [] [ Idx_ty ]).
-  Proof.
-    intros [Idx].
-    eapply OfTy.Make with (A := t Idx).
-    subst.
-    reflexivity.
-  Defined.
-  Smpl Add eapply of_ty : of_ty.
+  Global Instance IsOfTy (Idx' : Ty.t) {H_Idx : OfTy.C Idx'} :
+    OfTy.C (Ty.apply (Ty.path "core::ops::range::Range") [] [ Idx' ]) :=
+  {
+    A := t H_Idx.(OfTy.A);
+    eq := ltac:(sauto lq: on);
+  }.
 
-  Lemma of_value_with {Idx : Set} `{Link Idx} Idx'
-      (start : Idx) start'
-      (end_ : Idx) end_' :
-    Idx' = Φ Idx ->
-    start' = φ start ->
-    end_' = φ end_ ->
-    Value.StructRecord "core::ops::range::Range" [] [Idx'] [
+  Global Instance IsOfValueWith
+      (Idx : Set) `{Link Idx}
+      (start' : Value.t) {H_start : OfValueWith.C (Idx) start'}
+      (end_' : Value.t) {H_end_ : OfValueWith.C (Idx) end_'} :
+    OfValueWith.C (t Idx) (Value.StructRecord "core::ops::range::Range" [] [Φ Idx] [
       ("end_", end_');
       ("start", start')
-    ] =
-    φ (Build_t Idx start end_).
-  Proof. now intros; subst. Qed.
-  Smpl Add eapply of_value_with : of_value.
+    ]) :=
+  {
+    value := Build_t Idx H_start.(OfValueWith.value) H_end_.(OfValueWith.value);
+    eq := ltac:(sauto lq: on);
+  }.
 
-  Definition of_value Idx' start' end_'
-      (H_Idx : OfTy.t Idx')
-      (start end_ : OfTy.get_Set H_Idx) :
-    start' = φ start ->
-    end_' = φ end_ ->
-    OfValue.t (Value.StructRecord "core::ops::range::Range" [] [Idx'] [
+  Global Instance IsOfValue
+      (Idx' : Ty.t) {H_Idx : OfTy.C Idx'}
+      (start' : Value.t) {H_start : OfValueWith.C H_Idx.(OfTy.A) start'}
+      (end_' : Value.t) {H_end_ : OfValueWith.C H_Idx.(OfTy.A) end_'} :
+    OfValue.C (Value.StructRecord "core::ops::range::Range" [] [Idx'] [
       ("end_", end_');
       ("start", start')
-    ]).
-  Proof.
-    intros.
-    destruct H_Idx as [Idx].
-    eapply OfValue.Make with (A := t Idx) (value := Build_t Idx start end_).
-    now subst.
-  Defined.
-  Smpl Add unshelve eapply of_value : of_value.
+    ]) :=
+  {
+    A := t H_Idx.(OfTy.A);
+    value := Build_t H_Idx.(OfTy.A) H_start.(OfValueWith.value) H_end_.(OfValueWith.value);
+    eq := ltac:(sauto lq: on);
+  }.
 End Range.
 
 Module Impl_Clone_for_Range.
