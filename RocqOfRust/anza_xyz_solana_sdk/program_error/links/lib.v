@@ -100,7 +100,7 @@ Module ProgramError.
   }.
 
   Global Instance IsOfValueWith_Custom
-      (n' : Value.t) {H_n : OfValueWith.C u32 n'} :
+      (n' : Value.t) {H_n : OfValueWith.C (u32) n'} :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::Custom" [] [] [n']) :=
   {
     value := Custom H_n.(OfValueWith.value);
@@ -108,7 +108,7 @@ Module ProgramError.
   }.
 
   Global Instance IsOfValue_Custom
-      (n' : Value.t) {H_n : OfValueWith.C u32 n'} :
+      (n' : Value.t) {H_n : OfValueWith.C (u32) n'} :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::Custom" [] [] [n']) :=
   {
     value := Custom H_n.(OfValueWith.value);

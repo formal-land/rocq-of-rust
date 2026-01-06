@@ -45,7 +45,7 @@
 {% set name, params = variant %}
 {% if params %}
   Global Instance IsOfValueWith_{{ name }}
-{% for p in params %}      ({{ p[0] }}' : Value.t) {H_{{ p[0] }} : OfValueWith.C {{ p[1] }} {{ p[0] }}'}{% endfor %} :
+{% for p in params %}      ({{ p[0] }}' : Value.t) {H_{{ p[0] }} : OfValueWith.C ({{ p[1] }}) {{ p[0] }}'}{% endfor %} :
     OfValueWith.C t (Value.StructTuple "{{ path }}::{{ name }}" [] [] [{% for p in params %}{{ p[0] }}'{{ "; " if not loop.last else "" }}{% endfor %}]) :=
   {
     value := {{ name }}{% for p in params %} H_{{ p[0] }}.(OfValueWith.value){% endfor %};
@@ -53,7 +53,7 @@
   }.
 
   Global Instance IsOfValue_{{ name }}
-{% for p in params %}      ({{ p[0] }}' : Value.t) {H_{{ p[0] }} : OfValueWith.C {{ p[1] }} {{ p[0] }}'}{% endfor %} :
+{% for p in params %}      ({{ p[0] }}' : Value.t) {H_{{ p[0] }} : OfValueWith.C ({{ p[1] }}) {{ p[0] }}'}{% endfor %} :
     OfValue.C (Value.StructTuple "{{ path }}::{{ name }}" [] [] [{% for p in params %}{{ p[0] }}'{{ "; " if not loop.last else "" }}{% endfor %}]) :=
   {
     value := {{ name }}{% for p in params %} H_{{ p[0] }}.(OfValueWith.value){% endfor %};
@@ -146,4 +146,105 @@
 
 {{ all_variant_instances(path, variants) -}}
 {{ subpointer_module(path, variants) -}}
+{% endmacro %}
+
+{# ============== RECORD/STRUCT MACROS ============== #}
+
+{# Generate Record field declarations #}
+{% macro record_fields(fields) %}
+{% for f in fields %}
+    {{ f[0] }} : {{ f[1] }};
+{% endfor %}
+{% endmacro %}
+
+{# Generate φ for record fields #}
+{% macro record_phi_fields(fields) %}
+{% for f in fields %}
+        ("{{ f[0] }}", φ x.({{ f[0] }})){{ ";" if not loop.last else "" }}
+{% endfor -%}
+{% endmacro %}
+
+{# Generate of_value instance parameters #}
+{% macro record_of_value_instance_params(fields) %}
+{% for f in fields %}
+      ({{ f[0] }}' : Value.t) {H_{{ f[0] }} : OfValueWith.C ({{ f[1] }}) {{ f[0] }}'}
+{% endfor %}
+{% endmacro %}
+
+{% macro record_value_fields(fields) %}
+{% for f in fields %}
+      ("{{ f[0] }}", {{ f[0] }}'){{ ";" if not loop.last else "" }}
+{% endfor -%}
+{% endmacro %}
+
+{% macro record_build_value(fields) %}
+Build_t{% for f in fields %} H_{{ f[0] }}.(OfValueWith.value){% endfor %}
+{% endmacro %}
+
+{# Generate SubPointer for a record field #}
+{% macro record_subpointer(path, field, is_last) %}
+    Definition get_{{ field[0] }} : SubPointer.Runner.t t
+      (Pointer.Index.StructRecord "{{ path }}" "{{ field[0] }}") :=
+    {|
+      SubPointer.Runner.projection x := Some x.({{ field[0] }});
+      SubPointer.Runner.injection x y := Some (x <| {{ field[0] }} := y |>);
+    |}.
+
+    Lemma get_{{ field[0] }}_is_valid :
+      SubPointer.Runner.Valid.t get_{{ field[0] }}.
+    Proof.
+      now constructor.
+    Qed.
+    Smpl Add apply get_{{ field[0] }}_is_valid : run_sub_pointer.
+{% if not is_last %}
+
+{% endif %}
+{%- endmacro %}
+
+{# Generate SubPointer module for record #}
+{% macro record_subpointer_module(path, fields) %}
+  Module SubPointer.
+{% for f in fields %}
+{{ record_subpointer(path, f, loop.last) -}}
+{% endfor %}
+  End SubPointer.
+{%- endmacro %}
+
+{# Generate complete record body (everything inside Module ... End) #}
+{% macro record_body(path, fields) %}
+  Record t : Set := {
+{{ record_fields(fields) }}  }.
+
+  Global Instance IsLink : Link t := {
+    Φ := Ty.path "{{ path }}";
+    φ x :=
+      Value.StructRecord "{{ path }}" [] [] [
+{{ record_phi_fields(fields) }}      ];
+  }.
+
+  Global Instance IsOfTy : OfTy.C (Ty.path "{{ path }}") :=
+  {
+    A := t;
+    eq := eq_refl;
+  }.
+
+  Global Instance IsOfValueWith
+{{ record_of_value_instance_params(fields) }}      :
+    OfValueWith.C t (Value.StructRecord "{{ path }}" [] [] [
+{{ record_value_fields(fields) }}    ]) :=
+  {
+    value := {{ record_build_value(fields) }};
+    eq := ltac:(sauto lq: on);
+  }.
+
+  Global Instance IsOfValue
+{{ record_of_value_instance_params(fields) }}      :
+    OfValue.C (Value.StructRecord "{{ path }}" [] [] [
+{{ record_value_fields(fields) }}    ]) :=
+  {
+    value := {{ record_build_value(fields) }};
+    eq := ltac:(sauto lq: on);
+  }.
+
+{{ record_subpointer_module(path, fields) -}}
 {% endmacro %}

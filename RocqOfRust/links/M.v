@@ -74,6 +74,11 @@ Module OfValueWith.
     eq : value' = φ value;
   }.
 
+  Global Instance IsIdentity {T : Set} `{Link T} (value : T) : C T (φ value) := {
+    value := value;
+    eq := eq_refl;
+  }.
+
   Lemma of_value_with {A : Set} `{Link A} {value' : Value.t} `{C A value'} :
     value' = φ value.
   Proof.
@@ -136,6 +141,12 @@ Module OfValue.
     H : Link A;
     value : A;
     eq : value' = φ value;
+  }.
+
+  Global Instance IsIdentity {T : Set} `{Link T} (value : T) : C (φ value) := {
+    A := T;
+    value := value;
+    eq := eq_refl;
   }.
 
   Definition to_inductive {value' : Value.t} `{C value'} : OfValue.t value' :=

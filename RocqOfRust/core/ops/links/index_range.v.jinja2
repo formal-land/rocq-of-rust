@@ -1,0 +1,17 @@
+{# Template for IndexRange links file #}
+Require Import RocqOfRust.RocqOfRust.
+Require Import RocqOfRust.links.M.
+Require Import core.ops.index_range.
+
+(*
+pub struct IndexRange {
+    start: usize,
+    end: usize,
+}
+*)
+Module IndexRange.
+{{ macros.record_body("core::ops::index_range::IndexRange", [
+  ("start", "usize"),
+  ("end_", "usize"),
+]) }}
+End IndexRange.

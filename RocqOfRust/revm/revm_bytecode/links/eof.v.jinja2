@@ -1,0 +1,57 @@
+{# Template for Eof and EofDecodeError links file #}
+Require Import RocqOfRust.RocqOfRust.
+Require Import RocqOfRust.links.M.
+Require Import alloc.links.alloc.
+Require Import core.links.result.
+Require Import alloy_primitives.bytes.links.mod.
+Require Import revm.revm_bytecode.eof.links.body_EofBody.
+Require Import revm.revm_bytecode.eof.links.header.
+Require Import revm.revm_bytecode.eof.
+
+Module Eof.
+{{ macros.record_body("revm_bytecode::eof::Eof", [
+  ("header", "EofHeader.t"),
+  ("body", "EofBody.t"),
+  ("raw", "Bytes.t"),
+]) }}
+End Eof.
+
+Module EofDecodeError.
+{{ macros.enum_body("revm_bytecode::eof::EofDecodeError", [
+  ("MissingInput", []),
+  ("MissingBodyWithoutData", []),
+  ("DanglingData", []),
+  ("InvalidCodeInfo", []),
+  ("InvalidCodeInfoSize", []),
+  ("InvalidEOFMagicNumber", []),
+  ("InvalidEOFVersion", []),
+  ("InvalidTypesKind", []),
+  ("InvalidCodeKind", []),
+  ("InvalidTerminalByte", []),
+  ("InvalidDataKind", []),
+  ("InvalidKindAfterCode", []),
+  ("MismatchCodeAndInfoSize", []),
+  ("NonSizes", []),
+  ("ShortInputForSizes", []),
+  ("ZeroSize", []),
+  ("TooManyCodeSections", []),
+  ("ZeroCodeSections", []),
+  ("TooManyContainerSections", []),
+  ("InvalidEOFSize", []),
+]) }}
+End EofDecodeError.
+
+Module Impl_Eof.
+  Definition Self : Set :=
+    Eof.t.
+
+  (* pub fn decode(raw: Bytes) -> Result<Self, EofDecodeError> *)
+  Instance run_decode (raw : Bytes.t) :
+    Run.Trait eof.Impl_revm_bytecode_eof_Eof.decode [] [] [φ raw] (Result.t Self EofDecodeError.t).
+  Proof.
+    constructor.
+    run_symbolic.
+  Admitted.
+  Global Opaque run_decode.
+End Impl_Eof.
+Export (hints) Impl_Eof.

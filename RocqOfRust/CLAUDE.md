@@ -2,6 +2,10 @@
 
 This document captures patterns and guidelines for creating "links" files in the RocqOfRust project. Links files provide formal Rocq specifications that connect Rust types to their Rocq models, enabling symbolic execution and proofs.
 
+## Log of tips (newest first)
+
+- Run `make jinja` to re-build all the Jinja generated files.
+
 ## Directory Structure
 
 Links files are placed in a `links/` subdirectory next to the generated `.v` files:
