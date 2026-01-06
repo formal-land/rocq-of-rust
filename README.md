@@ -60,6 +60,10 @@ Definition add_one (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M 
   end.
 ```
 
+## Application
+
+We are currently verifying [Revm](https://github.com/bluealloy/revm), a Rust implementation of the Ethereum virtual machine (EVM), to show it equivalent to a specification written in a purely functional style. This is an ongoing work in the folder [RocqOfRust/revm](RocqOfRust/revm) and funded by a grant from the [Ethereum Foundation](https://ethereum.foundation/).
+
 ## Workflow
 
 Here is the typical workflow of usage for `rocq-of-rust`:
