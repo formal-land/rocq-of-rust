@@ -45,4 +45,4 @@ Module Impl_Argument.
   Defined.
   Global Opaque run_none.
 End Impl_Argument.
-Export Impl_Argument.
+Export (hints) Impl_Argument.

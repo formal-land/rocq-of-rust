@@ -84,4 +84,4 @@ Module Impl_EOFCreateInputs.
   Admitted.
   Global Opaque run_new_opcode.
 End Impl_EOFCreateInputs.
-Export Impl_EOFCreateInputs.
+Export (hints) Impl_EOFCreateInputs.

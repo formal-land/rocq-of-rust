@@ -47,7 +47,7 @@ Module Impl_Bytes.
   Admitted.
   Global Opaque run_clear.
 End Impl_Bytes.
-Export Impl_Bytes.
+Export (hints) Impl_Bytes.
 
 (*
 impl Deref for Bytes {
@@ -60,4 +60,4 @@ Module Impl_Deref_for_Bytes.
   Instance run : Deref.Run Self (list u8).
   Admitted.
 End Impl_Deref_for_Bytes.
-Export Impl_Deref_for_Bytes.
+Export (hints) Impl_Deref_for_Bytes.

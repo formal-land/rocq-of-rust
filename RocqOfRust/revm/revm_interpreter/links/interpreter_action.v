@@ -310,4 +310,4 @@ Module Impl_InterpreterAction.
   Admitted.
   Global Opaque run_into_result_return.
 End Impl_InterpreterAction.
-Export Impl_InterpreterAction.
+Export (hints) Impl_InterpreterAction.

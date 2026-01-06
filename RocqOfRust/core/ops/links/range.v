@@ -77,7 +77,7 @@ Module Impl_Clone_for_Range.
   Instance run (Idx : Set) `{Link Idx} : Clone.Run (Self Idx).
   Admitted.
 End Impl_Clone_for_Range.
-Export Impl_Clone_for_Range.
+Export (hints) Impl_Clone_for_Range.
 
 Module Impl_Range.
   Definition Self (Idx : Set) : Set :=
@@ -91,7 +91,7 @@ Module Impl_Range.
   Admitted.
   Global Opaque run_is_empty.
 End Impl_Range.
-Export Impl_Range.
+Export (hints) Impl_Range.
 
 (*
   pub enum Bound<T> {
@@ -181,7 +181,7 @@ Module RangeBounds.
     is_empty : Run_is_empty Self T;
   }.
 End RangeBounds.
-Export RangeBounds.
+Export (hints) RangeBounds.
 
 (*
 pub struct RangeTo<Idx> {
@@ -232,4 +232,4 @@ Module RangeTo.
   Defined.
   Smpl Add unshelve eapply of_value : of_value.
 End RangeTo.
-Export RangeTo.
+Export (hints) RangeTo.

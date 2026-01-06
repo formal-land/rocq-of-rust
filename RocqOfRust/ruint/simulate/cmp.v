@@ -2,8 +2,12 @@ Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import RocqOfRust.simulate.M.
 Require Import ruint.links.cmp.
+Require Import ruint.links.lib.
 
 Module Impl_Uint.
+  Definition Self (BITS LIMBS : usize) : Set :=
+    Uint.t BITS LIMBS.
+
   Parameter is_zero :
     forall {BITS LIMBS : usize} (self : Self BITS LIMBS),
     bool.

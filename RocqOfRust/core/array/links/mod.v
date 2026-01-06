@@ -33,7 +33,7 @@ Module Impl_IndexMut_for_Array.
     IndexMut.Run (Self T I N) I IndexMut_Output.
   Admitted.
 End Impl_IndexMut_for_Array.
-Export Impl_IndexMut_for_Array.
+Export (hints) Impl_IndexMut_for_Array.
 
 (*
 pub fn from_fn<T, const N: usize, F>(cb: F) -> [T; N]
@@ -71,7 +71,7 @@ Module Impl_TryFrom_Ref_for_Ref_Array.
     TryFrom.Run (Self T N) ('& (list T)) Error.
   Admitted.
 End Impl_TryFrom_Ref_for_Ref_Array.
-Export Impl_TryFrom_Ref_for_Ref_Array.
+Export (hints) Impl_TryFrom_Ref_for_Ref_Array.
 
 (*
 impl<T, const N: usize> TryFrom<&[T]> for [T; N]
@@ -91,4 +91,4 @@ Module Impl_TryFrom_Ref_for_Array.
     TryFrom.Run (Self T N) ('& (list T)) Error.
   Admitted.
 End Impl_TryFrom_Ref_for_Array.
-Export Impl_TryFrom_Ref_for_Array.
+Export (hints) Impl_TryFrom_Ref_for_Array.

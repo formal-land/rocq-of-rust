@@ -30,7 +30,7 @@ Module Impl_Deref_for_Ref.
   Instance run (T : Set) `{Link T} : Deref.Run (Ref.t T) T.
   Admitted.
 End Impl_Deref_for_Ref.
-Export Impl_Deref_for_Ref.
+Export (hints) Impl_Deref_for_Ref.
 
 (* Approximation for core::cell::RefMut<T> *)
 Module RefMut.
@@ -60,11 +60,11 @@ Module Impl_Deref_for_RefMut.
   Instance run (T : Set) `{Link T} : Deref.Run (RefMut.t T) T.
   Admitted.
 End Impl_Deref_for_RefMut.
-Export Impl_Deref_for_RefMut.
+Export (hints) Impl_Deref_for_RefMut.
 
 (* impl<T> DerefMut for RefMut<'_, T> *)
 Module Impl_DerefMut_for_RefMut.
   Instance run (T : Set) `{Link T} : DerefMut.Run (RefMut.t T) T.
   Admitted.
 End Impl_DerefMut_for_RefMut.
-Export Impl_DerefMut_for_RefMut.
+Export (hints) Impl_DerefMut_for_RefMut.

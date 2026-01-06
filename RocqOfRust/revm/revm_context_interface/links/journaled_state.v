@@ -92,7 +92,7 @@ Module Impl_Deref_for_StateLoad.
   Instance run (T : Set) `{Link T} : Deref.Run (Self T) T.
   Admitted.
 End Impl_Deref_for_StateLoad.
-Export Impl_Deref_for_StateLoad.
+Export (hints) Impl_Deref_for_StateLoad.
 
 (*
 pub struct Eip7702CodeLoad<T> {
@@ -185,7 +185,7 @@ Module Impl_Eip7702CodeLoad.
   Admitted.
   Global Opaque run_into_components.
 End Impl_Eip7702CodeLoad.
-Export Impl_Eip7702CodeLoad.
+Export (hints) Impl_Eip7702CodeLoad.
 
 (*
 pub struct AccountLoad {

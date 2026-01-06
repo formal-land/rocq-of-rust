@@ -39,7 +39,7 @@ Module Impl_Uint.
   Admitted.
   Global Opaque run_wrapping_sub.
 End Impl_Uint.
-Export Impl_Uint.
+Export (hints) Impl_Uint.
 
 Module Impl_Add_for_Uint.
   Definition Self (BITS LIMBS : usize) : Set :=
@@ -49,7 +49,7 @@ Module Impl_Add_for_Uint.
     Add.Run (Self BITS LIMBS) (Self BITS LIMBS) (Self BITS LIMBS).
   Admitted.
 End Impl_Add_for_Uint.
-Export Impl_Add_for_Uint.
+Export (hints) Impl_Add_for_Uint.
 
 Module Impl_Sub_for_Uint.
   Definition Self (BITS LIMBS : usize) : Set :=
@@ -59,4 +59,4 @@ Module Impl_Sub_for_Uint.
     Sub.Run (Self BITS LIMBS) (Self BITS LIMBS) (Self BITS LIMBS).
   Admitted.
 End Impl_Sub_for_Uint.
-Export Impl_Sub_for_Uint.
+Export (hints) Impl_Sub_for_Uint.

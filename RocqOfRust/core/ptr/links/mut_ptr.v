@@ -263,4 +263,4 @@ Module Impl_pointer_mut_T.
   Admitted.
   Global Opaque run_write_bytes.
 End Impl_pointer_mut_T.
-Export Impl_pointer_mut_T.
+Export (hints) Impl_pointer_mut_T.

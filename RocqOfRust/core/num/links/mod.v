@@ -17,7 +17,7 @@ Module Impl_u16.
   Admitted.
   Global Opaque run_to_be_bytes.
 End Impl_u16.
-Export Impl_u16.
+Export (hints) Impl_u16.
 
 Module Impl_u64.
   Definition Self : Set := u64.
@@ -98,7 +98,7 @@ Module Impl_u64.
   Admitted.
   Global Opaque run_checked_sub.
 End Impl_u64.
-Export Impl_u64.
+Export (hints) Impl_u64.
 
 Module Impl_usize.
   Definition Self : Set := usize.
@@ -152,7 +152,7 @@ Module Impl_usize.
   Admitted.
   Global Opaque run_overflowing_sub.
 End Impl_usize.
-Export Impl_usize.
+Export (hints) Impl_usize.
 
 Module Impl_isize.
   Import Impl_usize.
@@ -199,4 +199,4 @@ Module Impl_isize.
   Admitted.
   Global Opaque run_overflowing_sub.
 End Impl_isize.
-Export Impl_isize.
+Export (hints) Impl_isize.

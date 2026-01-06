@@ -206,4 +206,4 @@ Module Impl_EofHeader.
   Admitted.
   Global Opaque run_decode.
 End Impl_EofHeader.
-Export Impl_EofHeader.
+Export (hints) Impl_EofHeader.

@@ -168,4 +168,4 @@ Module Impl_Eof.
   Admitted.
   Global Opaque run_decode.
 End Impl_Eof.
-Export Impl_Eof.
+Export (hints) Impl_Eof.

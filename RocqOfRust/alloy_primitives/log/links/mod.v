@@ -117,4 +117,4 @@ Module Impl_LogData.
   Admitted.
   Global Opaque run_new.
 End Impl_LogData.
-Export Impl_LogData.
+Export (hints) Impl_LogData.

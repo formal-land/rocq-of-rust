@@ -14,4 +14,4 @@ Module Impl_Slice.
   Admitted.
   Global Opaque run_to_vec.
 End Impl_Slice.
-Export Impl_Slice.
+Export (hints) Impl_Slice.

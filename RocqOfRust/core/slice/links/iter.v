@@ -108,7 +108,7 @@ Module Impl_ChunksExact.
   Admitted.
   Global Opaque run_remainder.
 End Impl_ChunksExact.
-Export Impl_ChunksExact.
+Export (hints) Impl_ChunksExact.
 
 (* impl<'a, T> Iterator for ChunksExact<'a, T> *)
 Module Impl_Iterator_for_ChunksExact.
@@ -167,7 +167,7 @@ Module Impl_RChunksExact.
   Admitted.
   Global Opaque run_remainder.
 End Impl_RChunksExact.
-Export Impl_RChunksExact.
+Export (hints) Impl_RChunksExact.
 
 (* impl<'a, T> Iterator for RChunksExact<'a, T> *)
 Module Impl_Iterator_for_RChunksExact.

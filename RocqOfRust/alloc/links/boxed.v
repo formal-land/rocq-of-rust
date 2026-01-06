@@ -43,4 +43,4 @@ Module Impl_Box.
   Admitted.
   Global Opaque run_new.
 End Impl_Box.
-Export Impl_Box.
+Export (hints) Impl_Box.

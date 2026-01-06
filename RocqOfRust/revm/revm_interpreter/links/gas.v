@@ -153,7 +153,7 @@ Module Impl_MemoryGas.
   Defined.
   Global Opaque run_record_new_len.
 End Impl_MemoryGas.
-Export Impl_MemoryGas.
+Export (hints) Impl_MemoryGas.
 
 (*
     pub enum MemoryExtensionResult {
@@ -617,4 +617,4 @@ Module Impl_Gas.
   Defined.
   Global Opaque run_record_memory_expansion.
 End Impl_Gas.
-Export Impl_Gas.
+Export (hints) Impl_Gas.

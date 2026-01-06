@@ -7,8 +7,7 @@ Require Import core.links.clone.
 Require Import core.links.default.
 Require Import core.links.result.
 Require Import core.links.option.
-Require Export revm.revm_bytecode.eof.links.body_EofBody.
-Require Export revm.revm_bytecode.eof.links.header.
+Require Import revm.revm_bytecode.eof.links.header.
 Require Import revm.revm_bytecode.eof.links.types_section.
 Require Import revm.revm_bytecode.links.eof.
 Require Import revm_bytecode.eof.body.
@@ -38,7 +37,7 @@ Module Impl_Clone_for_EofBody.
     Clone.clone := run_clone;
   }.
 End Impl_Clone_for_EofBody.
-Export Impl_Clone_for_EofBody.
+Export (hints) Impl_Clone_for_EofBody.
 
 Module Impl_Default_for_EofBody.
   Definition run_default : Default.Run_default EofBody.t.
@@ -62,7 +61,7 @@ Module Impl_Default_for_EofBody.
     Default.default := run_default;
   }.
 End Impl_Default_for_EofBody.
-Export Impl_Default_for_EofBody.
+Export (hints) Impl_Default_for_EofBody.
 
 Module Impl_EofBody.
   Definition Self : Set := EofBody.t.

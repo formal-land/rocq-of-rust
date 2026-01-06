@@ -48,7 +48,7 @@ Module ToUintError.
   Defined.
   Smpl Add eapply of_ty : of_ty.
 End ToUintError.
-Export ToUintError.
+Export (hints) ToUintError.
 
 (*
   pub trait UintTryFrom<T>: Sized {

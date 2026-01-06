@@ -395,4 +395,4 @@ Module Impl_From_TokenError_for_ProgramError.
   Instance run : From.Run ProgramError.t TokenError.t.
   Admitted.
 End Impl_From_TokenError_for_ProgramError.
-Export Impl_From_TokenError_for_ProgramError.
+Export (hints) Impl_From_TokenError_for_ProgramError.

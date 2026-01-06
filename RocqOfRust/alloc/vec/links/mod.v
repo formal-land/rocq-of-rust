@@ -141,7 +141,7 @@ Module Impl_Vec_T.
   Admitted.
   Global Opaque run_with_capacity.
 End Impl_Vec_T.
-Export Impl_Vec_T.
+Export (hints) Impl_Vec_T.
 
 Module Impl_Vec_T_A.
   Definition Self (T A : Set) `{Link T} `{Link A} : Set :=
@@ -181,7 +181,7 @@ Module Impl_Vec_T_A.
   Admitted.
   Global Opaque run_push.
 End Impl_Vec_T_A.
-Export Impl_Vec_T_A.
+Export (hints) Impl_Vec_T_A.
 
 Module Impl_Index_for_Vec_T_A.
   Definition Self := Vec.t.
@@ -190,4 +190,4 @@ Module Impl_Index_for_Vec_T_A.
     index.Index.Run (Self T A) I Output.
   Admitted.
 End Impl_Index_for_Vec_T_A.
-Export Impl_Index_for_Vec_T_A.
+Export (hints) Impl_Index_for_Vec_T_A.

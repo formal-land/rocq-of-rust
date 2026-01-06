@@ -389,11 +389,11 @@ Module Impl_Pack_for_Mint.
   Instance run : Pack.Run Mint.t.
   Admitted.
 End Impl_Pack_for_Mint.
-Export Impl_Pack_for_Mint.
+Export (hints) Impl_Pack_for_Mint.
 
 (* impl Pack for Account *)
 Module Impl_Pack_for_Account.
   Instance run : Pack.Run Account.t.
   Admitted.
 End Impl_Pack_for_Account.
-Export Impl_Pack_for_Account.
+Export (hints) Impl_Pack_for_Account.
