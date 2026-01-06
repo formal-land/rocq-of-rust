@@ -16,7 +16,6 @@ Require Import ruint.simulate.add.
 Require Import ruint.simulate.cmp.
 Require Import ruint.simulate.div.
 Require Import ruint.simulate.mul.
-Require Import ruint.simulate.rem.
 
 
 Lemma add_eq
