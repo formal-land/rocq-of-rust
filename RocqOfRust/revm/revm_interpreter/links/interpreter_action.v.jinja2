@@ -3,6 +3,7 @@ Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import alloc.links.alloc.
 Require Import alloc.links.boxed.
+Require Import core.links.option.
 Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_interpreter.interpreter_action.links.create_inputs.
 Require Import revm.revm_interpreter.interpreter_action.links.eof_create_inputs.
@@ -24,6 +25,7 @@ Module FrameInput.
   ("EOFCreate", [("inputs", "(Box.t EOFCreateInputs.t Global.t)")]),
 ]) }}
 End FrameInput.
+Export (hints) FrameInput.
 
 (*
 pub enum InterpreterAction {
@@ -39,6 +41,7 @@ Module InterpreterAction.
   ("None_", [], "None"),
 ]) }}
 End InterpreterAction.
+Export (hints) InterpreterAction.
 
 (* impl InterpreterAction { *)
 Module Impl_InterpreterAction.

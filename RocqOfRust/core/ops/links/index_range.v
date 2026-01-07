@@ -15,7 +15,7 @@ Module IndexRange.
     end_ : usize;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "core::ops::index_range::IndexRange";
     φ x :=
       Value.StructRecord "core::ops::index_range::IndexRange" [] [] [
@@ -24,13 +24,13 @@ Module IndexRange.
       ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "core::ops::index_range::IndexRange") :=
+  Instance IsOfTy : OfTy.C (Ty.path "core::ops::index_range::IndexRange") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (end_' : Value.t) {H_end_ : OfValueWith.C (usize) end_'}
       (start' : Value.t) {H_start : OfValueWith.C (usize) start'}
       :
@@ -46,7 +46,7 @@ Module IndexRange.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (end_' : Value.t) {H_end_ : OfValueWith.C (usize) end_'}
       (start' : Value.t) {H_start : OfValueWith.C (usize) start'}
       :
@@ -92,3 +92,4 @@ Module IndexRange.
     Smpl Add apply get_end__is_valid : run_sub_pointer.
   End SubPointer.
 End IndexRange.
+Export (hints) IndexRange.

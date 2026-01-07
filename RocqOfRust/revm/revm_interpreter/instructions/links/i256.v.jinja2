@@ -26,6 +26,7 @@ Module Sign.
   ("Plus", []),
 ]) }}
 End Sign.
+Export (hints) Sign.
 
 Module Impl_PartialEq_for_Sign.
   Instance run : PartialEq.Run Sign.t Sign.t.

@@ -1,6 +1,7 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import alloy_primitives.links.aliases.
+Require Import core.links.option.
 Require Import core.num.mod.
 Require Import core.num.links.mod.
 Require Import revm.revm_context_interface.links.host.
@@ -8,6 +9,7 @@ Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.gas.calc.
 Require Import revm_specification.links.hardfork.
+Require Import ruint.links.lib.
 
 (* pub fn sstore_refund(spec_id: SpecId, vals: &SStoreResult) -> i64 *)
 Instance run_sstore_refund

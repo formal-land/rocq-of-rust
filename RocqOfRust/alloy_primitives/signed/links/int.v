@@ -11,8 +11,9 @@ Module Signed.
 
   Parameter to_value : forall {BITS: usize} {LIMBS: usize}, t BITS LIMBS -> Value.t.
 
-  Global Instance IsLink (BITS: usize) (LIMBS: usize): Link (t BITS LIMBS) := {
+  Instance IsLink (BITS: usize) (LIMBS: usize): Link (t BITS LIMBS) := {
     Φ := Ty.apply (Ty.path "alloy_primitives::signed::int::Signed") [ φ BITS; φ LIMBS ] [];
     φ := to_value;
   }.
 End Signed.
+Export (hints) Signed.

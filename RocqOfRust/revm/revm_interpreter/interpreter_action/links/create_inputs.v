@@ -5,6 +5,7 @@ Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import revm_context_interface.links.cfg.
+Require Import ruint.links.lib.
 
 (*
   pub struct CreateInputs {
@@ -24,7 +25,7 @@ Module CreateInputs.
     gas_limit : u64;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::interpreter_action::create_inputs::CreateInputs";
     φ x :=
       Value.StructRecord "revm_interpreter::interpreter_action::create_inputs::CreateInputs" [] [] [
@@ -36,13 +37,13 @@ Module CreateInputs.
       ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter_action::create_inputs::CreateInputs") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter_action::create_inputs::CreateInputs") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (caller' : Value.t) {H_caller : OfValueWith.C (Address.t) caller'}
       (gas_limit' : Value.t) {H_gas_limit : OfValueWith.C (u64) gas_limit'}
       (init_code' : Value.t) {H_init_code : OfValueWith.C (Bytes.t) init_code'}
@@ -67,7 +68,7 @@ Module CreateInputs.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (caller' : Value.t) {H_caller : OfValueWith.C (Address.t) caller'}
       (gas_limit' : Value.t) {H_gas_limit : OfValueWith.C (u64) gas_limit'}
       (init_code' : Value.t) {H_init_code : OfValueWith.C (Bytes.t) init_code'}
@@ -164,3 +165,4 @@ Module CreateInputs.
     Smpl Add apply get_gas_limit_is_valid : run_sub_pointer.
   End SubPointer.
 End CreateInputs.
+Export (hints) CreateInputs.

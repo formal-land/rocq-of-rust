@@ -11,7 +11,7 @@ Module Result.
   | Err : E -> t.
   Arguments t : clear implicits.
 
-  Global Instance IsLink (T E : Set) `{Link T} `{Link E} : Link (t T E) := {
+  Instance IsLink (T E : Set) `{Link T} `{Link E} : Link (t T E) := {
     Φ := Ty.apply (Ty.path "core::result::Result") [] [Φ T; Φ E];
     φ x :=
       match x with
@@ -120,6 +120,7 @@ Module Result.
     Smpl Add apply get_Err_0_is_valid : run_sub_pointer.
   End SubPointer.
 End Result.
+Export (hints) Result.
 
 (* impl<T, E, F: From<E>> FromResidual<Result<Infallible, E>> for Result<T, F> *)
 (* Simplified: impl<T, E> FromResidual<Result<Infallible, E>> for Result<T, E> *)
@@ -127,10 +128,11 @@ Module Impl_FromResidual_for_Result.
   Definition Self (T E : Set) : Set := Result.t T E.
   Definition R (E : Set) : Set := Result.t Infallible.t E.
 
-  Global Instance run (T E : Set) `{Link T} `{Link E} :
+  Instance run (T E : Set) `{Link T} `{Link E} :
     FromResidual.Run (Self T E) (R E).
   Admitted.
 End Impl_FromResidual_for_Result.
+Export (hints) Impl_FromResidual_for_Result.
 
 (* impl<T, E> Try for Result<T, E> *)
 Module Impl_Try_for_Result.
@@ -145,16 +147,17 @@ Module Impl_Try_for_Result.
     Try.Types.Residual := Result.t Infallible.t E;
   |}.
 
-  Global Instance types_AreLinks (T E : Set) `{Link T} `{Link E} :
+  Instance types_AreLinks (T E : Set) `{Link T} `{Link E} :
     Try.Types.AreLinks (types T E).
   Proof.
     constructor; exact _.
   Defined.
 
-  Global Instance run (T E : Set) `{Link T} `{Link E} :
+Instance run (T E : Set) `{Link T} `{Link E} :
     Try.Run (Self T E) (types T E).
   Admitted.
 End Impl_Try_for_Result.
+Export (hints) Impl_Try_for_Result.
 
 Module Impl_Result_T_E.
   Definition Self (T E : Set) : Set :=

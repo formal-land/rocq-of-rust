@@ -4,6 +4,7 @@ Require Import RocqOfRust.links.M.
 Require Import alloy_primitives.links.aliases.
 Require Import core.convert.links.mod.
 Require Import revm.revm_specification.links.hardfork.
+Require Import ruint.links.lib.
 
 (*
 pub enum CreateScheme {
@@ -19,7 +20,7 @@ Module CreateScheme.
   | Create2 (salt : aliases.U256.t)
   .
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_context_interface::cfg::CreateScheme";
     φ x :=
       match x with
@@ -32,27 +33,27 @@ Module CreateScheme.
       end
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_context_interface::cfg::CreateScheme") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_context_interface::cfg::CreateScheme") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Create :
+  Instance IsOfValueWith_Create :
     OfValueWith.C t (Value.StructTuple "revm_context_interface::cfg::CreateScheme::Create" [] [] []) :=
   {
     value := Create;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Create :
+  Instance IsOfValue_Create :
     OfValue.C (Value.StructTuple "revm_context_interface::cfg::CreateScheme::Create" [] [] []) :=
   {
     value := Create;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Create2
+  Instance IsOfValueWith_Create2
       (salt' : Value.t) {H_salt : OfValueWith.C (aliases.U256.t) salt'}
       :
     OfValueWith.C t (Value.StructRecord "revm_context_interface::cfg::CreateScheme::Create2" [] [] [
@@ -65,7 +66,7 @@ Module CreateScheme.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue_Create2
+  Instance IsOfValue_Create2
       (salt' : Value.t) {H_salt : OfValueWith.C (aliases.U256.t) salt'}
       :
     OfValue.C (Value.StructRecord "revm_context_interface::cfg::CreateScheme::Create2" [] [] [
@@ -103,6 +104,7 @@ Module CreateScheme.
 
   End SubPointer.
 End CreateScheme.
+Export (hints) CreateScheme.
 
 (*
 #[auto_impl(&, &mut, Box, Arc)]
@@ -230,10 +232,10 @@ Module CfgGetter.
       H_Spec : Link types.(Spec);
     }.
 
-    Global Instance IsLinkCfg (types : t) (H : AreLinks types) : Link types.(Cfg) :=
+    Instance IsLinkCfg (types : t) (H : AreLinks types) : Link types.(Cfg) :=
       H.(H_Cfg _).
 
-    Global Instance IsLinkSpec (types : t) (H : AreLinks types) : Link types.(Spec) :=
+    Instance IsLinkSpec (types : t) (H : AreLinks types) : Link types.(Spec) :=
       H.(H_Spec _).
 
     Definition to_Cfg_types (types : t) : Cfg.Types.t :=
@@ -241,12 +243,13 @@ Module CfgGetter.
         Cfg.Types.Spec := types.(Spec);
       |}.
 
-    Global Instance AreLinks_to_Cfg_types (types : t) (H : AreLinks types) :
+    Instance AreLinks_to_Cfg_types (types : t) (H : AreLinks types) :
       Cfg.Types.AreLinks (to_Cfg_types types) :=
       {|
         Cfg.Types.H_Spec := _;
       |}.
   End Types.
+  Export (hints) Types.
 
   Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
     ("revm_context_interface::cfg::CfgGetter", [], [], Φ Self).
@@ -267,3 +270,4 @@ Module CfgGetter.
     cfg : Run_cfg Self types;
   }.
 End CfgGetter.
+Export (hints) CfgGetter.

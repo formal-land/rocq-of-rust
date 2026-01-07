@@ -16,7 +16,7 @@ Module Ordering.
   | Greater
   .
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "core::cmp::Ordering";
     φ x :=
       match x with
@@ -29,48 +29,48 @@ Module Ordering.
       end
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "core::cmp::Ordering") :=
+  Instance IsOfTy : OfTy.C (Ty.path "core::cmp::Ordering") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Less :
+  Instance IsOfValueWith_Less :
     OfValueWith.C t (Value.StructTuple "core::cmp::Ordering::Less" [] [] []) :=
   {
     value := Less;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Less :
+  Instance IsOfValue_Less :
     OfValue.C (Value.StructTuple "core::cmp::Ordering::Less" [] [] []) :=
   {
     value := Less;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Equal :
+  Instance IsOfValueWith_Equal :
     OfValueWith.C t (Value.StructTuple "core::cmp::Ordering::Equal" [] [] []) :=
   {
     value := Equal;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Equal :
+  Instance IsOfValue_Equal :
     OfValue.C (Value.StructTuple "core::cmp::Ordering::Equal" [] [] []) :=
   {
     value := Equal;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Greater :
+  Instance IsOfValueWith_Greater :
     OfValueWith.C t (Value.StructTuple "core::cmp::Ordering::Greater" [] [] []) :=
   {
     value := Greater;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Greater :
+  Instance IsOfValue_Greater :
     OfValue.C (Value.StructTuple "core::cmp::Ordering::Greater" [] [] []) :=
   {
     value := Greater;
@@ -80,3 +80,4 @@ Module Ordering.
   Module SubPointer.
   End SubPointer.
 End Ordering.
+Export (hints) Ordering.

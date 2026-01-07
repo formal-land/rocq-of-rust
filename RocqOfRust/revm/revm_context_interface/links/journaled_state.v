@@ -17,7 +17,7 @@ Module StateLoad.
   }.
   Arguments t : clear implicits.
 
-  Global Instance IsLink {T : Set} `{Link T} : Link (t T) := {
+  Instance IsLink {T : Set} `{Link T} : Link (t T) := {
     Φ := Ty.apply (Ty.path "revm_context_interface::journaled_state::StateLoad") [] [Φ T];
     φ x :=
       Value.StructRecord "revm_context_interface::journaled_state::StateLoad" [] [] [
@@ -80,6 +80,7 @@ Module StateLoad.
     Smpl Add apply get_is_cold_is_valid : run_sub_pointer.
   End SubPointer.
 End StateLoad.
+Export (hints) StateLoad.
 
 (*
 impl<T> Deref for StateLoad<T> {
@@ -107,11 +108,11 @@ Module Eip7702CodeLoad.
   }.
   Arguments t : clear implicits.
 
-  Global Instance IsLink {T : Set} `{Link T} : Link (t T) :=
+  Instance IsLink {T : Set} `{Link T} : Link (t T) :=
   {
     Φ := Ty.apply (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad") [] [Φ T];
     φ x :=
-      Value.StructRecord "revm_context_interface::journaled_state::Eip7702CodeLoad" [] [] [
+      Value.StructRecord "revm_context_interface::journaled_state::Eip7702CodeLoad" [] [Φ T] [
         ("state_load", φ x.(state_load));
         ("is_delegate_account_cold", φ x.(is_delegate_account_cold))
       ];
@@ -127,10 +128,13 @@ Module Eip7702CodeLoad.
   Defined.
   Smpl Add apply of_ty : of_ty.
 
-  Lemma of_value_with state_load state_load' is_delegate_account_cold is_delegate_account_cold' :
+  Lemma of_value_with
+      {T : Set} `{Link T}
+      (state_load : StateLoad.t T) state_load'
+      (is_delegate_account_cold : option bool) is_delegate_account_cold' :
     state_load' = φ state_load ->
     is_delegate_account_cold' = φ is_delegate_account_cold ->
-    Value.StructRecord "revm_context_interface::journaled_state::Eip7702CodeLoad" [] [] [
+    Value.StructRecord "revm_context_interface::journaled_state::Eip7702CodeLoad" [] [Φ T] [
       ("state_load", state_load');
       ("is_delegate_account_cold", is_delegate_account_cold')
     ] = φ (Build_t _ state_load is_delegate_account_cold).
@@ -169,6 +173,7 @@ Module Eip7702CodeLoad.
     Smpl Add apply get_is_delegate_account_cold_is_valid : run_sub_pointer.
   End SubPointer.
 End Eip7702CodeLoad.
+Export (hints) Eip7702CodeLoad.
 
 Module Impl_Eip7702CodeLoad.
   Definition Self (T : Set) `{Link T} : Set :=
@@ -199,7 +204,7 @@ Module AccountLoad.
     is_empty : bool;
   }.
 
-  Global Instance IsLink : Link t :=
+  Instance IsLink : Link t :=
   {
     Φ := Ty.path "revm_context_interface::journaled_state::AccountLoad";
     φ x :=
@@ -272,3 +277,4 @@ Module AccountLoad.
     Smpl Add apply get_is_empty_is_valid : run_sub_pointer.
   End SubPointer.
 End AccountLoad.
+Export (hints) AccountLoad.

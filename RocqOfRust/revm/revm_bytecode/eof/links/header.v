@@ -17,7 +17,7 @@ Module EofHeader.
     sum_container_sizes : usize;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_bytecode::eof::header::EofHeader";
     φ x :=
       Value.StructRecord "revm_bytecode::eof::header::EofHeader" [] [] [
@@ -30,13 +30,13 @@ Module EofHeader.
       ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_bytecode::eof::header::EofHeader") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_bytecode::eof::header::EofHeader") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (code_sizes' : Value.t) {H_code_sizes : OfValueWith.C (Vec.t u16 Global.t) code_sizes'}
       (container_sizes' : Value.t) {H_container_sizes : OfValueWith.C (Vec.t u16 Global.t) container_sizes'}
       (data_size' : Value.t) {H_data_size : OfValueWith.C (u16) data_size'}
@@ -64,7 +64,7 @@ Module EofHeader.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (code_sizes' : Value.t) {H_code_sizes : OfValueWith.C (Vec.t u16 Global.t) code_sizes'}
       (container_sizes' : Value.t) {H_container_sizes : OfValueWith.C (Vec.t u16 Global.t) container_sizes'}
       (data_size' : Value.t) {H_data_size : OfValueWith.C (u16) data_size'}
@@ -178,6 +178,7 @@ Module EofHeader.
     Smpl Add apply get_sum_container_sizes_is_valid : run_sub_pointer.
   End SubPointer.
 End EofHeader.
+Export (hints) EofHeader.
 
 Module Impl_EofHeader.
   Definition Self : Set := EofHeader.t.

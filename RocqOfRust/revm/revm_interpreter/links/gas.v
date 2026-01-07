@@ -24,7 +24,7 @@ Module MemoryGas.
     words_num : usize;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::gas::MemoryGas";
     φ x :=
       Value.StructRecord "revm_interpreter::gas::MemoryGas" [] [] [
@@ -33,13 +33,13 @@ Module MemoryGas.
       ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::gas::MemoryGas") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::gas::MemoryGas") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (expansion_cost' : Value.t) {H_expansion_cost : OfValueWith.C (u64) expansion_cost'}
       (words_num' : Value.t) {H_words_num : OfValueWith.C (usize) words_num'}
       :
@@ -55,7 +55,7 @@ Module MemoryGas.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (expansion_cost' : Value.t) {H_expansion_cost : OfValueWith.C (u64) expansion_cost'}
       (words_num' : Value.t) {H_words_num : OfValueWith.C (usize) words_num'}
       :
@@ -101,6 +101,7 @@ Module MemoryGas.
     Smpl Add apply get_words_num_is_valid : run_sub_pointer.
   End SubPointer.
 End MemoryGas.
+Export (hints) MemoryGas.
 
 Module Impl_Default_for_MemoryGas.
   Definition run_default : Default.Run_default MemoryGas.t.
@@ -121,6 +122,7 @@ Module Impl_Default_for_MemoryGas.
     Default.default := run_default;
   }.
 End Impl_Default_for_MemoryGas.
+Export (hints) Impl_Default_for_MemoryGas.
 
 Module Impl_MemoryGas.
   Definition Self : Set := MemoryGas.t.
@@ -185,7 +187,7 @@ Module MemoryExtensionResult.
   | OutOfGas
   .
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::gas::MemoryExtensionResult";
     φ x :=
       match x with
@@ -198,48 +200,48 @@ Module MemoryExtensionResult.
       end
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::gas::MemoryExtensionResult") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::gas::MemoryExtensionResult") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Extended :
+  Instance IsOfValueWith_Extended :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::Extended" [] [] []) :=
   {
     value := Extended;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Extended :
+  Instance IsOfValue_Extended :
     OfValue.C (Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::Extended" [] [] []) :=
   {
     value := Extended;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Same :
+  Instance IsOfValueWith_Same :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::Same" [] [] []) :=
   {
     value := Same;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Same :
+  Instance IsOfValue_Same :
     OfValue.C (Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::Same" [] [] []) :=
   {
     value := Same;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_OutOfGas :
+  Instance IsOfValueWith_OutOfGas :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::OutOfGas" [] [] []) :=
   {
     value := OutOfGas;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_OutOfGas :
+  Instance IsOfValue_OutOfGas :
     OfValue.C (Value.StructTuple "revm_interpreter::gas::MemoryExtensionResult::OutOfGas" [] [] []) :=
   {
     value := OutOfGas;
@@ -249,6 +251,7 @@ Module MemoryExtensionResult.
   Module SubPointer.
   End SubPointer.
 End MemoryExtensionResult.
+Export (hints) MemoryExtensionResult.
 
 (*
   /// Represents the state of gas during execution.
@@ -273,7 +276,7 @@ Module Gas.
     remaining : u64;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::gas::Gas";
     φ x :=
       Value.StructRecord "revm_interpreter::gas::Gas" [] [] [
@@ -284,13 +287,13 @@ Module Gas.
       ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::gas::Gas") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::gas::Gas") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (limit' : Value.t) {H_limit : OfValueWith.C (u64) limit'}
       (memory' : Value.t) {H_memory : OfValueWith.C (MemoryGas.t) memory'}
       (refunded' : Value.t) {H_refunded : OfValueWith.C (i64) refunded'}
@@ -312,7 +315,7 @@ Module Gas.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (limit' : Value.t) {H_limit : OfValueWith.C (u64) limit'}
       (memory' : Value.t) {H_memory : OfValueWith.C (MemoryGas.t) memory'}
       (refunded' : Value.t) {H_refunded : OfValueWith.C (i64) refunded'}
@@ -392,6 +395,7 @@ Module Gas.
     Smpl Add apply get_remaining_is_valid : run_sub_pointer.
   End SubPointer.
 End Gas.
+Export (hints) Gas.
 
 Module Impl_Clone_for_Gas.
   Definition run_clone : Clone.Run_clone Gas.t.
@@ -410,6 +414,7 @@ Module Impl_Clone_for_Gas.
     Clone.clone := run_clone;
   }.
 End Impl_Clone_for_Gas.
+Export (hints) Impl_Clone_for_Gas.
 
 Module Impl_Default_for_Gas.
   Definition run_default : Default.Run_default Gas.t.
@@ -431,6 +436,7 @@ Module Impl_Default_for_Gas.
     Default.default := run_default;
   }.
 End Impl_Default_for_Gas.
+Export (hints) Impl_Default_for_Gas.
 
 Module Impl_Gas.
   Definition Self : Set := Gas.t.

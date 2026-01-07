@@ -1,7 +1,9 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import alloy_primitives.bits.links.address.
+Require Import alloy_primitives.bits.links.fixed.
 Require Import alloy_primitives.links.aliases.
+Require Import ruint.links.lib.
 
 (*
 pub trait Eip4844Tx: Eip1559CommonTxFields {

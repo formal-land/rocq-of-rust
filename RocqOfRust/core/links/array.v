@@ -75,7 +75,7 @@ Record t {A : Set} {length : usize} : Set := {
 }.
 Arguments t : clear implicits.
 
-Global Instance IsLink (A : Set) (length : usize) `{Link A} : Link (t A length) := {
+Instance IsLink (A : Set) (length : usize) `{Link A} : Link (t A length) := {
   Φ :=
     Ty.apply (Ty.path "array") [ φ length ] [ Φ A ];
   φ x :=

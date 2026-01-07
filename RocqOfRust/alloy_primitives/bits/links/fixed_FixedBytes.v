@@ -9,7 +9,7 @@ Module FixedBytes.
   }.
   Arguments t : clear implicits.
 
-  Global Instance IsLink (N : usize) : Link (t N) := {
+  Instance IsLink (N : usize) : Link (t N) := {
     Φ := Ty.apply (Ty.path "alloy_primitives::bits::fixed::FixedBytes") [ φ N ] [];
     φ x := Value.StructTuple "alloy_primitives::bits::fixed::FixedBytes" [φ N] [] [φ x.(value)];
   }.
@@ -61,3 +61,4 @@ Module FixedBytes.
     Smpl Add apply get_0_is_valid : run_sub_pointer.
   End SubPointer.
 End FixedBytes.
+Export (hints) FixedBytes.

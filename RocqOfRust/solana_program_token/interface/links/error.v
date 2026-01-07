@@ -53,7 +53,7 @@ Module TokenError.
   | NonNativeNotSupported
   .
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "spl_token_interface::error::TokenError";
     φ x :=
       match x with
@@ -100,286 +100,286 @@ Module TokenError.
       end
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "spl_token_interface::error::TokenError") :=
+  Instance IsOfTy : OfTy.C (Ty.path "spl_token_interface::error::TokenError") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_NotRentExempt :
+  Instance IsOfValueWith_NotRentExempt :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::NotRentExempt" [] [] []) :=
   {
     value := NotRentExempt;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_NotRentExempt :
+  Instance IsOfValue_NotRentExempt :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::NotRentExempt" [] [] []) :=
   {
     value := NotRentExempt;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InsufficientFunds :
+  Instance IsOfValueWith_InsufficientFunds :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::InsufficientFunds" [] [] []) :=
   {
     value := InsufficientFunds;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InsufficientFunds :
+  Instance IsOfValue_InsufficientFunds :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::InsufficientFunds" [] [] []) :=
   {
     value := InsufficientFunds;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidMint :
+  Instance IsOfValueWith_InvalidMint :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidMint" [] [] []) :=
   {
     value := InvalidMint;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidMint :
+  Instance IsOfValue_InvalidMint :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::InvalidMint" [] [] []) :=
   {
     value := InvalidMint;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_MintMismatch :
+  Instance IsOfValueWith_MintMismatch :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::MintMismatch" [] [] []) :=
   {
     value := MintMismatch;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_MintMismatch :
+  Instance IsOfValue_MintMismatch :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::MintMismatch" [] [] []) :=
   {
     value := MintMismatch;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_OwnerMismatch :
+  Instance IsOfValueWith_OwnerMismatch :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::OwnerMismatch" [] [] []) :=
   {
     value := OwnerMismatch;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_OwnerMismatch :
+  Instance IsOfValue_OwnerMismatch :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::OwnerMismatch" [] [] []) :=
   {
     value := OwnerMismatch;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_FixedSupply :
+  Instance IsOfValueWith_FixedSupply :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::FixedSupply" [] [] []) :=
   {
     value := FixedSupply;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_FixedSupply :
+  Instance IsOfValue_FixedSupply :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::FixedSupply" [] [] []) :=
   {
     value := FixedSupply;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_AlreadyInUse :
+  Instance IsOfValueWith_AlreadyInUse :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::AlreadyInUse" [] [] []) :=
   {
     value := AlreadyInUse;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_AlreadyInUse :
+  Instance IsOfValue_AlreadyInUse :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::AlreadyInUse" [] [] []) :=
   {
     value := AlreadyInUse;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidNumberOfProvidedSigners :
+  Instance IsOfValueWith_InvalidNumberOfProvidedSigners :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidNumberOfProvidedSigners" [] [] []) :=
   {
     value := InvalidNumberOfProvidedSigners;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidNumberOfProvidedSigners :
+  Instance IsOfValue_InvalidNumberOfProvidedSigners :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::InvalidNumberOfProvidedSigners" [] [] []) :=
   {
     value := InvalidNumberOfProvidedSigners;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidNumberOfRequiredSigners :
+  Instance IsOfValueWith_InvalidNumberOfRequiredSigners :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidNumberOfRequiredSigners" [] [] []) :=
   {
     value := InvalidNumberOfRequiredSigners;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidNumberOfRequiredSigners :
+  Instance IsOfValue_InvalidNumberOfRequiredSigners :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::InvalidNumberOfRequiredSigners" [] [] []) :=
   {
     value := InvalidNumberOfRequiredSigners;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_UninitializedState :
+  Instance IsOfValueWith_UninitializedState :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::UninitializedState" [] [] []) :=
   {
     value := UninitializedState;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_UninitializedState :
+  Instance IsOfValue_UninitializedState :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::UninitializedState" [] [] []) :=
   {
     value := UninitializedState;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_NativeNotSupported :
+  Instance IsOfValueWith_NativeNotSupported :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::NativeNotSupported" [] [] []) :=
   {
     value := NativeNotSupported;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_NativeNotSupported :
+  Instance IsOfValue_NativeNotSupported :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::NativeNotSupported" [] [] []) :=
   {
     value := NativeNotSupported;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_NonNativeHasBalance :
+  Instance IsOfValueWith_NonNativeHasBalance :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::NonNativeHasBalance" [] [] []) :=
   {
     value := NonNativeHasBalance;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_NonNativeHasBalance :
+  Instance IsOfValue_NonNativeHasBalance :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::NonNativeHasBalance" [] [] []) :=
   {
     value := NonNativeHasBalance;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidInstruction :
+  Instance IsOfValueWith_InvalidInstruction :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidInstruction" [] [] []) :=
   {
     value := InvalidInstruction;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidInstruction :
+  Instance IsOfValue_InvalidInstruction :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::InvalidInstruction" [] [] []) :=
   {
     value := InvalidInstruction;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidState :
+  Instance IsOfValueWith_InvalidState :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::InvalidState" [] [] []) :=
   {
     value := InvalidState;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidState :
+  Instance IsOfValue_InvalidState :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::InvalidState" [] [] []) :=
   {
     value := InvalidState;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Overflow :
+  Instance IsOfValueWith_Overflow :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::Overflow" [] [] []) :=
   {
     value := Overflow;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Overflow :
+  Instance IsOfValue_Overflow :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::Overflow" [] [] []) :=
   {
     value := Overflow;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_AuthorityTypeNotSupported :
+  Instance IsOfValueWith_AuthorityTypeNotSupported :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::AuthorityTypeNotSupported" [] [] []) :=
   {
     value := AuthorityTypeNotSupported;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_AuthorityTypeNotSupported :
+  Instance IsOfValue_AuthorityTypeNotSupported :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::AuthorityTypeNotSupported" [] [] []) :=
   {
     value := AuthorityTypeNotSupported;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_MintCannotFreeze :
+  Instance IsOfValueWith_MintCannotFreeze :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::MintCannotFreeze" [] [] []) :=
   {
     value := MintCannotFreeze;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_MintCannotFreeze :
+  Instance IsOfValue_MintCannotFreeze :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::MintCannotFreeze" [] [] []) :=
   {
     value := MintCannotFreeze;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_AccountFrozen :
+  Instance IsOfValueWith_AccountFrozen :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::AccountFrozen" [] [] []) :=
   {
     value := AccountFrozen;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_AccountFrozen :
+  Instance IsOfValue_AccountFrozen :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::AccountFrozen" [] [] []) :=
   {
     value := AccountFrozen;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_MintDecimalsMismatch :
+  Instance IsOfValueWith_MintDecimalsMismatch :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::MintDecimalsMismatch" [] [] []) :=
   {
     value := MintDecimalsMismatch;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_MintDecimalsMismatch :
+  Instance IsOfValue_MintDecimalsMismatch :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::MintDecimalsMismatch" [] [] []) :=
   {
     value := MintDecimalsMismatch;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_NonNativeNotSupported :
+  Instance IsOfValueWith_NonNativeNotSupported :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::error::TokenError::NonNativeNotSupported" [] [] []) :=
   {
     value := NonNativeNotSupported;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_NonNativeNotSupported :
+  Instance IsOfValue_NonNativeNotSupported :
     OfValue.C (Value.StructTuple "spl_token_interface::error::TokenError::NonNativeNotSupported" [] [] []) :=
   {
     value := NonNativeNotSupported;
@@ -389,6 +389,7 @@ Module TokenError.
   Module SubPointer.
   End SubPointer.
 End TokenError.
+Export (hints) TokenError.
 
 (* impl From<TokenError> for ProgramError *)
 Module Impl_From_TokenError_for_ProgramError.

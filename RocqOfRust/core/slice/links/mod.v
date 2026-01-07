@@ -1,13 +1,14 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import links.M.
+Require Import core.links.option.
 Require Import core.slice.mod.
 Require Import core.slice.links.index.
 Require Import core.slice.links.iter.
-Require core.links.option.
 
 Module Impl_Slice.
-  Definition Self (T : Set) `{Link T} : Set := list T.
-  
+  Definition Self (T : Set) `{Link T} : Set :=
+    list T.
+
   (*
     pub fn get<I>(&self, index: I) -> Option<&I::Output>
     where

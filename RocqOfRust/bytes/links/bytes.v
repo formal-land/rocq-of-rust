@@ -16,7 +16,7 @@ Module Bytes.
 
   Parameter to_value : t -> Value.t.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "bytes::bytes::Bytes";
     φ x := to_value x;
   }.
@@ -25,6 +25,7 @@ Module Bytes.
   Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
   Smpl Add apply of_ty : of_ty.
 End Bytes.
+Export (hints) Bytes.
 
 Module Impl_Bytes.
   Definition Self : Set :=

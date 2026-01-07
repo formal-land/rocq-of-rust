@@ -29,6 +29,7 @@ Module Stack.
   ("data", "Vec.t aliases.U256.t Global.t"),
 ]) }}
 End Stack.
+Export (hints) Stack.
 
 Instance run_STACK_LIMIT :
   Run.Trait
@@ -251,3 +252,4 @@ Module Impl_Stack.
   Admitted.
   Global Opaque run_set.
 End Impl_Stack.
+Export (hints) Impl_Stack.

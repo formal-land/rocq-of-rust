@@ -9,6 +9,7 @@ Require Import core.links.borrow.
 Require Import core.ops.links.deref.
 Require Import core.ops.links.index.
 Require Import ruint.links.bytes.
+Require Import ruint.links.lib.
 
 Module Impl_FixedBytes.
   Definition Self (N : usize) : Set :=

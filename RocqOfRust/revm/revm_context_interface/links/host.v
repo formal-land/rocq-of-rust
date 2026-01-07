@@ -2,13 +2,16 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import alloy_primitives.bits.links.address.
+Require Import alloy_primitives.bits.links.fixed.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import alloy_primitives.log.links.mod.
+Require Import core.links.option.
 Require Import revm.revm_context_interface.links.cfg.
 Require Import revm.revm_context_interface.links.block.
 Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_context_interface.links.transaction.
+Require Import ruint.links.lib.
 
 (*
 pub struct SStoreResult {
@@ -24,7 +27,7 @@ Module SStoreResult.
     new_value : aliases.U256.t;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_context_interface::host::SStoreResult";
     φ x :=
       Value.StructRecord "revm_context_interface::host::SStoreResult" [] [] [
@@ -34,13 +37,13 @@ Module SStoreResult.
       ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_context_interface::host::SStoreResult") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_context_interface::host::SStoreResult") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (new_value' : Value.t) {H_new_value : OfValueWith.C (aliases.U256.t) new_value'}
       (original_value' : Value.t) {H_original_value : OfValueWith.C (aliases.U256.t) original_value'}
       (present_value' : Value.t) {H_present_value : OfValueWith.C (aliases.U256.t) present_value'}
@@ -59,7 +62,7 @@ Module SStoreResult.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (new_value' : Value.t) {H_new_value : OfValueWith.C (aliases.U256.t) new_value'}
       (original_value' : Value.t) {H_original_value : OfValueWith.C (aliases.U256.t) original_value'}
       (present_value' : Value.t) {H_present_value : OfValueWith.C (aliases.U256.t) present_value'}
@@ -122,6 +125,7 @@ Module SStoreResult.
     Smpl Add apply get_new_value_is_valid : run_sub_pointer.
   End SubPointer.
 End SStoreResult.
+Export (hints) SStoreResult.
 
 (*
 pub struct SelfDestructResult {
@@ -137,7 +141,7 @@ Module SelfDestructResult.
     previously_destroyed : bool;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_context_interface::host::SelfDestructResult";
     φ x :=
       Value.StructRecord "revm_context_interface::host::SelfDestructResult" [] [] [
@@ -147,13 +151,13 @@ Module SelfDestructResult.
       ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_context_interface::host::SelfDestructResult") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_context_interface::host::SelfDestructResult") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (had_value' : Value.t) {H_had_value : OfValueWith.C (bool) had_value'}
       (previously_destroyed' : Value.t) {H_previously_destroyed : OfValueWith.C (bool) previously_destroyed'}
       (target_exists' : Value.t) {H_target_exists : OfValueWith.C (bool) target_exists'}
@@ -172,7 +176,7 @@ Module SelfDestructResult.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (had_value' : Value.t) {H_had_value : OfValueWith.C (bool) had_value'}
       (previously_destroyed' : Value.t) {H_previously_destroyed : OfValueWith.C (bool) previously_destroyed'}
       (target_exists' : Value.t) {H_target_exists : OfValueWith.C (bool) target_exists'}
@@ -235,6 +239,7 @@ Module SelfDestructResult.
     Smpl Add apply get_previously_destroyed_is_valid : run_sub_pointer.
   End SubPointer.
 End SelfDestructResult.
+Export (hints) SelfDestructResult.
 
 (*
 pub trait Host: TransactionGetter + BlockGetter + CfgGetter {

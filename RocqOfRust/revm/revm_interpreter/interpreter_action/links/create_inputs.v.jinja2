@@ -5,6 +5,7 @@ Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import revm_context_interface.links.cfg.
+Require Import ruint.links.lib.
 
 (*
   pub struct CreateInputs {
@@ -25,3 +26,4 @@ Module CreateInputs.
   ("gas_limit", "u64"),
 ]) }}
 End CreateInputs.
+Export (hints) CreateInputs.

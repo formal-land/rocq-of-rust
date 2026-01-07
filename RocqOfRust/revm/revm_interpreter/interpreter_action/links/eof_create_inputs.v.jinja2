@@ -6,6 +6,7 @@ Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import revm.revm_bytecode.links.eof.
 Require Import revm.revm_interpreter.interpreter_action.eof_create_inputs.
+Require Import ruint.links.lib.
 
 (*
 pub enum EOFCreateKind {
@@ -23,6 +24,7 @@ Module EOFCreateKind.
   ("Opcode", {"initcode": "Eof.t", "input": "Bytes.t", "created_address": "Address.t"}),
 ]) }}
 End EOFCreateKind.
+Export (hints) EOFCreateKind.
 
 (*
 pub struct EOFCreateInputs {
@@ -40,6 +42,7 @@ Module EOFCreateInputs.
   ("kind", "EOFCreateKind.t"),
 ]) }}
 End EOFCreateInputs.
+Export (hints) EOFCreateInputs.
 
 Module Impl_EOFCreateInputs.
   Definition Self : Set := EOFCreateInputs.t.

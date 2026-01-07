@@ -49,7 +49,7 @@ Module AccountInfo.
     executable : bool;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "solana_account_info::AccountInfo";
     φ x :=
       Value.StructRecord "solana_account_info::AccountInfo" [] [] [
@@ -229,6 +229,7 @@ Module AccountInfo.
     Smpl Add apply get_executable_is_valid : run_sub_pointer.
   End SubPointer.
 End AccountInfo.
+Export (hints) AccountInfo.
 
 (*
   pub fn next_account_info<'a, 'b, I: Iterator<Item = &'a AccountInfo<'b>>>(

@@ -19,7 +19,7 @@ Module InterpreterResult.
     gas : Gas.t;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::interpreter::InterpreterResult";
     φ x :=
       Value.StructRecord "revm_interpreter::interpreter::InterpreterResult" [] [] [
@@ -29,13 +29,13 @@ Module InterpreterResult.
       ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter::InterpreterResult") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter::InterpreterResult") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (gas' : Value.t) {H_gas : OfValueWith.C (Gas.t) gas'}
       (output' : Value.t) {H_output : OfValueWith.C (Bytes.t) output'}
       (result' : Value.t) {H_result : OfValueWith.C (InstructionResult.t) result'}
@@ -54,7 +54,7 @@ Module InterpreterResult.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (gas' : Value.t) {H_gas : OfValueWith.C (Gas.t) gas'}
       (output' : Value.t) {H_output : OfValueWith.C (Bytes.t) output'}
       (result' : Value.t) {H_result : OfValueWith.C (InstructionResult.t) result'}
@@ -117,3 +117,4 @@ Module InterpreterResult.
     Smpl Add apply get_gas_is_valid : run_sub_pointer.
   End SubPointer.
 End InterpreterResult.
+Export (hints) InterpreterResult.

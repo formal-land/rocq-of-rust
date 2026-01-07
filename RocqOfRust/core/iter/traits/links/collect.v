@@ -26,11 +26,12 @@ Module IntoIterator.
       H_IntoIter : Link types.(IntoIter);
     }.
 
-    Global Instance IsLinkItem (types : t) (H : AreLinks types) : Link types.(Item) :=
+    Instance IsLinkItem (types : t) (H : AreLinks types) : Link types.(Item) :=
       H.(H_Item _).
-    Global Instance IsLinkIntoIter (types : t) (H : AreLinks types) : Link types.(IntoIter) :=
+    Instance IsLinkIntoIter (types : t) (H : AreLinks types) : Link types.(IntoIter) :=
       H.(H_IntoIter _).
   End Types.
+  Export (hints) Types.
 
   Definition Run_into_iter
       (Self : Set) `{Link Self}
@@ -57,6 +58,7 @@ Module IntoIterator.
     run_into_iter : Run_into_iter Self types;
   }.
 End IntoIterator.
+Export (hints) IntoIterator.
 
 (* impl<I: Iterator> IntoIterator for I *)
 Module Impl_IntoIterator_for_Iterator_I.
@@ -76,7 +78,7 @@ Module Impl_IntoIterator_for_Iterator_I.
     IntoIterator.Types.IntoIter := Self I;
   |}.
 
-  Global Instance types_AreLinks
+  Instance types_AreLinks
     (I : Set) `{Link I}
     (Item : Set) `{Link Item} :
     IntoIterator.Types.AreLinks (types I Item).
@@ -106,3 +108,4 @@ Module Impl_IntoIterator_for_Iterator_I.
   Proof.
   Admitted.
 End Impl_IntoIterator_for_Iterator_I.
+Export (hints) Impl_IntoIterator_for_Iterator_I.

@@ -11,7 +11,7 @@ Module TypesSection.
     max_stack_size : u16;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_bytecode::eof::types_section::TypesSection";
     φ x :=
       Value.StructRecord "revm_bytecode::eof::types_section::TypesSection" [] [] [
@@ -21,13 +21,13 @@ Module TypesSection.
       ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_bytecode::eof::types_section::TypesSection") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_bytecode::eof::types_section::TypesSection") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (inputs' : Value.t) {H_inputs : OfValueWith.C (u8) inputs'}
       (max_stack_size' : Value.t) {H_max_stack_size : OfValueWith.C (u16) max_stack_size'}
       (outputs' : Value.t) {H_outputs : OfValueWith.C (u8) outputs'}
@@ -46,7 +46,7 @@ Module TypesSection.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (inputs' : Value.t) {H_inputs : OfValueWith.C (u8) inputs'}
       (max_stack_size' : Value.t) {H_max_stack_size : OfValueWith.C (u16) max_stack_size'}
       (outputs' : Value.t) {H_outputs : OfValueWith.C (u8) outputs'}
@@ -109,3 +109,4 @@ Module TypesSection.
     Smpl Add apply get_max_stack_size_is_valid : run_sub_pointer.
   End SubPointer.
 End TypesSection.
+Export (hints) TypesSection.

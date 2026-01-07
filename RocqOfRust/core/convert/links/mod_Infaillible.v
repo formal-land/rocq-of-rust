@@ -6,7 +6,7 @@ Require Import core.convert.mod.
 Module Infallible.
   Inductive t : Set :=.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "core::convert::Infallible";
     φ x := match x with end;
   }.
@@ -18,3 +18,4 @@ Module Infallible.
   Defined.
   Smpl Add apply of_ty : of_ty.
 End Infallible.
+Export (hints) Infallible.

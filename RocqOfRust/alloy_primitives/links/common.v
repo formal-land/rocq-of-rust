@@ -14,7 +14,7 @@ Module TxKind.
   | Create
   | Call (address : Address.t).
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "alloy_primitives::common::TxKind";
     φ x :=
       match x with
@@ -27,3 +27,4 @@ Module TxKind.
   Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
   Smpl Add apply of_ty : of_ty.
 End TxKind.
+Export (hints) TxKind.

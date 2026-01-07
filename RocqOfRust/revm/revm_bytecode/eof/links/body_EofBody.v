@@ -22,7 +22,7 @@ Module EofBody.
     types_section : Vec.t TypesSection.t Global.t;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_bytecode::eof::body::EofBody";
     φ x :=
       Value.StructRecord "revm_bytecode::eof::body::EofBody" [] [] [
@@ -35,13 +35,13 @@ Module EofBody.
       ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_bytecode::eof::body::EofBody") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_bytecode::eof::body::EofBody") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (code' : Value.t) {H_code : OfValueWith.C (Bytes.t) code'}
       (code_section' : Value.t) {H_code_section : OfValueWith.C (Vec.t usize Global.t) code_section'}
       (container_section' : Value.t) {H_container_section : OfValueWith.C (Vec.t Bytes.t Global.t) container_section'}
@@ -69,7 +69,7 @@ Module EofBody.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (code' : Value.t) {H_code : OfValueWith.C (Bytes.t) code'}
       (code_section' : Value.t) {H_code_section : OfValueWith.C (Vec.t usize Global.t) code_section'}
       (container_section' : Value.t) {H_container_section : OfValueWith.C (Vec.t Bytes.t Global.t) container_section'}
@@ -183,3 +183,4 @@ Module EofBody.
     Smpl Add apply get_types_section_is_valid : run_sub_pointer.
   End SubPointer.
 End EofBody.
+Export (hints) EofBody.

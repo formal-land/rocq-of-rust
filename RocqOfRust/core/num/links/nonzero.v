@@ -9,7 +9,7 @@ Module NonZero.
   }.
   Arguments t : clear implicits.
 
-  Global Instance IsLink {T : Set} `{Link T} : Link (t T) := {
+  Instance IsLink {T : Set} `{Link T} : Link (t T) := {
     Φ := Ty.path "core::num::NonZero";
     φ x :=
       Value.StructTuple "core::num::NonZero" [] [Φ T] [
@@ -17,3 +17,4 @@ Module NonZero.
       ];
   }.
 End NonZero.
+Export (hints) NonZero.

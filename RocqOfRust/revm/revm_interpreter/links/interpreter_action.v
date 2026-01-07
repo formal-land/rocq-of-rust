@@ -3,6 +3,7 @@ Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import alloc.links.alloc.
 Require Import alloc.links.boxed.
+Require Import core.links.option.
 Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_interpreter.interpreter_action.links.create_inputs.
 Require Import revm.revm_interpreter.interpreter_action.links.eof_create_inputs.
@@ -24,7 +25,7 @@ Module FrameInput.
   | EOFCreate (inputs : (Box.t EOFCreateInputs.t Global.t))
   .
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::interpreter_action::FrameInput";
     φ x :=
       match x with
@@ -37,13 +38,13 @@ Module FrameInput.
       end
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter_action::FrameInput") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter_action::FrameInput") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Call
+  Instance IsOfValueWith_Call
       (inputs' : Value.t) {H_inputs : OfValueWith.C ((Box.t CallInputs.t Global.t)) inputs'}
       :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Call" [] [] [inputs']) :=
@@ -54,7 +55,7 @@ Module FrameInput.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue_Call
+  Instance IsOfValue_Call
       (inputs' : Value.t) {H_inputs : OfValueWith.C ((Box.t CallInputs.t Global.t)) inputs'}
       :
     OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Call" [] [] [inputs']) :=
@@ -65,7 +66,7 @@ Module FrameInput.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValueWith_Create
+  Instance IsOfValueWith_Create
       (inputs' : Value.t) {H_inputs : OfValueWith.C ((Box.t CreateInputs.t Global.t)) inputs'}
       :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Create" [] [] [inputs']) :=
@@ -76,7 +77,7 @@ Module FrameInput.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue_Create
+  Instance IsOfValue_Create
       (inputs' : Value.t) {H_inputs : OfValueWith.C ((Box.t CreateInputs.t Global.t)) inputs'}
       :
     OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Create" [] [] [inputs']) :=
@@ -87,7 +88,7 @@ Module FrameInput.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValueWith_EOFCreate
+  Instance IsOfValueWith_EOFCreate
       (inputs' : Value.t) {H_inputs : OfValueWith.C ((Box.t EOFCreateInputs.t Global.t)) inputs'}
       :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::EOFCreate" [] [] [inputs']) :=
@@ -98,7 +99,7 @@ Module FrameInput.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue_EOFCreate
+  Instance IsOfValue_EOFCreate
       (inputs' : Value.t) {H_inputs : OfValueWith.C ((Box.t EOFCreateInputs.t Global.t)) inputs'}
       :
     OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::EOFCreate" [] [] [inputs']) :=
@@ -178,6 +179,7 @@ Module FrameInput.
 
   End SubPointer.
 End FrameInput.
+Export (hints) FrameInput.
 
 (*
 pub enum InterpreterAction {
@@ -193,7 +195,7 @@ Module InterpreterAction.
   | None_
   .
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::interpreter_action::InterpreterAction";
     φ x :=
       match x with
@@ -208,13 +210,13 @@ Module InterpreterAction.
       end
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter_action::InterpreterAction") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter_action::InterpreterAction") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_NewFrame
+  Instance IsOfValueWith_NewFrame
       (frame' : Value.t) {H_frame : OfValueWith.C (FrameInput.t) frame'}
       :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::NewFrame" [] [] [frame']) :=
@@ -225,7 +227,7 @@ Module InterpreterAction.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue_NewFrame
+  Instance IsOfValue_NewFrame
       (frame' : Value.t) {H_frame : OfValueWith.C (FrameInput.t) frame'}
       :
     OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::NewFrame" [] [] [frame']) :=
@@ -236,7 +238,7 @@ Module InterpreterAction.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValueWith_Return
+  Instance IsOfValueWith_Return
       (result' : Value.t) {H_result : OfValueWith.C (InterpreterResult.t) result'}
       :
     OfValueWith.C t (Value.StructRecord "revm_interpreter::interpreter_action::InterpreterAction::Return" [] [] [
@@ -249,7 +251,7 @@ Module InterpreterAction.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue_Return
+  Instance IsOfValue_Return
       (result' : Value.t) {H_result : OfValueWith.C (InterpreterResult.t) result'}
       :
     OfValue.C (Value.StructRecord "revm_interpreter::interpreter_action::InterpreterAction::Return" [] [] [
@@ -262,14 +264,14 @@ Module InterpreterAction.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValueWith_None_ :
+  Instance IsOfValueWith_None_ :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::None" [] [] []) :=
   {
     value := None_;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_None_ :
+  Instance IsOfValue_None_ :
     OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::None" [] [] []) :=
   {
     value := None_;
@@ -323,6 +325,7 @@ Module InterpreterAction.
 
   End SubPointer.
 End InterpreterAction.
+Export (hints) InterpreterAction.
 
 (* impl InterpreterAction { *)
 Module Impl_InterpreterAction.

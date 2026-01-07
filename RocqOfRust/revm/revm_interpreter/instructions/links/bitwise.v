@@ -7,6 +7,7 @@ Require Import core.num.links.error.
 Require Import core.num.links.mod.
 Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.instructions.links.i256.

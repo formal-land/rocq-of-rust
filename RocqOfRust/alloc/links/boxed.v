@@ -11,7 +11,7 @@ Module Box.
 
   Parameter to_value : forall {T A : Set}, t T A -> Value.t.
 
-  Global Instance IsLink (T A : Set) `{Link T} `{Link A} : Link (t T A) := {
+  Instance IsLink (T A : Set) `{Link T} `{Link A} : Link (t T A) := {
     Φ :=
       Ty.apply (Ty.path "alloc::boxed::Box") [] [ Φ T; Φ A ];
     φ := to_value;
@@ -28,6 +28,7 @@ Module Box.
   Defined.
   Smpl Add eapply of_ty : of_ty.
 End Box.
+Export (hints) Box.
 
 Module Impl_Box.
   Definition Self (T : Set) : Set :=

@@ -34,7 +34,7 @@ Module ProgramError.
   | IncorrectAuthority
   .
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "solana_program_error::ProgramError";
     φ x :=
       match x with
@@ -93,13 +93,13 @@ Module ProgramError.
       end
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "solana_program_error::ProgramError") :=
+  Instance IsOfTy : OfTy.C (Ty.path "solana_program_error::ProgramError") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Custom
+  Instance IsOfValueWith_Custom
       (n' : Value.t) {H_n : OfValueWith.C (u32) n'}
       :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::Custom" [] [] [n']) :=
@@ -110,7 +110,7 @@ Module ProgramError.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue_Custom
+  Instance IsOfValue_Custom
       (n' : Value.t) {H_n : OfValueWith.C (u32) n'}
       :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::Custom" [] [] [n']) :=
@@ -121,350 +121,350 @@ Module ProgramError.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValueWith_InvalidArgument :
+  Instance IsOfValueWith_InvalidArgument :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::InvalidArgument" [] [] []) :=
   {
     value := InvalidArgument;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidArgument :
+  Instance IsOfValue_InvalidArgument :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::InvalidArgument" [] [] []) :=
   {
     value := InvalidArgument;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidInstructionData :
+  Instance IsOfValueWith_InvalidInstructionData :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::InvalidInstructionData" [] [] []) :=
   {
     value := InvalidInstructionData;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidInstructionData :
+  Instance IsOfValue_InvalidInstructionData :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::InvalidInstructionData" [] [] []) :=
   {
     value := InvalidInstructionData;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidAccountData :
+  Instance IsOfValueWith_InvalidAccountData :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::InvalidAccountData" [] [] []) :=
   {
     value := InvalidAccountData;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidAccountData :
+  Instance IsOfValue_InvalidAccountData :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::InvalidAccountData" [] [] []) :=
   {
     value := InvalidAccountData;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_AccountDataTooSmall :
+  Instance IsOfValueWith_AccountDataTooSmall :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::AccountDataTooSmall" [] [] []) :=
   {
     value := AccountDataTooSmall;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_AccountDataTooSmall :
+  Instance IsOfValue_AccountDataTooSmall :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::AccountDataTooSmall" [] [] []) :=
   {
     value := AccountDataTooSmall;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InsufficientFunds :
+  Instance IsOfValueWith_InsufficientFunds :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::InsufficientFunds" [] [] []) :=
   {
     value := InsufficientFunds;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InsufficientFunds :
+  Instance IsOfValue_InsufficientFunds :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::InsufficientFunds" [] [] []) :=
   {
     value := InsufficientFunds;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_IncorrectProgramId :
+  Instance IsOfValueWith_IncorrectProgramId :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::IncorrectProgramId" [] [] []) :=
   {
     value := IncorrectProgramId;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_IncorrectProgramId :
+  Instance IsOfValue_IncorrectProgramId :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::IncorrectProgramId" [] [] []) :=
   {
     value := IncorrectProgramId;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_MissingRequiredSignature :
+  Instance IsOfValueWith_MissingRequiredSignature :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::MissingRequiredSignature" [] [] []) :=
   {
     value := MissingRequiredSignature;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_MissingRequiredSignature :
+  Instance IsOfValue_MissingRequiredSignature :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::MissingRequiredSignature" [] [] []) :=
   {
     value := MissingRequiredSignature;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_AccountAlreadyInitialized :
+  Instance IsOfValueWith_AccountAlreadyInitialized :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::AccountAlreadyInitialized" [] [] []) :=
   {
     value := AccountAlreadyInitialized;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_AccountAlreadyInitialized :
+  Instance IsOfValue_AccountAlreadyInitialized :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::AccountAlreadyInitialized" [] [] []) :=
   {
     value := AccountAlreadyInitialized;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_UninitializedAccount :
+  Instance IsOfValueWith_UninitializedAccount :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::UninitializedAccount" [] [] []) :=
   {
     value := UninitializedAccount;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_UninitializedAccount :
+  Instance IsOfValue_UninitializedAccount :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::UninitializedAccount" [] [] []) :=
   {
     value := UninitializedAccount;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_NotEnoughAccountKeys :
+  Instance IsOfValueWith_NotEnoughAccountKeys :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::NotEnoughAccountKeys" [] [] []) :=
   {
     value := NotEnoughAccountKeys;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_NotEnoughAccountKeys :
+  Instance IsOfValue_NotEnoughAccountKeys :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::NotEnoughAccountKeys" [] [] []) :=
   {
     value := NotEnoughAccountKeys;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_AccountBorrowFailed :
+  Instance IsOfValueWith_AccountBorrowFailed :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::AccountBorrowFailed" [] [] []) :=
   {
     value := AccountBorrowFailed;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_AccountBorrowFailed :
+  Instance IsOfValue_AccountBorrowFailed :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::AccountBorrowFailed" [] [] []) :=
   {
     value := AccountBorrowFailed;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_MaxSeedLengthExceeded :
+  Instance IsOfValueWith_MaxSeedLengthExceeded :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::MaxSeedLengthExceeded" [] [] []) :=
   {
     value := MaxSeedLengthExceeded;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_MaxSeedLengthExceeded :
+  Instance IsOfValue_MaxSeedLengthExceeded :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::MaxSeedLengthExceeded" [] [] []) :=
   {
     value := MaxSeedLengthExceeded;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidSeeds :
+  Instance IsOfValueWith_InvalidSeeds :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::InvalidSeeds" [] [] []) :=
   {
     value := InvalidSeeds;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidSeeds :
+  Instance IsOfValue_InvalidSeeds :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::InvalidSeeds" [] [] []) :=
   {
     value := InvalidSeeds;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_BorshIoError :
+  Instance IsOfValueWith_BorshIoError :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::BorshIoError" [] [] []) :=
   {
     value := BorshIoError;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_BorshIoError :
+  Instance IsOfValue_BorshIoError :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::BorshIoError" [] [] []) :=
   {
     value := BorshIoError;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_AccountNotRentExempt :
+  Instance IsOfValueWith_AccountNotRentExempt :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::AccountNotRentExempt" [] [] []) :=
   {
     value := AccountNotRentExempt;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_AccountNotRentExempt :
+  Instance IsOfValue_AccountNotRentExempt :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::AccountNotRentExempt" [] [] []) :=
   {
     value := AccountNotRentExempt;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_UnsupportedSysvar :
+  Instance IsOfValueWith_UnsupportedSysvar :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::UnsupportedSysvar" [] [] []) :=
   {
     value := UnsupportedSysvar;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_UnsupportedSysvar :
+  Instance IsOfValue_UnsupportedSysvar :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::UnsupportedSysvar" [] [] []) :=
   {
     value := UnsupportedSysvar;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_IllegalOwner :
+  Instance IsOfValueWith_IllegalOwner :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::IllegalOwner" [] [] []) :=
   {
     value := IllegalOwner;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_IllegalOwner :
+  Instance IsOfValue_IllegalOwner :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::IllegalOwner" [] [] []) :=
   {
     value := IllegalOwner;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_MaxAccountsDataAllocationsExceeded :
+  Instance IsOfValueWith_MaxAccountsDataAllocationsExceeded :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::MaxAccountsDataAllocationsExceeded" [] [] []) :=
   {
     value := MaxAccountsDataAllocationsExceeded;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_MaxAccountsDataAllocationsExceeded :
+  Instance IsOfValue_MaxAccountsDataAllocationsExceeded :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::MaxAccountsDataAllocationsExceeded" [] [] []) :=
   {
     value := MaxAccountsDataAllocationsExceeded;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidRealloc :
+  Instance IsOfValueWith_InvalidRealloc :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::InvalidRealloc" [] [] []) :=
   {
     value := InvalidRealloc;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidRealloc :
+  Instance IsOfValue_InvalidRealloc :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::InvalidRealloc" [] [] []) :=
   {
     value := InvalidRealloc;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_MaxInstructionTraceLengthExceeded :
+  Instance IsOfValueWith_MaxInstructionTraceLengthExceeded :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::MaxInstructionTraceLengthExceeded" [] [] []) :=
   {
     value := MaxInstructionTraceLengthExceeded;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_MaxInstructionTraceLengthExceeded :
+  Instance IsOfValue_MaxInstructionTraceLengthExceeded :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::MaxInstructionTraceLengthExceeded" [] [] []) :=
   {
     value := MaxInstructionTraceLengthExceeded;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_BuiltinProgramsMustConsumeComputeUnits :
+  Instance IsOfValueWith_BuiltinProgramsMustConsumeComputeUnits :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::BuiltinProgramsMustConsumeComputeUnits" [] [] []) :=
   {
     value := BuiltinProgramsMustConsumeComputeUnits;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_BuiltinProgramsMustConsumeComputeUnits :
+  Instance IsOfValue_BuiltinProgramsMustConsumeComputeUnits :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::BuiltinProgramsMustConsumeComputeUnits" [] [] []) :=
   {
     value := BuiltinProgramsMustConsumeComputeUnits;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidAccountOwner :
+  Instance IsOfValueWith_InvalidAccountOwner :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::InvalidAccountOwner" [] [] []) :=
   {
     value := InvalidAccountOwner;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidAccountOwner :
+  Instance IsOfValue_InvalidAccountOwner :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::InvalidAccountOwner" [] [] []) :=
   {
     value := InvalidAccountOwner;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_ArithmeticOverflow :
+  Instance IsOfValueWith_ArithmeticOverflow :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::ArithmeticOverflow" [] [] []) :=
   {
     value := ArithmeticOverflow;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_ArithmeticOverflow :
+  Instance IsOfValue_ArithmeticOverflow :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::ArithmeticOverflow" [] [] []) :=
   {
     value := ArithmeticOverflow;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Immutable :
+  Instance IsOfValueWith_Immutable :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::Immutable" [] [] []) :=
   {
     value := Immutable;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Immutable :
+  Instance IsOfValue_Immutable :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::Immutable" [] [] []) :=
   {
     value := Immutable;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_IncorrectAuthority :
+  Instance IsOfValueWith_IncorrectAuthority :
     OfValueWith.C t (Value.StructTuple "solana_program_error::ProgramError::IncorrectAuthority" [] [] []) :=
   {
     value := IncorrectAuthority;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_IncorrectAuthority :
+  Instance IsOfValue_IncorrectAuthority :
     OfValue.C (Value.StructTuple "solana_program_error::ProgramError::IncorrectAuthority" [] [] []) :=
   {
     value := IncorrectAuthority;
@@ -496,6 +496,7 @@ Module ProgramError.
 
   End SubPointer.
 End ProgramError.
+Export (hints) ProgramError.
 
 (* ProgramResult = Result<(), ProgramError> *)
 Module ProgramResult.

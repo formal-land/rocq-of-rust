@@ -1,7 +1,7 @@
 {# Template for SpecId links file #}
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
-Require core.links.option.
+Require Import core.links.option.
 Require Import revm.revm_specification.hardfork.
 
 Module SpecId.
@@ -85,6 +85,7 @@ Module SpecId.
       ).
   Qed.
 End SpecId.
+Export (hints) SpecId.
 
 Module Impl_SpecId.
   Definition Self : Set := SpecId.t.
