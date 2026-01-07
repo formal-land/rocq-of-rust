@@ -35,7 +35,7 @@ Module Impl_FixedBytes.
   Admitted.
   Global Opaque run_new.
 End Impl_FixedBytes.
-Export Impl_FixedBytes.
+Export (hints) Impl_FixedBytes.
 
 Module Impl_From_FixedBytes_32_for_U256.
   Definition Self : Set :=
@@ -59,7 +59,7 @@ Module Impl_From_FixedBytes_32_for_U256.
     From.from := run_from;
   }.
 End Impl_From_FixedBytes_32_for_U256.
-Export Impl_From_FixedBytes_32_for_U256.
+Export (hints) Impl_From_FixedBytes_32_for_U256.
 
 Module Impl_From_U256_for_FixedBytes_32.
   Definition Self : Set :=
@@ -91,7 +91,7 @@ Module Impl_From_U256_for_FixedBytes_32.
     From.from := Run_from;
   }.
 End Impl_From_U256_for_FixedBytes_32.
-Export Impl_From_U256_for_FixedBytes_32.
+Export (hints) Impl_From_U256_for_FixedBytes_32.
 
 (* impl<'a, const N: usize> From<&'a [u8; N]> for &'a FixedBytes<N> *)
 Module Impl_From_Array_u8_N_for_FixedBytes_N.
@@ -101,7 +101,7 @@ Module Impl_From_Array_u8_N_for_FixedBytes_N.
   Instance run (N : usize) : From.Run (Self N) (array.t u8 N).
   Admitted.
 End Impl_From_Array_u8_N_for_FixedBytes_N.
-Export Impl_From_Array_u8_N_for_FixedBytes_N.
+Export (hints) Impl_From_Array_u8_N_for_FixedBytes_N.
 
 (* impl<const N: usize> Borrow<[u8; N]> for FixedBytes<N> *)
 Module Impl_Borrow_Array_u8_N_for_FixedBytes_N.
@@ -111,7 +111,7 @@ Module Impl_Borrow_Array_u8_N_for_FixedBytes_N.
   Instance run (N : usize) : Borrow.Run (Self N) (array.t u8 N).
   Admitted.
 End Impl_Borrow_Array_u8_N_for_FixedBytes_N.
-Export Impl_Borrow_Array_u8_N_for_FixedBytes_N.
+Export (hints) Impl_Borrow_Array_u8_N_for_FixedBytes_N.
 
 (* impl<const N: usize> DerefMut for FixedBytes<N> *)
 Module Impl_DerefMut_for_FixedBytes_N.
@@ -124,7 +124,7 @@ Module Impl_DerefMut_for_FixedBytes_N.
   Instance run (N : usize) : DerefMut.Run (Self N) (Target N).
   Admitted.
 End Impl_DerefMut_for_FixedBytes_N.
-Export Impl_DerefMut_for_FixedBytes_N.
+Export (hints) Impl_DerefMut_for_FixedBytes_N.
 
 Module Impl_Index_for_FixedBytes_N.
   Definition Self (N : usize) : Set :=
@@ -137,4 +137,4 @@ Module Impl_Index_for_FixedBytes_N.
   Instance run (N : usize) (__IdxT : Set) `{Link __IdxT} : Index.Run (Self N) __IdxT Output.
   Admitted.
 End Impl_Index_for_FixedBytes_N.
-Export Impl_Index_for_FixedBytes_N.
+Export (hints) Impl_Index_for_FixedBytes_N.

@@ -33,7 +33,7 @@ Module Impl_Borrow_T_for_T.
   Instance run (T : Set) `{Link T} : Borrow.Run (Self T) T.
   Admitted.
 End Impl_Borrow_T_for_T.
-Export Impl_Borrow_T_for_T.
+Export (hints) Impl_Borrow_T_for_T.
 
 (*
 pub trait BorrowMut<Borrowed: ?Sized>: Borrow<Borrowed> {

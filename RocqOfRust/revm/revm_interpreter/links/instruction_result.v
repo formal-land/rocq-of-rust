@@ -786,4 +786,4 @@ Module Impl_InstructionResult.
   Defined.
   Global Opaque run_is_error.
 End Impl_InstructionResult.
-Export Impl_InstructionResult.
+Export (hints) Impl_InstructionResult.

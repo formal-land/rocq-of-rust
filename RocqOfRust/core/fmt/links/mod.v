@@ -57,4 +57,4 @@ Module Impl_Arguments.
   Admitted.
   Global Opaque run_new_v1.
 End Impl_Arguments.
-Export Impl_Arguments.
+Export (hints) Impl_Arguments.

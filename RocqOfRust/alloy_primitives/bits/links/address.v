@@ -60,4 +60,4 @@ Module Impl_Address.
   Admitted.
   Global Opaque run_create2.
 End Impl_Address.
-Export Impl_Address.
+Export (hints) Impl_Address.

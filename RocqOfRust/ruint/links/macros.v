@@ -12,7 +12,7 @@ Module Impl_Div_for_Uint_Uint.
     Div.Run (Self BITS LIMBS) (Uint.t BITS LIMBS) (Uint.t BITS LIMBS).
   Admitted.
 End Impl_Div_for_Uint_Uint.
-Export Impl_Div_for_Uint_Uint.
+Export (hints) Impl_Div_for_Uint_Uint.
 
 Module Impl_Rem_for_Uint_Uint.
   Definition Self (BITS LIMBS : usize) : Set :=
@@ -22,4 +22,4 @@ Module Impl_Rem_for_Uint_Uint.
     Rem.Run (Self BITS LIMBS) (Uint.t BITS LIMBS) (Uint.t BITS LIMBS).
   Admitted.
 End Impl_Rem_for_Uint_Uint.
-Export Impl_Rem_for_Uint_Uint.
+Export (hints) Impl_Rem_for_Uint_Uint.

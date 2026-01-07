@@ -42,4 +42,4 @@ Module Impl_Iterator_for_IntoIter.
     Iterator.Run (Self T A) T.
   Admitted.
 End Impl_Iterator_for_IntoIter.
-Export Impl_Iterator_for_IntoIter.
+Export (hints) Impl_Iterator_for_IntoIter.

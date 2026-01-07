@@ -61,12 +61,12 @@ Module Impl_Default_for_bool.
     Default.default := run_default;
   }.
 End Impl_Default_for_bool.
-Export Impl_Default_for_bool.
+Export (hints) Impl_Default_for_bool.
 
 Module Impl_Default_for_char.
   (* TODO *)
 End Impl_Default_for_char.
-Export Impl_Default_for_char.
+Export (hints) Impl_Default_for_char.
 
 Module Impl_Default_for_integer.
   Definition Self (kind : IntegerKind.t) : Set :=
@@ -125,4 +125,4 @@ Module Impl_Default_for_integer.
     Default.default := run_default kind;
   }.
 End Impl_Default_for_integer.
-Export Impl_Default_for_integer.
+Export (hints) Impl_Default_for_integer.

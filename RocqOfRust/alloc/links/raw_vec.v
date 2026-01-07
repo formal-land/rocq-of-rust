@@ -40,7 +40,7 @@ Module Impl_RawVec_T_A.
   Admitted.
   Global Opaque run_new_in.
 End Impl_RawVec_T_A.
-Export Impl_RawVec_T_A.
+Export (hints) Impl_RawVec_T_A.
 
 Module Impl_RawVec_T.
   Definition Self (T : Set) `{Link T} : Set :=
@@ -54,4 +54,4 @@ Module Impl_RawVec_T.
   Admitted.
   Global Opaque run_new.
 End Impl_RawVec_T.
-Export Impl_RawVec_T.
+Export (hints) Impl_RawVec_T.

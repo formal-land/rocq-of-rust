@@ -17,7 +17,7 @@ Module Impl_Iterator_for_IntoIter.
     Iterator.Run (Self T N) T.
   Admitted.
 End Impl_Iterator_for_IntoIter.
-Export Impl_Iterator_for_IntoIter.
+Export (hints) Impl_Iterator_for_IntoIter.
 
 (*
 impl<T, const N: usize> IntoIterator for [T; N] {
@@ -44,4 +44,4 @@ Module Impl_IntoIterator_for_Array.
     IntoIterator.Run (Self T N) (types T N).
   Admitted.
 End Impl_IntoIterator_for_Array.
-Export Impl_IntoIterator_for_Array.
+Export (hints) Impl_IntoIterator_for_Array.

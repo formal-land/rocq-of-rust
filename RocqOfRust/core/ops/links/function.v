@@ -79,4 +79,4 @@ Module Impl_FnMut_for_Function1.
       FnMut.Run (Function1.t A Output) A Output.
   Admitted.
 End Impl_FnMut_for_Function1.
-Export Impl_FnMut_for_Function1.
+Export (hints) Impl_FnMut_for_Function1.

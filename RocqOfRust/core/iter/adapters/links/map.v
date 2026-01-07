@@ -17,4 +17,4 @@ Module Impl_Iterator_for_Map.
     Iterator.Run (Self I F) B.
   Admitted.
 End Impl_Iterator_for_Map.
-Export Impl_Iterator_for_Map.
+Export (hints) Impl_Iterator_for_Map.

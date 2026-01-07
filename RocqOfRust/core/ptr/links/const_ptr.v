@@ -17,4 +17,4 @@ Module Impl_pointer_const_T.
   Admitted.
   Global Opaque run_add.
 End Impl_pointer_const_T.
-Export Impl_pointer_const_T.
+Export (hints) Impl_pointer_const_T.

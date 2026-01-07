@@ -28,4 +28,4 @@ Module Impl_Uint.
   Admitted.
   Global Opaque run_wrapping_pow.
 End Impl_Uint.
-Export Impl_Uint.
+Export (hints) Impl_Uint.

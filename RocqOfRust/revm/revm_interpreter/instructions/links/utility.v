@@ -156,4 +156,4 @@ Module Impl_IntoAddress_for_U256.
     IntoAddress.into_address := run_into_address;
   }.
 End Impl_IntoAddress_for_U256.
-Export Impl_IntoAddress_for_U256.
+Export (hints) Impl_IntoAddress_for_U256.

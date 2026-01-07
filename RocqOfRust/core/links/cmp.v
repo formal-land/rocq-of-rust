@@ -231,7 +231,7 @@ Module Impl_Ord_for_u64.
     Ord.clamp := run_clamp;
   }.
 End Impl_Ord_for_u64.
-Export Impl_Ord_for_u64.
+Export (hints) Impl_Ord_for_u64.
 
 Module Impl_Ord_for_usize.
   Definition Self : Set := usize.
@@ -297,7 +297,7 @@ Module Impl_Ord_for_usize.
     Ord.clamp := run_clamp;
   }.
 End Impl_Ord_for_usize.
-Export Impl_Ord_for_usize.
+Export (hints) Impl_Ord_for_usize.
 
 (*
   pub trait PartialOrd<Rhs: ?Sized = Self>: PartialEq<Rhs> {
@@ -384,7 +384,7 @@ Module Impl_PartialEq_for_Ref.
     : PartialEq.Run ('& A) ('& B).
   Admitted.
 End Impl_PartialEq_for_Ref.
-Export Impl_PartialEq_for_Ref.
+Export (hints) Impl_PartialEq_for_Ref.
 
 Module Impl_PartialOrd_for_U32.
   Definition Self : Set := u32.

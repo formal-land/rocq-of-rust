@@ -1,0 +1,37 @@
+{# Template for SharedMemory links file #}
+Require Import RocqOfRust.RocqOfRust.
+Require Import RocqOfRust.links.M.
+Require Import alloc.links.alloc.
+Require Import alloc.vec.links.mod.
+Require Import core.links.array.
+Require Import core.links.option.
+Require Import core.num.links.mod.
+Require Import revm_interpreter.interpreter.shared_memory.
+
+(*
+  pub struct SharedMemory {
+      buffer: Vec<u8>,
+      checkpoints: Vec<usize>,
+      last_checkpoint: usize,
+      memory_limit: u64,
+  }
+*)
+Module SharedMemory.
+{{ macros.record_body("revm_interpreter::interpreter::shared_memory::SharedMemory", [
+  ("buffer", "Vec.t u8 Global.t"),
+  ("checkpoints", "Vec.t usize Global.t"),
+  ("last_checkpoint", "usize"),
+  ("memory_limit", "option u64"),
+]) }}
+End SharedMemory.
+
+(* pub const fn num_words(len: usize) -> usize *)
+Instance run_num_words (len : usize) :
+  Run.Trait
+    interpreter.shared_memory.num_words [] [] [ φ len ]
+    usize.
+Proof.
+  constructor.
+  run_symbolic.
+Defined.
+Global Opaque run_num_words.

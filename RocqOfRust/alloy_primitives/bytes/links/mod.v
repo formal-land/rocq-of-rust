@@ -70,7 +70,7 @@ Module Impl_Default_for_Bytes.
     Default.default := run_default;
   }.
 End Impl_Default_for_Bytes.
-Export Impl_Default_for_Bytes.
+Export (hints) Impl_Default_for_Bytes.
 
 (* impl Deref for Bytes *)
 Module Impl_Deref_for_Bytes.
@@ -80,7 +80,7 @@ Module Impl_Deref_for_Bytes.
   Instance run : Deref.Run Self bytes.Bytes.t.
   Admitted.
 End Impl_Deref_for_Bytes.
-Export Impl_Deref_for_Bytes.
+Export (hints) Impl_Deref_for_Bytes.
 
 (* impl DerefMut for Bytes *)
 Module Impl_DerefMut_for_Bytes.
@@ -90,7 +90,7 @@ Module Impl_DerefMut_for_Bytes.
   Instance run : DerefMut.Run Self bytes.Bytes.t.
   Admitted.
 End Impl_DerefMut_for_Bytes.
-Export Impl_DerefMut_for_Bytes.
+Export (hints) Impl_DerefMut_for_Bytes.
 
 Module Impl_Bytes.
   Definition Self : Set :=
@@ -113,7 +113,7 @@ Module Impl_Bytes.
   Admitted.
   Global Opaque run_copy_from_slice.
 End Impl_Bytes.
-Export Impl_Bytes.
+Export (hints) Impl_Bytes.
 
 (* impl From<Vec<u8>> for Bytes *)
 Module Impl_From_Vec_u8_for_Bytes.
@@ -123,4 +123,4 @@ Module Impl_From_Vec_u8_for_Bytes.
   Instance run : From.Run Self (Vec.t u8 Global.t).
   Admitted.
 End Impl_From_Vec_u8_for_Bytes.
-Export Impl_From_Vec_u8_for_Bytes.
+Export (hints) Impl_From_Vec_u8_for_Bytes.

@@ -41,7 +41,7 @@ Module Impl_Uint.
   Admitted.
   Global Opaque run_arithmetic_shr.
 End Impl_Uint.
-Export Impl_Uint.
+Export (hints) Impl_Uint.
 
 Module Impl_BitAnd_for_Uint.
   Definition Self (BITS LIMBS : usize) : Set :=
@@ -51,7 +51,7 @@ Module Impl_BitAnd_for_Uint.
     BitAnd.Run (Self BITS LIMBS) (Self BITS LIMBS) (Self BITS LIMBS).
   Admitted.
 End Impl_BitAnd_for_Uint.
-Export Impl_BitAnd_for_Uint.
+Export (hints) Impl_BitAnd_for_Uint.
 
 Module Impl_BitOr_for_Uint.
   Definition Self (BITS LIMBS : usize) : Set :=
@@ -61,7 +61,7 @@ Module Impl_BitOr_for_Uint.
     BitOr.Run (Self BITS LIMBS) (Self BITS LIMBS) (Self BITS LIMBS).
   Admitted.
 End Impl_BitOr_for_Uint.
-Export Impl_BitOr_for_Uint.
+Export (hints) Impl_BitOr_for_Uint.
 
 Module Impl_BitXor_for_Uint.
   Definition Self (BITS LIMBS : usize) : Set :=
@@ -71,7 +71,7 @@ Module Impl_BitXor_for_Uint.
     BitXor.Run (Self BITS LIMBS) (Self BITS LIMBS) (Self BITS LIMBS).
   Admitted.
 End Impl_BitXor_for_Uint.
-Export Impl_BitXor_for_Uint.
+Export (hints) Impl_BitXor_for_Uint.
 
 Module Impl_Shl_for_Uint.
   Definition Self (BITS LIMBS : usize) : Set :=
@@ -81,7 +81,7 @@ Module Impl_Shl_for_Uint.
     Shl.Run (Self BITS LIMBS) usize (Self BITS LIMBS).
   Admitted.
 End Impl_Shl_for_Uint.
-Export Impl_Shl_for_Uint.
+Export (hints) Impl_Shl_for_Uint.
 
 Module Impl_Shr_for_Uint.
   Definition Self (BITS LIMBS : usize) : Set :=
@@ -91,7 +91,7 @@ Module Impl_Shr_for_Uint.
     Shr.Run (Self BITS LIMBS) usize (Self BITS LIMBS).
   Admitted.
 End Impl_Shr_for_Uint.
-Export Impl_Shr_for_Uint.
+Export (hints) Impl_Shr_for_Uint.
 
 Module Impl_Not_for_Uint.
   Definition Self (BITS LIMBS : usize) : Set :=
@@ -101,4 +101,4 @@ Module Impl_Not_for_Uint.
     Not.Run (Self BITS LIMBS) (Self BITS LIMBS).
   Admitted.
 End Impl_Not_for_Uint.
-Export Impl_Not_for_Uint.
+Export (hints) Impl_Not_for_Uint.

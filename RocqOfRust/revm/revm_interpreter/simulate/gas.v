@@ -69,7 +69,7 @@ Module Impl_Gas.
       (Output.Success (limit self), [self]%stack)
     }}.
   Proof.
-    with_strategy transparent [run_limit] cbn.
+    with_strategy transparent [Impl_Gas.run_limit] cbn.
     progress repeat get_can_access.
     apply Run.Pure.
   Qed.
@@ -100,7 +100,7 @@ Module Impl_Gas.
       (Output.Success tt, [erase_cost self returned]%stack)
     }}.
   Proof.
-    with_strategy transparent [run_erase_cost] cbn.
+    with_strategy transparent [Impl_Gas.run_erase_cost] cbn.
     progress repeat get_can_access.
     eapply Run.Call. {
       apply Run.Pure.
@@ -176,7 +176,7 @@ Module Impl_Gas.
     intros.
     apply Run.remove_extra_stack1.
     unfold record_cost in *.
-    with_strategy transparent [run_record_cost] cbn.
+    with_strategy transparent [Impl_Gas.run_record_cost] cbn.
     progress repeat get_can_access.
     eapply Run.Call. {
       apply u64_overflowing_sub_eq.
@@ -193,187 +193,4 @@ Module Impl_Gas.
     { apply Run.Pure. }
     { apply Run.Pure. }
   Qed.
-
-  (*Lemma record_cost_eq'
-      {WIRE : Set} `{Link WIRE}
-      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-      (interpreter : Interpreter.t WIRE WIRE_types)
-      (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
-      (cost : u64)
-      (stack : Stack.t) :
-    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
-    let ref_control : '&mut _ := {| Ref.core :=
-        SubPointer.Runner.apply
-          ref_interpreter.(Ref.core)
-          Interpreter.SubPointer.get_control
-    |} in
-    let ref_self := RefStub.apply ref_control gas_stub in
-    let gas := gas_stub.(RefStub.projection) interpreter.(Interpreter.control) in
-    let result := record_cost gas cost in
-    {{
-      SimulateM.eval_f (Impl_Gas.run_record_cost ref_self cost) (interpreter :: stack)%stack 🌲
-      (
-        Output.Success (
-          match result with
-          | None => false
-          | Some _ => true
-          end
-        ),
-        (
-          (
-            interpreter <| Interpreter.control :=
-              match result with
-              | None => interpreter.(Interpreter.control)
-              | Some gas => gas_stub.(RefStub.injection) interpreter.(Interpreter.control) gas
-              end
-            |>
-          ) ::
-          stack
-        )%stack
-      )
-    }}.
-  Proof.
-    intros.
-    Transparent Impl_Gas.run_record_cost.
-    unfold record_cost in *; cbn.
-    progress repeat get_can_access.
-    eapply Run.Call. {
-      apply u64_overflowing_sub_eq.
-    }
-    destruct u64_overflowing_sub as [remaining overflow] eqn:H_u64_overflowing_sub_eq.
-    cbn.
-    eapply Run.Call. {
-      apply Run.Pure.
-    }
-    cbn; fold @Stack.alloc.
-    unshelve (eapply Run.GetCanAccess). {
-      repeat constructor.
-      apply Stack.nth_alloc.
-    }
-    cbn; fold @Stack.alloc.
-    eapply Run.Call. {
-      apply Run.Pure.
-    }
-    progress repeat rewrite Stack.read_nth_alloc_eq.
-    destruct negb eqn:?; cbn; fold @Stack.alloc.
-    {
-    unshelve (eapply Run.GetCanAccess). {
-      repeat constructor.
-    }
-    cbn; fold @Stack.alloc.
-    unshelve (eapply Run.GetCanAccess). {
-      repeat constructor.
-      fold @Stack.dealloc.
-    }
-    Opaque Stack.dealloc.
-    cbn; fold @Stack.alloc.
-    Transparent Stack.dealloc.
-    unfold Stack.dealloc at 1; fold @Stack.dealloc.
-    rewrite Stack.dealloc_alloc_eq.
-    unshelve (eapply Run.GetCanAccess). {
-      repeat constructor.
-
-    progress repeat get_can_access.
-    { apply Run.Pure. }
-    { apply Run.Pure. }
-  Qed.
-
-  Lemma record_cost_eq'
-      {WIRE : Set} `{Link WIRE}
-      {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-      (interpreter : Interpreter.t WIRE WIRE_types)
-      (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
-      (cost : u64)
-      (stack : Stack.t) :
-    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
-    let ref_control : '&mut _ := {| Ref.core :=
-        SubPointer.Runner.apply
-          ref_interpreter.(Ref.core)
-          Interpreter.SubPointer.get_control
-    |} in
-    let ref_self := RefStub.apply ref_control gas_stub in
-    let gas := gas_stub.(RefStub.projection) interpreter.(Interpreter.control) in
-    let result := record_cost gas cost in
-    {{
-      SimulateM.eval_f (Impl_Gas.run_record_cost ref_self cost) (interpreter :: stack)%stack 🌲
-      (
-        Output.Success (
-          match result with
-          | None => false
-          | Some _ => true
-          end
-        ),
-        (
-          (
-            interpreter <| Interpreter.control :=
-              match result with
-              | None => interpreter.(Interpreter.control)
-              | Some gas => gas_stub.(RefStub.injection) interpreter.(Interpreter.control) gas
-              end
-            |>
-          ) ::
-          stack
-        )%stack
-      )
-    }}.
-  Proof.
-    intros.
-    Transparent Impl_Gas.run_record_cost.
-    unfold record_cost in *; cbn.
-    progress repeat get_can_access.
-    eapply Run.Call. {
-      apply u64_overflowing_sub_eq.
-    }
-    destruct u64_overflowing_sub as [remaining overflow] eqn:H_u64_overflowing_sub_eq.
-    cbn.
-    unshelve (eapply Run.GetCanAccess). {
-      fold @Stack.alloc.
-      constructor.
-      constructor.
-      apply Stack.nth_alloc.
-    }
-    cbn.
-    eapply Run.Call. {
-      apply Run.Pure.
-    }
-    fold @Stack.alloc.
-    Opaque Stack.alloc.
-    cbn.
-    unshelve (eapply Run.GetCanAccess). {
-      constructor.
-      Transparent Stack.alloc.
-      constructor.
-      fold @Stack.alloc.
-      apply Stack.nth_alloc.
-    }
-    cbn; fold @Stack.alloc.
-    eapply Run.Call. {
-      apply Run.Pure.
-    }
-    cbn; fold @Stack.alloc.
-    progress repeat rewrite Stack.read_nth_alloc_eq.
-    destruct negb eqn:?; cbn; fold @Stack.alloc.
-    {
-    unshelve (eapply Run.GetCanAccess). {
-      repeat constructor.
-      do 2 apply Stack.nth_alloc_alloc.
-      apply Stack.nth_alloc.
-    }
-    cbn; fold @Stack.alloc.
-    unshelve (eapply Run.GetCanAccess). {
-      repeat constructor.
-    }
-    Opaque Stack.dealloc.
-    cbn; fold @Stack.alloc.
-    Transparent Stack.dealloc.
-    unfold Stack.dealloc at 1; fold @Stack.dealloc.
-    rewrite Stack.dealloc_alloc_eq.
-    unshelve (eapply Run.GetCanAccess). {
-      repeat constructor.
-
-    progress repeat get_can_access.
-    { apply Run.Pure. }
-    { apply Run.Pure. }
-  Qed.
-  *)
 End Impl_Gas.

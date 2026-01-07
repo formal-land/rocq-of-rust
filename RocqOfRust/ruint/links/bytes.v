@@ -40,4 +40,4 @@ Module Impl_Uint.
   Admitted.
   Global Opaque run_try_from_be_slice.
 End Impl_Uint.
-Export Impl_Uint.
+Export (hints) Impl_Uint.

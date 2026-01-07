@@ -33,7 +33,7 @@ Module OfTy.
     let '@Make _ A _ _ := x in
     A.
 
-  Global Instance IsLink {ty' : Ty.t} (x : t ty') : Link (get_Set x).
+  Global Instance InductiveIsLink {ty' : Ty.t} (x : t ty') : Link (get_Set x).
   Proof.
     destruct x.
     assumption.
@@ -52,6 +52,9 @@ Module OfTy.
     H : Link A;
     eq : ty = Φ A;
   }.
+
+  Global Instance IsLink (T' : Ty.t) {H_T : C T'} : Link H_T.(A) :=
+    H_T.(H).
 
   Definition to_inductive {ty : Ty.t} `{C ty} : OfTy.t ty :=
     OfTy.Make ty eq.
@@ -72,6 +75,11 @@ Module OfValueWith.
   Class C (A : Set) `{Link A} (value' : Value.t) : Set := {
     value : A;
     eq : value' = φ value;
+  }.
+
+  Global Instance IsIdentity {T : Set} `{Link T} (value : T) : C T (φ value) := {
+    value := value;
+    eq := eq_refl;
   }.
 
   Lemma of_value_with {A : Set} `{Link A} {value' : Value.t} `{C A value'} :
@@ -136,6 +144,12 @@ Module OfValue.
     H : Link A;
     value : A;
     eq : value' = φ value;
+  }.
+
+  Global Instance IsIdentity {T : Set} `{Link T} (value : T) : C (φ value) := {
+    A := T;
+    value := value;
+    eq := eq_refl;
   }.
 
   Definition to_inductive {value' : Value.t} `{C value'} : OfValue.t value' :=

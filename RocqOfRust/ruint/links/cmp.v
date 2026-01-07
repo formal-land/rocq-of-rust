@@ -19,7 +19,7 @@ Module Impl_Uint.
   Admitted.
   Global Opaque run_is_zero.
 End Impl_Uint.
-Export Impl_Uint.
+Export (hints) Impl_Uint.
 
 (* impl<const BITS: usize, const LIMBS: usize> PartialOrd for Uint<BITS, LIMBS> *)
 Module Impl_PartialOrd_for_Uint.
@@ -29,4 +29,4 @@ Module Impl_PartialOrd_for_Uint.
   Instance run (BITS LIMBS : usize) : PartialOrd.Run (Self BITS LIMBS) (Self BITS LIMBS).
   Admitted.
 End Impl_PartialOrd_for_Uint.
-Export Impl_PartialOrd_for_Uint.
+Export (hints) Impl_PartialOrd_for_Uint.

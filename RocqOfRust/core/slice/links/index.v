@@ -110,7 +110,7 @@ Module Impl_SliceIndex_for_Usize.
     SliceIndex.Run usize (list T) T.
   Admitted.
 End Impl_SliceIndex_for_Usize.
-Export Impl_SliceIndex_for_Usize.
+Export (hints) Impl_SliceIndex_for_Usize.
 
 (* unsafe impl<T> SliceIndex<[T]> for ops::RangeTo<usize> *)
 Module Impl_SliceIndex_for_RangeTo.
@@ -126,7 +126,7 @@ Module Impl_SliceIndex_for_RangeTo.
     SliceIndex.Run (Self T) (list T) (Output T).
   Admitted.
 End Impl_SliceIndex_for_RangeTo.
-Export Impl_SliceIndex_for_RangeTo.
+Export (hints) Impl_SliceIndex_for_RangeTo.
 
 (*
   unsafe impl<T> SliceIndex<[T]> for ops::Range<usize> {
@@ -145,7 +145,7 @@ Module Impl_SliceIndex_for_Range.
     SliceIndex.Run (Self T) (list T) (Output T).
   Admitted.
 End Impl_SliceIndex_for_Range.
-Export Impl_SliceIndex_for_Range.
+Export (hints) Impl_SliceIndex_for_Range.
 
 (*
   impl<T, I> ops::Index<I> for [T]
@@ -163,7 +163,7 @@ Module Impl_Index_for_Slice.
     Index.Run (Self T I) I Index_Output.
   Admitted.
 End Impl_Index_for_Slice.
-Export Impl_Index_for_Slice.
+Export (hints) Impl_Index_for_Slice.
 
 (*
   impl<T, I> ops::IndexMut<I> for [T]
@@ -181,4 +181,4 @@ Module Impl_IndexMut_for_Slice.
     IndexMut.Run (Self T I) I Index_Output.
   Admitted.
 End Impl_IndexMut_for_Slice.
-Export Impl_IndexMut_for_Slice.
+Export (hints) Impl_IndexMut_for_Slice.

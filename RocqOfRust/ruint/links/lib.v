@@ -33,7 +33,7 @@ Module Impl_PartialEq_for_Uint.
     PartialEq.Run (Self BITS LIMBS) (Uint.t BITS LIMBS).
   Admitted.
 End Impl_PartialEq_for_Uint.
-Export Impl_PartialEq_for_Uint.
+Export (hints) Impl_PartialEq_for_Uint.
 
 Module Impl_Ord_for_Uint.
   Definition Self (BITS LIMBS : usize) : Set :=
@@ -42,7 +42,7 @@ Module Impl_Ord_for_Uint.
   Instance run (BITS LIMBS : usize) : Ord.Run (Self BITS LIMBS).
   Admitted.
 End Impl_Ord_for_Uint.
-Export Impl_Ord_for_Uint.
+Export (hints) Impl_Ord_for_Uint.
 
 Module Impl_Uint.
   Definition Self (BITS LIMBS : usize) : Set :=

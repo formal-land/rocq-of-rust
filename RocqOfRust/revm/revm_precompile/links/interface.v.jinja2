@@ -1,0 +1,39 @@
+{# Template for PrecompileError links file #}
+Require Import RocqOfRust.RocqOfRust.
+Require Import RocqOfRust.links.M.
+Require Import alloc.links.string.
+Require Import revm.revm_precompile.interface.
+
+Module PrecompileError.
+{{ macros.enum_body("revm_precompile::interface::PrecompileError", [
+  ("OutOfGas", []),
+  ("Blake2WrongLength", []),
+  ("Blake2WrongFinalIndicatorFlag", []),
+  ("ModexpExpOverflow", []),
+  ("ModexpBaseOverflow", []),
+  ("ModexpModOverflow", []),
+  ("Bn128FieldPointNotAMember", []),
+  ("Bn128AffineGFailedToCreate", []),
+  ("Bn128PairLength", []),
+  ("BlobInvalidInputLength", []),
+  ("BlobMismatchedVersion", []),
+  ("BlobVerifyKzgProofFailed", []),
+  ("Other", [("message", "alloc.links.string.String.t")]),
+]) }}
+End PrecompileError.
+
+Module Impl_PrecompileError.
+  Definition Self : Set :=
+    PrecompileError.t.
+
+  (* pub fn is_oog(&self) -> bool *)
+  Instance run_is_oog (self : '& Self) :
+    Run.Trait
+      interface.Impl_revm_precompile_interface_PrecompileError.is_oog [] [] [ φ self ]
+      bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_is_oog.
+End Impl_PrecompileError.

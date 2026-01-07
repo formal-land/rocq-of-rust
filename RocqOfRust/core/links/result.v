@@ -187,4 +187,4 @@ Module Impl_Result_T_E.
   Admitted.
   Global Opaque run_expect.
 End Impl_Result_T_E.
-Export Impl_Result_T_E.
+Export (hints) Impl_Result_T_E.

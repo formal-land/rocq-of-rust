@@ -203,7 +203,7 @@ Module Impl_Option.
   Defined.
   Global Opaque run_expect.
 End Impl_Option.
-Export Impl_Option.
+Export (hints) Impl_Option.
 
 (* impl<T> ops::Try for Option<T> *)
 Module Impl_Try_for_Option.
@@ -227,7 +227,7 @@ Module Impl_Try_for_Option.
   Instance run (T : Set) `{Link T} : Try.Run (Self T) (Types T).
   Admitted.
 End Impl_Try_for_Option.
-Export Impl_Try_for_Option.
+Export (hints) Impl_Try_for_Option.
 
 (* impl<T> ops::FromResidual<Option<convert::Infallible>> for Option<T> *)
 Module Impl_FromResidual_Infallible_for_Option.
@@ -237,4 +237,4 @@ Module Impl_FromResidual_Infallible_for_Option.
   Instance run (T : Set) `{Link T} : FromResidual.Run (Self T) (option Infallible.t).
   Admitted.
 End Impl_FromResidual_Infallible_for_Option.
-Export Impl_FromResidual_Infallible_for_Option.
+Export (hints) Impl_FromResidual_Infallible_for_Option.

@@ -32,7 +32,7 @@ Module Impl_From_for_T.
     From.Run T T.
   Admitted.
 End Impl_From_for_T.
-Export Impl_From_for_T.
+Export (hints) Impl_From_for_T.
 
 (*
 pub trait Into<T>: Sized {
@@ -84,7 +84,7 @@ Module Impl_Into_for_From_T.
     Into.into := run_into T U run_From_for_U;
   }.
 End Impl_Into_for_From_T.
-Export Impl_Into_for_From_T.
+Export (hints) Impl_Into_for_From_T.
 
 (*
 pub trait AsRef<T: ?Sized> {
@@ -187,4 +187,4 @@ Module Impl_TryInto_for_TryFrom_T.
     TryInto.Run T U Error.
   Admitted.
 End Impl_TryInto_for_TryFrom_T.
-Export Impl_TryInto_for_TryFrom_T.
+Export (hints) Impl_TryInto_for_TryFrom_T.

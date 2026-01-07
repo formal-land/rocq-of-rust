@@ -1,0 +1,54 @@
+{# Template for EofHeader links file #}
+Require Import RocqOfRust.RocqOfRust.
+Require Import links.M.
+Require Import alloc.links.alloc.
+Require Import alloc.vec.links.mod.
+Require Import alloc.vec.links.mod.
+Require Import core.links.result.
+Require Import revm_bytecode.eof.header.
+
+Module EofHeader.
+{{ macros.record_body("revm_bytecode::eof::header::EofHeader", [
+  ("types_size", "u16"),
+  ("code_sizes", "Vec.t u16 Global.t"),
+  ("container_sizes", "Vec.t u16 Global.t"),
+  ("data_size", "u16"),
+  ("sum_code_sizes", "usize"),
+  ("sum_container_sizes", "usize"),
+]) }}
+End EofHeader.
+
+Module Impl_EofHeader.
+  Definition Self : Set := EofHeader.t.
+
+  (*
+    pub fn size(&self) -> usize
+  *)
+  Instance run_size (self : '& Self) :
+    Run.Trait header.eof.header.Impl_revm_bytecode_eof_header_EofHeader.size [] [] [φ self] usize.
+  Admitted.
+  Global Opaque run_size.
+
+  (* pub fn eof_size(&self) -> usize *)
+  Instance run_eof_size (self : '& Self) :
+    Run.Trait header.eof.header.Impl_revm_bytecode_eof_header_EofHeader.eof_size [] [] [φ self]
+      usize.
+  Admitted.
+  Global Opaque run_eof_size.
+
+  (*
+    pub fn encode(&self, buffer: &mut Vec<u8>)
+  *)
+  Instance run_encode (self : '& Self) (buffer : '*mut (Vec.t u8 Global.t)) :
+    Run.Trait header.eof.header.Impl_revm_bytecode_eof_header_EofHeader.encode [] [] [φ self; φ buffer] unit.
+  Admitted.
+  Global Opaque run_encode.
+
+  (* pub fn decode(input: &[u8]) -> Result<(Self, &[u8]), EofDecodeError> *)
+  Instance run_decode (input : '& (list u8)) :
+    Run.Trait header.eof.header.Impl_revm_bytecode_eof_header_EofHeader.decode [] [] [φ input]
+      (Result.t Self ('& (list u8))).
+  Admitted.
+  Global Opaque run_decode.
+End Impl_EofHeader.
+Export (hints) Impl_EofHeader.

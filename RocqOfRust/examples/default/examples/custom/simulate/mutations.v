@@ -13,7 +13,7 @@ Module Option.
 
   Lemma unwrap_or_eq {A : Set} `{Link A} (value : option A) (default : A) :
     {{
-      SimulateM.eval_f (run_unwrap_or value default) []%stack 🌲
+      SimulateM.eval_f (Impl_Option.run_unwrap_or value default) []%stack 🌲
       (Output.Success (unwrap_or value default), []%stack)
     }}.
   Proof.
