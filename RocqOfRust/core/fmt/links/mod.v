@@ -16,7 +16,7 @@ Module Arguments.
 
   Parameter to_value : t -> Value.t.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "core::fmt::Arguments";
     φ := to_value;
   }.
@@ -25,6 +25,7 @@ Module Arguments.
   Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
   Smpl Add apply of_ty : of_ty.
 End Arguments.
+Export (hints) Arguments.
 
 Module Impl_Arguments.
   Definition Self : Set := Arguments.t.

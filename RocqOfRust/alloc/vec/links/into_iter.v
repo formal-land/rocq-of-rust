@@ -13,7 +13,7 @@ Module IntoIter.
 
   Parameter to_value : forall (T A : Set), t T A -> Value.t.
 
-  Global Instance IsLink (T A : Set) `{Link T} `{Link A}: Link (t T A) := {
+  Instance IsLink (T A : Set) `{Link T} `{Link A}: Link (t T A) := {
     Φ := Ty.apply (Ty.path "alloc::vec::into_iter::IntoIter") [] [Φ T; Φ A];
     φ := to_value T A;
   }.
@@ -29,6 +29,7 @@ Module IntoIter.
   Defined.
   Smpl Add unshelve eapply of_ty : of_ty.
 End IntoIter.
+Export (hints) IntoIter.
 
 (*
 impl<T, A: Allocator> Iterator for IntoIter<T, A> {

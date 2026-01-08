@@ -5,6 +5,7 @@ Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import core.ops.links.range.
+Require Import ruint.links.lib.
 
 (*
   /// Call value.
@@ -25,7 +26,7 @@ Module CallValue.
   | Apparent (x : aliases.U256.t)
   .
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::interpreter_action::call_inputs::CallValue";
     φ x :=
       match x with
@@ -36,13 +37,13 @@ Module CallValue.
       end
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter_action::call_inputs::CallValue") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter_action::call_inputs::CallValue") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Transfer
+  Instance IsOfValueWith_Transfer
       (x' : Value.t) {H_x : OfValueWith.C (aliases.U256.t) x'}
       :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallValue::Transfer" [] [] [x']) :=
@@ -53,7 +54,7 @@ Module CallValue.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue_Transfer
+  Instance IsOfValue_Transfer
       (x' : Value.t) {H_x : OfValueWith.C (aliases.U256.t) x'}
       :
     OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallValue::Transfer" [] [] [x']) :=
@@ -64,7 +65,7 @@ Module CallValue.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValueWith_Apparent
+  Instance IsOfValueWith_Apparent
       (x' : Value.t) {H_x : OfValueWith.C (aliases.U256.t) x'}
       :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallValue::Apparent" [] [] [x']) :=
@@ -75,7 +76,7 @@ Module CallValue.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue_Apparent
+  Instance IsOfValue_Apparent
       (x' : Value.t) {H_x : OfValueWith.C (aliases.U256.t) x'}
       :
     OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallValue::Apparent" [] [] [x']) :=
@@ -133,6 +134,7 @@ Module CallValue.
 
   End SubPointer.
 End CallValue.
+Export (hints) CallValue.
 
 (*
   pub enum CallScheme {
@@ -163,7 +165,7 @@ Module CallScheme.
   | ExtDelegateCall
   .
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::interpreter_action::call_inputs::CallScheme";
     φ x :=
       match x with
@@ -184,104 +186,104 @@ Module CallScheme.
       end
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter_action::call_inputs::CallScheme") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter_action::call_inputs::CallScheme") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Call :
+  Instance IsOfValueWith_Call :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::Call" [] [] []) :=
   {
     value := Call;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Call :
+  Instance IsOfValue_Call :
     OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::Call" [] [] []) :=
   {
     value := Call;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_CallCode :
+  Instance IsOfValueWith_CallCode :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::CallCode" [] [] []) :=
   {
     value := CallCode;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_CallCode :
+  Instance IsOfValue_CallCode :
     OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::CallCode" [] [] []) :=
   {
     value := CallCode;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_DelegateCall :
+  Instance IsOfValueWith_DelegateCall :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::DelegateCall" [] [] []) :=
   {
     value := DelegateCall;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_DelegateCall :
+  Instance IsOfValue_DelegateCall :
     OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::DelegateCall" [] [] []) :=
   {
     value := DelegateCall;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_StaticCall :
+  Instance IsOfValueWith_StaticCall :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::StaticCall" [] [] []) :=
   {
     value := StaticCall;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_StaticCall :
+  Instance IsOfValue_StaticCall :
     OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::StaticCall" [] [] []) :=
   {
     value := StaticCall;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_ExtCall :
+  Instance IsOfValueWith_ExtCall :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtCall" [] [] []) :=
   {
     value := ExtCall;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_ExtCall :
+  Instance IsOfValue_ExtCall :
     OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtCall" [] [] []) :=
   {
     value := ExtCall;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_ExtStaticCall :
+  Instance IsOfValueWith_ExtStaticCall :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtStaticCall" [] [] []) :=
   {
     value := ExtStaticCall;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_ExtStaticCall :
+  Instance IsOfValue_ExtStaticCall :
     OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtStaticCall" [] [] []) :=
   {
     value := ExtStaticCall;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_ExtDelegateCall :
+  Instance IsOfValueWith_ExtDelegateCall :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtDelegateCall" [] [] []) :=
   {
     value := ExtDelegateCall;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_ExtDelegateCall :
+  Instance IsOfValue_ExtDelegateCall :
     OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtDelegateCall" [] [] []) :=
   {
     value := ExtDelegateCall;
@@ -291,6 +293,7 @@ Module CallScheme.
   Module SubPointer.
   End SubPointer.
 End CallScheme.
+Export (hints) CallScheme.
 
 (*
   pub struct CallInputs {
@@ -320,7 +323,7 @@ Module CallInputs.
     value : CallValue.t;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInputs";
     φ x :=
       Value.StructRecord "revm_interpreter::interpreter_action::call_inputs::CallInputs" [] [] [
@@ -337,13 +340,13 @@ Module CallInputs.
       ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInputs") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInputs") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (bytecode_address' : Value.t) {H_bytecode_address : OfValueWith.C (Address.t) bytecode_address'}
       (caller' : Value.t) {H_caller : OfValueWith.C (Address.t) caller'}
       (gas_limit' : Value.t) {H_gas_limit : OfValueWith.C (u64) gas_limit'}
@@ -383,7 +386,7 @@ Module CallInputs.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (bytecode_address' : Value.t) {H_bytecode_address : OfValueWith.C (Address.t) bytecode_address'}
       (caller' : Value.t) {H_caller : OfValueWith.C (Address.t) caller'}
       (gas_limit' : Value.t) {H_gas_limit : OfValueWith.C (u64) gas_limit'}
@@ -565,3 +568,4 @@ Module CallInputs.
     Smpl Add apply get_value_is_valid : run_sub_pointer.
   End SubPointer.
 End CallInputs.
+Export (hints) CallInputs.

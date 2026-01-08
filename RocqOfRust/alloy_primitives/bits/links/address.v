@@ -2,6 +2,7 @@ Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import alloy_primitives.bits.links.fixed.
 Require Import alloy_primitives.bits.address.
+Require Import core.links.array.
 Require Import core.links.borrow.
 
 Module Address.
@@ -9,7 +10,7 @@ Module Address.
 
   Parameter to_value : t -> Value.t.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "alloy_primitives::bits::address::Address";
     φ := to_value;
   }.
@@ -18,6 +19,7 @@ Module Address.
   Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
   Smpl Add apply of_ty : of_ty.
 End Address.
+Export (hints) Address.
 
 (* impl Address { *)
 Module Impl_Address.

@@ -21,7 +21,7 @@ Module PrecompileError.
   | Other (message : alloc.links.string.String.t)
   .
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_precompile::interface::PrecompileError";
     φ x :=
       match x with
@@ -54,181 +54,181 @@ Module PrecompileError.
       end
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_precompile::interface::PrecompileError") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_precompile::interface::PrecompileError") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_OutOfGas :
+  Instance IsOfValueWith_OutOfGas :
     OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::OutOfGas" [] [] []) :=
   {
     value := OutOfGas;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_OutOfGas :
+  Instance IsOfValue_OutOfGas :
     OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::OutOfGas" [] [] []) :=
   {
     value := OutOfGas;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Blake2WrongLength :
+  Instance IsOfValueWith_Blake2WrongLength :
     OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::Blake2WrongLength" [] [] []) :=
   {
     value := Blake2WrongLength;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Blake2WrongLength :
+  Instance IsOfValue_Blake2WrongLength :
     OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::Blake2WrongLength" [] [] []) :=
   {
     value := Blake2WrongLength;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Blake2WrongFinalIndicatorFlag :
+  Instance IsOfValueWith_Blake2WrongFinalIndicatorFlag :
     OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::Blake2WrongFinalIndicatorFlag" [] [] []) :=
   {
     value := Blake2WrongFinalIndicatorFlag;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Blake2WrongFinalIndicatorFlag :
+  Instance IsOfValue_Blake2WrongFinalIndicatorFlag :
     OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::Blake2WrongFinalIndicatorFlag" [] [] []) :=
   {
     value := Blake2WrongFinalIndicatorFlag;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_ModexpExpOverflow :
+  Instance IsOfValueWith_ModexpExpOverflow :
     OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpExpOverflow" [] [] []) :=
   {
     value := ModexpExpOverflow;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_ModexpExpOverflow :
+  Instance IsOfValue_ModexpExpOverflow :
     OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpExpOverflow" [] [] []) :=
   {
     value := ModexpExpOverflow;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_ModexpBaseOverflow :
+  Instance IsOfValueWith_ModexpBaseOverflow :
     OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpBaseOverflow" [] [] []) :=
   {
     value := ModexpBaseOverflow;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_ModexpBaseOverflow :
+  Instance IsOfValue_ModexpBaseOverflow :
     OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpBaseOverflow" [] [] []) :=
   {
     value := ModexpBaseOverflow;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_ModexpModOverflow :
+  Instance IsOfValueWith_ModexpModOverflow :
     OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpModOverflow" [] [] []) :=
   {
     value := ModexpModOverflow;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_ModexpModOverflow :
+  Instance IsOfValue_ModexpModOverflow :
     OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::ModexpModOverflow" [] [] []) :=
   {
     value := ModexpModOverflow;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Bn128FieldPointNotAMember :
+  Instance IsOfValueWith_Bn128FieldPointNotAMember :
     OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember" [] [] []) :=
   {
     value := Bn128FieldPointNotAMember;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Bn128FieldPointNotAMember :
+  Instance IsOfValue_Bn128FieldPointNotAMember :
     OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember" [] [] []) :=
   {
     value := Bn128FieldPointNotAMember;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Bn128AffineGFailedToCreate :
+  Instance IsOfValueWith_Bn128AffineGFailedToCreate :
     OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate" [] [] []) :=
   {
     value := Bn128AffineGFailedToCreate;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Bn128AffineGFailedToCreate :
+  Instance IsOfValue_Bn128AffineGFailedToCreate :
     OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate" [] [] []) :=
   {
     value := Bn128AffineGFailedToCreate;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Bn128PairLength :
+  Instance IsOfValueWith_Bn128PairLength :
     OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128PairLength" [] [] []) :=
   {
     value := Bn128PairLength;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Bn128PairLength :
+  Instance IsOfValue_Bn128PairLength :
     OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::Bn128PairLength" [] [] []) :=
   {
     value := Bn128PairLength;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_BlobInvalidInputLength :
+  Instance IsOfValueWith_BlobInvalidInputLength :
     OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::BlobInvalidInputLength" [] [] []) :=
   {
     value := BlobInvalidInputLength;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_BlobInvalidInputLength :
+  Instance IsOfValue_BlobInvalidInputLength :
     OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::BlobInvalidInputLength" [] [] []) :=
   {
     value := BlobInvalidInputLength;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_BlobMismatchedVersion :
+  Instance IsOfValueWith_BlobMismatchedVersion :
     OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::BlobMismatchedVersion" [] [] []) :=
   {
     value := BlobMismatchedVersion;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_BlobMismatchedVersion :
+  Instance IsOfValue_BlobMismatchedVersion :
     OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::BlobMismatchedVersion" [] [] []) :=
   {
     value := BlobMismatchedVersion;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_BlobVerifyKzgProofFailed :
+  Instance IsOfValueWith_BlobVerifyKzgProofFailed :
     OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::BlobVerifyKzgProofFailed" [] [] []) :=
   {
     value := BlobVerifyKzgProofFailed;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_BlobVerifyKzgProofFailed :
+  Instance IsOfValue_BlobVerifyKzgProofFailed :
     OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::BlobVerifyKzgProofFailed" [] [] []) :=
   {
     value := BlobVerifyKzgProofFailed;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Other
+  Instance IsOfValueWith_Other
       (message' : Value.t) {H_message : OfValueWith.C (alloc.links.string.String.t) message'}
       :
     OfValueWith.C t (Value.StructTuple "revm_precompile::interface::PrecompileError::Other" [] [] [message']) :=
@@ -239,7 +239,7 @@ Module PrecompileError.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue_Other
+  Instance IsOfValue_Other
       (message' : Value.t) {H_message : OfValueWith.C (alloc.links.string.String.t) message'}
       :
     OfValue.C (Value.StructTuple "revm_precompile::interface::PrecompileError::Other" [] [] [message']) :=
@@ -275,6 +275,7 @@ Module PrecompileError.
 
   End SubPointer.
 End PrecompileError.
+Export (hints) PrecompileError.
 
 Module Impl_PrecompileError.
   Definition Self : Set :=

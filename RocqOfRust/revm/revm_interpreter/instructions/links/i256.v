@@ -26,7 +26,7 @@ Module Sign.
   | Plus
   .
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::instructions::i256::Sign";
     φ x :=
       match x with
@@ -39,48 +39,48 @@ Module Sign.
       end
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::instructions::i256::Sign") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::instructions::i256::Sign") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Minus :
+  Instance IsOfValueWith_Minus :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Minus" [] [] []) :=
   {
     value := Minus;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Minus :
+  Instance IsOfValue_Minus :
     OfValue.C (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Minus" [] [] []) :=
   {
     value := Minus;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Zero :
+  Instance IsOfValueWith_Zero :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Zero" [] [] []) :=
   {
     value := Zero;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Zero :
+  Instance IsOfValue_Zero :
     OfValue.C (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Zero" [] [] []) :=
   {
     value := Zero;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Plus :
+  Instance IsOfValueWith_Plus :
     OfValueWith.C t (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Plus" [] [] []) :=
   {
     value := Plus;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Plus :
+  Instance IsOfValue_Plus :
     OfValue.C (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Plus" [] [] []) :=
   {
     value := Plus;
@@ -90,6 +90,7 @@ Module Sign.
   Module SubPointer.
   End SubPointer.
 End Sign.
+Export (hints) Sign.
 
 Module Impl_PartialEq_for_Sign.
   Instance run : PartialEq.Run Sign.t Sign.t.

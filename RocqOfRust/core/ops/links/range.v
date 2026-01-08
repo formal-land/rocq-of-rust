@@ -17,7 +17,7 @@ Module Range.
   }.
   Arguments t : clear implicits.
 
-  Global Instance IsLink (Idx : Set) `{Link Idx} : Link (t Idx) := {
+  Instance IsLink (Idx : Set) `{Link Idx} : Link (t Idx) := {
     Φ :=
       Ty.apply (Ty.path "core::ops::range::Range") [] [ Φ Idx ];
     φ x :=
@@ -27,14 +27,14 @@ Module Range.
       ];
   }.
 
-  Global Instance IsOfTy (Idx' : Ty.t) {H_Idx : OfTy.C Idx'} :
+  Instance IsOfTy (Idx' : Ty.t) {H_Idx : OfTy.C Idx'} :
     OfTy.C (Ty.apply (Ty.path "core::ops::range::Range") [] [ Idx' ]) :=
   {
     A := t H_Idx.(OfTy.A);
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (Idx : Set) `{Link Idx}
       (start' : Value.t) {H_start : OfValueWith.C (Idx) start'}
       (end_' : Value.t) {H_end_ : OfValueWith.C (Idx) end_'} :
@@ -47,7 +47,7 @@ Module Range.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (Idx' : Ty.t) {H_Idx : OfTy.C Idx'}
       (start' : Value.t) {H_start : OfValueWith.C H_Idx.(OfTy.A) start'}
       (end_' : Value.t) {H_end_ : OfValueWith.C H_Idx.(OfTy.A) end_'} :
@@ -61,6 +61,7 @@ Module Range.
     eq := ltac:(sauto lq: on);
   }.
 End Range.
+Export (hints) Range.
 
 Module Impl_Clone_for_Range.
   Definition Self (Idx : Set) : Set :=

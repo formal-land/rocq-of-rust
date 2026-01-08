@@ -10,7 +10,7 @@ Module Uint.
   }.
   Arguments t : clear implicits.
 
-  Global Instance IsLink {BITS LIMBS : usize} : Link (t BITS LIMBS) := {
+  Instance IsLink {BITS LIMBS : usize} : Link (t BITS LIMBS) := {
     Φ := Ty.apply (Ty.path "ruint::Uint") [ φ BITS; φ LIMBS ] [];
     φ x := Value.StructRecord "ruint::Uint" [ φ BITS; φ LIMBS ] [] [
       ("limbs", φ x.(limbs))
@@ -24,6 +24,7 @@ Module Uint.
   Proof. intros. eapply OfTy.Make with (A := t BITS LIMBS). now subst. Defined.
   Smpl Add eapply of_ty : of_ty.
 End Uint.
+Export (hints) Uint.
 
 Module Impl_PartialEq_for_Uint.
   Definition Self (BITS LIMBS : usize) : Set :=

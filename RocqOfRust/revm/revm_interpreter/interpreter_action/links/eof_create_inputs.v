@@ -6,6 +6,7 @@ Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import revm.revm_bytecode.links.eof.
 Require Import revm.revm_interpreter.interpreter_action.eof_create_inputs.
+Require Import ruint.links.lib.
 
 (*
 pub enum EOFCreateKind {
@@ -23,7 +24,7 @@ Module EOFCreateKind.
   | Opcode (initcode : Eof.t) (input : Bytes.t) (created_address : Address.t)
   .
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "eof_create_inputs::EOFCreateKind";
     φ x :=
       match x with
@@ -40,13 +41,13 @@ Module EOFCreateKind.
       end
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "eof_create_inputs::EOFCreateKind") :=
+  Instance IsOfTy : OfTy.C (Ty.path "eof_create_inputs::EOFCreateKind") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Tx
+  Instance IsOfValueWith_Tx
       (initdata' : Value.t) {H_initdata : OfValueWith.C (Bytes.t) initdata'}
       :
     OfValueWith.C t (Value.StructRecord "eof_create_inputs::EOFCreateKind::Tx" [] [] [
@@ -59,7 +60,7 @@ Module EOFCreateKind.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue_Tx
+  Instance IsOfValue_Tx
       (initdata' : Value.t) {H_initdata : OfValueWith.C (Bytes.t) initdata'}
       :
     OfValue.C (Value.StructRecord "eof_create_inputs::EOFCreateKind::Tx" [] [] [
@@ -72,7 +73,7 @@ Module EOFCreateKind.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValueWith_Opcode
+  Instance IsOfValueWith_Opcode
       (created_address' : Value.t) {H_created_address : OfValueWith.C (Address.t) created_address'}
       (initcode' : Value.t) {H_initcode : OfValueWith.C (Eof.t) initcode'}
       (input' : Value.t) {H_input : OfValueWith.C (Bytes.t) input'}
@@ -91,7 +92,7 @@ Module EOFCreateKind.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue_Opcode
+  Instance IsOfValue_Opcode
       (created_address' : Value.t) {H_created_address : OfValueWith.C (Address.t) created_address'}
       (initcode' : Value.t) {H_initcode : OfValueWith.C (Eof.t) initcode'}
       (input' : Value.t) {H_input : OfValueWith.C (Bytes.t) input'}
@@ -201,6 +202,7 @@ Module EOFCreateKind.
 
   End SubPointer.
 End EOFCreateKind.
+Export (hints) EOFCreateKind.
 
 (*
 pub struct EOFCreateInputs {
@@ -218,7 +220,7 @@ Module EOFCreateInputs.
     kind : EOFCreateKind.t;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
     φ x :=
       Value.StructRecord "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs" [] [] [
@@ -229,13 +231,13 @@ Module EOFCreateInputs.
       ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (caller' : Value.t) {H_caller : OfValueWith.C (Address.t) caller'}
       (gas_limit' : Value.t) {H_gas_limit : OfValueWith.C (u64) gas_limit'}
       (kind' : Value.t) {H_kind : OfValueWith.C (EOFCreateKind.t) kind'}
@@ -257,7 +259,7 @@ Module EOFCreateInputs.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (caller' : Value.t) {H_caller : OfValueWith.C (Address.t) caller'}
       (gas_limit' : Value.t) {H_gas_limit : OfValueWith.C (u64) gas_limit'}
       (kind' : Value.t) {H_kind : OfValueWith.C (EOFCreateKind.t) kind'}
@@ -337,6 +339,7 @@ Module EOFCreateInputs.
     Smpl Add apply get_kind_is_valid : run_sub_pointer.
   End SubPointer.
 End EOFCreateInputs.
+Export (hints) EOFCreateInputs.
 
 Module Impl_EOFCreateInputs.
   Definition Self : Set := EOFCreateInputs.t.

@@ -15,6 +15,7 @@ Module Eof.
   ("raw", "Bytes.t"),
 ]) }}
 End Eof.
+Export (hints) Eof.
 
 Module EofDecodeError.
 {{ macros.enum_body("revm_bytecode::eof::EofDecodeError", [
@@ -40,6 +41,7 @@ Module EofDecodeError.
   ("InvalidEOFSize", []),
 ]) }}
 End EofDecodeError.
+Export (hints) EofDecodeError.
 
 Module Impl_Eof.
   Definition Self : Set :=

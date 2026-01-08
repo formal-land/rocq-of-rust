@@ -23,7 +23,7 @@ Module TransactionType.
   | Custom
   .
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_context_interface::transaction::transaction_type::TransactionType";
     φ x :=
       match x with
@@ -42,90 +42,90 @@ Module TransactionType.
       end
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_context_interface::transaction::transaction_type::TransactionType") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_context_interface::transaction::transaction_type::TransactionType") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Legacy :
+  Instance IsOfValueWith_Legacy :
     OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Legacy" [] [] []) :=
   {
     value := Legacy;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Legacy :
+  Instance IsOfValue_Legacy :
     OfValue.C (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Legacy" [] [] []) :=
   {
     value := Legacy;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Eip2930 :
+  Instance IsOfValueWith_Eip2930 :
     OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930" [] [] []) :=
   {
     value := Eip2930;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Eip2930 :
+  Instance IsOfValue_Eip2930 :
     OfValue.C (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930" [] [] []) :=
   {
     value := Eip2930;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Eip1559 :
+  Instance IsOfValueWith_Eip1559 :
     OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559" [] [] []) :=
   {
     value := Eip1559;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Eip1559 :
+  Instance IsOfValue_Eip1559 :
     OfValue.C (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559" [] [] []) :=
   {
     value := Eip1559;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Eip4844 :
+  Instance IsOfValueWith_Eip4844 :
     OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844" [] [] []) :=
   {
     value := Eip4844;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Eip4844 :
+  Instance IsOfValue_Eip4844 :
     OfValue.C (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844" [] [] []) :=
   {
     value := Eip4844;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Eip7702 :
+  Instance IsOfValueWith_Eip7702 :
     OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702" [] [] []) :=
   {
     value := Eip7702;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Eip7702 :
+  Instance IsOfValue_Eip7702 :
     OfValue.C (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702" [] [] []) :=
   {
     value := Eip7702;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Custom :
+  Instance IsOfValueWith_Custom :
     OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Custom" [] [] []) :=
   {
     value := Custom;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Custom :
+  Instance IsOfValue_Custom :
     OfValue.C (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Custom" [] [] []) :=
   {
     value := Custom;
@@ -135,6 +135,7 @@ Module TransactionType.
   Module SubPointer.
   End SubPointer.
 End TransactionType.
+Export (hints) TransactionType.
 
 Module Impl_PartialEq_for_TransactionType.
   Definition Self : Set := TransactionType.t.
@@ -142,3 +143,4 @@ Module Impl_PartialEq_for_TransactionType.
   Instance run : PartialEq.Run Self Self.
   Admitted.
 End Impl_PartialEq_for_TransactionType.
+Export (hints) Impl_PartialEq_for_TransactionType.

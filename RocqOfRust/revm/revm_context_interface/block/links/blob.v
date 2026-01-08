@@ -14,7 +14,7 @@ Module BlobExcessGasAndPrice.
     blob_gasprice : u128;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_context_interface::block::BlobExcessGasAndPrice";
     φ x :=
       Value.StructRecord "revm_context_interface::block::BlobExcessGasAndPrice" [] [] [
@@ -23,13 +23,13 @@ Module BlobExcessGasAndPrice.
       ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_context_interface::block::BlobExcessGasAndPrice") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_context_interface::block::BlobExcessGasAndPrice") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (blob_gasprice' : Value.t) {H_blob_gasprice : OfValueWith.C (u128) blob_gasprice'}
       (excess_blob_gas' : Value.t) {H_excess_blob_gas : OfValueWith.C (u64) excess_blob_gas'}
       :
@@ -45,7 +45,7 @@ Module BlobExcessGasAndPrice.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (blob_gasprice' : Value.t) {H_blob_gasprice : OfValueWith.C (u128) blob_gasprice'}
       (excess_blob_gas' : Value.t) {H_excess_blob_gas : OfValueWith.C (u64) excess_blob_gas'}
       :
@@ -91,3 +91,4 @@ Module BlobExcessGasAndPrice.
     Smpl Add apply get_blob_gasprice_is_valid : run_sub_pointer.
   End SubPointer.
 End BlobExcessGasAndPrice.
+Export (hints) BlobExcessGasAndPrice.

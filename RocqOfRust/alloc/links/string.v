@@ -6,8 +6,9 @@ Module String.
 
   Parameter to_value : t -> Value.t.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "alloc::alloc::String";
     φ := to_value;
   }.
 End String.
+Export (hints) String.

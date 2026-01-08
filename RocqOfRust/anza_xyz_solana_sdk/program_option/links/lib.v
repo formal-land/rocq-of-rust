@@ -15,7 +15,7 @@ Module COption.
   Arguments None {T}.
   Arguments Some {T}.
 
-  Global Instance IsLink (T : Set) `{Link T} : Link (t T) := {
+  Instance IsLink (T : Set) `{Link T} : Link (t T) := {
     Φ := Ty.apply (Ty.path "solana_program_option::COption") [] [Φ T];
     φ x :=
       match x with
@@ -90,6 +90,7 @@ Module COption.
     Smpl Add apply get_Some_0_is_valid : run_sub_pointer.
   End SubPointer.
 End COption.
+Export (hints) COption.
 
 (* impl<T> COption<T> *)
 Module Impl_COption.

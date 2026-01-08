@@ -8,7 +8,7 @@ Module RawVec.
 
   Parameter to_value : forall {T A : Set}, t T A -> Value.t.
 
-  Global Instance IsLink (T A : Set) `(Link T) `(Link A) : Link (t T A) := {
+  Instance IsLink (T A : Set) `(Link T) `(Link A) : Link (t T A) := {
     Φ := Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [Φ T; Φ A];
     φ := to_value;
   }.
@@ -25,6 +25,7 @@ Module RawVec.
   Defined.
   Smpl Add apply of_ty : of_ty.
 End RawVec.
+Export (hints) RawVec.
 
 Module Impl_RawVec_T_A.
   Definition Self (T A : Set) `{Link T} `{Link A} : Set :=

@@ -17,7 +17,7 @@ Module IntoIter.
   }.
   Arguments t : clear implicits.
 
-  Global Instance IsLink {T : Set} `{Link T} {N : usize} : Link (t T N) := {
+  Instance IsLink {T : Set} `{Link T} {N : usize} : Link (t T N) := {
     Φ := Ty.apply (Ty.path "core::array::iter::IntoIter") [ φ N ] [ Φ T ];
     φ x := Value.StructRecord "core::array::iter::IntoIter" [ φ N ] [ Φ T ] [
       ("data", φ x.(data));
@@ -36,3 +36,4 @@ Module IntoIter.
   Defined.
   Smpl Add unshelve eapply of_ty : of_ty.
 End IntoIter.
+Export (hints) IntoIter.

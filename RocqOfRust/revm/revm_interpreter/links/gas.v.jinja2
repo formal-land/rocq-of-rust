@@ -24,6 +24,7 @@ Module MemoryGas.
   ("words_num", "usize"),
 ]) }}
 End MemoryGas.
+Export (hints) MemoryGas.
 
 Module Impl_Default_for_MemoryGas.
   Definition run_default : Default.Run_default MemoryGas.t.
@@ -44,6 +45,7 @@ Module Impl_Default_for_MemoryGas.
     Default.default := run_default;
   }.
 End Impl_Default_for_MemoryGas.
+Export (hints) Impl_Default_for_MemoryGas.
 
 Module Impl_MemoryGas.
   Definition Self : Set := MemoryGas.t.
@@ -108,6 +110,7 @@ Module MemoryExtensionResult.
   ("OutOfGas", []),
 ]) }}
 End MemoryExtensionResult.
+Export (hints) MemoryExtensionResult.
 
 (*
   /// Represents the state of gas during execution.
@@ -132,6 +135,7 @@ Module Gas.
   ("remaining", "u64"),
 ]) }}
 End Gas.
+Export (hints) Gas.
 
 Module Impl_Clone_for_Gas.
   Definition run_clone : Clone.Run_clone Gas.t.
@@ -150,6 +154,7 @@ Module Impl_Clone_for_Gas.
     Clone.clone := run_clone;
   }.
 End Impl_Clone_for_Gas.
+Export (hints) Impl_Clone_for_Gas.
 
 Module Impl_Default_for_Gas.
   Definition run_default : Default.Run_default Gas.t.
@@ -171,6 +176,7 @@ Module Impl_Default_for_Gas.
     Default.default := run_default;
   }.
 End Impl_Default_for_Gas.
+Export (hints) Impl_Default_for_Gas.
 
 Module Impl_Gas.
   Definition Self : Set := Gas.t.

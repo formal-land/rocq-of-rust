@@ -8,6 +8,7 @@ Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_interpreter.instructions.contract.call_helpers.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
+Require Import ruint.links.lib.
 
 (*
 pub fn get_memory_input_and_out_ranges(

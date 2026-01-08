@@ -9,7 +9,7 @@ Module Address.
     value : array.t u8 {| Integer.value := 32 |};
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "solana_address::Address";
     φ x := Value.StructTuple "solana_address::Address" [] [] [φ x.(value)];
   }.
@@ -44,3 +44,4 @@ Module Address.
     Smpl Add apply get_0_is_valid : run_sub_pointer.
   End SubPointer.
 End Address.
+Export (hints) Address.

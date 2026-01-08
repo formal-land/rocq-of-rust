@@ -22,7 +22,7 @@ Module Vec.
   }.
   Arguments t : clear implicits.
 
-  Global Instance IsLink (T A : Set) `(Link T) `(Link A) : Link (t T A) := {
+  Instance IsLink (T A : Set) `(Link T) `(Link A) : Link (t T A) := {
     Φ := Ty.apply (Ty.path "alloc::vec::Vec") [] [Φ T; Φ A];
     φ x := Value.StructRecord "alloc::vec::Vec" [] [Φ T; Φ A] [
       ("buf", φ x.(buf));
@@ -76,6 +76,7 @@ Module Vec.
   Defined.
   Smpl Add unshelve eapply of_value : of_value.
 End Vec.
+Export (hints) Vec.
 
 Module Impl_Clone_for_Vec.
   Definition run_clone {T A : Set} `{Link T} `{Link A} : Clone.Run_clone (Vec.t T A).

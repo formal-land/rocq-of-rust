@@ -29,7 +29,7 @@ Module Stack.
     data : Vec.t aliases.U256.t Global.t;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::interpreter::stack::Stack";
     φ x :=
       Value.StructRecord "revm_interpreter::interpreter::stack::Stack" [] [] [
@@ -37,13 +37,13 @@ Module Stack.
       ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter::stack::Stack") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter::stack::Stack") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (data' : Value.t) {H_data : OfValueWith.C (Vec.t aliases.U256.t Global.t) data'}
       :
     OfValueWith.C t (Value.StructRecord "revm_interpreter::interpreter::stack::Stack" [] [] [
@@ -56,7 +56,7 @@ Module Stack.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (data' : Value.t) {H_data : OfValueWith.C (Vec.t aliases.U256.t Global.t) data'}
       :
     OfValue.C (Value.StructRecord "revm_interpreter::interpreter::stack::Stack" [] [] [
@@ -85,6 +85,7 @@ Module Stack.
     Smpl Add apply get_data_is_valid : run_sub_pointer.
   End SubPointer.
 End Stack.
+Export (hints) Stack.
 
 Instance run_STACK_LIMIT :
   Run.Trait
@@ -307,3 +308,4 @@ Module Impl_Stack.
   Admitted.
   Global Opaque run_set.
 End Impl_Stack.
+Export (hints) Impl_Stack.

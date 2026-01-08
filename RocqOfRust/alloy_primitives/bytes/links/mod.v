@@ -15,7 +15,7 @@ Module Bytes.
 
   Parameter to_value : t -> Value.t.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "alloy_primitives::bytes_::Bytes";
     φ := to_value;
   }.
@@ -26,6 +26,7 @@ Module Bytes.
   Defined.
   Smpl Add apply of_ty : of_ty.
 End Bytes.
+Export (hints) Bytes.
 
 Module Impl_Clone_for_Bytes.
   Definition Self : Set :=

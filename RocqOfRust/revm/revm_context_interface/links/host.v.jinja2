@@ -2,13 +2,16 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import alloy_primitives.bits.links.address.
+Require Import alloy_primitives.bits.links.fixed.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import alloy_primitives.log.links.mod.
+Require Import core.links.option.
 Require Import revm.revm_context_interface.links.cfg.
 Require Import revm.revm_context_interface.links.block.
 Require Import revm.revm_context_interface.links.journaled_state.
 Require Import revm.revm_context_interface.links.transaction.
+Require Import ruint.links.lib.
 
 (*
 pub struct SStoreResult {
@@ -24,6 +27,7 @@ Module SStoreResult.
   ("new_value", "aliases.U256.t"),
 ]) }}
 End SStoreResult.
+Export (hints) SStoreResult.
 
 (*
 pub struct SelfDestructResult {
@@ -39,6 +43,7 @@ Module SelfDestructResult.
   ("previously_destroyed", "bool"),
 ]) }}
 End SelfDestructResult.
+Export (hints) SelfDestructResult.
 
 (*
 pub trait Host: TransactionGetter + BlockGetter + CfgGetter {

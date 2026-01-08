@@ -12,11 +12,12 @@ Module TryFromSliceError.
 
   Parameter to_value : t -> Value.t.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "core::convert::TryFromSliceError";
     φ := to_value;
   }.
 End TryFromSliceError.
+Export (hints) TryFromSliceError.
 
 (*
 impl<T, I, const N: usize> IndexMut<I> for [T; N]

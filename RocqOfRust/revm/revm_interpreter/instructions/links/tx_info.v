@@ -15,6 +15,7 @@ Require Import revm.revm_context_interface.transaction.links.transaction_type.
 Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.instructions.tx_info.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_specification.links.hardfork.

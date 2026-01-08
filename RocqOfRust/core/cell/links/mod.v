@@ -8,7 +8,7 @@ Module Ref.
 
   Parameter to_value : forall {T : Set} `{Link T}, t T -> Value.t.
 
-  Global Instance IsLink (T : Set) `{Link T} : Link (t T) := {
+  Instance IsLink (T : Set) `{Link T} : Link (t T) := {
     Φ := Ty.apply (Ty.path "core::cell::Ref") [] [Φ T];
     φ := to_value;
   }.
@@ -24,6 +24,7 @@ Module Ref.
   Defined.
   Smpl Add apply of_ty : of_ty.
 End Ref.
+Export (hints) Ref.
 
 (* impl<T: ?Sized> Deref for Ref<'_, T> *)
 Module Impl_Deref_for_Ref.
@@ -38,7 +39,7 @@ Module RefMut.
 
   Parameter to_value : forall {T : Set} `{Link T}, t T -> Value.t.
 
-  Global Instance IsLink (T : Set) `{Link T} : Link (t T) := {
+  Instance IsLink (T : Set) `{Link T} : Link (t T) := {
     Φ := Ty.apply (Ty.path "core::cell::RefMut") [] [Φ T];
     φ := to_value;
   }.
@@ -54,6 +55,7 @@ Module RefMut.
   Defined.
   Smpl Add apply of_ty : of_ty.
 End RefMut.
+Export (hints) RefMut.
 
 (* impl<T> Deref for RefMut<'_, T> *)
 Module Impl_Deref_for_RefMut.

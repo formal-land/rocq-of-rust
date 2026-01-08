@@ -10,7 +10,7 @@ Require Import core.ops.links.function.
 Require Import core.ops.links.try_trait.
 
 Module Option.
-  Global Instance IsLink (A : Set) `{Link A} : Link (option A) := {
+  Instance IsLink (A : Set) `{Link A} : Link (option A) := {
     Φ := Ty.apply (Ty.path "core::option::Option") [] [Φ A];
     φ x :=
       match x with
@@ -88,6 +88,7 @@ Module Option.
     Smpl Add apply get_Some_0_is_valid : run_sub_pointer.
   End SubPointer.
 End Option.
+Export (hints) Option.
 
 (* const fn unwrap_failed() -> ! *)
 Instance run_unwrap_failed :

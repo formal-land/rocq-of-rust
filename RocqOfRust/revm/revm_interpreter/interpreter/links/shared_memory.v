@@ -24,7 +24,7 @@ Module SharedMemory.
     memory_limit : option u64;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory";
     φ x :=
       Value.StructRecord "revm_interpreter::interpreter::shared_memory::SharedMemory" [] [] [
@@ -35,13 +35,13 @@ Module SharedMemory.
       ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_interpreter::interpreter::shared_memory::SharedMemory") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (buffer' : Value.t) {H_buffer : OfValueWith.C (Vec.t u8 Global.t) buffer'}
       (checkpoints' : Value.t) {H_checkpoints : OfValueWith.C (Vec.t usize Global.t) checkpoints'}
       (last_checkpoint' : Value.t) {H_last_checkpoint : OfValueWith.C (usize) last_checkpoint'}
@@ -63,7 +63,7 @@ Module SharedMemory.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (buffer' : Value.t) {H_buffer : OfValueWith.C (Vec.t u8 Global.t) buffer'}
       (checkpoints' : Value.t) {H_checkpoints : OfValueWith.C (Vec.t usize Global.t) checkpoints'}
       (last_checkpoint' : Value.t) {H_last_checkpoint : OfValueWith.C (usize) last_checkpoint'}

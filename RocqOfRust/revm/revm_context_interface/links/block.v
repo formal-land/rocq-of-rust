@@ -1,10 +1,13 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import alloy_primitives.bits.links.address.
+Require Import alloy_primitives.bits.links.fixed.
 Require Import alloy_primitives.links.aliases.
 Require Import core.links.option.
 Require Import revm.revm_context_interface.block.links.blob.
-(* 
+Require Import ruint.links.lib.
+
+(*
 #[auto_impl(&, &mut, Box, Arc)]
 pub trait Block {
     fn number(&self) -> u64;

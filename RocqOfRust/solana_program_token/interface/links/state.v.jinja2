@@ -21,6 +21,7 @@ Module AccountState.
   ("Frozen", []),
 ]) }}
 End AccountState.
+Export (hints) AccountState.
 
 (*
   pub struct Mint {
@@ -40,6 +41,7 @@ Module Mint.
   ("freeze_authority", "COption.t Address.t"),
 ]) }}
 End Mint.
+Export (hints) Mint.
 
 (*
   pub struct Account {
@@ -65,6 +67,7 @@ Module Account.
   ("close_authority", "COption.t Address.t"),
 ]) }}
 End Account.
+Export (hints) Account.
 
 (* impl Account *)
 Module Impl_Account.

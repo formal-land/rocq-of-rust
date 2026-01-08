@@ -2,6 +2,7 @@ Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import core.iter.traits.links.collect.
 Require Import core.iter.traits.links.iterator.
+Require Import core.links.array.
 
 Require Export core.array.links.iter_IntoIter.
 

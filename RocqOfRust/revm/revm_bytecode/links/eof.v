@@ -15,7 +15,7 @@ Module Eof.
     raw : Bytes.t;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_bytecode::eof::Eof";
     φ x :=
       Value.StructRecord "revm_bytecode::eof::Eof" [] [] [
@@ -25,13 +25,13 @@ Module Eof.
       ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_bytecode::eof::Eof") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_bytecode::eof::Eof") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (body' : Value.t) {H_body : OfValueWith.C (EofBody.t) body'}
       (header' : Value.t) {H_header : OfValueWith.C (EofHeader.t) header'}
       (raw' : Value.t) {H_raw : OfValueWith.C (Bytes.t) raw'}
@@ -50,7 +50,7 @@ Module Eof.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (body' : Value.t) {H_body : OfValueWith.C (EofBody.t) body'}
       (header' : Value.t) {H_header : OfValueWith.C (EofHeader.t) header'}
       (raw' : Value.t) {H_raw : OfValueWith.C (Bytes.t) raw'}
@@ -113,6 +113,7 @@ Module Eof.
     Smpl Add apply get_raw_is_valid : run_sub_pointer.
   End SubPointer.
 End Eof.
+Export (hints) Eof.
 
 Module EofDecodeError.
   Inductive t : Set :=
@@ -138,7 +139,7 @@ Module EofDecodeError.
   | InvalidEOFSize
   .
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "revm_bytecode::eof::EofDecodeError";
     φ x :=
       match x with
@@ -185,286 +186,286 @@ Module EofDecodeError.
       end
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "revm_bytecode::eof::EofDecodeError") :=
+  Instance IsOfTy : OfTy.C (Ty.path "revm_bytecode::eof::EofDecodeError") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_MissingInput :
+  Instance IsOfValueWith_MissingInput :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::MissingInput" [] [] []) :=
   {
     value := MissingInput;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_MissingInput :
+  Instance IsOfValue_MissingInput :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::MissingInput" [] [] []) :=
   {
     value := MissingInput;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_MissingBodyWithoutData :
+  Instance IsOfValueWith_MissingBodyWithoutData :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::MissingBodyWithoutData" [] [] []) :=
   {
     value := MissingBodyWithoutData;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_MissingBodyWithoutData :
+  Instance IsOfValue_MissingBodyWithoutData :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::MissingBodyWithoutData" [] [] []) :=
   {
     value := MissingBodyWithoutData;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_DanglingData :
+  Instance IsOfValueWith_DanglingData :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::DanglingData" [] [] []) :=
   {
     value := DanglingData;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_DanglingData :
+  Instance IsOfValue_DanglingData :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::DanglingData" [] [] []) :=
   {
     value := DanglingData;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidCodeInfo :
+  Instance IsOfValueWith_InvalidCodeInfo :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeInfo" [] [] []) :=
   {
     value := InvalidCodeInfo;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidCodeInfo :
+  Instance IsOfValue_InvalidCodeInfo :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeInfo" [] [] []) :=
   {
     value := InvalidCodeInfo;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidCodeInfoSize :
+  Instance IsOfValueWith_InvalidCodeInfoSize :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeInfoSize" [] [] []) :=
   {
     value := InvalidCodeInfoSize;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidCodeInfoSize :
+  Instance IsOfValue_InvalidCodeInfoSize :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeInfoSize" [] [] []) :=
   {
     value := InvalidCodeInfoSize;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidEOFMagicNumber :
+  Instance IsOfValueWith_InvalidEOFMagicNumber :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFMagicNumber" [] [] []) :=
   {
     value := InvalidEOFMagicNumber;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidEOFMagicNumber :
+  Instance IsOfValue_InvalidEOFMagicNumber :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFMagicNumber" [] [] []) :=
   {
     value := InvalidEOFMagicNumber;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidEOFVersion :
+  Instance IsOfValueWith_InvalidEOFVersion :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFVersion" [] [] []) :=
   {
     value := InvalidEOFVersion;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidEOFVersion :
+  Instance IsOfValue_InvalidEOFVersion :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFVersion" [] [] []) :=
   {
     value := InvalidEOFVersion;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidTypesKind :
+  Instance IsOfValueWith_InvalidTypesKind :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidTypesKind" [] [] []) :=
   {
     value := InvalidTypesKind;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidTypesKind :
+  Instance IsOfValue_InvalidTypesKind :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidTypesKind" [] [] []) :=
   {
     value := InvalidTypesKind;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidCodeKind :
+  Instance IsOfValueWith_InvalidCodeKind :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeKind" [] [] []) :=
   {
     value := InvalidCodeKind;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidCodeKind :
+  Instance IsOfValue_InvalidCodeKind :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeKind" [] [] []) :=
   {
     value := InvalidCodeKind;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidTerminalByte :
+  Instance IsOfValueWith_InvalidTerminalByte :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidTerminalByte" [] [] []) :=
   {
     value := InvalidTerminalByte;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidTerminalByte :
+  Instance IsOfValue_InvalidTerminalByte :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidTerminalByte" [] [] []) :=
   {
     value := InvalidTerminalByte;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidDataKind :
+  Instance IsOfValueWith_InvalidDataKind :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidDataKind" [] [] []) :=
   {
     value := InvalidDataKind;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidDataKind :
+  Instance IsOfValue_InvalidDataKind :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidDataKind" [] [] []) :=
   {
     value := InvalidDataKind;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidKindAfterCode :
+  Instance IsOfValueWith_InvalidKindAfterCode :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidKindAfterCode" [] [] []) :=
   {
     value := InvalidKindAfterCode;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidKindAfterCode :
+  Instance IsOfValue_InvalidKindAfterCode :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidKindAfterCode" [] [] []) :=
   {
     value := InvalidKindAfterCode;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_MismatchCodeAndInfoSize :
+  Instance IsOfValueWith_MismatchCodeAndInfoSize :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::MismatchCodeAndInfoSize" [] [] []) :=
   {
     value := MismatchCodeAndInfoSize;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_MismatchCodeAndInfoSize :
+  Instance IsOfValue_MismatchCodeAndInfoSize :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::MismatchCodeAndInfoSize" [] [] []) :=
   {
     value := MismatchCodeAndInfoSize;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_NonSizes :
+  Instance IsOfValueWith_NonSizes :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::NonSizes" [] [] []) :=
   {
     value := NonSizes;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_NonSizes :
+  Instance IsOfValue_NonSizes :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::NonSizes" [] [] []) :=
   {
     value := NonSizes;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_ShortInputForSizes :
+  Instance IsOfValueWith_ShortInputForSizes :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::ShortInputForSizes" [] [] []) :=
   {
     value := ShortInputForSizes;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_ShortInputForSizes :
+  Instance IsOfValue_ShortInputForSizes :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::ShortInputForSizes" [] [] []) :=
   {
     value := ShortInputForSizes;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_ZeroSize :
+  Instance IsOfValueWith_ZeroSize :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::ZeroSize" [] [] []) :=
   {
     value := ZeroSize;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_ZeroSize :
+  Instance IsOfValue_ZeroSize :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::ZeroSize" [] [] []) :=
   {
     value := ZeroSize;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_TooManyCodeSections :
+  Instance IsOfValueWith_TooManyCodeSections :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::TooManyCodeSections" [] [] []) :=
   {
     value := TooManyCodeSections;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_TooManyCodeSections :
+  Instance IsOfValue_TooManyCodeSections :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::TooManyCodeSections" [] [] []) :=
   {
     value := TooManyCodeSections;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_ZeroCodeSections :
+  Instance IsOfValueWith_ZeroCodeSections :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::ZeroCodeSections" [] [] []) :=
   {
     value := ZeroCodeSections;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_ZeroCodeSections :
+  Instance IsOfValue_ZeroCodeSections :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::ZeroCodeSections" [] [] []) :=
   {
     value := ZeroCodeSections;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_TooManyContainerSections :
+  Instance IsOfValueWith_TooManyContainerSections :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::TooManyContainerSections" [] [] []) :=
   {
     value := TooManyContainerSections;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_TooManyContainerSections :
+  Instance IsOfValue_TooManyContainerSections :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::TooManyContainerSections" [] [] []) :=
   {
     value := TooManyContainerSections;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_InvalidEOFSize :
+  Instance IsOfValueWith_InvalidEOFSize :
     OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFSize" [] [] []) :=
   {
     value := InvalidEOFSize;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_InvalidEOFSize :
+  Instance IsOfValue_InvalidEOFSize :
     OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFSize" [] [] []) :=
   {
     value := InvalidEOFSize;
@@ -474,6 +475,7 @@ Module EofDecodeError.
   Module SubPointer.
   End SubPointer.
 End EofDecodeError.
+Export (hints) EofDecodeError.
 
 Module Impl_Eof.
   Definition Self : Set :=

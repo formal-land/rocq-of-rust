@@ -21,7 +21,7 @@ Module AssertKind.
   | Match
   .
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "core::panicking::AssertKind";
     φ x :=
       match x with
@@ -34,48 +34,48 @@ Module AssertKind.
       end
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "core::panicking::AssertKind") :=
+  Instance IsOfTy : OfTy.C (Ty.path "core::panicking::AssertKind") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Eq :
+  Instance IsOfValueWith_Eq :
     OfValueWith.C t (Value.StructTuple "core::panicking::AssertKind::Eq" [] [] []) :=
   {
     value := Eq;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Eq :
+  Instance IsOfValue_Eq :
     OfValue.C (Value.StructTuple "core::panicking::AssertKind::Eq" [] [] []) :=
   {
     value := Eq;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Ne :
+  Instance IsOfValueWith_Ne :
     OfValueWith.C t (Value.StructTuple "core::panicking::AssertKind::Ne" [] [] []) :=
   {
     value := Ne;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Ne :
+  Instance IsOfValue_Ne :
     OfValue.C (Value.StructTuple "core::panicking::AssertKind::Ne" [] [] []) :=
   {
     value := Ne;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Match :
+  Instance IsOfValueWith_Match :
     OfValueWith.C t (Value.StructTuple "core::panicking::AssertKind::Match" [] [] []) :=
   {
     value := Match;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Match :
+  Instance IsOfValue_Match :
     OfValue.C (Value.StructTuple "core::panicking::AssertKind::Match" [] [] []) :=
   {
     value := Match;
@@ -85,6 +85,7 @@ Module AssertKind.
   Module SubPointer.
   End SubPointer.
 End AssertKind.
+Export (hints) AssertKind.
 
 (*
 pub fn assert_failed<T, U>(

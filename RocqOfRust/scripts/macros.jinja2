@@ -85,7 +85,7 @@
 {% set params_list = params.items() | list if params is mapping else params %}
 {% set params_sorted = params_list | sort(attribute='0') if params is mapping else params_list %}
 {% if params_list %}
-  Global Instance IsOfValueWith_{{ name }}
+  Instance IsOfValueWith_{{ name }}
 {% for p in params_sorted %}      ({{ p[0] }}' : Value.t) {H_{{ p[0] }} : OfValueWith.C ({{ p[1] }}) {{ p[0] }}'}
 {% endfor %}      :
 {% if params is mapping %}
@@ -103,7 +103,7 @@
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue_{{ name }}
+  Instance IsOfValue_{{ name }}
 {% for p in params_sorted %}      ({{ p[0] }}' : Value.t) {H_{{ p[0] }} : OfValueWith.C ({{ p[1] }}) {{ p[0] }}'}
 {% endfor %}      :
 {% if params is mapping %}
@@ -122,14 +122,14 @@
   }.
 
 {% else %}
-  Global Instance IsOfValueWith_{{ name }} :
+  Instance IsOfValueWith_{{ name }} :
     OfValueWith.C t (Value.StructTuple "{{ path }}::{{ rname }}" [] [] []) :=
   {
     value := {{ name }};
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_{{ name }} :
+  Instance IsOfValue_{{ name }} :
     OfValue.C (Value.StructTuple "{{ path }}::{{ rname }}" [] [] []) :=
   {
     value := {{ name }};
@@ -211,14 +211,14 @@
   Inductive t : Set :=
 {{ inductive_variants(variants) }}  .
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "{{ path }}";
     φ x :=
       match x with
 {{ phi_cases(path, variants) }}      end
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "{{ path }}") :=
+  Instance IsOfTy : OfTy.C (Ty.path "{{ path }}") :=
   {
     A := t;
     eq := eq_refl;
@@ -300,20 +300,20 @@ Build_t
   Record t : Set := {
 {{ record_fields(fields) }}  }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "{{ path }}";
     φ x :=
       Value.StructRecord "{{ path }}" [] [] [
 {{ record_phi_fields(fields_sorted) }}      ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "{{ path }}") :=
+  Instance IsOfTy : OfTy.C (Ty.path "{{ path }}") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
 {{ record_of_value_instance_params(fields_sorted) }}      :
     OfValueWith.C t (Value.StructRecord "{{ path }}" [] [] [
 {{ record_value_fields(fields_sorted) }}    ]) :=
@@ -322,7 +322,7 @@ Build_t
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
 {{ record_of_value_instance_params(fields_sorted) }}      :
     OfValue.C (Value.StructRecord "{{ path }}" [] [] [
 {{ record_value_fields(fields_sorted) }}    ]) :=

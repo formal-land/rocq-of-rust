@@ -4,9 +4,12 @@ Require Import RocqOfRust.links.M.
 Require Import alloc.links.alloc.
 Require Import alloc.vec.links.mod.
 Require Import alloy_primitives.bits.links.address.
+Require Import alloy_primitives.bits.links.fixed.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import alloy_primitives.log.mod.
+Require Import core.links.option.
+Require Import ruint.links.lib.
 
 (*
 pub struct Log<T = LogData> {
@@ -22,7 +25,7 @@ Module Log.
   }.
   Arguments t : clear implicits.
 
-  Global Instance IsLink (T : Set) `{Link T}: Link (t T) := {
+  Instance IsLink (T : Set) `{Link T}: Link (t T) := {
     Φ := Ty.apply (Ty.path "alloy_primitives::log::Log") [] [Φ T];
     φ x :=
       Value.StructRecord "alloy_primitives::log::Log" [] [Φ T] [
@@ -58,6 +61,7 @@ Module Log.
   Qed.
   Smpl Add unshelve eapply of_value_with : of_value.
 End Log.
+Export (hints) Log.
 
 (*
 pub struct LogData {
@@ -71,7 +75,7 @@ Module LogData.
     data : Bytes.t;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "alloy_primitives::log::LogData";
     φ x :=
       Value.StructRecord "alloy_primitives::log::LogData" [] [] [
@@ -80,13 +84,13 @@ Module LogData.
       ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "alloy_primitives::log::LogData") :=
+  Instance IsOfTy : OfTy.C (Ty.path "alloy_primitives::log::LogData") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (data' : Value.t) {H_data : OfValueWith.C (Bytes.t) data'}
       (topics' : Value.t) {H_topics : OfValueWith.C ((Vec.t aliases.U256.t Global.t)) topics'}
       :
@@ -102,7 +106,7 @@ Module LogData.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (data' : Value.t) {H_data : OfValueWith.C (Bytes.t) data'}
       (topics' : Value.t) {H_topics : OfValueWith.C ((Vec.t aliases.U256.t Global.t)) topics'}
       :
@@ -148,6 +152,7 @@ Module LogData.
     Smpl Add apply get_data_is_valid : run_sub_pointer.
   End SubPointer.
 End LogData.
+Export (hints) LogData.
 
 Module Impl_LogData.
   Definition Self : Set :=

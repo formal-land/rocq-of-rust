@@ -7,7 +7,7 @@ Module Request.
 
   Parameter to_value : t -> Value.t.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "core::error::Request";
     φ := to_value;
   }.
@@ -16,6 +16,7 @@ Module Request.
   Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
   Smpl Add apply of_ty : of_ty.
 End Request.
+Export (hints) Request.
 
 (*
 pub trait Error: Debug + Display {

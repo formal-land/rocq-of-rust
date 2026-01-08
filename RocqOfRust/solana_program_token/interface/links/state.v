@@ -21,7 +21,7 @@ Module AccountState.
   | Frozen
   .
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "spl_token_interface::state::AccountState";
     φ x :=
       match x with
@@ -34,48 +34,48 @@ Module AccountState.
       end
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "spl_token_interface::state::AccountState") :=
+  Instance IsOfTy : OfTy.C (Ty.path "spl_token_interface::state::AccountState") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Uninitialized :
+  Instance IsOfValueWith_Uninitialized :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::state::AccountState::Uninitialized" [] [] []) :=
   {
     value := Uninitialized;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Uninitialized :
+  Instance IsOfValue_Uninitialized :
     OfValue.C (Value.StructTuple "spl_token_interface::state::AccountState::Uninitialized" [] [] []) :=
   {
     value := Uninitialized;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Initialized :
+  Instance IsOfValueWith_Initialized :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::state::AccountState::Initialized" [] [] []) :=
   {
     value := Initialized;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Initialized :
+  Instance IsOfValue_Initialized :
     OfValue.C (Value.StructTuple "spl_token_interface::state::AccountState::Initialized" [] [] []) :=
   {
     value := Initialized;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith_Frozen :
+  Instance IsOfValueWith_Frozen :
     OfValueWith.C t (Value.StructTuple "spl_token_interface::state::AccountState::Frozen" [] [] []) :=
   {
     value := Frozen;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValue_Frozen :
+  Instance IsOfValue_Frozen :
     OfValue.C (Value.StructTuple "spl_token_interface::state::AccountState::Frozen" [] [] []) :=
   {
     value := Frozen;
@@ -85,6 +85,7 @@ Module AccountState.
   Module SubPointer.
   End SubPointer.
 End AccountState.
+Export (hints) AccountState.
 
 (*
   pub struct Mint {
@@ -104,7 +105,7 @@ Module Mint.
     freeze_authority : COption.t Address.t;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "spl_token_interface::state::Mint";
     φ x :=
       Value.StructRecord "spl_token_interface::state::Mint" [] [] [
@@ -116,13 +117,13 @@ Module Mint.
       ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "spl_token_interface::state::Mint") :=
+  Instance IsOfTy : OfTy.C (Ty.path "spl_token_interface::state::Mint") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (decimals' : Value.t) {H_decimals : OfValueWith.C (u8) decimals'}
       (freeze_authority' : Value.t) {H_freeze_authority : OfValueWith.C (COption.t Address.t) freeze_authority'}
       (is_initialized' : Value.t) {H_is_initialized : OfValueWith.C (bool) is_initialized'}
@@ -147,7 +148,7 @@ Module Mint.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (decimals' : Value.t) {H_decimals : OfValueWith.C (u8) decimals'}
       (freeze_authority' : Value.t) {H_freeze_authority : OfValueWith.C (COption.t Address.t) freeze_authority'}
       (is_initialized' : Value.t) {H_is_initialized : OfValueWith.C (bool) is_initialized'}
@@ -244,6 +245,7 @@ Module Mint.
     Smpl Add apply get_freeze_authority_is_valid : run_sub_pointer.
   End SubPointer.
 End Mint.
+Export (hints) Mint.
 
 (*
   pub struct Account {
@@ -269,7 +271,7 @@ Module Account.
     close_authority : COption.t Address.t;
   }.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "spl_token_interface::state::Account";
     φ x :=
       Value.StructRecord "spl_token_interface::state::Account" [] [] [
@@ -284,13 +286,13 @@ Module Account.
       ];
   }.
 
-  Global Instance IsOfTy : OfTy.C (Ty.path "spl_token_interface::state::Account") :=
+  Instance IsOfTy : OfTy.C (Ty.path "spl_token_interface::state::Account") :=
   {
     A := t;
     eq := eq_refl;
   }.
 
-  Global Instance IsOfValueWith
+  Instance IsOfValueWith
       (amount' : Value.t) {H_amount : OfValueWith.C (u64) amount'}
       (close_authority' : Value.t) {H_close_authority : OfValueWith.C (COption.t Address.t) close_authority'}
       (delegate' : Value.t) {H_delegate : OfValueWith.C (COption.t Address.t) delegate'}
@@ -324,7 +326,7 @@ Module Account.
     eq := ltac:(sauto lq: on);
   }.
 
-  Global Instance IsOfValue
+  Instance IsOfValue
       (amount' : Value.t) {H_amount : OfValueWith.C (u64) amount'}
       (close_authority' : Value.t) {H_close_authority : OfValueWith.C (COption.t Address.t) close_authority'}
       (delegate' : Value.t) {H_delegate : OfValueWith.C (COption.t Address.t) delegate'}
@@ -472,6 +474,7 @@ Module Account.
     Smpl Add apply get_close_authority_is_valid : run_sub_pointer.
   End SubPointer.
 End Account.
+Export (hints) Account.
 
 (* impl Account *)
 Module Impl_Account.

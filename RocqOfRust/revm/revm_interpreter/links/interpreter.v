@@ -1,6 +1,7 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import alloy_primitives.bytes.links.mod.
+Require Import core.links.array.
 Require Import revm_interpreter.interpreter.links.shared_memory.
 Require Import revm_interpreter.interpreter.links.stack.
 Require Import revm_interpreter.links.gas.
@@ -11,6 +12,7 @@ Require Import revm_interpreter.links.table.
 Require Import revm_interpreter.interpreter.
 
 Require Export revm.revm_interpreter.links.interpreter_Interpreter.
+Require Export revm.revm_interpreter.links.interpreter_InterpreterResult.
 
 (* impl<IW: InterpreterTypes> Interpreter<IW> { *)
 Module Impl_Interpreter.
@@ -82,3 +84,4 @@ Module Impl_Interpreter.
   Admitted.
   Global Opaque run_run.
 End Impl_Interpreter.
+Export (hints) Impl_Interpreter.

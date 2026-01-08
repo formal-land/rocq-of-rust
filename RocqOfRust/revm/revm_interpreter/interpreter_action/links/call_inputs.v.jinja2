@@ -5,6 +5,7 @@ Require Import alloy_primitives.bits.links.address.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import core.ops.links.range.
+Require Import ruint.links.lib.
 
 (*
   /// Call value.
@@ -25,6 +26,7 @@ Module CallValue.
   ("Apparent", [("x", "aliases.U256.t")]),
 ]) }}
 End CallValue.
+Export (hints) CallValue.
 
 (*
   pub enum CallScheme {
@@ -55,6 +57,7 @@ Module CallScheme.
   ("ExtDelegateCall", []),
 ]) }}
 End CallScheme.
+Export (hints) CallScheme.
 
 (*
   pub struct CallInputs {
@@ -84,3 +87,4 @@ Module CallInputs.
   ("value", "CallValue.t"),
 ]) }}
 End CallInputs.
+Export (hints) CallInputs.
