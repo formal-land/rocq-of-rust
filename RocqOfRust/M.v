@@ -556,33 +556,48 @@ Parameter IsDiscriminant :
     (discriminant : Z),
   Prop.
 
+Module TraitHeader.
+  Record t : Set := {
+    trait_name : string;
+    trait_consts : list Value.t;
+    trait_tys : list Ty.t;
+    self_ty : Ty.t;
+  }.
+End TraitHeader.
+
 Module IsTraitMethod.
   Inductive t
-      (trait_name : string)
-      (trait_consts : list Value.t)
-      (trait_tys : list Ty.t)
-      (self_ty : Ty.t)
+      (trait : TraitHeader.t)
       (method_name : string) :
       (PolymorphicFunction.t) -> Prop :=
   | Defined (instance : Instance.t) (method : PolymorphicFunction.t) :
     M.IsTraitInstance
-      trait_name
-      trait_consts
-      trait_tys
-      self_ty
+      trait.(TraitHeader.trait_name)
+      trait.(TraitHeader.trait_consts)
+      trait.(TraitHeader.trait_tys)
+      trait.(TraitHeader.self_ty)
       instance ->
     List.assoc instance method_name = Some (InstanceField.Method method) ->
-    t trait_name trait_consts trait_tys self_ty method_name method
+    t trait method_name method
   | Provided (instance : Instance.t) (method : Ty.t -> PolymorphicFunction.t) :
     M.IsTraitInstance
-      trait_name
-      trait_consts
-      trait_tys
-      self_ty
+      trait.(TraitHeader.trait_name)
+      trait.(TraitHeader.trait_consts)
+      trait.(TraitHeader.trait_tys)
+      trait.(TraitHeader.self_ty)
       instance ->
     List.assoc instance method_name = None ->
-    M.IsProvidedMethod trait_name method_name method ->
-    t trait_name trait_consts trait_tys self_ty method_name (method self_ty).
+    M.IsProvidedMethod trait.(TraitHeader.trait_name) method_name method ->
+    t trait method_name (method trait.(TraitHeader.self_ty)).
+
+  Class C
+    (trait : TraitHeader.t)
+    (method_name : string)
+    (method : PolymorphicFunction.t) :
+    Prop :=
+  {
+    Make : t trait method_name method;
+  }.
 End IsTraitMethod.
 
 Definition IsTraitAssociatedType

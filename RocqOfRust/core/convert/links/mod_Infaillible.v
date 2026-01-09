@@ -13,7 +13,7 @@ Module Infallible.
 
   Definition of_ty : OfTy.t (Ty.path "core::convert::Infallible").
   Proof.
-    eapply OfTy.Make.
+    eapply OfTy.Make with (A := t).
     subst; reflexivity.
   Defined.
   Smpl Add apply of_ty : of_ty.

@@ -93,7 +93,7 @@ Module Impl_Processor.
     destruct (Impl_Try_for_Result.run u64 TokenError.t).
     destruct (Impl_Try_for_Result.run unit ProgramError.t).
     destruct (Impl_FromResidual_for_Result.run unit ProgramError.t).
-    destruct (Impl_Into_for_From_T.run Impl_From_TokenError_for_ProgramError.run).
+    (* destruct (Impl_Into_for_From_T.run Impl_From_TokenError_for_ProgramError.run). *)
     destruct Impl_Pack_for_Account.run.
     destruct Impl_Pack_for_Mint.run.
     destruct (Impl_Deref_for_Ref.run ('&mut (list u8))).

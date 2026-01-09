@@ -168,14 +168,13 @@ Module Impl_Option.
         T: Default,
   *)
   Instance run_unwrap_or_default {T : Set} `{Link T}
-      {run_Default_for_T : Default.Run T}
+      `{!Default.Run T}
       (self : Self T) :
     Run.Trait
       (option.Impl_core_option_Option_T.unwrap_or_default (Φ T)) [] [] [ φ self ]
       T.
   Proof.
     constructor.
-    destruct run_Default_for_T.
     run_symbolic.
   Defined.
   Global Opaque run_unwrap_or_default.

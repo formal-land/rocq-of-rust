@@ -165,7 +165,6 @@ Instance run_i256_sign_compl (val : '&mut aliases.U256.t) :
   Run.Trait instructions.i256.i256_sign_compl [] [] [ φ val ] Sign.t.
 Proof.
   constructor.
-  destruct Impl_PartialEq_for_Sign.run.
   run_symbolic.
 Defined.
 Global Opaque run_i256_sign_compl.
@@ -184,8 +183,6 @@ Instance run_i256_cmp (first second : '& aliases.U256.t) :
   Run.Trait instructions.i256.i256_cmp [] [] [ φ first; φ second ] Ordering.t.
 Proof.
   constructor.
-  destruct Impl_Ord_for_Sign.run.
-  destruct (Impl_Ord_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
 Global Opaque run_i256_cmp.
@@ -195,8 +192,6 @@ Instance run_i256_div (first second : aliases.U256.t) :
   Run.Trait instructions.i256.i256_div [] [] [ φ first; φ second ] aliases.U256.t.
 Proof.
   constructor.
-  destruct Impl_PartialEq_for_Sign.run.
-  destruct (Impl_PartialEq_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   destruct (Impl_Div_for_Uint_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
@@ -207,7 +202,6 @@ Instance run_i256_mod (first second : aliases.U256.t) :
   Run.Trait instructions.i256.i256_mod [] [] [ φ first; φ second ] aliases.U256.t.
 Proof.
   constructor.
-  destruct Impl_PartialEq_for_Sign.run.
   destruct (Impl_Rem_for_Uint_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.

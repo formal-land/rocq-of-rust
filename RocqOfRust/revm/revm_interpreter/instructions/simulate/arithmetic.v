@@ -27,8 +27,8 @@ Lemma add_eq
       InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
     (interpreter : Interpreter.t WIRE WIRE_types)
     (_host : H) :
-  let ref_interpreter := make_ref 0 in
-  let ref_host := make_ref 1 in
+  let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+  let ref_host : '&mut H := make_ref 1 in
   {{
     SimulateM.eval_f
       (run_add run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
@@ -74,8 +74,8 @@ Lemma mul_eq
       InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
     (interpreter : Interpreter.t WIRE WIRE_types)
     (_host : H) :
-  let ref_interpreter := make_ref 0 in
-  let ref_host := make_ref 1 in
+  let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+  let ref_host : '&mut H := make_ref 1 in
   {{
     SimulateM.eval_f
       (run_mul run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
@@ -121,8 +121,8 @@ Lemma sub_eq
       InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
     (interpreter : Interpreter.t WIRE WIRE_types)
     (_host : H) :
-  let ref_interpreter := make_ref 0 in
-  let ref_host := make_ref 1 in
+  let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+  let ref_host : '&mut H := make_ref 1 in
   {{
     SimulateM.eval_f
       (run_sub run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
@@ -168,8 +168,8 @@ Lemma div_eq
       InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
     (interpreter : Interpreter.t WIRE WIRE_types)
     (_host : H) :
-  let ref_interpreter := make_ref 0 in
-  let ref_host := make_ref 1 in
+  let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+  let ref_host : '&mut H := make_ref 1 in
   {{
     SimulateM.eval_f
       (run_div run_InterpreterTypes_for_WIRE ref_interpreter ref_host)

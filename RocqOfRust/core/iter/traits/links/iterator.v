@@ -11,73 +11,76 @@ Require Import core.ops.links.function.
 
 (* pub trait Iterator *)
 Module Iterator.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("core::iter::traits::iterator::Iterator", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "core::iter::traits::iterator::Iterator";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
   (* fn next(&mut self) -> Option<Self::Item>; *)
-  Definition Run_next
+  Class Method_next
       (Self : Set) `{Link Self}
       (Item : Set) `{Link Item} :
-      Set :=
-    TraitMethod.C (trait Self) "next" (fun method =>
-      forall (self : '&mut Self),
-      Run.Trait method [] [] [φ self] (option Item)
-    ).
+      Set := {
+    next : PolymorphicFunction.t;
+    next_is_method :: IsTraitMethod.C (trait Self) "next" next;
+    run_next (self : '&mut Self) :: Run.Trait next [] [] [φ self] (option Item);
+  }.
 
   (*
   fn next_chunk<const N: usize>(
       &mut self,
   ) -> Result<[Self::Item; N], IntoIter<Self::Item, N>>
   *)
-  Definition Run_next_chunk
+  Class Method_next_chunk
       (Self : Set) `{Link Self}
       (Item : Set) `{Link Item} :
-      Set :=
-    TraitMethod.C (trait Self) "next_chunk" (fun method =>
-      forall
-        (N : usize)
-        (self : '&mut Self),
-      Run.Trait method [] [] [φ self] (Result.t (array.t Item N) (IntoIter.t Item N))
-    ).
+      Set := {
+    next_chunk : PolymorphicFunction.t;
+    next_chunk_is_method :: IsTraitMethod.C (trait Self) "next_chunk" next_chunk;
+    run_next_chunk (N : usize) (self : '&mut Self) ::
+      Run.Trait next_chunk [] [] [φ self] (Result.t (array.t Item N) (IntoIter.t Item N));
+  }.
 
   (* fn size_hint(&self) -> (usize, Option<usize>) { ... } *)
-  Definition Run_size_hint
+  Class Method_size_hint
       (Self : Set) `{Link Self} :
-      Set :=
-    TraitMethod.C (trait Self) "size_hint" (fun method =>
-      forall (self : '& Self),
-      Run.Trait method [] [] [φ self] (usize * option usize)
-    ).
+      Set := {
+    size_hint : PolymorphicFunction.t;
+    size_hint_is_method :: IsTraitMethod.C (trait Self) "size_hint" size_hint;
+    run_size_hint (self : '& Self) :: Run.Trait size_hint [] [] [φ self] (usize * option usize);
+  }.
 
   (* fn count(self) -> usize *)
-  Definition Run_count
+  Class Method_count
       (Self : Set) `{Link Self} :
-      Set :=
-    TraitMethod.C (trait Self) "count" (fun method =>
-      forall (self : Self),
-      Run.Trait method [] [] [φ self] usize
-    ).
+      Set := {
+    count : PolymorphicFunction.t;
+    count_is_method :: IsTraitMethod.C (trait Self) "count" count;
+    run_count (self : Self) :: Run.Trait count [] [] [φ self] usize;
+  }.
 
   (* fn last(self) -> Option<Self::Item> *)
-  Definition Run_last
+  Class Method_last
       (Self : Set) `{Link Self}
       (Item : Set) `{Link Item} :
-      Set :=
-    TraitMethod.C (trait Self) "last" (fun method =>
-      forall (self : Self),
-      Run.Trait method [] [] [φ self] (option Item)
-    ).
+      Set := {
+    last : PolymorphicFunction.t;
+    last_is_method :: IsTraitMethod.C (trait Self) "last" last;
+    run_last (self : Self) :: Run.Trait last [] [] [φ self] (option Item);
+  }.
 
   (* fn advance_by(&mut self, n: usize) -> Result<(), NonZero<usize>> *)
-  Definition Run_advance_by
+  Class Method_advance_by
       (Self : Set) `{Link Self} :
-      Set :=
-    TraitMethod.C (trait Self) "advance_by" (fun method =>
-      forall
-         (self : '&mut Self)
-         (n : usize),
-      Run.Trait method [] [] [φ self; φ n] (Result.t unit (NonZero.t usize))
-    ).
+      Set := {
+    advance_by : PolymorphicFunction.t;
+    advance_by_is_method :: IsTraitMethod.C (trait Self) "advance_by" advance_by;
+    run_advance_by (self : '&mut Self) (n : usize) ::
+      Run.Trait advance_by [] [] [φ self; φ n] (Result.t unit (NonZero.t usize));
+  }.
 
   (*
     fn nth(&mut self, n: usize) -> Option<Self::Item> { ... }
@@ -102,16 +105,15 @@ Module Iterator.
          where Self: Sized,
                F: FnMut(Self::Item) -> B { ... }
    *)
-   Definition Run_map
+   Class Method_map
       (Self : Set) `{Link Self}
       (Item : Set) `{Link Item} :
-      Set :=
-    TraitMethod.C (trait Self) "map" (fun method =>
-      forall (B F : Set) `(Link B) `(Link F)
-        (self : Self)
-        (f : F),
-      Run.Trait method [] [Φ B; Φ F] [φ self; φ f] (Map.t Self F)
-    ).
+      Set := {
+    map : PolymorphicFunction.t;
+    map_is_method :: IsTraitMethod.C (trait Self) "map" map;
+    run_map (B F : Set) `(Link B) `(Link F) (self : Self) (f : F) ::
+      Run.Trait map [] [Φ B; Φ F] [φ self; φ f] (Map.t Self F);
+  }.
 
    (*
     fn for_each<F>(self, f: F)
@@ -166,14 +168,14 @@ Module Iterator.
     fn collect<B: FromIterator<Self::Item>>(self) -> B
        where Self: Sized { ... }
     *)
-    Definition Run_collect
+    Class Method_collect
       (Self : Set) `{Link Self}
       (Item : Set) `{Link Item} :
-      Set :=
-    TraitMethod.C (trait Self) "collect" (fun method =>
-      forall (B : Set) `(Link B) (self : Self),
-      Run.Trait method [] [Φ B] [φ self] B
-    ).
+      Set := {
+    collect : PolymorphicFunction.t;
+    collect_is_method :: IsTraitMethod.C (trait Self) "collect" collect;
+    run_collect (B : Set) `(Link B) (self : Self) :: Run.Trait collect [] [Φ B] [φ self] B;
+  }.
 
     (*
     fn try_collect<B>(
@@ -209,17 +211,15 @@ Module Iterator.
       where Self: Sized,
             F: FnMut(B, Self::Item) -> B { ... }
    *)
-   Definition Run_fold
+   Class Method_fold
       (Self : Set) `{Link Self}
       (Item : Set) `{Link Item} :
-      Set :=
-     TraitMethod.C (trait Self) "fold" (fun method =>
-      forall (B F : Set) `(Link B) `(Link F)
-        (self : Self)
-        (init : B)
-        (f : F),
-      Run.Trait method [] [Φ B; Φ F] [φ self; φ init; φ f] B
-    ).
+      Set := {
+    fold : PolymorphicFunction.t;
+    fold_is_method :: IsTraitMethod.C (trait Self) "fold" fold;
+    run_fold (B F : Set) `(Link B) `(Link F) (self : Self) (init : B) (f : F) ::
+      Run.Trait fold [] [Φ B; Φ F] [φ self; φ init; φ f] B;
+  }.
 
    (*
     fn reduce<F>(self, f: F) -> Option<Self::Item>
@@ -241,18 +241,15 @@ Module Iterator.
       where Self: Sized,
             F: FnMut(Self::Item) -> bool { ... }
   *)
-  Definition Run_any
+  Class Method_any
       (Self : Set) `{Link Self}
       (Item : Set) `{Link Item} :
-      Set :=
-    TraitMethod.C (trait Self) "any" (fun method =>
-      forall
-         (F : Set) `(Link F)
-         (self : '&mut Self)
-         (f : F)
-         `(FnMut.Run F Item bool),
-      Run.Trait method [] [Φ F] [φ self; φ f] bool
-    ).
+      Set := {
+    any : PolymorphicFunction.t;
+    any_is_method :: IsTraitMethod.C (trait Self) "any" any;
+    run_any (F : Set) `(Link F) (self : '&mut Self) (f : F) `(FnMut.Run F Item bool) ::
+      Run.Trait any [] [Φ F] [φ self; φ f] bool;
+  }.
 
   (*
     fn find<P>(&mut self, predicate: P) -> Option<Self::Item>
@@ -378,15 +375,16 @@ Module Iterator.
       IsTraitAssociatedType
         "core::iter::traits::iterator::Iterator" [] [] (Φ Self)
         "Item" (Φ Item);
-    next : Run_next Self Item;
-    next_chunk : Run_next_chunk Self Item;
-    size_hint : Run_size_hint Self;
-    count : Run_count Self;
-    last : Run_last Self Item;
-    advance_by : Run_advance_by Self;
-    map : Run_map Self Item;
-    collect : Run_collect Self Item;
-    fold : Run_fold Self Item;
-    any : Run_any Self Item;
+    method_next :: Method_next Self Item;
+    method_next_chunk :: Method_next_chunk Self Item;
+    method_size_hint :: Method_size_hint Self;
+    method_count :: Method_count Self;
+    method_last :: Method_last Self Item;
+    method_advance_by :: Method_advance_by Self;
+    method_map :: Method_map Self Item;
+    method_collect :: Method_collect Self Item;
+    method_fold :: Method_fold Self Item;
+    method_any :: Method_any Self Item;
   }.
 End Iterator.
+Export (hints) Iterator.

@@ -11,19 +11,25 @@ pub trait From<T>: Sized {
 }
 *)
 Module From.
-  Definition trait (Self T : Set) `{Link Self} `{Link T} : TraitMethod.Header.t :=
-    ("core::convert::From", [], [Φ T], Φ Self).
+  Definition trait (Self T : Set) `{Link Self} `{Link T} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "core::convert::From";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [Φ T];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_from (Self T : Set) `{Link Self} `{Link T} : Set :=
-    TraitMethod.C (trait Self T) "from" (fun method =>
-      forall (value : T),
-      Run.Trait method [] [] [ φ value ] Self
-    ).
+  Class Method_from (Self T : Set) `{Link Self} `{Link T} : Set := {
+    from : PolymorphicFunction.t;
+    from_is_method :: IsTraitMethod.C (trait Self T) "from" from;
+    run_from (value : T) :: Run.Trait from [] [] [ φ value ] Self;
+  }.
 
   Class Run (Self : Set) (T : Set) `{Link Self} `{Link T} : Set := {
-    from : Run_from Self T;
+    method_from :: Method_from Self T;
   }.
 End From.
+Export (hints) From.
 
 (* impl<T> From<T> for T *)
 Module Impl_From_for_T.
@@ -40,19 +46,25 @@ pub trait Into<T>: Sized {
 }
 *)
 Module Into.
-  Definition trait (Self T : Set) `{Link Self} `{Link T} : TraitMethod.Header.t :=
-    ("core::convert::Into", [], [Φ T], Φ Self).
+  Definition trait (Self T : Set) `{Link Self} `{Link T} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "core::convert::Into";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [Φ T];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_into (Self T : Set) `{Link Self} `{Link T} : Set :=
-    TraitMethod.C (trait Self T) "into" (fun method =>
-      forall (self : Self),
-        Run.Trait method [] [] [ φ self ] T
-    ).
+  Class Method_into (Self T : Set) `{Link Self} `{Link T} : Set := {
+    into : PolymorphicFunction.t;
+    into_is_method :: IsTraitMethod.C (trait Self T) "into" into;
+    run_into (self : Self) :: Run.Trait into [] [] [ φ self ] T;
+  }.
 
   Class Run (Self : Set) (T : Set) `{Link Self} `{Link T} : Set := {
-    into : Run_into Self T;
+    method_into :: Method_into Self T;
   }.
 End Into.
+Export (hints) Into.
 
 (*
 impl<T, U> Into<U> for T
@@ -60,29 +72,27 @@ where
     U: From<T>,
 *)
 Module Impl_Into_for_From_T.
-  Definition run_into
+  Instance method_into
     (T U : Set) `{Link T} `{Link U}
-    (run_From_for_U : From.Run U T) :
-    Into.Run_into T U.
+    `(!From.Run U T) :
+    Into.Method_into T U.
   Proof.
     eexists.
-    { eapply IsTraitMethod.Defined.
+    { constructor.
+      eapply IsTraitMethod.Defined.
       { apply convert.Impl_core_convert_Into_where_core_convert_From_U_T_U_for_T.Implements. }
       { reflexivity. }
     }
     { constructor.
-      destruct run_From_for_U.
       run_symbolic.
     }
   Defined.
 
   Instance run
     {T U : Set} `{Link T} `{Link U}
-    (run_From_for_U : From.Run U T) :
+    `(!From.Run U T) :
     Into.Run T U :=
-  {
-    Into.into := run_into T U run_From_for_U;
-  }.
+  {}.
 End Impl_Into_for_From_T.
 Export (hints) Impl_Into_for_From_T.
 
@@ -92,28 +102,35 @@ pub trait AsRef<T: ?Sized> {
 }
 *)
 Module AsRef.
-  Definition trait (Self T : Set) `{Link Self} `{Link T} : TraitMethod.Header.t :=
-    ("core::convert::AsRef", [], [Φ T], Φ Self).
+  Definition trait (Self T : Set) `{Link Self} `{Link T} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "core::convert::AsRef";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [Φ T];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_as_ref (Self T : Set) `{Link Self} `{Link T} : Set :=
-    TraitMethod.C (trait Self T) "as_ref" (fun method =>
-      forall (self : '& Self),
-        Run.Trait method [] [] [ φ self ] ('& T)
-    ).
+
+  Class Method_as_ref (Self T : Set) `{Link Self} `{Link T} : Set := {
+    as_ref : PolymorphicFunction.t;
+    as_ref_is_method :: IsTraitMethod.C (trait Self T) "as_ref" as_ref;
+    run_as_ref (self : '& Self) :: Run.Trait as_ref [] [] [ φ self ] ('& T);
+  }.
 
   Class Run (Self : Set) (T : Set) `{Link Self} `{Link T} : Set := {
-    as_ref : Run_as_ref Self T;
+    method_as_ref :: Method_as_ref Self T;
   }.
 End AsRef.
 
 (* impl<T> AsRef<[T]> for [T] *)
 Module Impl_AsRef_for_Slice.
-  Definition run_as_ref
+  Instance method_as_ref
     (T : Set) `{Link T} :
-    AsRef.Run_as_ref (list T) (list T).
+    AsRef.Method_as_ref (list T) (list T).
   Proof.
     eexists.
-    { eapply IsTraitMethod.Defined.
+    { constructor.
+      eapply IsTraitMethod.Defined.
       { apply convert.Impl_core_convert_AsRef_slice_T_for_slice_T.Implements. }
       { reflexivity. }
     }
@@ -125,9 +142,7 @@ Module Impl_AsRef_for_Slice.
   Instance run
     (T : Set) `{Link T} :
     AsRef.Run (list T) (list T) :=
-  {
-    AsRef.as_ref := run_as_ref T;
-  }.
+  {}.
 End Impl_AsRef_for_Slice.
 
 (*
@@ -137,19 +152,25 @@ pub trait TryFrom<T>: Sized {
 }
 *)
 Module TryFrom.
-  Definition trait (Self T : Set) `{Link Self} `{Link T} : TraitMethod.Header.t :=
-    ("core::convert::TryFrom", [], [Φ T], Φ Self).
+  Definition trait (Self T : Set) `{Link Self} `{Link T} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "core::convert::TryFrom";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [Φ T];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_try_from (Self T Error : Set) `{Link Self} `{Link T} `{Link Error} : Set :=
-    TraitMethod.C (trait Self T) "try_from" (fun method =>
-      forall (value : T),
-        Run.Trait method [] [] [ φ value ] (Result.t Self Error)
-    ).
+  Class Method_try_from (Self T Error : Set) `{Link Self} `{Link T} `{Link Error} : Set := {
+    try_from : PolymorphicFunction.t;
+    try_from_is_method :: IsTraitMethod.C (trait Self T) "try_from" try_from;
+    run_try_from (value : T) :: Run.Trait try_from [] [] [ φ value ] (Result.t Self Error);
+  }.
 
   Class Run (Self : Set) (T : Set) (Error : Set) `{Link Self} `{Link T} `{Link Error} : Set := {
-    try_from : Run_try_from Self T Error;
+    method_try_from :: Method_try_from Self T Error;
   }.
 End TryFrom.
+Export (hints) TryFrom.
 
 (*
 pub trait TryInto<T>: Sized {
@@ -159,19 +180,25 @@ pub trait TryInto<T>: Sized {
 }
 *)
 Module TryInto.
-  Definition trait (Self T : Set) `{Link Self} `{Link T} : TraitMethod.Header.t :=
-    ("core::convert::TryInto", [], [Φ T], Φ Self).
+  Definition trait (Self T : Set) `{Link Self} `{Link T} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "core::convert::TryInto";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [Φ T];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_try_into (Self T Error : Set) `{Link Self} `{Link T} `{Link Error} : Set :=
-    TraitMethod.C (trait Self T) "try_into" (fun method =>
-      forall (self : Self),
-        Run.Trait method [] [] [ φ self ] (Result.t T Error)
-    ).
+  Class Method_try_into (Self T Error : Set) `{Link Self} `{Link T} `{Link Error} : Set := {
+    try_into : PolymorphicFunction.t;
+    try_into_is_method :: IsTraitMethod.C (trait Self T) "try_into" try_into;
+    run_try_into (self : Self) :: Run.Trait try_into [] [] [ φ self ] (Result.t T Error);
+  }.
 
   Class Run (Self : Set) (T : Set) (Error : Set) `{Link Self} `{Link T} `{Link Error} : Set := {
-    try_into : Run_try_into Self T Error;
+    method_try_into :: Method_try_into Self T Error;
   }.
 End TryInto.
+Export (hints) TryInto.
 
 (*
 impl<T, U> TryInto<U> for T

@@ -393,7 +393,7 @@ Module SimulateM.
       ).
     }
     { (* Call *)
-      exact (Call stack run_f0 (fun '(output, stack) =>
+      exact (Call stack run_f (fun '(output, stack) =>
         eval _ _ (k output) stack
       )).
     }

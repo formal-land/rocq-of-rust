@@ -29,82 +29,88 @@ pub trait Block {
 Module Block. 
   Parameter t : Set.
 
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("revm_context_interface::block::Block", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "revm_context_interface::block::Block";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_number (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "number" (fun method =>
-      forall (self : '& Self),
-        Run.Trait method [] [] [ φ self ] u64
-    ).
+  Class Method_number (Self : Set) `{Link Self} : Set := {
+    number : PolymorphicFunction.t;
+    number_is_method :: IsTraitMethod.C (trait Self) "number" number;
+    run_number (self : '& Self) :: Run.Trait number [] [] [ φ self ] u64;
+  }.
 
-  Definition Run_beneficiary (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "beneficiary" (fun method =>
-      forall (self : '& Self),
-        Run.Trait method [] [] [ φ self ] Address.t
-    ).
+  Class Method_beneficiary (Self : Set) `{Link Self} : Set := {
+    beneficiary : PolymorphicFunction.t;
+    beneficiary_is_method :: IsTraitMethod.C (trait Self) "beneficiary" beneficiary;
+    run_beneficiary (self : '& Self) :: Run.Trait beneficiary [] [] [ φ self ] Address.t;
+  }.
 
-  Definition Run_timestamp (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "timestamp" (fun method =>
-      forall (self : '& Self),
-        Run.Trait method [] [] [ φ self ] u64
-    ).
+  Class Method_timestamp (Self : Set) `{Link Self} : Set := {
+    timestamp : PolymorphicFunction.t;
+    timestamp_is_method :: IsTraitMethod.C (trait Self) "timestamp" timestamp;
+    run_timestamp (self : '& Self) :: Run.Trait timestamp [] [] [ φ self ] u64;
+  }.
 
-  Definition Run_gas_limit (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "gas_limit" (fun method =>
-      forall (self : '& Self),
-        Run.Trait method [] [] [ φ self ] u64
-    ).
+  Class Method_gas_limit (Self : Set) `{Link Self} : Set := {
+    gas_limit : PolymorphicFunction.t;
+    gas_limit_is_method :: IsTraitMethod.C (trait Self) "gas_limit" gas_limit;
+    run_gas_limit (self : '& Self) :: Run.Trait gas_limit [] [] [ φ self ] u64;
+  }.
 
-  Definition Run_basefee (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "basefee" (fun method =>
-      forall (self : '& Self),
-        Run.Trait method [] [] [ φ self ] u64
-    ).
+  Class Method_basefee (Self : Set) `{Link Self} : Set := {
+    basefee : PolymorphicFunction.t;
+    basefee_is_method :: IsTraitMethod.C (trait Self) "basefee" basefee;
+    run_basefee (self : '& Self) :: Run.Trait basefee [] [] [ φ self ] u64;
+  }.
 
-  Definition Run_difficulty (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "difficulty" (fun method =>
-      forall (self : '& Self),
-        Run.Trait method [] [] [ φ self ] aliases.U256.t
-    ).
+  Class Method_difficulty (Self : Set) `{Link Self} : Set := {
+    difficulty : PolymorphicFunction.t;
+    difficulty_is_method :: IsTraitMethod.C (trait Self) "difficulty" difficulty;
+    run_difficulty (self : '& Self) :: Run.Trait difficulty [] [] [ φ self ] aliases.U256.t;
+  }.
 
-  Definition Run_prevrandao (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "prevrandao" (fun method =>
-      forall (self : '& Self),
-        Run.Trait method [] [] [ φ self ] (option aliases.B256.t)
-    ).
+  Class Method_prevrandao (Self : Set) `{Link Self} : Set := {
+    prevrandao : PolymorphicFunction.t;
+    prevrandao_is_method :: IsTraitMethod.C (trait Self) "prevrandao" prevrandao;
+    run_prevrandao (self : '& Self) :: Run.Trait prevrandao [] [] [ φ self ] (option aliases.B256.t);
+  }.
 
-  Definition Run_blob_excess_gas_and_price (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "blob_excess_gas_and_price" (fun method =>
-      forall (self : '& Self),
-        Run.Trait method [] [] [ φ self ] (option BlobExcessGasAndPrice.t)
-    ).
+  Class Method_blob_excess_gas_and_price (Self : Set) `{Link Self} : Set := {
+    blob_excess_gas_and_price : PolymorphicFunction.t;
+    blob_excess_gas_and_price_is_method :: IsTraitMethod.C (trait Self) "blob_excess_gas_and_price" blob_excess_gas_and_price;
+    run_blob_excess_gas_and_price (self : '& Self) :: Run.Trait blob_excess_gas_and_price [] [] [ φ self ] (option BlobExcessGasAndPrice.t);
+  }.
 
-  Definition Run_blob_gasprice (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "blob_gasprice" (fun method =>
-      forall (self : '& Self),
-        Run.Trait method [] [] [ φ self ] (option u128)
-    ).
+  Class Method_blob_gasprice (Self : Set) `{Link Self} : Set := {
+    blob_gasprice : PolymorphicFunction.t;
+    blob_gasprice_is_method :: IsTraitMethod.C (trait Self) "blob_gasprice" blob_gasprice;
+    run_blob_gasprice (self : '& Self) :: Run.Trait blob_gasprice [] [] [ φ self ] (option u128);
+  }.
 
-  Definition Run_blob_excess_gas (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "blob_excess_gas" (fun method =>
-      forall (self : '& Self),
-        Run.Trait method [] [] [ φ self ] (option u64)
-    ).
+  Class Method_blob_excess_gas (Self : Set) `{Link Self} : Set := {
+    blob_excess_gas : PolymorphicFunction.t;
+    blob_excess_gas_is_method :: IsTraitMethod.C (trait Self) "blob_excess_gas" blob_excess_gas;
+    run_blob_excess_gas (self : '& Self) :: Run.Trait blob_excess_gas [] [] [ φ self ] (option u64);
+  }.
 
   Class Run (Self : Set) `{Link Self} : Set := {
-    number : Run_number Self;
-    beneficiary : Run_beneficiary Self;
-    timestamp : Run_timestamp Self;
-    gas_limit : Run_gas_limit Self;
-    basefee : Run_basefee Self;
-    difficulty : Run_difficulty Self;
-    prevrandao : Run_prevrandao Self;
-    blob_excess_gas_and_price : Run_blob_excess_gas_and_price Self;
-    blob_gasprice : Run_blob_gasprice Self;
-    blob_excess_gas : Run_blob_excess_gas Self;
+    method_number :: Method_number Self;
+    method_beneficiary :: Method_beneficiary Self;
+    method_timestamp :: Method_timestamp Self;
+    method_gas_limit :: Method_gas_limit Self;
+    method_basefee :: Method_basefee Self;
+    method_difficulty :: Method_difficulty Self;
+    method_prevrandao :: Method_prevrandao Self;
+    method_blob_excess_gas_and_price :: Method_blob_excess_gas_and_price Self;
+    method_blob_gasprice :: Method_blob_gasprice Self;
+    method_blob_excess_gas :: Method_blob_excess_gas Self;
   }.
-End Block. 
+End Block.
+Export (hints) Block. 
 
 (*
 #[auto_impl(&, &mut, Box, Arc)]
@@ -128,21 +134,27 @@ Module BlockGetter.
       H.(H_Block _).
   End Types.
 
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("revm_context_interface::block::BlockGetter", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "revm_context_interface::block::BlockGetter";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_block (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set :=
-    TraitMethod.C (trait Self) "block" (fun method =>
-      forall (self : '& Self),
-        Run.Trait method [] [] [ φ self ] ('& types.(Types.Block))
-    ).
+  Class Method_block (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set := {
+    block : PolymorphicFunction.t;
+    block_is_method :: IsTraitMethod.C (trait Self) "block" block;
+    run_block (self : '& Self) :: Run.Trait block [] [] [ φ self ] ('& types.(Types.Block));
+  }.
 
   Class Run (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set := {
-    Block_IsAssociated : 
+    Block_IsAssociated :
       IsTraitAssociatedType
         "revm_context_interface::block::BlockGetter" [] [] (Φ Self)
         "Block" (Φ types.(Types.Block));
-    run_Block_for_Block : Block.Run types.(Types.Block);
-    block : Run_block Self types;
+    run_Block_for_Block :: Block.Run types.(Types.Block);
+    method_block :: Method_block Self types;
   }.
 End BlockGetter.
+Export (hints) BlockGetter.

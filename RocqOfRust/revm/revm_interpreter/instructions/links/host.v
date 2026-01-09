@@ -50,12 +50,6 @@ Instance run_balance
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_Host_for_H.
-  destruct Impl_IntoAddress_for_U256.run.
   run_symbolic.
 Defined.
 Global Opaque run_balance.
@@ -79,12 +73,6 @@ Instance run_selfbalance
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_Host_for_H.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_LoopControl_for_Control.
-  destruct run_InputsTrait_for_Input.
   run_symbolic.
 Defined.
 Global Opaque run_selfbalance.
@@ -108,12 +96,6 @@ Instance run_extcodesize
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_LoopControl_for_Control.
-  destruct run_Host_for_H.
-  destruct Impl_IntoAddress_for_U256.run.
   destruct alloy_primitives.bytes.links.mod.Impl_Deref_for_Bytes.run.
   run_symbolic.
 Defined.
@@ -138,13 +120,7 @@ Instance run_extcodehash
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_Host_for_H.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_LoopControl_for_Control.
   destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
-  destruct Impl_IntoAddress_for_U256.run.
   run_symbolic.
 Defined.
 Global Opaque run_extcodehash.
@@ -168,12 +144,6 @@ Instance run_extcodecopy
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_MemoryTrait_for_Memory.
-  destruct run_Host_for_H.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_LoopControl_for_Control.
   destruct Impl_IntoAddress_for_U256.run.
   destruct Impl_TryFrom_u64_for_usize.run.
   destruct bytes.Impl_Deref_for_Bytes.run.
@@ -201,11 +171,6 @@ Instance run_blockhash
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_Host_for_H.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_LoopControl_for_Control.
   run_symbolic.
 Defined.
 Global Opaque run_blockhash.
@@ -229,12 +194,6 @@ Instance run_sload
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_InputsTrait_for_Input.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_LoopControl_for_Control.
-  destruct run_Host_for_H.
   run_symbolic.
 Defined.
 Global Opaque run_sload.
@@ -258,12 +217,6 @@ Instance run_sstore
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_InputsTrait_for_Input.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_LoopControl_for_Control.
-  destruct run_Host_for_H.
   run_symbolic.
 Defined.
 Global Opaque run_sstore.
@@ -287,12 +240,6 @@ Instance run_tstore
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_InputsTrait_for_Input.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_LoopControl_for_Control.
-  destruct run_Host_for_H.
   run_symbolic.
 Defined.
 Global Opaque run_tstore.
@@ -316,12 +263,6 @@ Instance run_tload
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_LoopControl_for_Control.
-  destruct run_InputsTrait_for_Input.
-  destruct run_Host_for_H.
   run_symbolic.
 Defined.
 Global Opaque run_tload.
@@ -365,13 +306,13 @@ Proof.
   destruct (Impl_IntoIterator_for_Array.run aliases.U256.t N).
   destruct Impl_From_U256_for_FixedBytes_32.run.
   run_symbolic.
-  destruct map0 as [? ? run_map]; cbn in *.
+  destruct method_map0 as [? ? run_map]; cbn in *.
   pose proof (run_map
     (FixedBytes.t {| Integer.value := 32 |})
     (Function1.t (Uint.t {| Integer.value := 256 |} {| Integer.value := 4 |}) (FixedBytes.t {| Integer.value := 32 |}))
     _ _
   ).
-  destruct from as [? ? run_from]; cbn in *.
+  destruct method_from as [? ? run_from]; cbn in *.
   change (Value.Closure _) with (φ (Function1.of_run run_from)).
   typeclasses eauto.
 Defined.
@@ -396,13 +337,6 @@ Instance run_selfdestruct
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_LoopControl_for_Control.
-  destruct run_InputsTrait_for_Input.
-  destruct run_Host_for_H.
-  destruct Impl_IntoAddress_for_U256.run.
   destruct (Impl_Deref_for_StateLoad.run SelfDestructResult.t).
   run_symbolic.
 Defined.

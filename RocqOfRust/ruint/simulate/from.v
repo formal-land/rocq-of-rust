@@ -16,7 +16,7 @@ Module UintTryFrom.
       uint_try_from_eq (value : T) (stack : Stack.t) :
         {{
           SimulateM.eval_f
-            (UintTryFrom.run_uint_try_from.(TraitMethod.run) value)
+            (UintTryFrom.run_uint_try_from value)
             stack 🌲
           (
             Output.Success (uint_try_from value),

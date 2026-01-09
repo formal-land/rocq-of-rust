@@ -16,12 +16,20 @@ Require Import core.ops.links.range.
   }
 *)
 Module SliceIndex.
+  Definition trait (Self T : Set) `{Link Self} `{Link T} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "core::slice::index::SliceIndex";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [Φ T];
+      TraitHeader.self_ty := Φ Self;
+    |}.
+
   Definition run_get 
       (Self : Set) `{Link Self} 
       (T : Set) `{Link T} 
       (Output : Set) `{Link Output} : Set :=
     { get @ 
-      IsTraitMethod.t "core::slice::index::SliceIndex" [] [Φ T] (Φ Self) "get" get *
+      IsTraitMethod.t (trait Self T) "get" get *
       forall (self : Self) (slice : '& T),
         {{ get [] [] [ φ self; φ slice ] 🔽 
         option ('& Output) }}
@@ -32,7 +40,7 @@ Module SliceIndex.
       (T : Set) `{Link T} 
       (Output : Set) `{Link Output} : Set :=
     { get_mut @ 
-      IsTraitMethod.t "core::slice::index::SliceIndex" [] [Φ T] (Φ Self) "get_mut" get_mut *
+      IsTraitMethod.t (trait Self T) "get_mut" get_mut *
       forall (self : Self) (slice : '&mut T),
         {{ get_mut [] [] [ φ self; φ slice ] 🔽 
         option ('&mut Output) }}
@@ -43,7 +51,7 @@ Module SliceIndex.
       (T : Set) `{Link T} 
       (Output : Set) `{Link Output} : Set :=
     { get_unchecked @ 
-      IsTraitMethod.t "core::slice::index::SliceIndex" [] [Φ T] (Φ Self) "get_unchecked" get_unchecked *
+      IsTraitMethod.t (trait Self T) "get_unchecked" get_unchecked *
       forall (self : Self) (slice : '*const T),
         {{ get_unchecked [] [] [ φ self; φ slice ] 🔽 
         '*const Output }}
@@ -54,19 +62,19 @@ Module SliceIndex.
       (T : Set) `{Link T} 
       (Output : Set) `{Link Output} : Set :=
     { get_unchecked_mut @ 
-      IsTraitMethod.t "core::slice::index::SliceIndex" [] [Φ T] (Φ Self) "get_unchecked_mut" get_unchecked_mut *
+      IsTraitMethod.t (trait Self T) "get_unchecked_mut" get_unchecked_mut *
       forall (self : Self) (slice : '& T),
         {{ get_unchecked_mut [] [] [ φ self; φ slice ] 🔽 
         '& Output }}
     }.
 
-  Definition run_index 
+  Definition run_index
       (Self : Set) `{Link Self}
       (T : Set) `{Link T}
       (Output : Set) `{Link Output} :
       Set := 
     { index @ 
-      IsTraitMethod.t "core::slice::index::SliceIndex" [] [Φ T] (Φ Self) "index" index *
+      IsTraitMethod.t (trait Self T) "index" index *
       forall (self : Self) (slice : '& T),
         {{ index [] [] [ φ self; φ slice ] 🔽 
         '& Output }}
@@ -78,7 +86,7 @@ Module SliceIndex.
       (Output : Set) `{Link Output} :
       Set := 
     { index_mut @ 
-      IsTraitMethod.t "core::slice::index::SliceIndex" [] [Φ T] (Φ Self) "index_mut" index_mut *
+      IsTraitMethod.t (trait Self T) "index_mut" index_mut *
       forall (self : Self) (slice : '&mut T),
         {{ index_mut [] [] [ φ self; φ slice ] 🔽 
         '&mut Output }}

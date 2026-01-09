@@ -22,7 +22,7 @@ Module Host.
     Class t
         {Self : Set} `{Link Self}
         {types : Host.Types.t} `{Host.Types.AreLinks types}
-        (run_Host_for_Self : Host.Run Self types)
+        `{!Host.Run Self types}
         (I : C Self) :
         Prop := {
       load_account_delegated
@@ -34,8 +34,7 @@ Module Host.
         let ref_self : '&mut Self := make_ref 1 in
         {{
           SimulateM.eval_f
-            (run_Host_for_Self.(links.host.Host.load_account_delegated).(TraitMethod.run)
-              ref_self address)
+            (Host.run_load_account_delegated ref_self address)
             (interpreter :: self :: stack)%stack 🌲
           let result_self := I.(load_account_delegated) self address in
           (

@@ -10,8 +10,13 @@ Require Import revm.revm_context_interface.transaction.links.transaction_type.
 
 (* pub trait TransactionError: Debug + core::error::Error {} *)
 Module TransactionError.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("revm_context_interface::transaction::TransactionError", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "revm_context_interface::transaction::TransactionError";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
   Class Run (Self : Set) `{Link Self} : Set := {
     run_Error_for_Self : Error.Run Self;
@@ -43,8 +48,13 @@ pub trait Transaction {
 }
 *)
 Module Transaction.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("revm_context_interface::transaction::Transaction", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "revm_context_interface::transaction::Transaction";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
   Module Types.
     Record t : Type := {
@@ -87,104 +97,65 @@ Module Transaction.
       H.(H_Eip7702 _).
   End Types.
 
-  Definition Run_tx_type
-    (Self : Set) `{Link Self}
-    (types : Types.t) `{Types.AreLinks types} :
-    Set :=
-    TraitMethod.C (trait Self) "tx_type" (fun method =>
-      forall (self : '& Self),
-      Run.Trait method [] [] [ φ self ] types.(Types.TransactionType)
-    ).
+  Class Method_tx_type (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set := {
+    tx_type : PolymorphicFunction.t;
+    tx_type_is_method :: IsTraitMethod.C (trait Self) "tx_type" tx_type;
+    run_tx_type (self : '& Self) :: Run.Trait tx_type [] [] [ φ self ] types.(Types.TransactionType);
+  }.
 
-  Definition Run_legacy
-    (Self : Set) `{Link Self}
-    (types : Types.t) `{Types.AreLinks types} :
-    Set :=
-    TraitMethod.C (trait Self) "legacy" (fun method =>
-      forall (self : '& Self),
-      Run.Trait method [] [] [ φ self ] ('& types.(Types.Legacy))
-    ).
+  Class Method_legacy (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set := {
+    legacy : PolymorphicFunction.t;
+    legacy_is_method :: IsTraitMethod.C (trait Self) "legacy" legacy;
+    run_legacy (self : '& Self) :: Run.Trait legacy [] [] [ φ self ] ('& types.(Types.Legacy));
+  }.
 
-  Definition Run_eip2930
-    (Self : Set) `{Link Self}
-    (types : Types.t) `{Types.AreLinks types} :
-    Set :=
-    TraitMethod.C (trait Self) "eip2930" (fun method =>
-      forall (self : '& Self),
-      Run.Trait method [] [] [ φ self ] ('& types.(Types.Eip2930))
-    ).
+  Class Method_eip2930 (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set := {
+    eip2930 : PolymorphicFunction.t;
+    eip2930_is_method :: IsTraitMethod.C (trait Self) "eip2930" eip2930;
+    run_eip2930 (self : '& Self) :: Run.Trait eip2930 [] [] [ φ self ] ('& types.(Types.Eip2930));
+  }.
 
-  Definition Run_eip1559
-    (Self : Set) `{Link Self}
-    (types : Types.t) `{Types.AreLinks types} :
-    Set :=
-    TraitMethod.C (trait Self) "eip1559" (fun method =>
-      forall (self : '& Self),
-      Run.Trait method [] [] [ φ self ] ('& types.(Types.Eip1559))
-    ).
+  Class Method_eip1559 (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set := {
+    eip1559 : PolymorphicFunction.t;
+    eip1559_is_method :: IsTraitMethod.C (trait Self) "eip1559" eip1559;
+    run_eip1559 (self : '& Self) :: Run.Trait eip1559 [] [] [ φ self ] ('& types.(Types.Eip1559));
+  }.
 
-  Definition Run_eip4844
-    (Self : Set) `{Link Self}
-    (types : Types.t) `{Types.AreLinks types} :
-    Set :=
-    TraitMethod.C (trait Self) "eip4844" (fun method =>
-      forall (self : '& Self),
-      Run.Trait method [] [] [ φ self ] ('& types.(Types.Eip4844))
-    ).
+  Class Method_eip4844 (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set := {
+    eip4844 : PolymorphicFunction.t;
+    eip4844_is_method :: IsTraitMethod.C (trait Self) "eip4844" eip4844;
+    run_eip4844 (self : '& Self) :: Run.Trait eip4844 [] [] [ φ self ] ('& types.(Types.Eip4844));
+  }.
 
-  Definition Run_eip7702
-    (Self : Set) `{Link Self}
-    (types : Types.t) `{Types.AreLinks types} :
-    Set :=
-    TraitMethod.C (trait Self) "eip7702" (fun method =>
-      forall (self : '& Self),
-      Run.Trait method [] [] [ φ self ] ('& types.(Types.Eip7702))
-    ).
+  Class Method_eip7702 (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set := {
+    eip7702 : PolymorphicFunction.t;
+    eip7702_is_method :: IsTraitMethod.C (trait Self) "eip7702" eip7702;
+    run_eip7702 (self : '& Self) :: Run.Trait eip7702 [] [] [ φ self ] ('& types.(Types.Eip7702));
+  }.
 
-  (* Definition Run_common_fields
-    (Self : Set) `{Link Self}
-    (types : Types.t) `{Types.AreLinks types} :
-    Set :=
-    TraitMethod.C (trait Self) "common_fields" (fun method =>
-      forall (self : '& Self),
-      Run.Trait method [] [] [ φ self ] ('& types.(Types.CommonTxFields))
-    ). *)
+  Class Method_max_fee (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set := {
+    max_fee : PolymorphicFunction.t;
+    max_fee_is_method :: IsTraitMethod.C (trait Self) "max_fee" max_fee;
+    run_max_fee (self : '& Self) :: Run.Trait max_fee [] [] [ φ self ] u128;
+  }.
 
-  Definition Run_max_fee
-    (Self : Set) `{Link Self}
-    (types : Types.t) `{Types.AreLinks types} :
-    Set :=
-    TraitMethod.C (trait Self) "max_fee" (fun method =>
-      forall (self : '& Self),
-      Run.Trait method [] [] [ φ self ] u128
-    ).
+  Class Method_effective_gas_price (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set := {
+    effective_gas_price : PolymorphicFunction.t;
+    effective_gas_price_is_method :: IsTraitMethod.C (trait Self) "effective_gas_price" effective_gas_price;
+    run_effective_gas_price (self : '& Self) (base_fee : u128) :: Run.Trait effective_gas_price [] [] [ φ self; φ base_fee ] u128;
+  }.
 
-  Definition Run_effective_gas_price
-    (Self : Set) `{Link Self}
-    (types : Types.t) `{Types.AreLinks types} :
-    Set :=
-    TraitMethod.C (trait Self) "effective_gas_price" (fun method =>
-      forall (self : '& Self) (base_fee : u128),
-      Run.Trait method [] [] [ φ self; φ base_fee ] u128
-    ).
+  Class Method_kind (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set := {
+    kind : PolymorphicFunction.t;
+    kind_is_method :: IsTraitMethod.C (trait Self) "kind" kind;
+    run_kind (self : '& Self) :: Run.Trait kind [] [] [ φ self ] TxKind.t;
+  }.
 
-  Definition Run_kind
-    (Self : Set) `{Link Self}
-    (types : Types.t) `{Types.AreLinks types} :
-    Set :=
-    TraitMethod.C (trait Self) "kind" (fun method =>
-      forall (self : '& Self),
-      Run.Trait method [] [] [ φ self ] TxKind.t
-    ).
-
-  Definition Run_access_list
-    (Self : Set) `{Link Self}
-    (types : Types.t) `{Types.AreLinks types} :
-    Set :=
-    TraitMethod.C (trait Self) "access_list" (fun method =>
-      forall (self : '& Self),
-      Run.Trait method [] [] [ φ self ] (option ('& types.(Types.AccessList)))
-    ).
+  Class Method_access_list (Self : Set) `{Link Self} (types : Types.t) `{Types.AreLinks types} : Set := {
+    access_list : PolymorphicFunction.t;
+    access_list_is_method :: IsTraitMethod.C (trait Self) "access_list" access_list;
+    run_access_list (self : '& Self) :: Run.Trait access_list [] [] [ φ self ] (option ('& types.(Types.AccessList)));
+  }.
 
   Class Run
       (Self : Set) `{Link Self}
@@ -220,24 +191,24 @@ Module Transaction.
       IsTraitAssociatedType
         "revm_context_interface::transaction::Transaction" [] [] (Φ Self)
         "Eip4844" (Φ types.(Types.Eip4844));
-    run_Eip4844Tx_for_Eip4844 : Eip4844Tx.Run types.(Types.Eip4844);
+    run_Eip4844Tx_for_Eip4844 :: Eip4844Tx.Run types.(Types.Eip4844);
     Eip7702_IsAssociated :
       IsTraitAssociatedType
         "revm_context_interface::transaction::Transaction" [] [] (Φ Self)
         "Eip7702" (Φ types.(Types.Eip7702));
-    tx_type : Run_tx_type Self types;
-    legacy : Run_legacy Self types;
-    eip2930 : Run_eip2930 Self types;
-    eip1559 : Run_eip1559 Self types;
-    eip4844 : Run_eip4844 Self types;
-    eip7702 : Run_eip7702 Self types;
-    (* common_fields : Run_common_fields Self types; *)
-    max_fee : Run_max_fee Self types;
-    effective_gas_price : Run_effective_gas_price Self types;
-    kind : Run_kind Self types;
-    access_list : Run_access_list Self types;
+    method_tx_type :: Method_tx_type Self types;
+    method_legacy :: Method_legacy Self types;
+    method_eip2930 :: Method_eip2930 Self types;
+    method_eip1559 :: Method_eip1559 Self types;
+    method_eip4844 :: Method_eip4844 Self types;
+    method_eip7702 :: Method_eip7702 Self types;
+    method_max_fee :: Method_max_fee Self types;
+    method_effective_gas_price :: Method_effective_gas_price Self types;
+    method_kind :: Method_kind Self types;
+    method_access_list :: Method_access_list Self types;
   }.
 End Transaction.
+Export (hints) Transaction.
 
 Module Impl_Transaction_for_Ref_Transaction.
   Instance run
@@ -256,17 +227,19 @@ pub trait TransactionGetter {
 }
 *)
 Module TransactionGetter.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("revm_context_interface::transaction::TransactionGetter", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "revm_context_interface::transaction::TransactionGetter";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_tx
-    (Self : Set) `{Link Self}
-    (Transaction : Set) `{Link Transaction} :
-    Set :=
-    TraitMethod.C (trait Self) "tx" (fun method =>
-      forall (self : '& Self),
-      Run.Trait method [] [] [ φ self ] ('& Transaction)
-    ).
+  Class Method_tx (Self : Set) `{Link Self} (Transaction : Set) `{Link Transaction} : Set := {
+    tx : PolymorphicFunction.t;
+    tx_is_method :: IsTraitMethod.C (trait Self) "tx" tx;
+    run_tx (self : '& Self) :: Run.Trait tx [] [] [ φ self ] ('& Transaction);
+  }.
 
   Class Run
       (Self : Set) `{Link Self}
@@ -277,11 +250,12 @@ Module TransactionGetter.
       IsTraitAssociatedType
         "revm_context_interface::transaction::TransactionGetter" [] [] (Φ Self)
         "Transaction" (Φ Transaction);
-    run_Transaction_for_Transaction :
+    run_Transaction_for_Transaction ::
       Transaction.Run Transaction types;
-    tx : Run_tx Self Transaction;
+    method_tx :: Method_tx Self Transaction;
   }.
 End TransactionGetter.
+Export (hints) TransactionGetter.
 
 (*
 pub trait TransactionSetter: TransactionGetter {
@@ -289,25 +263,28 @@ pub trait TransactionSetter: TransactionGetter {
 }
 *)
 Module TransactionSetter.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("revm_context_interface::transaction::TransactionSetter", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "revm_context_interface::transaction::TransactionSetter";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_set_tx
-    (Self : Set) `{Link Self}
-    (Transaction : Set) `{Link Transaction} :
-    Set :=
-    TraitMethod.C (trait Self) "set_tx" (fun method =>
-      forall (self : '&mut Self) (tx : Transaction),
-      Run.Trait method [] [] [ φ self; φ tx ] unit
-    ).
+  Class Method_set_tx (Self : Set) `{Link Self} (Transaction : Set) `{Link Transaction} : Set := {
+    set_tx : PolymorphicFunction.t;
+    set_tx_is_method :: IsTraitMethod.C (trait Self) "set_tx" set_tx;
+    run_set_tx (self : '&mut Self) (tx : Transaction) :: Run.Trait set_tx [] [] [ φ self; φ tx ] unit;
+  }.
 
   Class Run
       (Self : Set) `{Link Self}
       (Transaction : Set) `{Link Transaction}
       (types : Transaction.Types.t) `{Transaction.Types.AreLinks types} :
       Set := {
-    run_TransactionGetter_for_Self :
+    run_TransactionGetter_for_Self ::
       TransactionGetter.Run Self Transaction types;
-    set_tx : Run_set_tx Self Transaction;
+    method_set_tx :: Method_set_tx Self Transaction;
   }.
 End TransactionSetter.
+Export (hints) TransactionSetter.

@@ -8,25 +8,31 @@ pub trait Deref {
 }
 *)
 Module Deref.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("core::ops::deref::Deref", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "core::ops::deref::Deref";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_deref
+  Class Method_deref
       (Self : Set) `{Link Self}
       (Target : Set) `{Link Target} :
-      Set :=
-    TraitMethod.C (trait Self) "deref" (fun method =>
-      forall (self : '& Self),
-      Run.Trait method [] [] [ φ self ] ('& Target)
-    ).
+      Set := {
+    deref : PolymorphicFunction.t;
+    deref_is_method :: IsTraitMethod.C (trait Self) "deref" deref;
+    run_deref (self : '& Self) :: Run.Trait deref [] [] [ φ self ] ('& Target);
+  }.
 
   Class Run
       (Self : Set) `{Link Self}
       (Target : Set) `{Link Target} :
       Set := {
-    deref : Run_deref Self Target;
+    method_deref :: Method_deref Self Target;
   }.
 End Deref.
+Export (hints) Deref.
 
 (*
 pub trait DerefMut: Deref {
@@ -34,22 +40,28 @@ pub trait DerefMut: Deref {
 }
 *)
 Module DerefMut.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("core::ops::deref::DerefMut", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "core::ops::deref::DerefMut";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_deref_mut
+  Class Method_deref_mut
       (Self : Set) `{Link Self}
       (Target : Set) `{Link Target} :
-      Set :=
-    TraitMethod.C (trait Self) "deref_mut" (fun method =>
-      forall (self : '&mut Self),
-      Run.Trait method [] [] [ φ self ] ('&mut Target)
-    ).
+      Set := {
+    deref_mut : PolymorphicFunction.t;
+    deref_mut_is_method :: IsTraitMethod.C (trait Self) "deref_mut" deref_mut;
+    run_deref_mut (self : '&mut Self) :: Run.Trait deref_mut [] [] [ φ self ] ('&mut Target);
+  }.
 
   Class Run
       (Self : Set) `{Link Self}
       (Target : Set) `{Link Target} :
       Set := {
-    deref_mut : Run_deref_mut Self Target;
+    method_deref_mut :: Method_deref_mut Self Target;
   }.
 End DerefMut.
+Export (hints) DerefMut.
