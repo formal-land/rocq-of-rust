@@ -30,7 +30,7 @@ Proof.
   constructor.
   run_symbolic; cbn.
   { change (Value.Closure _) with
-      (φ (Function2.of_run (run_unknown run_InterpreterTypes_for_WIRE))).
+      (φ (Function2.of_run (run_unknown (H := H) run_InterpreterTypes_for_WIRE))).
     set (F := Function2.t _ _ _).
     now pose proof (run_pointer_coercion_intrinsic_reify_fn_pointer F).
   }
@@ -41,12 +41,12 @@ Proof.
     run_symbolic.
   }
   { change (Value.Closure _) with
-      (φ (Function2.of_run (run_stop run_InterpreterTypes_for_WIRE))).
+      (φ (Function2.of_run (run_stop (H := H) run_InterpreterTypes_for_WIRE))).
     set (F := Function2.t _ _ _).
     now pose proof (run_pointer_coercion_intrinsic_reify_fn_pointer F).
   }
   { change (Value.Closure _) with
-      (φ (Function2.of_run (run_add run_InterpreterTypes_for_WIRE))).
+      (φ (Function2.of_run (run_add (H := H) run_InterpreterTypes_for_WIRE))).
     set (F := Function2.t _ _ _).
     now pose proof (run_pointer_coercion_intrinsic_reify_fn_pointer F).
   }

@@ -75,8 +75,8 @@ Proof.
     constructor.
     run_symbolic.
   }
-  change (M.closure any_callback) with (φ (Function1.of_run run_any_callback)).
-  destruct any as [? ? run_any]; cbn in *.
+  progress change (Value.Closure _) with (φ (Function1.of_run run_any_callback)).
+  destruct method_any as [? ? run_any]; cbn in *.
   epose proof (run_any' := run_any _ _ _ (Function1.of_run run_any_callback) _ _ _).
   typeclasses eauto.
 Defined.

@@ -16,50 +16,58 @@ Require Import core.slice.links.mod.
 Require Export revm.revm_bytecode.eof.links.body_EofBody.
 
 Module Impl_Clone_for_EofBody.
-  Definition run_clone : Clone.Run_clone EofBody.t.
+  Definition Self : Set :=
+    EofBody.t.
+
+  Instance run_clone (self : '& Self) :
+    Run.Trait eof.body.Impl_core_clone_Clone_for_revm_bytecode_eof_body_EofBody.clone
+      [] [] [φ self]
+      Self.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+
+  Instance method_clone : Clone.Method_clone Self.
   Proof.
     eexists.
-    { eapply IsTraitMethod.Defined.
+    { constructor.
+      eapply IsTraitMethod.Defined.
       { apply body.eof.body.Impl_core_clone_Clone_for_revm_bytecode_eof_body_EofBody.Implements. }
       { reflexivity. }
     }
-    { constructor.
-      destruct (vec.links.mod.Impl_Clone_for_Vec.run (T := TypesSection.t) (A := Global.t)).
-      destruct (vec.links.mod.Impl_Clone_for_Vec.run (T := usize) (A := Global.t)).
-      destruct alloy_primitives.bytes.links.mod.Impl_Clone_for_Bytes.run.
-      destruct (vec.links.mod.Impl_Clone_for_Vec.run (T := Bytes.t) (A := Global.t)).
-      destruct clone.Impl_Clone_for_bool.run.
-      run_symbolic.
-    }
+    { typeclasses eauto. }
   Defined.
 
-  Instance run : Clone.Run EofBody.t := {
-    Clone.clone := run_clone;
-  }.
+  Instance run : Clone.Run Self := {}.
 End Impl_Clone_for_EofBody.
 Export (hints) Impl_Clone_for_EofBody.
 
 Module Impl_Default_for_EofBody.
-  Definition run_default : Default.Run_default EofBody.t.
+  Definition Self : Set :=
+    EofBody.t.
+
+  Instance run_default :
+    Run.Trait eof.body.Impl_core_default_Default_for_revm_bytecode_eof_body_EofBody.default
+      [] [] []
+      Self.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+
+  Instance method_default : Default.Method_default Self.
   Proof.
     eexists.
-    { eapply IsTraitMethod.Defined.
+    { constructor.
+      eapply IsTraitMethod.Defined.
       { apply body.eof.body.Impl_core_default_Default_for_revm_bytecode_eof_body_EofBody.Implements. }
       { reflexivity. }
     }
-    { constructor.
-      destruct (vec.links.mod.Impl_Default_for_Vec.run (T := TypesSection.t) (A := Global.t)).
-      destruct (vec.links.mod.Impl_Default_for_Vec.run (T := usize) (A := Global.t)).
-      destruct alloy_primitives.bytes.links.mod.Impl_Default_for_Bytes.run.
-      destruct (vec.links.mod.Impl_Default_for_Vec.run (T := Bytes.t) (A := Global.t)).
-      destruct default.Impl_Default_for_bool.run.
-      run_symbolic.
-    }
+    { typeclasses eauto. }
   Defined.
 
-  Instance run : Default.Run EofBody.t := {
-    Default.default := run_default;
-  }.
+  Instance run : Default.Run Self := {}.
 End Impl_Default_for_EofBody.
 Export (hints) Impl_Default_for_EofBody.
 
@@ -73,8 +81,8 @@ Module Impl_EofBody.
     Run.Trait body.eof.body.Impl_revm_bytecode_eof_body_EofBody.code [] [] [φ self; φ index] (option Bytes.t).
   Proof.
     constructor.
-    destruct (vec.links.mod.Impl_Index_for_Vec_T_A.run usize usize Global.t usize).
-    destruct (vec.links.mod.Impl_Deref_for_Vec.run (T := usize) (A := Global.t)).
+    (* destruct (vec.links.mod.Impl_Index_for_Vec_T_A.run usize usize Global.t usize).
+    destruct (vec.links.mod.Impl_Deref_for_Vec.run (T := usize) (A := Global.t)). *)
     run_symbolic.
   Admitted.
   Global Opaque run_code.
@@ -108,8 +116,8 @@ Module Impl_EofBody.
     Run.Trait body.eof.body.Impl_revm_bytecode_eof_body_EofBody.eof_code_section_start [] [] [φ self; φ idx] (option usize).
   Proof.
     constructor.
-    destruct (vec.links.mod.Impl_Deref_for_Vec.run (T := usize) (A := Global.t)).
-    destruct deref.
+    (* destruct (vec.links.mod.Impl_Deref_for_Vec.run (T := usize) (A := Global.t)).
+    destruct deref. *)
     run_symbolic.
   Admitted.
   Global Opaque run_eof_code_section_start.

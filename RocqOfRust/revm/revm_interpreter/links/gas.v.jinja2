@@ -27,23 +27,28 @@ End MemoryGas.
 Export (hints) MemoryGas.
 
 Module Impl_Default_for_MemoryGas.
-  Definition run_default : Default.Run_default MemoryGas.t.
+  Instance run_default :
+    Run.Trait gas.Impl_core_default_Default_for_revm_interpreter_gas_MemoryGas.default
+      [] [] [] MemoryGas.t.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_default.
+
+  Instance method_default : Default.Method_default MemoryGas.t.
   Proof.
     eexists.
-    { eapply IsTraitMethod.Defined.
+    { constructor.
+      eapply IsTraitMethod.Defined.
       { apply gas.Impl_core_default_Default_for_revm_interpreter_gas_MemoryGas.Implements. }
       { reflexivity. }
     }
-    { constructor.
-      pose (Impl_Default_for_integer.run_default IntegerKind.Usize).
-      pose (Impl_Default_for_integer.run_default IntegerKind.U64).
-      run_symbolic.
-    }
+    { typeclasses eauto. }
   Defined.
 
-  Instance run : Default.Run MemoryGas.t := {
-    Default.default := run_default;
-  }.
+  Instance run : Default.Run MemoryGas.t :=
+  {}.
 End Impl_Default_for_MemoryGas.
 Export (hints) Impl_Default_for_MemoryGas.
 
@@ -138,10 +143,11 @@ End Gas.
 Export (hints) Gas.
 
 Module Impl_Clone_for_Gas.
-  Definition run_clone : Clone.Run_clone Gas.t.
+  Instance method_clone : Clone.Method_clone Gas.t.
   Proof.
     eexists.
-    { eapply IsTraitMethod.Defined.
+    { constructor.
+      eapply IsTraitMethod.Defined.
       { apply gas.Impl_core_clone_Clone_for_revm_interpreter_gas_Gas.Implements. }
       { reflexivity. }
     }
@@ -150,31 +156,27 @@ Module Impl_Clone_for_Gas.
     }
   Defined.
 
-  Instance run : clone.Clone.Run Gas.t := {
-    Clone.clone := run_clone;
-  }.
+  Instance run : clone.Clone.Run Gas.t :=
+  {}.
 End Impl_Clone_for_Gas.
 Export (hints) Impl_Clone_for_Gas.
 
 Module Impl_Default_for_Gas.
-  Definition run_default : Default.Run_default Gas.t.
+  Instance method_default : Default.Method_default Gas.t.
   Proof.
     eexists.
-    { eapply IsTraitMethod.Defined.
+    { constructor.
+      eapply IsTraitMethod.Defined.
       { apply gas.Impl_core_default_Default_for_revm_interpreter_gas_Gas.Implements. }
       { reflexivity. }
     }
     { constructor.
-      pose (default.Impl_Default_for_integer.run_default IntegerKind.U64).
-      pose (default.Impl_Default_for_integer.run_default IntegerKind.I64).
-      pose Impl_Default_for_MemoryGas.run_default.
       run_symbolic.
     }
   Defined.
 
-  Instance run : Default.Run Gas.t := {
-    Default.default := run_default;
-  }.
+  Instance run : Default.Run Gas.t :=
+  {}.
 End Impl_Default_for_Gas.
 Export (hints) Impl_Default_for_Gas.
 
@@ -344,7 +346,6 @@ Module Impl_Gas.
     Run.Trait gas.Impl_revm_interpreter_gas_Gas.set_final_refund [] [] [φ self; φ is_london] unit.
   Proof.
     constructor.
-    pose cmp.Impl_Ord_for_u64.run_min.
     run_symbolic.
   Defined.
   Global Opaque run_set_final_refund.

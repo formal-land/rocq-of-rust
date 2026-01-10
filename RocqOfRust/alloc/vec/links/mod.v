@@ -79,41 +79,53 @@ End Vec.
 Export (hints) Vec.
 
 Module Impl_Clone_for_Vec.
-  Definition run_clone {T A : Set} `{Link T} `{Link A} : Clone.Run_clone (Vec.t T A).
+  Instance method_clone {T A : Set} `{Link T} `{Link A} : Clone.Method_clone (Vec.t T A).
   Admitted.
 
-  Instance run {T A : Set} `{Link T} `{Link A} : Clone.Run (Vec.t T A) := {
-    Clone.clone := run_clone;
-  }.
+  Instance run {T A : Set} `{Link T} `{Link A} : Clone.Run (Vec.t T A) := {}.
 End Impl_Clone_for_Vec.
+Export (hints) Impl_Clone_for_Vec.
 
 Module Impl_Default_for_Vec.
-  Definition run_default {T A : Set} `{Link T} `{Link A} : Default.Run_default (Vec.t T A).
+  Instance method_default {T A : Set} `{Link T} `{Link A} : Default.Method_default (Vec.t T A).
   Admitted.
 
-  Instance run {T A : Set} `{Link T} `{Link A} : Default.Run (Vec.t T A) := {
-    Default.default := run_default;
-  }.
+  Instance run {T A : Set} `{Link T} `{Link A} : Default.Run (Vec.t T A) := {}.
 End Impl_Default_for_Vec.
+Export (hints) Impl_Default_for_Vec.
 
 Module Impl_Deref_for_Vec.
-  Definition run_deref {T A : Set} `{Link T} `{Link A} : Deref.Run_deref (Vec.t T A) (list T).
+  Instance method_deref {T A : Set} `{Link T} `{Link A} : Deref.Method_deref (Vec.t T A) (list T).
   Admitted.
 
-  Instance run {T A : Set} `{Link T} `{Link A} : Deref.Run (Vec.t T A) (list T) := {
-    Deref.deref := run_deref;
-  }.
+  Instance run {T A : Set} `{Link T} `{Link A} : Deref.Run (Vec.t T A) (list T) := {}.
 End Impl_Deref_for_Vec.
+Export (hints) Impl_Deref_for_Vec.
 
 Module Impl_DerefMut_for_Vec.
-  Definition run_deref_mut {T A : Set} `{Link T} `{Link A} : 
-    DerefMut.Run_deref_mut (Vec.t T A) (list T).
+  Instance run_deref_mut {T A : Set} `{Link T} `{Link A} (self : '&mut (Vec.t T A)) :
+    Run.Trait (vec.Impl_core_ops_deref_DerefMut_where_core_alloc_Allocator_A_for_alloc_vec_Vec_T_A.deref_mut (Φ T) (Φ A)) [] [] [φ self] ('&mut (list T)).
+  Proof.
+    constructor.
+    run_symbolic.
   Admitted.
+  Global Opaque run_deref_mut.
 
-  Instance run {T A : Set} `{Link T} `{Link A} : DerefMut.Run (Vec.t T A) (list T) := {
-    DerefMut.deref_mut := run_deref_mut;
-  }.
+  Instance method_deref_mut (T A : Set) `{Link T} `{Link A} :
+    DerefMut.Method_deref_mut (Vec.t T A) (list T).
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply vec.Impl_core_ops_deref_DerefMut_where_core_alloc_Allocator_A_for_alloc_vec_Vec_T_A.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance run (T A : Set) `{Link T} `{Link A} : DerefMut.Run (Vec.t T A) (list T) := {}.
 End Impl_DerefMut_for_Vec.
+Export (hints) Impl_DerefMut_for_Vec.
 
 Module Impl_Vec_T.
   Definition Self (T : Set) `{Link T} : Set :=

@@ -18,44 +18,50 @@ Require Import core.links.result.
   }
 *)
 Module Pack.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("solana_program_pack::Pack", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "solana_program_pack::Pack";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_unpack (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "unpack" (fun method =>
-      forall (input : '& (list u8)),
-        Run.Trait method [] [] [φ input] (Result.t Self ProgramError.t)
-    ).
+  Class Method_unpack (Self : Set) `{Link Self} : Set := {
+    unpack : PolymorphicFunction.t;
+    unpack_is_method :: IsTraitMethod.C (trait Self) "unpack" unpack;
+    run_unpack (input : '& (list u8)) :: Run.Trait unpack [] [] [φ input] (Result.t Self ProgramError.t);
+  }.
 
-  Definition Run_unpack_unchecked (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "unpack_unchecked" (fun method =>
-      forall (input : '& (list u8)),
-        Run.Trait method [] [] [φ input] (Result.t Self ProgramError.t)
-    ).
+  Class Method_unpack_unchecked (Self : Set) `{Link Self} : Set := {
+    unpack_unchecked : PolymorphicFunction.t;
+    unpack_unchecked_is_method :: IsTraitMethod.C (trait Self) "unpack_unchecked" unpack_unchecked;
+    run_unpack_unchecked (input : '& (list u8)) :: Run.Trait unpack_unchecked [] [] [φ input] (Result.t Self ProgramError.t);
+  }.
 
-  Definition Run_unpack_from_slice (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "unpack_from_slice" (fun method =>
-      forall (src : '& (list u8)),
-        Run.Trait method [] [] [φ src] (Result.t Self ProgramError.t)
-    ).
+  Class Method_unpack_from_slice (Self : Set) `{Link Self} : Set := {
+    unpack_from_slice : PolymorphicFunction.t;
+    unpack_from_slice_is_method :: IsTraitMethod.C (trait Self) "unpack_from_slice" unpack_from_slice;
+    run_unpack_from_slice (src : '& (list u8)) :: Run.Trait unpack_from_slice [] [] [φ src] (Result.t Self ProgramError.t);
+  }.
 
-  Definition Run_pack (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "pack" (fun method =>
-      forall (src : Self) (dst : '&mut (list u8)),
-        Run.Trait method [] [] [φ src; φ dst] (Result.t unit ProgramError.t)
-    ).
+  Class Method_pack (Self : Set) `{Link Self} : Set := {
+    pack : PolymorphicFunction.t;
+    pack_is_method :: IsTraitMethod.C (trait Self) "pack" pack;
+    run_pack (src : Self) (dst : '&mut (list u8)) :: Run.Trait pack [] [] [φ src; φ dst] (Result.t unit ProgramError.t);
+  }.
 
-  Definition Run_pack_into_slice (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "pack_into_slice" (fun method =>
-      forall (self : '& Self) (dst : '&mut (list u8)),
-        Run.Trait method [] [] [φ self; φ dst] unit
-    ).
+  Class Method_pack_into_slice (Self : Set) `{Link Self} : Set := {
+    pack_into_slice : PolymorphicFunction.t;
+    pack_into_slice_is_method :: IsTraitMethod.C (trait Self) "pack_into_slice" pack_into_slice;
+    run_pack_into_slice (self : '& Self) (dst : '&mut (list u8)) :: Run.Trait pack_into_slice [] [] [φ self; φ dst] unit;
+  }.
 
   Class Run (Self : Set) `{Link Self} : Set := {
-    unpack : Run_unpack Self;
-    unpack_unchecked : Run_unpack_unchecked Self;
-    unpack_from_slice : Run_unpack_from_slice Self;
-    pack : Run_pack Self;
-    pack_into_slice : Run_pack_into_slice Self;
+    method_unpack :: Method_unpack Self;
+    method_unpack_unchecked :: Method_unpack_unchecked Self;
+    method_unpack_from_slice :: Method_unpack_from_slice Self;
+    method_pack :: Method_pack Self;
+    method_pack_into_slice :: Method_pack_into_slice Self;
   }.
 End Pack.
+Export (hints) Pack.

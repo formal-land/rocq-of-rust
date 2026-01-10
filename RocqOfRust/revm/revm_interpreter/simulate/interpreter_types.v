@@ -41,21 +41,22 @@ Module InputTraits.
     Class t
         (WIRE : Set) (WIRE_types : InterpreterTypes.Types.t)
         `{Link WIRE} `{InterpreterTypes.Types.AreLinks WIRE_types}
-        (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+        `{!InterpreterTypes.Run WIRE WIRE_types}
         (I : C WIRE_types) :
         Prop := {
       target_address
         (interpreter : Interpreter.t WIRE WIRE_types)
         (stack : Stack.t) :
-        let ref_interpreter : '& _ := make_ref 0 in
-        let ref_self := {| Ref.core :=
+        let ref_interpreter : '& (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+        let ref_self : '& _ := {| Ref.core :=
           SubPointer.Runner.apply
             ref_interpreter.(Ref.core)
             Interpreter.SubPointer.get_input
         |} in
         {{
           SimulateM.eval_f
-            (run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_InputsTrait_for_Input).(InputsTrait.target_address).(TraitMethod.run)
+            (InputsTrait.run_target_address
+              (Self := WIRE_types.(InterpreterTypes.Types.Input))
               ref_self
             )
             (interpreter :: stack)%stack 🌲
@@ -95,14 +96,14 @@ Module Stack.
     Class t
         (WIRE : Set) (WIRE_types : InterpreterTypes.Types.t)
         `{Link WIRE} `{InterpreterTypes.Types.AreLinks WIRE_types}
-        (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+        `{!InterpreterTypes.Run WIRE WIRE_types}
         (I : C WIRE_types) :
         Prop := {
       popn
         (interpreter : Interpreter.t WIRE WIRE_types)
         (stack_rest : Stack.t)
         (N : usize) :
-        let ref_interpreter : '&mut _ := make_ref 0 in
+        let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
         let ref_self := {| Ref.core :=
           SubPointer.Runner.apply
             ref_interpreter.(Ref.core)
@@ -110,7 +111,8 @@ Module Stack.
         |} in
         {{
           SimulateM.eval_f
-            (run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_StackTrait_for_Stack).(StackTrait.popn).(TraitMethod.run)
+            (StackTrait.run_popn
+              (Self := WIRE_types.(InterpreterTypes.Types.Stack))
               N
               ref_self
             )
@@ -125,7 +127,7 @@ Module Stack.
           (interpreter : Interpreter.t WIRE WIRE_types)
           (stack_rest : Stack.t)
           (POPN : usize) :
-        let ref_interpreter : '&mut _ := make_ref 0 in
+        let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
         let ref_self := {| Ref.core :=
           SubPointer.Runner.apply
             ref_interpreter.(Ref.core)
@@ -133,7 +135,8 @@ Module Stack.
         |} in
         {{
           SimulateM.eval_f
-            (run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_StackTrait_for_Stack).(StackTrait.popn_top).(TraitMethod.run)
+            (StackTrait.run_popn_top
+              (Self := WIRE_types.(InterpreterTypes.Types.Stack))
               POPN
               ref_self
             )
@@ -178,14 +181,14 @@ Module Loop.
     Class t
         (WIRE : Set) (WIRE_types : InterpreterTypes.Types.t)
         `{Link WIRE} `{InterpreterTypes.Types.AreLinks WIRE_types}
-        (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+        `{!InterpreterTypes.Run WIRE WIRE_types}
         (I : C WIRE_types) :
         Prop := {
       set_instruction_result
           (interpreter : Interpreter.t WIRE WIRE_types)
           (stack_rest : Stack.t)
           (result : InstructionResult.t) :
-        let ref_interpreter : '&mut _ := make_ref 0 in
+        let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
         let ref_self := {| Ref.core :=
             SubPointer.Runner.apply
               ref_interpreter.(Ref.core)
@@ -195,7 +198,8 @@ Module Loop.
           I.(set_instruction_result) interpreter.(Interpreter.control) result in
         {{
           SimulateM.eval_f
-            (run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_LoopControl_for_Control).(LoopControl.set_instruction_result).(TraitMethod.run)
+            (LoopControl.run_set_instruction_result
+              (Self := WIRE_types.(InterpreterTypes.Types.Control))
               ref_self
               result
             )
@@ -210,7 +214,7 @@ Module Loop.
         (stack_rest : Stack.t)
         (action : InterpreterAction.t)
         (result : InstructionResult.t) :
-        let ref_interpreter : '&mut _ := make_ref 0 in
+        let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
         let ref_self := {| Ref.core :=
             SubPointer.Runner.apply
               ref_interpreter.(Ref.core)
@@ -220,7 +224,8 @@ Module Loop.
           I.(set_next_action) interpreter.(Interpreter.control) action result in
         {{
           SimulateM.eval_f
-            (run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_LoopControl_for_Control).(LoopControl.set_next_action).(TraitMethod.run)
+            (LoopControl.run_set_next_action
+              (Self := WIRE_types.(InterpreterTypes.Types.Control))
               ref_self
               action
               result
@@ -234,7 +239,7 @@ Module Loop.
       gas
           (interpreter : Interpreter.t WIRE WIRE_types)
           (stack_rest : Stack.t) :
-        let ref_interpreter : '&mut _ := make_ref 0 in
+        let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
         let ref_self := {| Ref.core :=
             SubPointer.Runner.apply
               ref_interpreter.(Ref.core)
@@ -242,7 +247,8 @@ Module Loop.
         |} in
         {{
           SimulateM.eval_f
-            (run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_LoopControl_for_Control).(LoopControl.gas).(TraitMethod.run)
+            (LoopControl.run_gas
+              (Self := WIRE_types.(InterpreterTypes.Types.Control))
               ref_self
             )
             (interpreter :: stack_rest)%stack 🌲
@@ -269,23 +275,21 @@ Module SRuntimeFlag.
     Class t
         (WIRE : Set) (WIRE_types : InterpreterTypes.Types.t)
         `{Link WIRE} `{InterpreterTypes.Types.AreLinks WIRE_types}
-        (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+        `{!InterpreterTypes.Run WIRE WIRE_types}
         (I : C WIRE_types) :
         Prop := {
       is_static
           (interpreter : Interpreter.t WIRE WIRE_types)
           (stack_rest : Stack.t) :
-        let ref_core_interpreter := make_ref_core 0 in
+        let ref_interpreter : '& (Interpreter.t WIRE WIRE_types) := make_ref 0 in
         let ref_self := {| Ref.core :=
             SubPointer.Runner.apply
-              ref_core_interpreter
+              ref_interpreter.(Ref.core)
               Interpreter.SubPointer.get_runtime_flag
         |} in
         {{
           SimulateM.eval_f
-            (run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_RuntimeFlag_for_RuntimeFlag).(RuntimeFlag.is_static).(TraitMethod.run)
-              ref_self
-            )
+            (RuntimeFlag.run_is_static ref_self)
             (interpreter :: stack_rest)%stack 🌲
           (
             Output.Success (I.(is_static) interpreter.(Interpreter.runtime_flag)),
@@ -295,17 +299,15 @@ Module SRuntimeFlag.
       is_eof
         (interpreter : Interpreter.t WIRE WIRE_types)
         (stack_rest : Stack.t) :
-        let ref_core_interpreter := make_ref_core 0 in
+        let ref_interpreter : '& (Interpreter.t WIRE WIRE_types) := make_ref 0 in
         let ref_self := {| Ref.core :=
             SubPointer.Runner.apply
-              ref_core_interpreter
+              ref_interpreter.(Ref.core)
               Interpreter.SubPointer.get_runtime_flag
         |} in
         {{
           SimulateM.eval_f
-            (run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_RuntimeFlag_for_RuntimeFlag).(RuntimeFlag.is_eof).(TraitMethod.run)
-              ref_self
-            )
+            (RuntimeFlag.run_is_eof ref_self)
             (interpreter :: stack_rest)%stack 🌲
           (
             Output.Success (I.(is_eof) interpreter.(Interpreter.runtime_flag)),
@@ -315,17 +317,15 @@ Module SRuntimeFlag.
       is_eof_init
         (interpreter : Interpreter.t WIRE WIRE_types)
         (stack_rest : Stack.t) :
-        let ref_core_interpreter := make_ref_core 0 in
+        let ref_interpreter : '& (Interpreter.t WIRE WIRE_types) := make_ref 0 in
         let ref_self := {| Ref.core :=
             SubPointer.Runner.apply
-              ref_core_interpreter
+              ref_interpreter.(Ref.core)
               Interpreter.SubPointer.get_runtime_flag
         |} in
         {{
           SimulateM.eval_f
-            (run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_RuntimeFlag_for_RuntimeFlag).(RuntimeFlag.is_eof_init).(TraitMethod.run)
-              ref_self
-            )
+            (RuntimeFlag.run_is_eof_init ref_self)
             (interpreter :: stack_rest)%stack 🌲
           (
             Output.Success (I.(is_eof_init) interpreter.(Interpreter.runtime_flag)),
@@ -335,17 +335,15 @@ Module SRuntimeFlag.
       spec_id
         (interpreter : Interpreter.t WIRE WIRE_types)
         (stack_rest : Stack.t) :
-        let ref_core_interpreter := make_ref_core 0 in
+        let ref_interpreter : '& (Interpreter.t WIRE WIRE_types) := make_ref 0 in
         let ref_self := {| Ref.core :=
             SubPointer.Runner.apply
-              ref_core_interpreter
+              ref_interpreter.(Ref.core)
               Interpreter.SubPointer.get_runtime_flag
         |} in
         {{
           SimulateM.eval_f
-            (run_InterpreterTypes_for_WIRE.(InterpreterTypes.run_RuntimeFlag_for_RuntimeFlag).(RuntimeFlag.spec_id).(TraitMethod.run)
-              ref_self
-            )
+            (RuntimeFlag.run_spec_id ref_self)
             (interpreter :: stack_rest)%stack 🌲
           (
             Output.Success (I.(spec_id) interpreter.(Interpreter.runtime_flag)),
@@ -373,10 +371,10 @@ Module InterpreterTypes.
         (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
         (I : C WIRE_types) :
         Prop := {
-      Stack : Stack.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE I.(Stack);
-      Input : InputTraits.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE I.(Input);
-      Loop : Loop.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE I.(Loop);
-      RuntimeFlag : SRuntimeFlag.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE I.(RuntimeFlag);
+      Stack : Stack.Eq.t WIRE WIRE_types I.(Stack);
+      Input : InputTraits.Eq.t WIRE WIRE_types I.(Input);
+      Loop : Loop.Eq.t WIRE WIRE_types I.(Loop);
+      RuntimeFlag : SRuntimeFlag.Eq.t WIRE WIRE_types I.(RuntimeFlag);
     }.
   End Eq.
 End InterpreterTypes.

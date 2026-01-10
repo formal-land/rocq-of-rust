@@ -90,8 +90,29 @@ Module Impl_Deref_for_StateLoad.
   Definition Self (T : Set) : Set :=
     StateLoad.t T.
 
-  Instance run (T : Set) `{Link T} : Deref.Run (Self T) T.
-  Admitted.
+  Instance run_deref (T : Set) `{Link T} (self : '& (Self T)) :
+    Run.Trait
+      (journaled_state.Impl_core_ops_deref_Deref_for_revm_context_interface_journaled_state_StateLoad_T.deref (Φ T))
+      [] [] [ φ self ] ('& T).
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_deref.
+
+  Instance method_deref (T : Set) `{Link T} : Deref.Method_deref (Self T) T.
+  Proof.
+    econstructor.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply journaled_state.Impl_core_ops_deref_Deref_for_revm_context_interface_journaled_state_StateLoad_T.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance run (T : Set) `{Link T} : Deref.Run (Self T) T :=
+  {}.
 End Impl_Deref_for_StateLoad.
 Export (hints) Impl_Deref_for_StateLoad.
 

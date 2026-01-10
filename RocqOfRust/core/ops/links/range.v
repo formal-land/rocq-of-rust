@@ -125,13 +125,18 @@ End Bound.
   }
 *)
 Module RangeBounds.
-  Definition trait (Self T : Set) `{Link Self} `{Link T} : TraitMethod.Header.t :=
-    ("core::ops::RangeBounds", [], [Φ T], Φ Self).
+  Definition trait (Self T : Set) `{Link Self} `{Link T} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "core::ops::RangeBounds";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [Φ T];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
   Definition Run_start_bound (Self : Set) `{Link Self} 
       (T : Set) `{Link T} : Set :=
     {start_bound @
-      IsTraitMethod.t "core::ops::RangeBounds" [] [] (Φ Self) "start_bound" start_bound *
+      IsTraitMethod.t (trait Self T) "start_bound" start_bound *
       forall (self : '& Self),
         {{ start_bound [] [] [φ self] 🔽 Bound.t ('& T) }}
     }.
@@ -139,7 +144,7 @@ Module RangeBounds.
   Definition Run_end_bound (Self : Set) `{Link Self} 
       (T : Set) `{Link T} : Set :=
     {end_bound @
-      IsTraitMethod.t "core::ops::RangeBounds" [] [] (Φ Self) "end_bound" end_bound *
+      IsTraitMethod.t (trait Self T) "end_bound" end_bound *
       forall (self : '& Self),
         {{ end_bound [] [] [φ self] 🔽 Bound.t ('& T) }}
     }.
@@ -147,7 +152,7 @@ Module RangeBounds.
   Definition Run_contains (Self : Set) `{Link Self} 
       (T : Set) `{Link T}  : Set :=
     {contains @
-      IsTraitMethod.t "core::ops::RangeBounds" [] [] (Φ Self) "contains" contains *
+      IsTraitMethod.t (trait Self T) "contains" contains *
       forall 
           (self : '& Self)
           (U : Set) `(Link U)
@@ -160,7 +165,7 @@ Module RangeBounds.
   Definition Run_is_empty (Self : Set) `{Link Self} 
       (T : Set) `{Link T} : Set :=
     {is_empty @ 
-      IsTraitMethod.t "core::ops::RangeBounds" [] [] (Φ Self) "is_empty" is_empty *
+      IsTraitMethod.t (trait Self T) "is_empty" is_empty *
       forall (self : '& Self)
           (run_Ord_for_T : PartialOrd.Run T T),
         {{ is_empty [] [] [φ self] 🔽 bool }}

@@ -105,7 +105,7 @@ Lemma static_call_eq
     (InterpreterTypesEq :
       InterpreterTypes.Eq.t WIRE WIRE_types run_InterpreterTypes_for_WIRE IInterpreterTypes)
     (IHost : Host.C H)
-    (HostEq : Host.Eq.t run_Host_for_H IHost)
+    (HostEq : Host.Eq.t IHost)
     (interpreter : Interpreter.t WIRE WIRE_types)
     (host : H) :
   let ref_interpreter := make_ref 0 in

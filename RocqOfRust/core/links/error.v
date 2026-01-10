@@ -28,27 +28,32 @@ pub trait Error: Debug + Display {
 }
 *)
 Module Error.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("core::error::Error", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "core::error::Error";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_description (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "description" (fun method =>
-      forall (self : '& Self),
-      Run.Trait method [] [] [ φ self ] ('& string)
-    ).
+  Class Method_description (Self : Set) `{Link Self} : Set := {
+    description : PolymorphicFunction.t;
+    description_is_method :: IsTraitMethod.C (trait Self) "description" description;
+    run_description (self : '& Self) :: Run.Trait description [] [] [ φ self ] ('& string);
+  }.
 
-  Definition Run_provide (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "provide" (fun method =>
-      forall
-        (self : '& Self)
-        (request : '&mut Request.t),
-      Run.Trait method [] [] [ φ self; φ request ] unit
-    ).
+  Class Method_provide (Self : Set) `{Link Self} : Set := {
+    provide : PolymorphicFunction.t;
+    provide_is_method :: IsTraitMethod.C (trait Self) "provide" provide;
+    run_provide (self : '& Self) (request : '&mut Request.t) ::
+      Run.Trait provide [] [] [ φ self; φ request ] unit;
+  }.
 
   Class Run (Self : Set) `{Link Self} : Set := {
     (* TODO: Add source *)
-    description : Run_description Self;
+    method_description :: Method_description Self;
     (* TODO: Add cause *)
-    provide : Run_provide Self;
+    method_provide :: Method_provide Self;
   }.
 End Error.
+Export (hints) Error.

@@ -32,44 +32,37 @@ Module Impl_Clone_for_Bytes.
   Definition Self : Set :=
     Bytes.t.
 
-  Definition run_clone : Clone.Run_clone Self.
+  Instance method_clone : Clone.Method_clone Self.
   Proof.
     eexists.
-    { eapply IsTraitMethod.Defined.
+    { constructor.
+      eapply IsTraitMethod.Defined.
       { apply bytes_.Impl_core_clone_Clone_for_alloy_primitives_bytes__Bytes.Implements. }
       { reflexivity. }
     }
-    { constructor.
-      run_symbolic.
-      admit.
-    }
+    { admit. }
   Admitted.
 
-  Instance run : Clone.Run Self := {
-    Clone.clone := run_clone;
-  }.
+  Instance run : Clone.Run Self := {}.
 End Impl_Clone_for_Bytes.
+Export (hints) Impl_Clone_for_Bytes.
 
 Module Impl_Default_for_Bytes.
   Definition Self : Set :=
     Bytes.t.
 
-  Definition run_default : Default.Run_default Self.
+  Instance method_default : Default.Method_default Self.
   Proof.
     eexists.
-    { eapply IsTraitMethod.Defined.
+    { constructor.
+      eapply IsTraitMethod.Defined.
       { apply bytes_.Impl_core_default_Default_for_alloy_primitives_bytes__Bytes.Implements. }
       { reflexivity. }
     }
-    { constructor.
-      run_symbolic.
-      admit.
-    }
+    { admit. }
   Admitted.
 
-  Instance run : Default.Run Self := {
-    Default.default := run_default;
-  }.
+  Instance run : Default.Run Self := {}.
 End Impl_Default_for_Bytes.
 Export (hints) Impl_Default_for_Bytes.
 

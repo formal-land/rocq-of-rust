@@ -9,29 +9,36 @@ Require Import core.links.array.
   }
 *)
 Module Index.
-  Definition trait (Self Idx : Set) `{Link Self} `{Link Idx} : TraitMethod.Header.t :=
-    ("core::ops::index::Index", [], [Φ Idx], Φ Self).
+  Definition trait (Self Idx : Set) `{Link Self} `{Link Idx} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "core::ops::index::Index";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [Φ Idx];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_index
+  Class Method_index
       (Self Idx Output : Set) `{Link Self} `{Link Idx} `{Link Output} :
-      Set :=
-    TraitMethod.C (trait Self Idx) "index" (fun method =>
-      forall (self : '& Self) (index : Idx),
-      Run.Trait method [] [] [ φ self; φ index ] ('& Output)
-    ).
+      Set := {
+    index : PolymorphicFunction.t;
+    index_is_method :: IsTraitMethod.C (trait Self Idx) "index" index;
+    run_index (self : '& Self) (idx : Idx) ::
+      Run.Trait index [] [] [ φ self; φ idx ] ('& Output);
+  }.
 
   Class Run
       (Self : Set) `{Link Self}
       (Idx : Set) `{Link Idx}
-      (Output : Set) `{Link Output} : 
+      (Output : Set) `{Link Output} :
     Set := {
       Output_IsAssociated :
       IsTraitAssociatedType
         "core::slice::index::SliceIndex" [] [Φ Idx] (Φ Self)
         "Output" (Φ Output);
-      index : Run_index Self Idx Output;
+      method_index :: Method_index Self Idx Output;
   }.
 End Index.
+Export (hints) Index.
 
 (*
 impl<T, I, const N: usize> Index<I> for [T; N]
@@ -43,18 +50,19 @@ Module Impl_Index_for_Array.
     array.t T N.
 
   (* type Output = <[T] as Index<I>>::Output; *)
-  Definition Output (T I : Set) (N : usize) {Index_Output : Set}
+  Definition Output (T I : Set) (N : usize) (Index_Output : Set)
       `{Link T} `{Link I} `{Link Index_Output}
-      {run_Index_for_slice_T : Index.Run T I Index_Output} :
+      `{!Index.Run T I Index_Output} :
       Set :=
     Index_Output.
 
   Instance run (T I : Set) (N : usize) {Index_Output : Set}
       `{Link T} `{Link I} `{Link Index_Output}
-      {run_Index_for_slice_T : Index.Run T I Index_Output} :
-    Index.Run (Self T I N) I (Output T I N).
+      `{!Index.Run T I Index_Output} :
+    Index.Run (Self T I N) I (Output T I N Index_Output).
   Admitted.
 End Impl_Index_for_Array.
+Export (hints) Impl_Index_for_Array.
 
 (*
 pub trait IndexMut<Idx>: Index<Idx>
@@ -66,16 +74,22 @@ where
 }
 *)
 Module IndexMut.
-  Definition trait (Self Idx : Set) `{Link Self} `{Link Idx} : TraitMethod.Header.t :=
-    ("core::ops::index::IndexMut", [], [Φ Idx], Φ Self).
+  Definition trait (Self Idx : Set) `{Link Self} `{Link Idx} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "core::ops::index::IndexMut";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [Φ Idx];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_index_mut
+  Class Method_index_mut
       (Self Idx Output : Set) `{Link Self} `{Link Idx} `{Link Output} :
-      Set :=
-    TraitMethod.C (trait Self Idx) "index_mut" (fun method =>
-      forall (self : '&mut Self) (index : Idx),
-      Run.Trait method [] [] [ φ self; φ index ] ('&mut Output)
-    ).
+      Set := {
+    index_mut : PolymorphicFunction.t;
+    index_mut_is_method :: IsTraitMethod.C (trait Self Idx) "index_mut" index_mut;
+    run_index_mut (self : '&mut Self) (index : Idx) ::
+      Run.Trait index_mut [] [] [ φ self; φ index ] ('&mut Output);
+  }.
 
   Class Run
     (Self : Set) `{Link Self}
@@ -83,6 +97,7 @@ Module IndexMut.
     (Output : Set) `{Link Output} :
     Set := {
       run_Index_for_Self : Index.Run Self Idx Output;
-      index_mut : Run_index_mut Self Idx Output;
+      method_index_mut :: Method_index_mut Self Idx Output;
     }.
 End IndexMut.
+Export (hints) IndexMut.

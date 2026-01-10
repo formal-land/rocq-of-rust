@@ -35,10 +35,6 @@ Instance run_lt
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
-  destruct (Impl_PartialOrd_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
 Global Opaque run_lt.
@@ -54,10 +50,6 @@ Instance run_gt
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
-  destruct (Impl_PartialOrd_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
 Global Opaque run_gt.
@@ -73,10 +65,6 @@ Instance run_slt
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
-  destruct Impl_PartialEq_for_Ordering.run.
   run_symbolic.
 Defined.
 Global Opaque run_slt.
@@ -92,10 +80,6 @@ Instance run_sgt
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
-  destruct Impl_PartialEq_for_Ordering.run.
   run_symbolic.
 Defined.
 Global Opaque run_sgt.
@@ -111,10 +95,6 @@ Instance run_bitwise_eq
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct (Impl_PartialEq_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
 Global Opaque run_bitwise_eq.
@@ -130,9 +110,6 @@ Instance run_bitwise_is_zero
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
   run_symbolic.
 Defined.
 Global Opaque run_bitwise_is_zero.
@@ -148,9 +125,6 @@ Instance run_bitwise_bitand
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
   destruct (Impl_BitAnd_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
@@ -167,9 +141,6 @@ Instance run_bitwise_bitor
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
   destruct (Impl_BitOr_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
@@ -186,9 +157,6 @@ Instance run_bitwise_bitxor
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
   destruct (Impl_BitXor_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
@@ -205,9 +173,6 @@ Instance run_bitwise_not
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
   destruct (Impl_Not_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
@@ -224,10 +189,6 @@ Instance run_bitwise_sar
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct Impl_TryFrom_u64_for_usize.run.
   run_symbolic.
 Defined.
@@ -244,10 +205,6 @@ Instance run_bitwise_shl
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct Impl_TryFrom_u64_for_usize.run.
   destruct (Impl_Shl_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
@@ -265,10 +222,6 @@ Instance run_bitwise_shr
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct Impl_TryFrom_u64_for_usize.run.
   destruct (Impl_Shr_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.

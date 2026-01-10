@@ -11,10 +11,12 @@ Axiom IsTraitAssociatedType_eq :
   IsTraitAssociatedType trait_name trait_consts trait_tys self_ty associated_type_name ty ->
   Ty.associated_in_trait trait_name trait_consts trait_tys self_ty associated_type_name = ty.
 
+Set Typeclasses Strict Resolution.
 Class Link (A : Set) : Set := {
   Φ : Ty.t;
   φ : A -> Value.t;
 }.
+Unset Typeclasses Strict Resolution.
 (* We make explicit the argument [A]. *)
 Arguments Φ _ {_}.
 
@@ -83,7 +85,7 @@ Module OfValueWith.
   }.
 
   Lemma of_value_with {A : Set} `{Link A} {value' : Value.t} `{C A value'} :
-    value' = φ value.
+    value' = φ (A := A) value.
   Proof.
     exact eq.
   Qed.
@@ -771,17 +773,17 @@ Module Output.
     Smpl Add apply of_return_eq : of_output.
 
     Lemma of_break_eq {R : Set} `{Link R} :
-      M.Exception.Break = to_exception Break.
+      M.Exception.Break = to_exception (R := R) Break.
     Proof. reflexivity. Qed.
     Smpl Add apply of_break_eq : of_output.
 
     Lemma of_continue_eq {R : Set} `{Link R} :
-      M.Exception.Continue = to_exception Continue.
+      M.Exception.Continue = to_exception (R := R) Continue.
     Proof. reflexivity. Qed.
     Smpl Add apply of_continue_eq : of_output.
 
     Lemma of_break_match_eq {R : Set} `{Link R} :
-      M.Exception.BreakMatch = to_exception BreakMatch.
+      M.Exception.BreakMatch = to_exception (R := R) BreakMatch.
     Proof. reflexivity. Qed.
     Smpl Add apply of_break_match_eq : of_output.
   End Exception.
@@ -809,7 +811,7 @@ Module Output.
   Lemma of_exception_eq {R Output : Set} `{Link R} `{Link Output}
       (exception : Exception.t R) (exception' : M.Exception.t) :
     exception' = Exception.to_exception exception ->
-    inr exception' = to_value (Output.Exception (R := R) exception).
+    inr exception' = to_value (Output := Output) (Output.Exception (R := R) exception).
   Proof. now intros; subst. Qed.
   Smpl Add apply of_exception_eq : of_output.
 End Output.
@@ -920,12 +922,18 @@ Module Run.
         R, Output
     }}
   | CallPrimitiveGetTraitMethod
-      (trait_name : string) (self_ty : Ty.t) (trait_consts : list Value.t) (trait_tys : list Ty.t)
+      (trait_name : string) (trait_consts : list Value.t) (trait_tys : list Ty.t) (self_ty : Ty.t)
       (method_name : string) (generic_consts : list Value.t) (generic_tys : list Ty.t)
       (method : PolymorphicFunction.t)
       (k : Value.t -> M) :
     let closure := Value.Closure (existS (_, _) (method generic_consts generic_tys)) in
-    IsTraitMethod.t trait_name trait_consts trait_tys self_ty method_name method ->
+    let trait := {|
+      TraitHeader.trait_name := trait_name;
+      TraitHeader.trait_consts := trait_consts;
+      TraitHeader.trait_tys := trait_tys;
+      TraitHeader.self_ty := self_ty;
+    |} in
+    IsTraitMethod.t trait method_name method ->
     {{ k closure 🔽 R, Output }} ->
     {{ LowM.CallPrimitive
         (Primitive.GetTraitMethod
@@ -1029,28 +1037,7 @@ Module Run.
     run_f : {{ f ε τ α 🔽 Output, Output }};
   }.
 End Run.
-
-Export Run.
-
-Module TraitMethod.
-  Module Header.
-    Definition t : Set :=
-      string * list Value.t * list Ty.t * Ty.t.
-  End Header.
-
-  Class C
-      (trait : Header.t)
-      (method_name : string)
-      (run : PolymorphicFunction.t -> Set) :
-      Set :=
-    {
-      method : PolymorphicFunction.t;
-      is_trait_method :
-        let '(trait_name, trait_consts, trait_tys, self_ty) := trait in
-        IsTraitMethod.t trait_name trait_consts trait_tys self_ty method_name method;
-      run : run method;
-    }.
-End TraitMethod.
+Export (notations) Run.
 
 Module Primitive.
   (** These primitives are equivalent to the ones in the generated code, except that we are now
@@ -1387,13 +1374,6 @@ Ltac run_symbolic_get_function :=
 Ltac run_symbolic_get_associated_function :=
   eapply Run.CallPrimitiveGetAssociatedFunction; [try typeclasses eauto 1 |].
 
-Ltac run_symbolic_get_trait_method :=
-  eapply Run.CallPrimitiveGetTraitMethod; [
-    match goal with
-    | H : _ |- _ => apply H
-    end
-  |].
-
 Ltac as_of_values elements :=
   match elements with
   | [] => constr:(@nil Value.t)
@@ -1505,6 +1485,31 @@ Ltac run_symbolic_closure_auto :=
     ) |
     cbn; intro
   ].
+
+Ltac run_symbolic_get_trait_method :=
+  eapply Run.CallPrimitiveGetTraitMethod; [
+    match goal with
+    | |- context[{|
+      TraitHeader.trait_name := _;
+      TraitHeader.trait_consts := ?trait_consts;
+      TraitHeader.trait_tys := ?trait_tys;
+      TraitHeader.self_ty := ?self_ty;
+    |}] =>
+      let trait_consts' := as_of_values trait_consts in
+      let trait_tys' := as_of_tys trait_tys in
+      change trait_consts with trait_consts';
+      change trait_tys with trait_tys';
+      change self_ty with (Φ (OfTy.get_Set (ty' := self_ty) ltac:(repeat smpl of_ty)));
+      with_strategy opaque [Φ] cbn
+    end;
+    unshelve (eapply @IsTraitMethod.Make);
+    (
+      (timeout 1 typeclasses eauto) ||
+      match goal with
+      | H : _ |- _ => apply H
+      end
+    )
+  |].
 
 Ltac run_symbolic_logical_op :=
   apply Run.CallLogicalOp; [| cbn; intros [|[]]].

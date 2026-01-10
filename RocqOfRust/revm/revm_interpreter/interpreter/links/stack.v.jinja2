@@ -138,7 +138,7 @@ Module Impl_Stack.
       ('&mut aliases.U256.t).
   Proof.
     constructor.
-    destruct (Impl_DerefMut_for_Vec.run (T := aliases.U256.t) (A := Global.t)).
+    destruct (Impl_DerefMut_for_Vec.run aliases.U256.t Global.t).
     run_symbolic.
   Defined.
   Global Opaque run_top_unsafe.
@@ -150,7 +150,7 @@ Module Impl_Stack.
       (array.t aliases.U256.t N).
   Proof.
     constructor.
-    destruct (Impl_IntoIterator_for_Iterator_I.run (IterMut.t aliases.U256.t) aliases.U256.t).
+    (* destruct (Impl_IntoIterator_for_Iterator_I.run (IterMut.t aliases.U256.t) aliases.U256.t). *)
     run_symbolic.
   Admitted.
   Global Opaque run_popn.

@@ -17,6 +17,7 @@ Require Import core.links.panicking.
 Require Import core.links.result.
 Require Import core.num.links.mod.
 Require Import core.ops.links.control_flow.
+Require Import core.ops.links.deref.
 Require Import core.ops.links.range.
 Require Import core.slice.links.iter.
 Require Import revm.revm_bytecode.links.eof.
@@ -59,16 +60,8 @@ Instance run_eofcreate
 Proof.
   constructor.
   destruct run_InterpreterTypes_for_WIRE eqn:?.
-  destruct run_StackTrait_for_Stack.
   destruct run_MemoryTrait_for_Memory.
-  destruct run_LoopControl_for_Control.
-  destruct run_Immediates_for_Bytecode.
-  destruct run_Jumps_for_Bytecode.
-  destruct run_EofContainer_for_Bytecode.
-  destruct run_InputsTrait_for_Input.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct Impl_Clone_for_Bytes.run.
-  destruct Impl_Default_for_Bytes.run.
   destruct links.mod.Impl_Deref_for_Bytes.run.
   destruct (Impl_Into_for_From_T.run Impl_From_Vec_u8_for_Bytes.run).
   destruct run_Deref_for_Synthetic.

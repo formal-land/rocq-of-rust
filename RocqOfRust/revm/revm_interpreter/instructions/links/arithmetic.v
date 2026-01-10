@@ -39,9 +39,6 @@ Instance run_add
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
 Global Opaque run_add.
@@ -67,9 +64,6 @@ Instance run_mul
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
 Global Opaque run_mul.
@@ -91,9 +85,6 @@ Instance run_sub
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
 Global Opaque run_sub.
@@ -115,9 +106,6 @@ Instance run_div
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
 Global Opaque run_div.
@@ -139,9 +127,6 @@ Instance run_sdiv
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
 Global Opaque run_sdiv.
@@ -163,9 +148,6 @@ Instance run_rem
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
 Global Opaque run_rem.
@@ -187,9 +169,6 @@ Instance run_smod
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
 Global Opaque run_smod.
@@ -211,9 +190,6 @@ Instance run_addmod
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
 Global Opaque run_addmod.
@@ -235,9 +211,6 @@ Instance run_mulmod
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
 Global Opaque run_mulmod.
@@ -259,10 +232,6 @@ Instance run_exp
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
   run_symbolic.
 Defined.
 Global Opaque run_exp.
@@ -284,10 +253,6 @@ Instance run_signextend
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
-  destruct (Impl_PartialOrd_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   destruct (Impl_Sub_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   destruct (Impl_BitAnd_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   destruct (Impl_BitOr_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).

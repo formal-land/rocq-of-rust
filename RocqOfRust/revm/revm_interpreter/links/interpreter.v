@@ -44,8 +44,6 @@ Module Impl_Interpreter.
       unit.
   Proof.
     constructor.
-    destruct run_InterpreterTypes_for_IW.
-    destruct run_Jumps_for_Bytecode.
     destruct run_CustomInstruction_for_FN.
     run_symbolic.
   Defined.

@@ -60,14 +60,7 @@ Instance run_static_call
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE eqn:?.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_InputsTrait_for_Input.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_Host_for_H.
-  destruct Impl_From_U256_for_FixedBytes_32.run.
-  destruct (TryFrom_Uint_for_u64.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
+  destruct (TryFrom_Uint_for_u64.method_try_from (BITS := {| Integer.value := 256 |}) (LIMBS := {| Integer.value := 4 |})).
   run_symbolic.
 Defined.
 Global Opaque run_static_call.

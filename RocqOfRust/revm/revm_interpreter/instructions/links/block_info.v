@@ -41,13 +41,8 @@ Instance run_chainid
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
   destruct run_Host_for_H.
   destruct run_CfgGetter_for_Self.
-  destruct run_Cfg_for_Cfg.
   run_symbolic.
 Defined.
 Global Opaque run_chainid.
@@ -71,9 +66,6 @@ Instance run_coinbase
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
   destruct run_Host_for_H.
   destruct run_BlockGetter_for_Self.
   destruct run_Block_for_Block.
