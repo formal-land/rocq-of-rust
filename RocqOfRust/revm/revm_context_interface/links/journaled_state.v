@@ -100,7 +100,9 @@ Module Impl_Deref_for_StateLoad.
   Defined.
   Global Opaque run_deref.
 
-  Instance method_deref (T : Set) `{Link T} : Deref.Method_deref (Self T) T.
+  Instance method_deref (T : Set) `{Link T} :
+    Deref.Method_deref (Self T) T
+      (journaled_state.Impl_core_ops_deref_Deref_for_revm_context_interface_journaled_state_StateLoad_T.deref (Φ T)).
   Proof.
     econstructor.
     { constructor.

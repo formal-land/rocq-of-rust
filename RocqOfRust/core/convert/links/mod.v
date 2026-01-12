@@ -72,6 +72,16 @@ where
     U: From<T>,
 *)
 Module Impl_Into_for_From_T.
+  Instance run_into {T U : Set} `{Link T} `{Link U} `{!From.Run U T} (self : T) :
+    Run.Trait
+      (convert.Impl_core_convert_Into_where_core_convert_From_U_T_U_for_T.into (Φ T) (Φ U))
+        [] [] [φ self]
+        U.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+
   Instance method_into
     (T U : Set) `{Link T} `{Link U}
     `(!From.Run U T) :
@@ -83,9 +93,7 @@ Module Impl_Into_for_From_T.
       { apply convert.Impl_core_convert_Into_where_core_convert_From_U_T_U_for_T.Implements. }
       { reflexivity. }
     }
-    { constructor.
-      run_symbolic.
-    }
+    { typeclasses eauto. }
   Defined.
 
   Instance run

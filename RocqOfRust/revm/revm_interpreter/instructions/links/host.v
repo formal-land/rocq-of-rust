@@ -61,13 +61,13 @@ pub fn selfbalance<WIRE: InterpreterTypes, H: Host + ?Sized>(
 )
 *)
 Instance run_selfbalance
-  {WIRE H : Set} `{Link WIRE} `{Link H}
-  {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-  {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
-  (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (run_Host_for_H : Host.Run H H_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (_host : '&mut H) :
+    {WIRE H : Set} `{Link WIRE} `{Link H}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+    (run_Host_for_H : Host.Run H H_types)
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.host.selfbalance [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -84,13 +84,13 @@ pub fn extcodesize<WIRE: InterpreterTypes, H: Host + ?Sized>(
 )
 *)
 Instance run_extcodesize
-  {WIRE H : Set} `{Link WIRE} `{Link H}
-  {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-  {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
-  (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (run_Host_for_H : Host.Run H H_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (host : '&mut H) :
+    {WIRE H : Set} `{Link WIRE} `{Link H}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+    (run_Host_for_H : Host.Run H H_types)
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (host : '&mut H) :
   Run.Trait
     instructions.host.extcodesize [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -108,19 +108,18 @@ pub fn extcodehash<WIRE: InterpreterTypes, H: Host + ?Sized>(
 )
 *)
 Instance run_extcodehash
-  {WIRE H : Set} `{Link WIRE} `{Link H}
-  {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-  {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
-  (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (run_Host_for_H : Host.Run H H_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (host : '&mut H) :
+    {WIRE H : Set} `{Link WIRE} `{Link H}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+    (run_Host_for_H : Host.Run H H_types)
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (host : '&mut H) :
   Run.Trait
     instructions.host.extcodehash [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
 Proof.
   constructor.
-  destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
   run_symbolic.
 Defined.
 Global Opaque run_extcodehash.
@@ -132,13 +131,13 @@ pub fn extcodecopy<WIRE: InterpreterTypes, H: Host + ?Sized>(
 )
 *)
 Instance run_extcodecopy
-  {WIRE H : Set} `{Link WIRE} `{Link H}
-  {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
-  {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
-  (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (run_Host_for_H : Host.Run H H_types)
-  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
-  (host : '&mut H) :
+    {WIRE H : Set} `{Link WIRE} `{Link H}
+    {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
+    {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
+    (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
+    (run_Host_for_H : Host.Run H H_types)
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (host : '&mut H) :
   Run.Trait
     instructions.host.extcodecopy [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.

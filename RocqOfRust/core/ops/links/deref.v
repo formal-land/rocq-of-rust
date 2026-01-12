@@ -18,9 +18,9 @@ Module Deref.
 
   Class Method_deref
       (Self : Set) `{Link Self}
-      (Target : Set) `{Link Target} :
+      (Target : Set) `{Link Target}
+      (deref : PolymorphicFunction.t) :
       Set := {
-    deref : PolymorphicFunction.t;
     deref_is_method :: IsTraitMethod.C (trait Self) "deref" deref;
     run_deref (self : '& Self) :: Run.Trait deref [] [] [ φ self ] ('& Target);
   }.
@@ -29,7 +29,8 @@ Module Deref.
       (Self : Set) `{Link Self}
       (Target : Set) `{Link Target} :
       Set := {
-    method_deref :: Method_deref Self Target;
+    deref : PolymorphicFunction.t;
+    method_deref :: Method_deref Self Target deref;
   }.
 End Deref.
 Export (hints) Deref.
@@ -50,9 +51,9 @@ Module DerefMut.
 
   Class Method_deref_mut
       (Self : Set) `{Link Self}
-      (Target : Set) `{Link Target} :
+      (Target : Set) `{Link Target}
+      (deref_mut : PolymorphicFunction.t) :
       Set := {
-    deref_mut : PolymorphicFunction.t;
     deref_mut_is_method :: IsTraitMethod.C (trait Self) "deref_mut" deref_mut;
     run_deref_mut (self : '&mut Self) :: Run.Trait deref_mut [] [] [ φ self ] ('&mut Target);
   }.
@@ -61,7 +62,8 @@ Module DerefMut.
       (Self : Set) `{Link Self}
       (Target : Set) `{Link Target} :
       Set := {
-    method_deref_mut :: Method_deref_mut Self Target;
+    deref_mut : PolymorphicFunction.t;
+    method_deref_mut :: Method_deref_mut Self Target deref_mut;
   }.
 End DerefMut.
 Export (hints) DerefMut.
