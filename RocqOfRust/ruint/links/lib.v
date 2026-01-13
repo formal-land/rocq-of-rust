@@ -6,15 +6,15 @@ Require Import ruint.lib.
 
 Module Uint.
   Record t {BITS LIMBS : usize} : Set := {
-    limbs : array.t u64 LIMBS;
+    value : Z;
   }.
   Arguments t : clear implicits.
 
+  Parameter to_value : forall {BITS LIMBS : usize}, t BITS LIMBS -> Value.t.
+
   Instance IsLink {BITS LIMBS : usize} : Link (t BITS LIMBS) := {
     Φ := Ty.apply (Ty.path "ruint::Uint") [ φ BITS; φ LIMBS ] [];
-    φ x := Value.StructRecord "ruint::Uint" [ φ BITS; φ LIMBS ] [] [
-      ("limbs", φ x.(limbs))
-    ];
+    φ := to_value;
   }.
 
   Definition of_ty (BITS' LIMBS' : Value.t) (BITS LIMBS : usize) :

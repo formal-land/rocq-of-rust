@@ -4,9 +4,9 @@ Require Import RocqOfRust.simulate.M.
 Require Import ruint.links.add.
 
 Module Impl_Uint.
-  Parameter wrapping_add :
-    forall {BITS LIMBS : usize} (x1 x2 : lib.Uint.t BITS LIMBS),
-    lib.Uint.t BITS LIMBS.
+  Definition wrapping_add {BITS LIMBS : usize} (x1 x2 : lib.Uint.t BITS LIMBS) :
+      lib.Uint.t BITS LIMBS :=
+    {| lib.Uint.value := (x1.(lib.Uint.value) + x2.(lib.Uint.value)) mod (2 ^ BITS.(Integer.value)) |}.
 
   Lemma wrapping_add_eq (stack : Stack.t)
       (BITS LIMBS : usize) (x1 x2 : lib.Uint.t BITS LIMBS) :
@@ -21,9 +21,9 @@ Module Impl_Uint.
     }}.
   Admitted.
 
-  Parameter wrapping_sub :
-    forall {BITS LIMBS : usize} (x1 x2 : lib.Uint.t BITS LIMBS),
-    lib.Uint.t BITS LIMBS.
+  Definition wrapping_sub {BITS LIMBS : usize} (x1 x2 : lib.Uint.t BITS LIMBS) :
+      lib.Uint.t BITS LIMBS :=
+    {| lib.Uint.value := (x1.(lib.Uint.value) - x2.(lib.Uint.value)) mod (2 ^ BITS.(Integer.value)) |}.
 
   Lemma wrapping_sub_eq (stack : Stack.t)
       (BITS LIMBS : usize) (x1 x2 : lib.Uint.t BITS LIMBS) :
