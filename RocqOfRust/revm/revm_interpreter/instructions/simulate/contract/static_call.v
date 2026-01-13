@@ -49,8 +49,8 @@ Definition static_call
   | (None, host) =>
     let control :=
       IInterpreterTypes
-          .(InterpreterTypes.Loop)
-          .(Loop.set_instruction_result)
+          .(InterpreterTypes.LoopControl_for_Control)
+          .(LoopControl.set_instruction_result)
         interpreter.(Interpreter.control)
         instruction_result.InstructionResult.FatalExternalError in
     let interpreter :=
@@ -68,8 +68,8 @@ Definition static_call
 
   let control :=
     IInterpreterTypes
-        .(InterpreterTypes.Loop)
-        .(Loop.set_next_action)
+        .(InterpreterTypes.LoopControl_for_Control)
+        .(LoopControl.set_next_action)
       interpreter.(Interpreter.control)
       (interpreter_action.InterpreterAction.NewFrame
         (interpreter_action.FrameInput.Call
@@ -77,7 +77,7 @@ Definition static_call
             {|
               call_inputs.CallInputs.bytecode_address := to;
               call_inputs.CallInputs.caller :=
-                IInterpreterTypes.(InterpreterTypes.Input).(InputTraits.target_address) interpreter.(Interpreter.input);
+                IInterpreterTypes.(InterpreterTypes.InputsTrait_for_Input).(InputTraits.target_address) interpreter.(Interpreter.input);
               call_inputs.CallInputs.gas_limit := gas_limit;
               call_inputs.CallInputs.input := input;
               call_inputs.CallInputs.is_eof := false;
@@ -124,7 +124,7 @@ Lemma static_call_eq
   }}.
 Proof.
   intros.
-  destruct InterpreterTypesEq as [[] [] [] []].
+  destruct InterpreterTypesEq as [[] [] [] [] [] [] [] [] [] [] [] [] []].
   destruct HostEq as [].
   unfold static_call; cbn.
   check_macro_eq spec_id set_instruction_result.
@@ -148,7 +148,7 @@ Proof.
     apply call_helpers.get_memory_input_and_out_ranges_eq.
   }
   cbn; fold @SimulateM.let_.
-  destruct get_memory_input_and_out_ranges as [[[input return_memory_offset]|] ?interpreter];
+  destruct get_memory_input_and_out_ranges as [[[input_data return_memory_offset]|] ?interpreter];
     cbn;
     [| apply Run.Pure].
   get_can_access.

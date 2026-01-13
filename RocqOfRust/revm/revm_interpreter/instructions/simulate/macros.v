@@ -19,16 +19,16 @@ Definition gas_macro {WIRE K : Set} `{Link WIRE}
     K :=
   let gas :=
     IInterpreterTypes
-        .(InterpreterTypes.Loop)
-        .(Loop.gas)
+        .(InterpreterTypes.LoopControl_for_Control)
+        .(LoopControl.gas)
         .(RefStub.projection)
       interpreter.(Interpreter.control) in
   match Impl_Gas.record_cost gas cost with
   | None =>
     let control :=
       IInterpreterTypes
-          .(InterpreterTypes.Loop)
-          .(Loop.set_instruction_result)
+          .(InterpreterTypes.LoopControl_for_Control)
+          .(LoopControl.set_instruction_result)
         interpreter.(Interpreter.control)
         instruction_result.InstructionResult.OutOfGas in
     let interpreter := interpreter
@@ -37,8 +37,8 @@ Definition gas_macro {WIRE K : Set} `{Link WIRE}
   | Some gas =>
     let control :=
       IInterpreterTypes
-          .(InterpreterTypes.Loop)
-          .(Loop.gas)
+          .(InterpreterTypes.LoopControl_for_Control)
+          .(LoopControl.gas)
           .(RefStub.injection)
         interpreter.(Interpreter.control) gas in
     let interpreter :=
@@ -84,7 +84,7 @@ Definition popn_macro {WIRE K : Set} `{Link WIRE}
     K :=
     let stack := interpreter.(Interpreter.stack) in
     let (result, stack) :=
-      IInterpreterTypes.(InterpreterTypes.Stack).(Stack.popn) N stack in
+      IInterpreterTypes.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.popn) N stack in
     let interpreter :=
       interpreter
         <| Interpreter.stack := stack |> in
@@ -92,7 +92,7 @@ Definition popn_macro {WIRE K : Set} `{Link WIRE}
     | Some arr => k arr interpreter
     | None =>
       let control :=
-        IInterpreterTypes.(InterpreterTypes.Loop).(Loop.set_instruction_result)
+        IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
         interpreter.(Interpreter.control)
         instruction_result.InstructionResult.StackUnderflow in
       let interpreter := interpreter
@@ -105,7 +105,7 @@ Ltac popn_macro_eq H IInterpreterTypes popn set_instruction_result :=
   eapply Run.Call; [
     apply popn
   |];
-  destruct IInterpreterTypes.(InterpreterTypes.Stack).(Stack.popn) as [[|] ?]; cbn; [|
+  destruct IInterpreterTypes.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.popn) as [[|] ?]; cbn; [|
     eapply Run.Call; [
       apply (set_instruction_result
         _
@@ -133,8 +133,8 @@ Definition popn_top_macro {WIRE K : Set} `{Link WIRE}
   let stack := interpreter.(Interpreter.stack) in
   let (result, stack) :=
     IInterpreterTypes
-        .(InterpreterTypes.Stack)
-        .(Stack.popn_top)
+        .(InterpreterTypes.StackTrait_for_Stack)
+        .(StackTrait.popn_top)
       N stack in
   let interpreter :=
     interpreter
@@ -144,7 +144,7 @@ Definition popn_top_macro {WIRE K : Set} `{Link WIRE}
     k arr top interpreter
   | None =>
     let control :=
-      IInterpreterTypes.(InterpreterTypes.Loop).(Loop.set_instruction_result)
+      IInterpreterTypes.(InterpreterTypes.LoopControl_for_Control).(LoopControl.set_instruction_result)
         interpreter.(Interpreter.control)
         instruction_result.InstructionResult.StackUnderflow in
     let interpreter := interpreter
@@ -160,7 +160,7 @@ Ltac popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result :=
   eapply Run.Call; [
     apply popn_top
   |];
-  destruct IInterpreterTypes.(InterpreterTypes.Stack).(Stack.popn_top) as [[[? ?]|] ?];
+  destruct IInterpreterTypes.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.popn_top) as [[[? ?]|] ?];
   [|
     eapply Run.Call; [
       apply (set_instruction_result
@@ -183,8 +183,8 @@ Definition check_macro {WIRE K : Set} `{Link WIRE}
   if
     Impl_SpecId.is_enabled_in
       (IInterpreterTypes
-          .(InterpreterTypes.RuntimeFlag)
-          .(SRuntimeFlag.spec_id)
+          .(InterpreterTypes.RuntimeFlag_for_RuntimeFlag)
+          .(RuntimeFlag.spec_id)
         interpreter.(Interpreter.runtime_flag)
       )
       min
@@ -193,8 +193,8 @@ Definition check_macro {WIRE K : Set} `{Link WIRE}
   else
     let control :=
       IInterpreterTypes
-          .(InterpreterTypes.Loop)
-          .(Loop.set_instruction_result)
+          .(InterpreterTypes.LoopControl_for_Control)
+          .(LoopControl.set_instruction_result)
         interpreter.(Interpreter.control)
         instruction_result.InstructionResult.NotActivated in
     let interpreter :=
