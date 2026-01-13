@@ -200,3 +200,17 @@ Module Impl_isize.
   Global Opaque run_overflowing_sub.
 End Impl_isize.
 Export (hints) Impl_isize.
+
+Module Impl_i8.
+  Definition Self : Set := i8.
+
+  (* pub const fn is_negative(self) -> bool { self < 0 } *)
+  Instance run_is_negative (self: Self) :
+    Run.Trait num.Impl_i8.is_negative [] [] [ φ self ] bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_is_negative.
+End Impl_i8.
+Export (hints) Impl_i8.
