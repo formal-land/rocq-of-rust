@@ -277,7 +277,7 @@ Proof.
 Qed.
 Global Opaque run_sub.
 
-Lemma div_eq
+Lemma sdiv_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
@@ -291,7 +291,7 @@ Lemma div_eq
   let ref_host := make_ref 1 in
   {{
     SimulateM.eval_f
-      (run_div run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
+      (run_sdiv run_InterpreterTypes_for_WIRE ref_interpreter ref_host)
       ([interpreter; _host]%stack) 🌲
     (
       Output.Success tt,
@@ -343,7 +343,8 @@ Proof.
   cbn.
   destruct Impl_Uint.is_zero; cbn.
   { apply Run.Pure. }
-  { progress repeat get_can_access.
+  {
+    progress repeat get_can_access.
     eapply Run.Call; cbn. {
       apply Impl_Uint.wrapping_div_eq.
     }
@@ -352,4 +353,7 @@ Proof.
     apply Run.Pure.
   }
 Qed.
-Global Opaque run_div.
+
+Global Opaque run_sdiv.
+
+
