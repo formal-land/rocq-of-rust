@@ -8,22 +8,25 @@ Require Import core.links.array.
 Require Import core.links.borrow.
 Require Import core.ops.links.deref.
 Require Import core.ops.links.index.
+Require Import ruint.links.bytes.
+Require Import ruint.links.lib.
 
 Module Impl_FixedBytes.
-  Definition Self (N : Usize.t) : Set :=
+  Definition Self (N : usize) : Set :=
     FixedBytes.t N.
 
   (* pub const ZERO: Self *)
-  Instance run_zero (N : Usize.t) :
+  Instance run_zero (N : usize) :
     Run.Trait
       (bits.fixed.Impl_alloy_primitives_bits_fixed_FixedBytes_N.value_ZERO (φ N)) [] [] []
-      (Ref.t Pointer.Kind.Raw (Self N)).
+      ('* (Self N)).
   Proof.
     constructor.
   Admitted.
+  Global Opaque run_zero.
 
   (* pub fn new(bytes: [u8; N]) -> Self *)
-  Instance run_new (N : Usize.t) (bytes: array.t U8.t N) :
+  Instance run_new (N : usize) (bytes: array.t u8 N) :
     Run.Trait
       (bits.fixed.Impl_alloy_primitives_bits_fixed_FixedBytes_N.new (φ N)) [] [] [φ bytes]
       (Self N).
@@ -31,17 +34,19 @@ Module Impl_FixedBytes.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_new.
 End Impl_FixedBytes.
-Export Impl_FixedBytes.
+Export (hints) Impl_FixedBytes.
 
 Module Impl_From_FixedBytes_32_for_U256.
   Definition Self : Set :=
     aliases.U256.t.
 
-  Definition run_from : From.Run_from Self (FixedBytes.t {| Integer.value := 32 |}).
+  Instance method_from : From.Method_from Self (FixedBytes.t {| Integer.value := 32 |}).
   Proof.
     eexists.
-    { eapply IsTraitMethod.Defined.
+    { constructor.
+      eapply IsTraitMethod.Defined.
       { apply bits.fixed.Impl_core_convert_From_alloy_primitives_bits_fixed_FixedBytes_Usize_32_for_ruint_Uint_Usize_256_Usize_4.Implements. }
       { reflexivity. }
     }
@@ -51,64 +56,82 @@ Module Impl_From_FixedBytes_32_for_U256.
     }
   Admitted.
 
-  Instance run : From.Run Self (FixedBytes.t {| Integer.value := 32 |}) :=
-  {
-    From.from := run_from;
-  }.
+  Instance run : From.Run Self (FixedBytes.t {| Integer.value := 32 |}) := {}.
 End Impl_From_FixedBytes_32_for_U256.
-Export Impl_From_FixedBytes_32_for_U256.
+Export (hints) Impl_From_FixedBytes_32_for_U256.
 
 Module Impl_From_U256_for_FixedBytes_32.
   Definition Self : Set :=
     FixedBytes.t {| Integer.value := 32 |}.
 
-  Instance run : From.Run Self aliases.U256.t.
-  Admitted.
+  Instance run_from (value : aliases.U256.t) :
+    Run.Trait
+      bits.fixed.Impl_core_convert_From_ruint_Uint_Usize_256_Usize_4_for_alloy_primitives_bits_fixed_FixedBytes_Usize_32.from
+      [] [] [ φ value ]
+      Self.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_from.
+
+  Instance method_from : From.Method_from Self aliases.U256.t.
+  Proof.
+    eexists.
+    { constructor.
+      eapply IsTraitMethod.Defined.
+      { apply bits.fixed.Impl_core_convert_From_ruint_Uint_Usize_256_Usize_4_for_alloy_primitives_bits_fixed_FixedBytes_Usize_32.Implements. }
+      { reflexivity. }
+    }
+    { typeclasses eauto. }
+  Defined.
+
+  Instance run : From.Run Self aliases.U256.t := {}.
 End Impl_From_U256_for_FixedBytes_32.
-Export Impl_From_U256_for_FixedBytes_32.
+Export (hints) Impl_From_U256_for_FixedBytes_32.
 
 (* impl<'a, const N: usize> From<&'a [u8; N]> for &'a FixedBytes<N> *)
 Module Impl_From_Array_u8_N_for_FixedBytes_N.
-  Definition Self (N : Usize.t) : Set :=
+  Definition Self (N : usize) : Set :=
     FixedBytes.t N.
 
-  Instance run (N : Usize.t) : From.Run (Self N) (array.t U8.t N).
+  Instance run (N : usize) : From.Run (Self N) (array.t u8 N).
   Admitted.
 End Impl_From_Array_u8_N_for_FixedBytes_N.
-Export Impl_From_Array_u8_N_for_FixedBytes_N.
+Export (hints) Impl_From_Array_u8_N_for_FixedBytes_N.
 
 (* impl<const N: usize> Borrow<[u8; N]> for FixedBytes<N> *)
 Module Impl_Borrow_Array_u8_N_for_FixedBytes_N.
-  Definition Self (N : Usize.t) : Set :=
+  Definition Self (N : usize) : Set :=
     FixedBytes.t N.
 
-  Instance run (N : Usize.t) : Borrow.Run (Self N) (array.t U8.t N).
+  Instance run (N : usize) : Borrow.Run (Self N) (array.t u8 N).
   Admitted.
 End Impl_Borrow_Array_u8_N_for_FixedBytes_N.
-Export Impl_Borrow_Array_u8_N_for_FixedBytes_N.
+Export (hints) Impl_Borrow_Array_u8_N_for_FixedBytes_N.
 
 (* impl<const N: usize> DerefMut for FixedBytes<N> *)
 Module Impl_DerefMut_for_FixedBytes_N.
-  Definition Self (N : Usize.t) : Set :=
+  Definition Self (N : usize) : Set :=
     FixedBytes.t N.
 
-  Definition Target (N : Usize.t) : Set :=
-    array.t U8.t N.
+  Definition Target (N : usize) : Set :=
+    array.t u8 N.
 
-  Instance run (N : Usize.t) : DerefMut.Run (Self N) (Target N).
+  Instance run (N : usize) : DerefMut.Run (Self N) (Target N).
   Admitted.
 End Impl_DerefMut_for_FixedBytes_N.
-Export Impl_DerefMut_for_FixedBytes_N.
+Export (hints) Impl_DerefMut_for_FixedBytes_N.
 
 Module Impl_Index_for_FixedBytes_N.
-  Definition Self (N : Usize.t) : Set :=
+  Definition Self (N : usize) : Set :=
     FixedBytes.t N.
 
   (* type Output = <[u8; N] as Index<__IdxT>>::Output *)
   Definition Output : Set :=
-    list U8.t.
+    list u8.
 
-  Instance run (N : Usize.t) (__IdxT : Set) `{Link __IdxT} : Index.Run (Self N) __IdxT Output.
+  Instance run (N : usize) (__IdxT : Set) `{Link __IdxT} : Index.Run (Self N) __IdxT Output.
   Admitted.
 End Impl_Index_for_FixedBytes_N.
-Export Impl_Index_for_FixedBytes_N.
+Export (hints) Impl_Index_for_FixedBytes_N.

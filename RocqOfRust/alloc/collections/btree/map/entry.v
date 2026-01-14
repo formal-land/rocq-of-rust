@@ -1928,14 +1928,12 @@ Module collections.
                             "alloc::collections::btree::map::entry::Entry::Occupied",
                             0
                           |) in
-                        let entry :=
-                          M.copy (|
+                        let~ entry :
                             Ty.apply
                               (Ty.path "alloc::collections::btree::map::entry::OccupiedEntry")
                               []
-                              [ K; V; A ],
-                            γ0_0
-                          |) in
+                              [ K; V; A ] :=
+                          M.read (| γ0_0 |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.call_closure (|
@@ -2064,14 +2062,12 @@ Module collections.
                             "alloc::collections::btree::map::entry::Entry::Occupied",
                             0
                           |) in
-                        let entry :=
-                          M.copy (|
+                        let~ entry :
                             Ty.apply
                               (Ty.path "alloc::collections::btree::map::entry::OccupiedEntry")
                               []
-                              [ K; V; A ],
-                            γ0_0
-                          |) in
+                              [ K; V; A ] :=
+                          M.read (| γ0_0 |) in
                         M.read (|
                           let~ _ : V :=
                             M.call_closure (|

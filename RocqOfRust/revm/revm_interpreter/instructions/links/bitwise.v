@@ -7,6 +7,7 @@ Require Import core.num.links.error.
 Require Import core.num.links.mod.
 Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.instructions.links.i256.
@@ -27,236 +28,202 @@ Instance run_lt
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.bitwise.lt [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
-  destruct (Impl_PartialOrd_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_lt.
 
 Instance run_gt
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.bitwise.gt [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
-  destruct (Impl_PartialOrd_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_gt.
 
 Instance run_slt
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.bitwise.slt [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
-  destruct Impl_PartialEq_for_Ordering.run.
   run_symbolic.
 Defined.
+Global Opaque run_slt.
 
 Instance run_sgt
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.bitwise.sgt [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_StackTrait_for_Stack.
-  destruct Impl_PartialEq_for_Ordering.run.
   run_symbolic.
 Defined.
+Global Opaque run_sgt.
 
 Instance run_bitwise_eq
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.bitwise.eq [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct (Impl_PartialEq_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_bitwise_eq.
 
 Instance run_bitwise_is_zero
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.bitwise.iszero [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
   run_symbolic.
 Defined.
+Global Opaque run_bitwise_is_zero.
 
 Instance run_bitwise_bitand
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.bitwise.bitand [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
   destruct (Impl_BitAnd_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_bitwise_bitand.
 
 Instance run_bitwise_bitor
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.bitwise.bitor [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
   destruct (Impl_BitOr_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_bitwise_bitor.
 
 Instance run_bitwise_bitxor
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.bitwise.bitxor [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
   destruct (Impl_BitXor_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_bitwise_bitxor.
 
 Instance run_bitwise_not
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.bitwise.not [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
   destruct (Impl_Not_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_bitwise_not.
 
 Instance run_bitwise_sar
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.bitwise.sar [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct Impl_TryFrom_u64_for_usize.run.
   run_symbolic.
 Defined.
+Global Opaque run_bitwise_sar.
 
 Instance run_bitwise_shl
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.bitwise.shl [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct Impl_TryFrom_u64_for_usize.run.
   destruct (Impl_Shl_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_bitwise_shl.
 
 Instance run_bitwise_shr
     {WIRE H : Set} `{Link WIRE} `{Link H}
     {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
     (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-    (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-    (_host : Ref.t Pointer.Kind.MutRef H) :
+    (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+    (_host : '&mut H) :
   Run.Trait
     instructions.bitwise.shr [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct Impl_TryFrom_u64_for_usize.run.
   destruct (Impl_Shr_for_Uint.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
   run_symbolic.
 Defined.
+Global Opaque run_bitwise_shr.

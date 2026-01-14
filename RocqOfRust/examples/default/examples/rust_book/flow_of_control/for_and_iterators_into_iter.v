@@ -173,17 +173,15 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               [
                 fun γ =>
                   ltac:(M.monadic
-                    (let iter :=
-                      M.copy (|
+                    (let~ iter :
                         Ty.apply
                           (Ty.path "alloc::vec::into_iter::IntoIter")
                           []
                           [
                             Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
                             Ty.path "alloc::alloc::Global"
-                          ],
-                        γ
-                      |) in
+                          ] :=
+                      M.read (| γ |) in
                     M.read (|
                       M.loop (|
                         Ty.tuple [],

@@ -147,6 +147,7 @@
 ## Utility
 
 - [ ] `cast_slice_to_u256`
+- [x] `into_address`
 
 ## Contract/Call
 
@@ -202,7 +203,7 @@
 
 ## Summary
 
-- Total: 120
+- Total: 121
 - Admitted: 6
-- Defined: 114
-- Percentage: 95.00%
+- Defined: 115
+- Percentage: 95.04%

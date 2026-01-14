@@ -10,6 +10,7 @@ Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.instructions.memory.
 Require Import revm.revm_interpreter.interpreter.links.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_specification.links.hardfork.
@@ -26,8 +27,8 @@ Instance run_mload
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (host : '&mut H) :
   Run.Trait
     instructions.memory.mload [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -39,9 +40,10 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct run_MemoryTrait_for_Memory.
   destruct run_Deref_for_Synthetic1.
-  destruct (Impl_AsRef_for_Slice.run U8.t).
+  destruct (Impl_AsRef_for_Slice.run u8).
   run_symbolic.
 Defined.
+Global Opaque run_mload.
 
 (* pub fn mstore<WIRE: InterpreterTypes, H: Host + ?Sized>(
     interpreter: &mut Interpreter<WIRE>,
@@ -52,8 +54,8 @@ Instance run_mstore
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types)) 
-  (host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types)) 
+  (host : '&mut H) :
   Run.Trait
     instructions.memory.mstore [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -67,6 +69,7 @@ Proof.
   run_symbolic.
   (* pointer_coercion *)
 Admitted.
+Global Opaque run_mstore.
 
 (* pub fn mstore8<WIRE: InterpreterTypes, H: Host + ?Sized>(
     interpreter: &mut Interpreter<WIRE>,
@@ -77,8 +80,8 @@ Instance run_mstore8
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (host : '&mut H) :
   Run.Trait
     instructions.memory.mstore8 [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -92,6 +95,7 @@ Proof.
   run_symbolic.
   (* pointer_coercion *)
 Admitted.
+Global Opaque run_mstore8.
 
 (* pub fn msize<WIRE: InterpreterTypes, H: Host + ?Sized>(
     interpreter: &mut Interpreter<WIRE>,
@@ -102,8 +106,8 @@ Instance run_msize
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (host : '&mut H) :
   Run.Trait
     instructions.memory.msize [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -116,6 +120,7 @@ Proof.
   destruct run_MemoryTrait_for_Memory.
   run_symbolic.
 Defined.
+Global Opaque run_msize.
 
 (* pub fn mcopy<WIRE: InterpreterTypes, H: Host + ?Sized>(
     interpreter: &mut Interpreter<WIRE>,
@@ -125,8 +130,8 @@ Instance run_mcopy
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (host : '&mut H) :
   Run.Trait
     instructions.memory.mcopy [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -139,3 +144,4 @@ Proof.
   destruct run_MemoryTrait_for_Memory.
   run_symbolic.
 Defined.
+Global Opaque run_mcopy.

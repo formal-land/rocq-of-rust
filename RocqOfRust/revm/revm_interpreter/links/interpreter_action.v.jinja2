@@ -1,0 +1,123 @@
+{# Template for interpreter_action.v links file #}
+Require Import RocqOfRust.RocqOfRust.
+Require Import RocqOfRust.links.M.
+Require Import alloc.links.alloc.
+Require Import alloc.links.boxed.
+Require Import core.links.option.
+Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
+Require Import revm.revm_interpreter.interpreter_action.links.create_inputs.
+Require Import revm.revm_interpreter.interpreter_action.links.eof_create_inputs.
+Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.interpreter_InterpreterResult.
+Require Import revm.revm_interpreter.interpreter_action.
+
+(*
+pub enum FrameInput {
+    Call(Box<CallInputs>),
+    Create(Box<CreateInputs>),
+    EOFCreate(Box<EOFCreateInputs>),
+}
+*)
+Module FrameInput.
+{{ macros.enum_body("revm_interpreter::interpreter_action::FrameInput", [
+  ("Call", [("inputs", "(Box.t CallInputs.t Global.t)")]),
+  ("Create", [("inputs", "(Box.t CreateInputs.t Global.t)")]),
+  ("EOFCreate", [("inputs", "(Box.t EOFCreateInputs.t Global.t)")]),
+]) }}
+End FrameInput.
+Export (hints) FrameInput.
+
+(*
+pub enum InterpreterAction {
+    NewFrame(FrameInput),
+    Return { result: InterpreterResult },
+    None,
+}
+*)
+Module InterpreterAction.
+{{ macros.enum_body("revm_interpreter::interpreter_action::InterpreterAction", [
+  ("NewFrame", [("frame", "FrameInput.t")]),
+  ("Return", {"result": "InterpreterResult.t"}),
+  ("None_", [], "None"),
+]) }}
+End InterpreterAction.
+Export (hints) InterpreterAction.
+
+(* impl InterpreterAction { *)
+Module Impl_InterpreterAction.
+  Definition Self : Set :=
+    InterpreterAction.t.
+
+  (* pub fn is_call(&self) -> bool *)
+  Instance run_is_call (self : '& Self) :
+    Run.Trait
+      interpreter_action.Impl_revm_interpreter_interpreter_action_InterpreterAction.is_call
+        [] [] [φ self]
+      bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_is_call.
+
+  (* pub fn is_create(&self) -> bool *)
+  Instance run_is_create (self : '& Self) :
+    Run.Trait
+      interpreter_action.Impl_revm_interpreter_interpreter_action_InterpreterAction.is_create
+        [] [] [φ self]
+      bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_is_create.
+
+  (* pub fn is_return(&self) -> bool *)
+  Instance run_is_return (self : '& Self) :
+    Run.Trait
+      interpreter_action.Impl_revm_interpreter_interpreter_action_InterpreterAction.is_return
+        [] [] [φ self]
+      bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_is_return.
+
+  (* pub fn is_none(&self) -> bool *)
+  Instance run_is_none (self : '& Self) :
+    Run.Trait
+      interpreter_action.Impl_revm_interpreter_interpreter_action_InterpreterAction.is_none
+        [] [] [φ self]
+      bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_is_none.
+
+  (* pub fn is_some(&self) -> bool *)
+  Instance run_is_some (self : '& Self) :
+    Run.Trait
+      interpreter_action.Impl_revm_interpreter_interpreter_action_InterpreterAction.is_some
+        [] [] [φ self]
+      bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_is_some.
+
+  (* pub fn into_result_return(self) -> Option<InterpreterResult> *)
+  Instance run_into_result_return (self : Self) :
+    Run.Trait
+      interpreter_action.Impl_revm_interpreter_interpreter_action_InterpreterAction.into_result_return
+        [] [] [φ self]
+      (option InterpreterResult.t).
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_into_result_return.
+End Impl_InterpreterAction.
+Export (hints) Impl_InterpreterAction.

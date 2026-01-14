@@ -11,13 +11,13 @@ pub struct IntoIter<T, const N: usize> {
 }
 *)
 Module IntoIter.
-  Record t {T : Set} {N : Usize.t} : Set := {
+  Record t {T : Set} {N : usize} : Set := {
     data : array.t (MaybeUninit.t T) N;
     alive : IndexRange.t;
   }.
   Arguments t : clear implicits.
 
-  Global Instance IsLink {T : Set} `{Link T} {N : Usize.t} : Link (t T N) := {
+  Instance IsLink {T : Set} `{Link T} {N : usize} : Link (t T N) := {
     Φ := Ty.apply (Ty.path "core::array::iter::IntoIter") [ φ N ] [ Φ T ];
     φ x := Value.StructRecord "core::array::iter::IntoIter" [ φ N ] [ Φ T ] [
       ("data", φ x.(data));
@@ -25,7 +25,7 @@ Module IntoIter.
     ];
   }.
 
-  Definition of_ty (T' : Ty.t) (N' : Value.t) (N : Usize.t) :
+  Definition of_ty (T' : Ty.t) (N' : Value.t) (N : usize) :
     OfTy.t T' ->
     N' = φ N ->
     OfTy.t (Ty.apply (Ty.path "core::array::iter::IntoIter") [ N' ] [ T' ]).
@@ -36,3 +36,4 @@ Module IntoIter.
   Defined.
   Smpl Add unshelve eapply of_ty : of_ty.
 End IntoIter.
+Export (hints) IntoIter.

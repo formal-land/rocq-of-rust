@@ -2724,15 +2724,13 @@ Module collections.
                             "core::option::Option::Some",
                             0
                           |) in
-                        let existing_prev :=
-                          M.copy (|
+                        let~ existing_prev :
                             Ty.apply
                               (Ty.path "core::ptr::non_null::NonNull")
                               []
                               [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]
-                              ],
-                            γ0_0
-                          |) in
+                              ] :=
+                          M.read (| γ0_0 |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.write (|
@@ -2830,15 +2828,13 @@ Module collections.
                             "core::option::Option::Some",
                             0
                           |) in
-                        let existing_next :=
-                          M.copy (|
+                        let~ existing_next :
                             Ty.apply
                               (Ty.path "core::ptr::non_null::NonNull")
                               []
                               [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ]
-                              ],
-                            γ0_0
-                          |) in
+                              ] :=
+                          M.read (| γ0_0 |) in
                         M.read (|
                           let~ _ : Ty.tuple [] :=
                             M.write (|
@@ -3449,14 +3445,12 @@ Module collections.
                         "core::option::Option::Some",
                         0
                       |) in
-                    let split_node :=
-                      M.copy (|
+                    let~ split_node :
                         Ty.apply
                           (Ty.path "core::ptr::non_null::NonNull")
                           []
-                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
-                        γ0_0
-                      |) in
+                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ] :=
+                      M.read (| γ0_0 |) in
                     M.read (|
                       let first_part_head := M.read (| Value.DeclaredButUndefined |) in
                       let first_part_tail := M.read (| Value.DeclaredButUndefined |) in
@@ -3554,8 +3548,7 @@ Module collections.
                                     "core::option::Option::Some",
                                     0
                                   |) in
-                                let tail :=
-                                  M.copy (|
+                                let~ tail :
                                     Ty.apply
                                       (Ty.path "core::ptr::non_null::NonNull")
                                       []
@@ -3564,9 +3557,8 @@ Module collections.
                                           (Ty.path "alloc::collections::linked_list::Node")
                                           []
                                           [ T ]
-                                      ],
-                                    γ0_0
-                                  |) in
+                                      ] :=
+                                  M.read (| γ0_0 |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
                                     M.read (|
@@ -3922,14 +3914,12 @@ Module collections.
                         "core::option::Option::Some",
                         0
                       |) in
-                    let split_node :=
-                      M.copy (|
+                    let~ split_node :
                         Ty.apply
                           (Ty.path "core::ptr::non_null::NonNull")
                           []
-                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
-                        γ0_0
-                      |) in
+                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ] :=
+                      M.read (| γ0_0 |) in
                     M.read (|
                       let second_part_head := M.read (| Value.DeclaredButUndefined |) in
                       let second_part_tail := M.read (| Value.DeclaredButUndefined |) in
@@ -4027,8 +4017,7 @@ Module collections.
                                     "core::option::Option::Some",
                                     0
                                   |) in
-                                let head :=
-                                  M.copy (|
+                                let~ head :
                                     Ty.apply
                                       (Ty.path "core::ptr::non_null::NonNull")
                                       []
@@ -4037,9 +4026,8 @@ Module collections.
                                           (Ty.path "alloc::collections::linked_list::Node")
                                           []
                                           [ T ]
-                                      ],
-                                    γ0_0
-                                  |) in
+                                      ] :=
+                                  M.read (| γ0_0 |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
                                     M.read (|
@@ -6825,14 +6813,12 @@ Module collections.
                                         [
                                           fun γ =>
                                             ltac:(M.monadic
-                                              (let iter :=
-                                                M.copy (|
+                                              (let~ iter :
                                                   Ty.apply
                                                     (Ty.path "core::ops::range::Range")
                                                     []
-                                                    [ Ty.path "usize" ],
-                                                  γ
-                                                |) in
+                                                    [ Ty.path "usize" ] :=
+                                                M.read (| γ |) in
                                               M.read (|
                                                 M.loop (|
                                                   Ty.tuple [],
@@ -7052,14 +7038,12 @@ Module collections.
                                         [
                                           fun γ =>
                                             ltac:(M.monadic
-                                              (let iter :=
-                                                M.copy (|
+                                              (let~ iter :
                                                   Ty.apply
                                                     (Ty.path "core::ops::range::Range")
                                                     []
-                                                    [ Ty.path "usize" ],
-                                                  γ
-                                                |) in
+                                                    [ Ty.path "usize" ] :=
+                                                M.read (| γ |) in
                                               M.read (|
                                                 M.loop (|
                                                   Ty.tuple [],
@@ -7431,14 +7415,12 @@ Module collections.
                                     [
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (let iter :=
-                                            M.copy (|
+                                          (let~ iter :
                                               Ty.apply
                                                 (Ty.path "core::ops::range::Range")
                                                 []
-                                                [ Ty.path "usize" ],
-                                              γ
-                                            |) in
+                                                [ Ty.path "usize" ] :=
+                                            M.read (| γ |) in
                                           M.read (|
                                             M.loop (|
                                               Ty.tuple [],
@@ -7632,14 +7614,12 @@ Module collections.
                                     [
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (let iter :=
-                                            M.copy (|
+                                          (let~ iter :
                                               Ty.apply
                                                 (Ty.path "core::ops::range::Range")
                                                 []
-                                                [ Ty.path "usize" ],
-                                              γ
-                                            |) in
+                                                [ Ty.path "usize" ] :=
+                                            M.read (| γ |) in
                                           M.read (|
                                             M.loop (|
                                               Ty.tuple [],
@@ -8355,14 +8335,12 @@ Module collections.
                         "core::option::Option::Some",
                         0
                       |) in
-                    let tail :=
-                      M.copy (|
+                    let~ tail :
                         Ty.apply
                           (Ty.path "core::ptr::non_null::NonNull")
                           []
-                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ],
-                        γ0_0
-                      |) in
+                          [ Ty.apply (Ty.path "alloc::collections::linked_list::Node") [] [ T ] ] :=
+                      M.read (| γ0_0 |) in
                     M.match_operator (|
                       Ty.tuple [],
                       M.alloc (| Ty.tuple [], Value.Tuple [] |),
@@ -8437,8 +8415,7 @@ Module collections.
                                 "core::option::Option::Some",
                                 0
                               |) in
-                            let other_head :=
-                              M.copy (|
+                            let~ other_head :
                                 Ty.apply
                                   (Ty.path "core::ptr::non_null::NonNull")
                                   []
@@ -8447,9 +8424,8 @@ Module collections.
                                       (Ty.path "alloc::collections::linked_list::Node")
                                       []
                                       [ T ]
-                                  ],
-                                γ0_0
-                              |) in
+                                  ] :=
+                              M.read (| γ0_0 |) in
                             M.read (|
                               let~ _ : Ty.tuple [] :=
                                 M.read (|
@@ -17500,8 +17476,7 @@ Module collections.
                                         "core::option::Option::Some",
                                         0
                                       |) in
-                                    let node :=
-                                      M.copy (|
+                                    let~ node :
                                         Ty.apply
                                           (Ty.path "core::ptr::non_null::NonNull")
                                           []
@@ -17510,9 +17485,8 @@ Module collections.
                                               (Ty.path "alloc::collections::linked_list::Node")
                                               []
                                               [ T ]
-                                          ],
-                                        γ0_0
-                                      |) in
+                                          ] :=
+                                      M.read (| γ0_0 |) in
                                     M.read (|
                                       let~ _ : Ty.tuple [] :=
                                         M.write (|
@@ -19866,8 +19840,7 @@ Module collections.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::iter::adapters::zip::Zip")
                                     []
@@ -19885,9 +19858,8 @@ Module collections.
                                             []
                                             [ T ]
                                         ]
-                                    ],
-                                  γ
-                                |) in
+                                    ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -20318,11 +20290,9 @@ Module collections.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let iter :=
-                            M.copy (|
-                              Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ],
-                              γ
-                            |) in
+                          (let~ iter :
+                              Ty.apply (Ty.path "alloc::collections::linked_list::Iter") [] [ T ] :=
+                            M.read (| γ |) in
                           M.read (|
                             M.loop (|
                               Ty.tuple [],

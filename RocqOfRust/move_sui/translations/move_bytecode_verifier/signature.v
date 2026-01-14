@@ -904,14 +904,12 @@ Module signature.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::ops::range::Range")
                                       []
-                                      [ Ty.path "usize" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "usize" ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -1402,8 +1400,7 @@ Module signature.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                       []
@@ -1415,9 +1412,8 @@ Module signature.
                                             Ty.path
                                               "move_binary_format::file_format::FunctionHandle"
                                           ]
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -2455,8 +2451,7 @@ Module signature.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                       []
@@ -2468,9 +2463,8 @@ Module signature.
                                             Ty.path
                                               "move_binary_format::file_format::StructDefinition"
                                           ]
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -2984,8 +2978,7 @@ Module signature.
                                                         [
                                                           fun γ =>
                                                             ltac:(M.monadic
-                                                              (let iter :=
-                                                                M.copy (|
+                                                              (let~ iter :
                                                                   Ty.apply
                                                                     (Ty.path
                                                                       "core::iter::adapters::enumerate::Enumerate")
@@ -2999,9 +2992,8 @@ Module signature.
                                                                           Ty.path
                                                                             "move_binary_format::file_format::FieldDefinition"
                                                                         ]
-                                                                    ],
-                                                                  γ
-                                                                |) in
+                                                                    ] :=
+                                                                M.read (| γ |) in
                                                               M.read (|
                                                                 M.loop (|
                                                                   Ty.tuple [],
@@ -4521,8 +4513,7 @@ Module signature.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                       []
@@ -4534,9 +4525,8 @@ Module signature.
                                             Ty.path
                                               "move_binary_format::file_format::FunctionDefinition"
                                           ]
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -5590,8 +5580,7 @@ Module signature.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                       []
@@ -5600,9 +5589,8 @@ Module signature.
                                           (Ty.path "core::slice::iter::Iter")
                                           []
                                           [ Ty.path "move_binary_format::file_format::Bytecode" ]
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -10185,8 +10173,7 @@ Module signature.
                                           [
                                             fun γ =>
                                               ltac:(M.monadic
-                                                (let iter :=
-                                                  M.copy (|
+                                                (let~ iter :
                                                     Ty.apply
                                                       (Ty.path
                                                         "core::iter::adapters::enumerate::Enumerate")
@@ -10199,9 +10186,8 @@ Module signature.
                                                             Ty.path
                                                               "move_binary_format::file_format::SignatureToken"
                                                           ]
-                                                      ],
-                                                    γ
-                                                  |) in
+                                                      ] :=
+                                                  M.read (| γ |) in
                                                 M.read (|
                                                   M.loop (|
                                                     Ty.tuple [],
@@ -10965,14 +10951,13 @@ Module signature.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
-                                      [ Ty.path "move_binary_format::file_format::SignatureToken" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "move_binary_format::file_format::SignatureToken"
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -11624,14 +11609,13 @@ Module signature.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
-                                      [ Ty.path "move_binary_format::file_format::SignatureToken" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "move_binary_format::file_format::SignatureToken"
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -12687,14 +12671,13 @@ Module signature.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
-                                      [ Ty.path "move_binary_format::file_format::SignatureToken" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "move_binary_format::file_format::SignatureToken"
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -13303,12 +13286,10 @@ Module signature.
                                   [
                                     fun γ =>
                                       ltac:(M.monadic
-                                        (let iter :=
-                                          M.copy (|
+                                        (let~ iter :
                                             Ty.path
-                                              "move_binary_format::file_format::SignatureTokenPreorderTraversalIter",
-                                            γ
-                                          |) in
+                                              "move_binary_format::file_format::SignatureTokenPreorderTraversalIter" :=
+                                          M.read (| γ |) in
                                         M.read (|
                                           M.loop (|
                                             Ty.tuple [],
@@ -14534,8 +14515,7 @@ Module signature.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::iter::adapters::zip::Zip")
                                       []
@@ -14548,9 +14528,8 @@ Module signature.
                                             Ty.path
                                               "move_binary_format::file_format::SignatureToken"
                                           ]
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],

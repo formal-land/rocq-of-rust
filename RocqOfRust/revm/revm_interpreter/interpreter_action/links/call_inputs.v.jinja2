@@ -1,0 +1,90 @@
+{# Template for call_inputs links file #}
+Require Import RocqOfRust.RocqOfRust.
+Require Import RocqOfRust.links.M.
+Require Import alloy_primitives.bits.links.address.
+Require Import alloy_primitives.bytes.links.mod.
+Require Import alloy_primitives.links.aliases.
+Require Import core.ops.links.range.
+Require Import ruint.links.lib.
+
+(*
+  /// Call value.
+  #[derive(Clone, Debug, PartialEq, Eq, Hash)]
+  #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+  pub enum CallValue {
+      /// Concrete value, transferred from caller to callee at the end of the transaction.
+      Transfer(U256),
+      /// Apparent value, that is **not** actually transferred.
+      ///
+      /// Set when in a `DELEGATECALL` call type, and used by the `CALLVALUE` opcode.
+      Apparent(U256),
+  }
+*)
+Module CallValue.
+{{ macros.enum_body("revm_interpreter::interpreter_action::call_inputs::CallValue", [
+  ("Transfer", [("x", "aliases.U256.t")]),
+  ("Apparent", [("x", "aliases.U256.t")]),
+]) }}
+End CallValue.
+Export (hints) CallValue.
+
+(*
+  pub enum CallScheme {
+      /// `CALL`.
+      Call,
+      /// `CALLCODE`
+      CallCode,
+      /// `DELEGATECALL`
+      DelegateCall,
+      /// `STATICCALL`
+      StaticCall,
+      /// `EXTCALL`
+      ExtCall,
+      /// `EXTSTATICCALL`
+      ExtStaticCall,
+      /// `EXTDELEGATECALL`
+      ExtDelegateCall,
+  }
+*)
+Module CallScheme.
+{{ macros.enum_body("revm_interpreter::interpreter_action::call_inputs::CallScheme", [
+  ("Call", []),
+  ("CallCode", []),
+  ("DelegateCall", []),
+  ("StaticCall", []),
+  ("ExtCall", []),
+  ("ExtStaticCall", []),
+  ("ExtDelegateCall", []),
+]) }}
+End CallScheme.
+Export (hints) CallScheme.
+
+(*
+  pub struct CallInputs {
+      pub input: Bytes,
+      pub return_memory_offset: Range<usize>,
+      pub gas_limit: u64,
+      pub bytecode_address: Address,
+      pub target_address: Address,
+      pub caller: Address,
+      pub value: CallValue,
+      pub scheme: CallScheme,
+      pub is_static: bool,
+      pub is_eof: bool,
+  }
+*)
+Module CallInputs.
+{{ macros.record_body("revm_interpreter::interpreter_action::call_inputs::CallInputs", [
+  ("bytecode_address", "Address.t"),
+  ("caller", "Address.t"),
+  ("gas_limit", "u64"),
+  ("input", "Bytes.t"),
+  ("is_eof", "bool"),
+  ("is_static", "bool"),
+  ("return_memory_offset", "Range.t usize"),
+  ("scheme", "CallScheme.t"),
+  ("target_address", "Address.t"),
+  ("value", "CallValue.t"),
+]) }}
+End CallInputs.
+Export (hints) CallInputs.

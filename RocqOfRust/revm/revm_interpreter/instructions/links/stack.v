@@ -6,6 +6,7 @@ Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.instructions.links.utility.
 Require Import revm.revm_interpreter.instructions.stack.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_specification.links.hardfork.
@@ -21,8 +22,8 @@ Instance run_pop
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.stack.pop [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -33,6 +34,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
+Global Opaque run_pop.
 
 (*
 pub fn push0<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -44,8 +46,8 @@ Instance run_push0
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.stack.push0 [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -57,6 +59,7 @@ Proof.
   destruct run_RuntimeFlag_for_RuntimeFlag.
   run_symbolic.
 Defined.
+Global Opaque run_push0.
 
 (*
 pub fn push<const N: usize, WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -65,12 +68,12 @@ pub fn push<const N: usize, WIRE: InterpreterTypes, H: Host + ?Sized>(
 )
 *)
 Instance run_push
-  (N : Usize.t)
+  (N : usize)
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.stack.push [ φ N ] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -83,6 +86,7 @@ Proof.
   destruct run_Immediates_for_Bytecode.
   run_symbolic.
 Defined.
+Global Opaque run_push.
 
 (*
 pub fn dup<const N: usize, WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -91,12 +95,12 @@ pub fn dup<const N: usize, WIRE: InterpreterTypes, H: Host + ?Sized>(
 )
 *)
 Instance run_dup
-  (N : Usize.t)
+  (N : usize)
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.stack.dup [ φ N ] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -107,6 +111,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
+Global Opaque run_dup.
 
 (*
 pub fn swap<const N: usize, WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -115,12 +120,12 @@ pub fn swap<const N: usize, WIRE: InterpreterTypes, H: Host + ?Sized>(
 )
 *)
 Instance run_swap
-  (N : Usize.t)
+  (N : usize)
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.stack.swap [ φ N ] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -131,6 +136,7 @@ Proof.
   destruct run_StackTrait_for_Stack.
   run_symbolic.
 Defined.
+Global Opaque run_swap.
 
 (*
 pub fn dupn<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -142,8 +148,8 @@ Instance run_dupn
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.stack.dupn [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -157,6 +163,7 @@ Proof.
   destruct run_Immediates_for_Bytecode.
   run_symbolic.
 Defined.
+Global Opaque run_dupn.
 
 (*
 pub fn swapn<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -168,8 +175,8 @@ Instance run_swapn
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.stack.swapn [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -183,6 +190,7 @@ Proof.
   destruct run_Immediates_for_Bytecode.
   run_symbolic.
 Defined.
+Global Opaque run_swapn.
 
 (*
 pub fn exchange<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -194,8 +202,8 @@ Instance run_exchange
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.stack.exchange [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -209,3 +217,4 @@ Proof.
   destruct run_Immediates_for_Bytecode.
   run_symbolic.
 Defined.
+Global Opaque run_exchange.

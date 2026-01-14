@@ -3318,14 +3318,13 @@ Module collections.
                               [
                                 fun γ =>
                                   ltac:(M.monadic
-                                    (let iter :=
-                                      M.copy (|
+                                    (let~ iter :
                                         Ty.apply
                                           (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                           []
-                                          [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ K ] ],
-                                        γ
-                                      |) in
+                                          [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ K ]
+                                          ] :=
+                                      M.read (| γ |) in
                                     M.read (|
                                       M.loop (|
                                         Ty.tuple [],

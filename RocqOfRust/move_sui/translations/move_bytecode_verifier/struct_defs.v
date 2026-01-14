@@ -809,8 +809,7 @@ Module struct_defs.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter :=
-                              M.copy (|
+                            (let~ iter :
                                 Ty.apply
                                   (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                   []
@@ -820,9 +819,8 @@ Module struct_defs.
                                       []
                                       [ Ty.path "move_binary_format::file_format::StructDefinition"
                                       ]
-                                  ],
-                                γ
-                              |) in
+                                  ] :=
+                              M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],
@@ -1191,14 +1189,12 @@ Module struct_defs.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::ops::range::Range")
                                       []
-                                      [ Ty.path "usize" ],
-                                    γ
-                                  |) in
+                                      [ Ty.path "usize" ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -2409,8 +2405,7 @@ Module struct_defs.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::iter::adapters::flatten::Flatten")
                                       []
@@ -2432,9 +2427,8 @@ Module struct_defs.
                                                   ]
                                               ]
                                           ]
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -3819,17 +3813,15 @@ Module struct_defs.
                                           [
                                             fun γ =>
                                               ltac:(M.monadic
-                                                (let iter :=
-                                                  M.copy (|
+                                                (let~ iter :
                                                     Ty.apply
                                                       (Ty.path "core::slice::iter::Iter")
                                                       []
                                                       [
                                                         Ty.path
                                                           "move_binary_format::file_format::SignatureToken"
-                                                      ],
-                                                    γ
-                                                  |) in
+                                                      ] :=
+                                                  M.read (| γ |) in
                                                 M.read (|
                                                   M.loop (|
                                                     Ty.tuple [],

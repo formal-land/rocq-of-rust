@@ -222,14 +222,12 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let iter :=
-                          M.copy (|
+                        (let~ iter :
                             Ty.apply
                               (Ty.path "core::iter::adapters::rev::Rev")
                               []
-                              [ Ty.path "core::str::iter::SplitWhitespace" ],
-                            γ
-                          |) in
+                              [ Ty.path "core::str::iter::SplitWhitespace" ] :=
+                          M.read (| γ |) in
                         M.read (|
                           M.loop (|
                             Ty.tuple [],
@@ -530,14 +528,12 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let iter :=
-                          M.copy (|
+                        (let~ iter :
                             Ty.apply
                               (Ty.path "alloc::vec::into_iter::IntoIter")
                               []
-                              [ Ty.path "char"; Ty.path "alloc::alloc::Global" ],
-                            γ
-                          |) in
+                              [ Ty.path "char"; Ty.path "alloc::alloc::Global" ] :=
+                          M.read (| γ |) in
                         M.read (|
                           M.loop (|
                             Ty.tuple [],

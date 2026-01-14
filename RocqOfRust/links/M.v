@@ -11,10 +11,12 @@ Axiom IsTraitAssociatedType_eq :
   IsTraitAssociatedType trait_name trait_consts trait_tys self_ty associated_type_name ty ->
   Ty.associated_in_trait trait_name trait_consts trait_tys self_ty associated_type_name = ty.
 
+Set Typeclasses Strict Resolution.
 Class Link (A : Set) : Set := {
   Φ : Ty.t;
   φ : A -> Value.t;
 }.
+Unset Typeclasses Strict Resolution.
 (* We make explicit the argument [A]. *)
 Arguments Φ _ {_}.
 
@@ -33,7 +35,7 @@ Module OfTy.
     let '@Make _ A _ _ := x in
     A.
 
-  Global Instance IsLink {ty' : Ty.t} (x : t ty') : Link (get_Set x).
+  Global Instance InductiveIsLink {ty' : Ty.t} (x : t ty') : Link (get_Set x).
   Proof.
     destruct x.
     assumption.
@@ -46,6 +48,19 @@ Module OfTy.
     reflexivity.
   Defined.
   Smpl Add apply of_ty : of_ty.
+
+  Class C (ty : Ty.t) : Type := {
+    A : Set;
+    H : Link A;
+    eq : ty = Φ A;
+  }.
+
+  Global Instance IsLink (T' : Ty.t) {H_T : C T'} : Link H_T.(A) :=
+    H_T.(H).
+
+  Definition to_inductive {ty : Ty.t} `{C ty} : OfTy.t ty :=
+    OfTy.Make ty eq.
+  Smpl Add apply to_inductive : of_ty.
 End OfTy.
 
 Smpl Create of_value.
@@ -57,6 +72,25 @@ Lemma of_value_link_eq {A : Set} `{Link A} (value : A) :
   φ value = φ value.
 Proof. reflexivity. Qed.
 Smpl Add apply of_value_link_eq : of_value.
+
+Module OfValueWith.
+  Class C (A : Set) `{Link A} (value' : Value.t) : Set := {
+    value : A;
+    eq : value' = φ value;
+  }.
+
+  Global Instance IsIdentity {T : Set} `{Link T} (value : T) : C T (φ value) := {
+    value := value;
+    eq := eq_refl;
+  }.
+
+  Lemma of_value_with {A : Set} `{Link A} {value' : Value.t} `{C A value'} :
+    value' = φ (A := A) value.
+  Proof.
+    exact eq.
+  Qed.
+  Smpl Add apply of_value_with : of_value.
+End OfValueWith.
 
 Module OfValue.
   Inductive t (value' : Value.t) : Type :=
@@ -106,6 +140,23 @@ Module OfValue.
     subst.
     reflexivity.
   Qed.
+
+  Class C (value' : Value.t) : Type := {
+    A : Set;
+    H : Link A;
+    value : A;
+    eq : value' = φ value;
+  }.
+
+  Global Instance IsIdentity {T : Set} `{Link T} (value : T) : C (φ value) := {
+    A := T;
+    value := value;
+    eq := eq_refl;
+  }.
+
+  Definition to_inductive {value' : Value.t} `{C value'} : OfValue.t value' :=
+    OfValue.Make value' value eq.
+  Smpl Add apply to_inductive : of_value.
 End OfValue.
 
 (** Implementation of the primitive Rust operator for equality check *)
@@ -121,21 +172,20 @@ Module Bool.
     φ b := Value.Bool b;
   }.
 
-  Definition of_ty : OfTy.t (Ty.path "bool").
-  Proof. eapply OfTy.Make with (A := bool); reflexivity. Defined.
-  Smpl Add apply of_ty : of_ty.
+  Global Instance IsOfTy : OfTy.C (Ty.path "bool") := {
+    A := bool;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with (b : bool) :
-    Value.Bool b = φ b.
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with : of_value.
+  Global Instance IsOfValueWith (b : bool) : OfValueWith.C bool (Value.Bool b) := {
+    value := b;
+    eq := eq_refl;
+  }.
 
-  Definition of_value (b : bool) :
-    OfValue.t (Value.Bool b).
-  Proof.
-    eapply OfValue.Make with (A := bool); smpl of_value.
-  Defined.
-  Smpl Add apply of_value : of_value.
+  Global Instance IsOfValue (b : bool) : OfValue.C (Value.Bool b) := {
+    value := b;
+    eq := eq_refl;
+  }.
 
   Global Instance IsPrimitiveEq : PrimitiveEq.Trait bool := {
     PrimitiveEq.eqb := Bool.eqb;
@@ -171,63 +221,79 @@ Module Integer.
     φ '{| value := value |} := Value.Integer kind value;
   }.
 
-  Definition of_ty_i8 : OfTy.t (Ty.path "i8").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.I8); reflexivity. Defined.
-  Smpl Add apply of_ty_i8 : of_ty.
+  Global Instance IsOfTy_i8 : OfTy.C (Ty.path "i8") := {
+    A := t IntegerKind.I8;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_i16 : OfTy.t (Ty.path "i16").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.I16); reflexivity. Defined.
-  Smpl Add apply of_ty_i16 : of_ty.
+  Global Instance IsOfTy_i16 : OfTy.C (Ty.path "i16") := {
+    A := t IntegerKind.I16;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_i32 : OfTy.t (Ty.path "i32").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.I32); reflexivity. Defined.
-  Smpl Add apply of_ty_i32 : of_ty.
+  Global Instance IsOfTy_i32 : OfTy.C (Ty.path "i32") := {
+    A := t IntegerKind.I32;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_i64 : OfTy.t (Ty.path "i64").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.I64); reflexivity. Defined.
-  Smpl Add apply of_ty_i64 : of_ty.
+  Global Instance IsOfTy_i64 : OfTy.C (Ty.path "i64") := {
+    A := t IntegerKind.I64;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_i128 : OfTy.t (Ty.path "i128").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.I128); reflexivity. Defined.
-  Smpl Add apply of_ty_i128 : of_ty.
+  Global Instance IsOfTy_i128 : OfTy.C (Ty.path "i128") := {
+    A := t IntegerKind.I128;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_isize : OfTy.t (Ty.path "isize").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.Isize); reflexivity. Defined.
-  Smpl Add apply of_ty_isize : of_ty.
+  Global Instance IsOfTy_isize : OfTy.C (Ty.path "isize") := {
+    A := t IntegerKind.Isize;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_u8 : OfTy.t (Ty.path "u8").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.U8); reflexivity. Defined.
-  Smpl Add apply of_ty_u8 : of_ty.
+  Global Instance IsOfTy_u8 : OfTy.C (Ty.path "u8") := {
+    A := t IntegerKind.U8;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_u16 : OfTy.t (Ty.path "u16").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.U16); reflexivity. Defined.
-  Smpl Add apply of_ty_u16 : of_ty.
+  Global Instance IsOfTy_u16 : OfTy.C (Ty.path "u16") := {
+    A := t IntegerKind.U16;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_u32 : OfTy.t (Ty.path "u32").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.U32); reflexivity. Defined.
-  Smpl Add apply of_ty_u32 : of_ty.
+  Global Instance IsOfTy_u32 : OfTy.C (Ty.path "u32") := {
+    A := t IntegerKind.U32;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_u64 : OfTy.t (Ty.path "u64").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.U64); reflexivity. Defined.
-  Smpl Add apply of_ty_u64 : of_ty.
+  Global Instance IsOfTy_u64 : OfTy.C (Ty.path "u64") := {
+    A := t IntegerKind.U64;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_u128 : OfTy.t (Ty.path "u128").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.U128); reflexivity. Defined.
-  Smpl Add apply of_ty_u128 : of_ty.
+  Global Instance IsOfTy_u128 : OfTy.C (Ty.path "u128") := {
+    A := t IntegerKind.U128;
+    eq := eq_refl;
+  }.
 
-  Definition of_ty_usize : OfTy.t (Ty.path "usize").
-  Proof. eapply OfTy.Make with (A := t IntegerKind.Usize); reflexivity. Defined.
-  Smpl Add apply of_ty_usize : of_ty.
+  Global Instance IsOfTy_usize : OfTy.C (Ty.path "usize") := {
+    A := t IntegerKind.Usize;
+    eq := eq_refl;
+  }.
 
-  Lemma of_value_with {kind : IntegerKind.t} (value : Z) :
-    Value.Integer kind value = φ (Integer.Build_t kind value).
-  Proof. reflexivity. Qed.
-  Smpl Add apply of_value_with : of_value.
+  Global Instance IsOfValueWith {kind : IntegerKind.t} (value : Z) :
+    OfValueWith.C (t kind) (Value.Integer kind value) :=
+  {
+    value := Integer.Build_t kind value;
+    eq := eq_refl;
+  }.
 
-  Definition of_value {kind : IntegerKind.t} (value : Z) :
-    OfValue.t (Value.Integer kind value).
-  Proof. eapply OfValue.Make with (A := t kind); smpl of_value. Defined.
-  Smpl Add apply of_value : of_value.
+  Global Instance IsOfValue {kind : IntegerKind.t} (value : Z) :
+    OfValue.C (Value.Integer kind value) :=
+  {
+    value := Integer.Build_t kind value;
+    eq := eq_refl;
+  }.
 
   Global Instance IsPrimitiveEq {kind : IntegerKind.t} : PrimitiveEq.Trait (t kind) := {
     PrimitiveEq.eqb x y := x.(value) =? y.(value);
@@ -235,53 +301,18 @@ Module Integer.
 End Integer.
 
 (** ** Integer kinds for better readability *)
-Module U8.
-  Definition t : Set := Integer.t IntegerKind.U8.
-End U8.
-
-Module U16.
-  Definition t : Set := Integer.t IntegerKind.U16.
-End U16.
-
-Module U32.
-  Definition t : Set := Integer.t IntegerKind.U32.
-End U32.
-
-Module U64.
-  Definition t : Set := Integer.t IntegerKind.U64.
-End U64.
-
-Module U128.
-  Definition t : Set := Integer.t IntegerKind.U128.
-End U128.
-
-Module Usize.
-  Definition t : Set := Integer.t IntegerKind.Usize.
-End Usize.
-
-Module I8.
-  Definition t : Set := Integer.t IntegerKind.I8.
-End I8.
-
-Module I16.
-  Definition t : Set := Integer.t IntegerKind.I16.
-End I16.
-
-Module I32.
-  Definition t : Set := Integer.t IntegerKind.I32.
-End I32.
-
-Module I64.
-  Definition t : Set := Integer.t IntegerKind.I64.
-End I64.
-
-Module I128.
-  Definition t : Set := Integer.t IntegerKind.I128.
-End I128.
-
-Module Isize.
-  Definition t : Set := Integer.t IntegerKind.Isize.
-End Isize.
+Definition u8 : Set := Integer.t IntegerKind.U8.
+Definition u16 : Set := Integer.t IntegerKind.U16.
+Definition u32 : Set := Integer.t IntegerKind.U32.
+Definition u64 : Set := Integer.t IntegerKind.U64.
+Definition u128 : Set := Integer.t IntegerKind.U128.
+Definition usize : Set := Integer.t IntegerKind.Usize.
+Definition i8 : Set := Integer.t IntegerKind.I8.
+Definition i16 : Set := Integer.t IntegerKind.I16.
+Definition i32 : Set := Integer.t IntegerKind.I32.
+Definition i64 : Set := Integer.t IntegerKind.I64.
+Definition i128 : Set := Integer.t IntegerKind.I128.
+Definition isize : Set := Integer.t IntegerKind.Isize.
 
 Module Char.
   Inductive t : Set :=
@@ -579,6 +610,12 @@ Module Ref.
   Smpl Add apply of_value_of_core : of_value.
 End Ref.
 
+Notation "'*" := (Ref.t Pointer.Kind.Raw).
+Notation "'&" := (Ref.t Pointer.Kind.Ref).
+Notation "'&mut" := (Ref.t Pointer.Kind.MutRef).
+Notation "'*const" := (Ref.t Pointer.Kind.ConstPointer).
+Notation "'*mut" := (Ref.t Pointer.Kind.MutPointer).
+
 Module SubPointer.
   Module Runner.
     (** We group in a single data structure how we can access to the address of a field of a value
@@ -712,13 +749,11 @@ Module Output.
     | Return (return_ : R)
     | Break
     | Continue
-    | BreakMatch
-    | Panic (panic : Panic.t).
+    | BreakMatch.
     Arguments Return {_}.
     Arguments Break {_}.
     Arguments Continue {_}.
     Arguments BreakMatch {_}.
-    Arguments Panic {_}.
 
     Definition to_exception {R : Set} `{Link R} (exception : t R) : M.Exception.t :=
       match exception with
@@ -726,7 +761,6 @@ Module Output.
       | Break => M.Exception.Break
       | Continue => M.Exception.Continue
       | BreakMatch => M.Exception.BreakMatch
-      | Panic panic => M.Exception.Panic panic
       end.
 
     Smpl Create of_output.
@@ -739,24 +773,19 @@ Module Output.
     Smpl Add apply of_return_eq : of_output.
 
     Lemma of_break_eq {R : Set} `{Link R} :
-      M.Exception.Break = to_exception Break.
+      M.Exception.Break = to_exception (R := R) Break.
     Proof. reflexivity. Qed.
     Smpl Add apply of_break_eq : of_output.
 
     Lemma of_continue_eq {R : Set} `{Link R} :
-      M.Exception.Continue = to_exception Continue.
+      M.Exception.Continue = to_exception (R := R) Continue.
     Proof. reflexivity. Qed.
     Smpl Add apply of_continue_eq : of_output.
 
     Lemma of_break_match_eq {R : Set} `{Link R} :
-      M.Exception.BreakMatch = to_exception BreakMatch.
+      M.Exception.BreakMatch = to_exception (R := R) BreakMatch.
     Proof. reflexivity. Qed.
     Smpl Add apply of_break_match_eq : of_output.
-
-    Lemma of_panic_eq {R : Set} `{Link R} panic :
-      M.Exception.Panic panic = to_exception (Panic panic).
-    Proof. reflexivity. Qed.
-    Smpl Add apply of_panic_eq : of_output.
   End Exception.
 
   Inductive t (R Output : Set) : Set :=
@@ -782,36 +811,10 @@ Module Output.
   Lemma of_exception_eq {R Output : Set} `{Link R} `{Link Output}
       (exception : Exception.t R) (exception' : M.Exception.t) :
     exception' = Exception.to_exception exception ->
-    inr exception' = to_value (Output.Exception (R := R) exception).
+    inr exception' = to_value (Output := Output) (Output.Exception (R := R) exception).
   Proof. now intros; subst. Qed.
   Smpl Add apply of_exception_eq : of_output.
-
-  Definition panic {R Output : Set} (message : string) : t R Output :=
-    Exception (Exception.Panic (Panic.Make message)).
 End Output.
-
-(** For the output of closure calls, where we know it can only be a success or panic, but not a
-    `return`, `break`, or `continue`. *)
-Module SuccessOrPanic.
-  Inductive t (Output : Set) : Set :=
-  | Success (output : Output)
-  | Panic (panic : Panic.t).
-  Arguments Success {_}.
-  Arguments Panic {_}.
-
-  Definition apply {Output A : Set}
-      (f : t Output -> A)
-      (output : Output.t Output Output) :
-      A :=
-    match output with
-    | Output.Success output => f (Success output)
-    | Output.Exception (Output.Exception.Panic panic) => f (Panic panic)
-    | Output.Exception _ =>
-      f (Panic (Panic.Make "unexpected return, break, or continue escaping a function"))
-    end.
-  (* This is useful to get [cbn] to make progress when evaluating a run. *)
-  Arguments apply /.
-End SuccessOrPanic.
 
 Module Run.
   Reserved Notation "{{ e 🔽 R , Output }}" (no associativity).
@@ -842,7 +845,7 @@ Module Run.
       (of_ty : OfTy.t ty')
       (value : OfTy.get_Set of_ty) :
     value' = φ value ->
-    (forall (ref : Ref.t Pointer.Kind.Raw (OfTy.get_Set of_ty)),
+    (forall (ref : '* (OfTy.get_Set of_ty)),
       {{ k (φ ref) 🔽 R, Output }}
     ) ->
     {{ LowM.CallPrimitive (Primitive.StateAlloc ty' value') k 🔽 R, Output }}
@@ -853,14 +856,14 @@ Module Run.
       (of_ty : OfTy.t ty')
       (value : OfTy.get_Set of_ty) :
     value' = φ value ->
-    (forall (ref : Ref.t Pointer.Kind.Raw (OfTy.get_Set of_ty)),
+    (forall (ref : '* (OfTy.get_Set of_ty)),
       {{ k (φ ref) 🔽 R, Output }}
     ) ->
     {{ LowM.CallPrimitive (Primitive.StateAlloc ty' value') k 🔽 R, Output }}
   | CallPrimitiveStateRead {A : Set} `{Link A}
       (ref_core : Ref.Core.t A)
       (k : Value.t -> M) :
-    let ref : Ref.t Pointer.Kind.Raw A := {| Ref.core := ref_core |} in
+    let ref : '* A := {| Ref.core := ref_core |} in
     (forall (value : A),
       {{ k (φ value) 🔽 R, Output }}
     ) ->
@@ -877,7 +880,7 @@ Module Run.
       (ref_core : Ref.Core.t A)
       (value' : Value.t) (value : A)
       (k : Value.t -> M) :
-    let ref : Ref.t Pointer.Kind.Raw A := {| Ref.core := ref_core |} in
+    let ref : '* A := {| Ref.core := ref_core |} in
     value' = φ value ->
     {{ k (φ tt) 🔽 R, Output }} ->
     {{ LowM.CallPrimitive (Primitive.StateWrite (φ ref) value') k 🔽 R, Output }}
@@ -887,9 +890,9 @@ Module Run.
       (runner : SubPointer.Runner.t A index)
       (k : Value.t -> M) :
     let _ := runner.(SubPointer.Runner.H_Sub_A) in
-    let ref : Ref.t Pointer.Kind.Raw A := {| Ref.core := ref_core |} in
+    let ref : '* A := {| Ref.core := ref_core |} in
     SubPointer.Runner.Valid.t runner ->
-    (forall (sub_ref : Ref.t Pointer.Kind.Raw runner.(SubPointer.Runner.Sub_A)),
+    (forall (sub_ref : '* runner.(SubPointer.Runner.Sub_A)),
       {{ k (φ sub_ref) 🔽 R, Output }}
     ) ->
     {{
@@ -919,12 +922,18 @@ Module Run.
         R, Output
     }}
   | CallPrimitiveGetTraitMethod
-      (trait_name : string) (self_ty : Ty.t) (trait_consts : list Value.t) (trait_tys : list Ty.t)
+      (trait_name : string) (trait_consts : list Value.t) (trait_tys : list Ty.t) (self_ty : Ty.t)
       (method_name : string) (generic_consts : list Value.t) (generic_tys : list Ty.t)
       (method : PolymorphicFunction.t)
       (k : Value.t -> M) :
     let closure := Value.Closure (existS (_, _) (method generic_consts generic_tys)) in
-    IsTraitMethod.t trait_name trait_consts trait_tys self_ty method_name method ->
+    let trait := {|
+      TraitHeader.trait_name := trait_name;
+      TraitHeader.trait_consts := trait_consts;
+      TraitHeader.trait_tys := trait_tys;
+      TraitHeader.self_ty := self_ty;
+    |} in
+    IsTraitMethod.t trait method_name method ->
     {{ k closure 🔽 R, Output }} ->
     {{ LowM.CallPrimitive
         (Primitive.GetTraitMethod
@@ -949,10 +958,6 @@ Module Run.
     (forall (value_inter : Output'),
       {{ k (inl (φ value_inter)) 🔽 R, Output }}
     ) ->
-    (* Panic *)
-    (forall (panic : Panic.t),
-      {{ k (inr (M.Exception.Panic panic)) 🔽 R, Output }}
-    ) ->
     {{ LowM.CallClosure ty closure args k 🔽 R, Output }}
   | CallLogicalOp
       (op : LogicalOp.t) (lhs : bool) (rhs : M) (k : Value.t + Exception.t -> M) :
@@ -975,7 +980,7 @@ Module Run.
       (of_ty : OfTy.t ty) :
     let Output' : Set := OfTy.get_Set of_ty in
     {{ e 🔽 R, Output' }} ->
-    (forall (value_inter : Output.t R (Ref.t Pointer.Kind.Raw Output')),
+    (forall (value_inter : Output.t R ('* Output')),
       {{ k (Output.to_value value_inter) 🔽 R, Output }}
     ) ->
     {{ LowM.LetAlloc ty e k 🔽 R, Output }}
@@ -984,7 +989,7 @@ Module Run.
       (of_ty : OfTy.t ty) :
     let Output' : Set := OfTy.get_Set of_ty in
     {{ body 🔽 R, Output' }} ->
-    (forall (value_inter : Output.t R (Ref.t Pointer.Kind.Raw Output')),
+    (forall (value_inter : Output.t R ('* Output')),
       {{ k (Output.to_value value_inter) 🔽 R, Output }}
     ) ->
     {{ LowM.Loop ty body k 🔽 R, Output }}
@@ -1006,6 +1011,8 @@ Module Run.
       {{ k (Output.to_value value_inter) 🔽 R, Output }}
     ) ->
     {{ LowM.IfThenElse ty cond' then_ else_ k 🔽 R, Output }}
+  | Impossible {T : Set} (payload : T) :
+    {{ LowM.Impossible payload 🔽 R, Output }}
   (** This primitive is useful to avoid blocking the reduction of this inductive with a [rewrite]
       that is hard to eliminate. *)
   | Rewrite
@@ -1030,28 +1037,7 @@ Module Run.
     run_f : {{ f ε τ α 🔽 Output, Output }};
   }.
 End Run.
-
-Export Run.
-
-Module TraitMethod.
-  Module Header.
-    Definition t : Set :=
-      string * list Value.t * list Ty.t * Ty.t.
-  End Header.
-
-  Class C
-      (trait : Header.t)
-      (method_name : string)
-      (run : PolymorphicFunction.t -> Set) :
-      Set :=
-    {
-      method : PolymorphicFunction.t;
-      is_trait_method :
-        let '(trait_name, trait_consts, trait_tys, self_ty) := trait in
-        IsTraitMethod.t trait_name trait_consts trait_tys self_ty method_name method;
-      run : run method;
-    }.
-End TraitMethod.
+Export (notations) Run.
 
 Module Primitive.
   (** These primitives are equivalent to the ones in the generated code, except that we are now
@@ -1076,14 +1062,14 @@ Module LinkM.
   | Let {A : Set} (e : t R A) (k : Output.t R A -> t R Output)
   | LetAlloc {A : Set} `{Link A}
       (e : t R A)
-      (k : Output.t R (Ref.t Pointer.Kind.Raw A) -> t R Output)
+      (k : Output.t R ('* A) -> t R Output)
   | Call {A : Set} `{Link A}
       {f : list Value.t -> M} {args : list Value.t}
       (run_f : {{ f args 🔽 A }})
-      (k : SuccessOrPanic.t A -> t R Output)
+      (k : A -> t R Output)
   | Loop {A : Set} `{Link A}
       (body : t R A)
-      (k : Output.t R (Ref.t Pointer.Kind.Raw A) -> t R Output)
+      (k : Output.t R ('* A) -> t R Output)
   | IfThenElse
       (cond : bool) (then_ : t R Output) (else_ : t R Output)
   | MatchOutput {A : Set}
@@ -1095,7 +1081,7 @@ Module LinkM.
       (k_break : unit -> t R Output)
       (k_continue : unit -> t R Output)
       (k_break_match : unit -> t R Output)
-      (k_panic : Panic.t -> t R Output).
+  | Impossible {T : Set} (payload : T).
   Arguments Pure {_ _}.
   Arguments CallPrimitive {_ _ _}.
   Arguments Let {_ _ _}.
@@ -1104,6 +1090,7 @@ Module LinkM.
   Arguments Loop {_ _ _ _}.
   Arguments IfThenElse {_ _}.
   Arguments MatchOutput {_ _ _}.
+  Arguments Impossible {_ _ _}.
 
   Definition match_output {R Output A : Set}
       (output : Output.t R A)
@@ -1114,8 +1101,31 @@ Module LinkM.
       (fun return_ => k (Output.Exception (Output.Exception.Return return_)))
       (fun _ => k (Output.Exception Output.Exception.Break))
       (fun _ => k (Output.Exception Output.Exception.Continue))
-      (fun _ => k (Output.Exception Output.Exception.BreakMatch))
-      (fun panic => k (Output.Exception (Output.Exception.Panic panic))).
+      (fun _ => k (Output.Exception Output.Exception.BreakMatch)).
+
+  Fixpoint let_ {R Output A : Set} (e1 : t R A) (e2 : Output.t R A -> t R Output) :
+      t R Output :=
+    match e1 with
+    | Pure output => e2 output
+    | CallPrimitive primitive k =>
+      CallPrimitive primitive (fun output => let_ (k output) e2)
+    | Let e k => Let e (fun output => let_ (k output) e2)
+    | LetAlloc e k => LetAlloc e (fun output => let_ (k output) e2)
+    | Call run_f k => Call run_f (fun output => let_ (k output) e2)
+    | Loop body k => Loop body (fun output => let_ (k output) e2)
+    | IfThenElse cond then_ else_ =>
+      IfThenElse cond
+        (let_ then_ e2)
+        (let_ else_ e2)
+    | MatchOutput output k_success k_return k_break k_continue k_break_match =>
+      MatchOutput output
+       (fun output => let_ (k_success output) e2)
+       (fun return_ => let_ (k_return return_) e2)
+       (fun _ => let_ (k_break tt) e2)
+       (fun _ => let_ (k_continue tt) e2)
+       (fun _ => let_ (k_break_match tt) e2)
+    | Impossible payload => Impossible payload
+    end.
 End LinkM.
 
 (* Definition evaluate_get_sub_pointer {R A : Set} `{Link A} {index : Pointer.Index.t}
@@ -1205,15 +1215,10 @@ Proof.
     eapply (LinkM.Call (A := Output')). {
       exact run.
     }
-    intros [output'|panic]; eapply evaluate.
-    { match goal with
-      | H : forall _ : Output', _ |- _ => apply (H output')
-      end.
-    }
-    { match goal with
-      | H : forall _ : Panic.t, _ |- _ => apply (H panic)
-      end.
-    }
+    intros output'; eapply evaluate.
+    match goal with
+    | H : forall _ : Output', _ |- _ => apply (H output')
+    end.
   }
   { (* CallLogicalOp *)
     match goal with
@@ -1314,6 +1319,9 @@ Proof.
       evaluate _ _ _ _ _ (H_k output'))
     ).
   }
+  { (* Impossible *)
+    exact (LinkM.Impossible payload).
+  }
   { (* Rewrite *)
     exact (evaluate _ _ _ _ _ run).
   }
@@ -1366,13 +1374,6 @@ Ltac run_symbolic_get_function :=
 Ltac run_symbolic_get_associated_function :=
   eapply Run.CallPrimitiveGetAssociatedFunction; [try typeclasses eauto 1 |].
 
-Ltac run_symbolic_get_trait_method :=
-  eapply Run.CallPrimitiveGetTraitMethod; [
-    match goal with
-    | H : _ |- _ => apply H
-    end
-  |].
-
 Ltac as_of_values elements :=
   match elements with
   | [] => constr:(@nil Value.t)
@@ -1422,21 +1423,6 @@ Ltac prepare_call_f f :=
 (** We put all the parameters of a function call in a form where each element is the image of some
     value of the link side. *)
 Ltac prepare_call :=
-  with_strategy opaque [Φ] match goal with
-  | |- {{ ?f ?consts ?tys ?arguments 🔽 _, _ }} =>
-    let f' := prepare_call_f f in
-    let f' := eval cbn in f' in
-    let consts' := as_of_values consts in
-    let consts' := eval cbn in consts' in
-    let tys' := as_of_tys tys in
-    let tys' := eval cbn in tys' in
-    let arguments' := as_of_values arguments in
-    let arguments' := eval cbn in arguments' in
-    change f with f';
-    change consts with consts';
-    change tys with tys';
-    change arguments with arguments'
-  end;
   match goal with
   | |- {{ _ 🔽 ?Output }} =>
     let Output' := fresh "Output'" in
@@ -1444,7 +1430,31 @@ Ltac prepare_call :=
     change Output with Output'
   end.
 
+(** We apply the [change] tactic before calling [Run.CallClosure] so that the function arguments are
+    represented in a nice form in the final [Run.t] tree, that is to say as applications of the [φ] or
+    the [Φ] function. This is helpful to have less inference problems later for the simulations. *)
+Ltac prepare_call_closure :=
+  with_strategy opaque [Φ] match goal with
+  | |- {{ LowM.CallClosure _ ?closure ?arguments _ 🔽 _, _ }} =>
+    let arguments' := as_of_values arguments in
+    let arguments' := eval cbn in arguments' in
+    change arguments with arguments';
+    match closure with
+    | Value.Closure (existS (_, _) (?f ?consts ?tys)) =>
+      let f' := prepare_call_f f in
+      let f' := eval cbn in f' in
+      let consts' := as_of_values consts in
+      let consts' := eval cbn in consts' in
+      let tys' := as_of_tys tys in
+      let tys' := eval cbn in tys' in
+      change f with f';
+      change consts with consts';
+      change tys with tys'
+    end
+  end.
+
 Ltac run_symbolic_closure :=
+  try prepare_call_closure;
   unshelve eapply Run.CallClosure; [
     repeat smpl of_ty |
     try prepare_call;
@@ -1454,6 +1464,7 @@ Ltac run_symbolic_closure :=
   ].
 
 Ltac run_symbolic_closure_auto :=
+  try prepare_call_closure;
   unshelve eapply Run.CallClosure; [
     now repeat smpl of_ty |
     try prepare_call;
@@ -1472,9 +1483,33 @@ Ltac run_symbolic_closure_auto :=
         try typeclasses eauto
       )
     ) |
-    cbn; intro |
     cbn; intro
   ].
+
+Ltac run_symbolic_get_trait_method :=
+  eapply Run.CallPrimitiveGetTraitMethod; [
+    match goal with
+    | |- context[{|
+      TraitHeader.trait_name := _;
+      TraitHeader.trait_consts := ?trait_consts;
+      TraitHeader.trait_tys := ?trait_tys;
+      TraitHeader.self_ty := ?self_ty;
+    |}] =>
+      let trait_consts' := as_of_values trait_consts in
+      let trait_tys' := as_of_tys trait_tys in
+      change trait_consts with trait_consts';
+      change trait_tys with trait_tys';
+      change self_ty with (Φ (OfTy.get_Set (ty' := self_ty) ltac:(repeat smpl of_ty)));
+      with_strategy opaque [Φ] cbn
+    end;
+    unshelve (eapply @IsTraitMethod.Make);
+    (
+      (timeout 1 typeclasses eauto) ||
+      match goal with
+      | H : _ |- _ => apply H
+      end
+    )
+  |].
 
 Ltac run_symbolic_logical_op :=
   apply Run.CallLogicalOp; [| cbn; intros [|[]]].
@@ -1496,7 +1531,7 @@ Ltac run_main_rewrites :=
       (repeat (
         erewrite IsTraitAssociatedType_eq ||
         match goal with
-        | H : _ |- _ => exact H
+        | H : _ |- _ => apply H
         end
       ))
     ));
@@ -1506,19 +1541,28 @@ Ltac run_main_rewrites :=
 Ltac change_cast_integer :=
   match goal with
   | |- context [ M.cast (Ty.path ?x) _ ] =>
-    change (Ty.path x) with (Φ U8.t) ||
-    change (Ty.path x) with (Φ U16.t) ||
-    change (Ty.path x) with (Φ U32.t) ||
-    change (Ty.path x) with (Φ U64.t) ||
-    change (Ty.path x) with (Φ U128.t) ||
-    change (Ty.path x) with (Φ Usize.t) ||
-    change (Ty.path x) with (Φ I8.t) ||
-    change (Ty.path x) with (Φ I16.t) ||
-    change (Ty.path x) with (Φ I32.t) ||
-    change (Ty.path x) with (Φ I64.t) ||
-    change (Ty.path x) with (Φ I128.t) ||
-    change (Ty.path x) with (Φ Isize.t)
+    change (Ty.path x) with (Φ u8) ||
+    change (Ty.path x) with (Φ u16) ||
+    change (Ty.path x) with (Φ u32) ||
+    change (Ty.path x) with (Φ u64) ||
+    change (Ty.path x) with (Φ u128) ||
+    change (Ty.path x) with (Φ usize) ||
+    change (Ty.path x) with (Φ i8) ||
+    change (Ty.path x) with (Φ i16) ||
+    change (Ty.path x) with (Φ i32) ||
+    change (Ty.path x) with (Φ i64) ||
+    change (Ty.path x) with (Φ i128) ||
+    change (Ty.path x) with (Φ isize)
   end.
+
+Definition cast_bool (kind_target : IntegerKind.t) (value : bool) : Integer.t kind_target :=
+  {| Integer.value := Z.b2z value |}.
+
+Lemma cast_bool_eq (kind_target : IntegerKind.t) (source : bool) :
+  M.cast (Φ (Integer.t kind_target)) (φ source) =
+  φ (cast_bool kind_target source).
+Proof.
+Admitted.
 
 (* TODO: define this function *)
 Parameter cast_integer : forall {kind_source} kind_target,
@@ -1536,6 +1580,7 @@ Ltac rewrite_cast_integer :=
   | |- context[M.cast _ (φ _)] =>
     eapply Run.Rewrite; [
       (
+        erewrite cast_bool_eq ||
         erewrite cast_integer_eq with (kind_source := IntegerKind.U8) ||
         erewrite cast_integer_eq with (kind_source := IntegerKind.U16) ||
         erewrite cast_integer_eq with (kind_source := IntegerKind.U32) ||
@@ -1602,7 +1647,8 @@ Ltac run_symbolic_one_step :=
     run_symbolic_loop ||
     run_symbolic_match_tuple ||
     run_symbolic_if_then_else ||
-    fold @LowM.let_
+    fold @LowM.let_ ||
+    apply Run.Impossible
   end.
 
 Smpl Create run_symbolic.

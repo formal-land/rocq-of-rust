@@ -1,5 +1,6 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
+Require Import alloc.links.alloc.
 Require Import alloc.links.boxed.
 Require Import alloc.links.slice.
 Require Import alloy_primitives.bits.links.address.
@@ -27,7 +28,9 @@ Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_interpreter.interpreter_action.links.eof_create_inputs.
 Require Import revm.revm_interpreter.interpreter.links.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
+Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.instructions.contract.links.call_helpers.
 Require Import revm.revm_interpreter.instructions.contract.
@@ -50,20 +53,14 @@ Instance run_static_call
   {H_types : Host.Types.t} `{Host.Types.AreLinks H_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   (run_Host_for_H : Host.Run H H_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (host : '&mut H) :
   Run.Trait
     instructions.contract.static_call [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE eqn:?.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_InputsTrait_for_Input.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_Host_for_H.
-  destruct Impl_From_U256_for_FixedBytes_32.run.
-  destruct (TryFrom_Uint_for_u64.run {| Integer.value := 256 |} {| Integer.value := 4 |}).
+  destruct (TryFrom_Uint_for_u64.method_try_from (BITS := {| Integer.value := 256 |}) (LIMBS := {| Integer.value := 4 |})).
   run_symbolic.
 Defined.
+Global Opaque run_static_call.

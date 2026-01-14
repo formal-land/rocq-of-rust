@@ -12036,14 +12036,12 @@ Module fmt.
                                     [
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (let iter :=
-                                            M.copy (|
+                                          (let~ iter :
                                               Ty.apply
                                                 (Ty.path "core::ops::range::Range")
                                                 []
-                                                [ Ty.path "usize" ],
-                                              γ
-                                            |) in
+                                                [ Ty.path "usize" ] :=
+                                            M.read (| γ |) in
                                           M.read (|
                                             M.loop (|
                                               Ty.tuple [],
@@ -12412,8 +12410,8 @@ Module fmt.
                     let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                     let γ0_2 := M.SubPointer.get_tuple_field (| γ, 2 |) in
                     let γ0_3 := M.SubPointer.get_tuple_field (| γ, 3 |) in
-                    let n := M.copy (| Ty.path "u64", γ0_0 |) in
-                    let exponent := M.copy (| Ty.path "usize", γ0_1 |) in
+                    let~ n : Ty.path "u64" := M.read (| γ0_0 |) in
+                    let~ exponent : Ty.path "usize" := M.read (| γ0_1 |) in
                     let trailing_zeros := M.copy (| Ty.path "usize", γ0_2 |) in
                     let added_precision := M.copy (| Ty.path "usize", γ0_3 |) in
                     M.read (|
@@ -16389,14 +16387,12 @@ Module fmt.
                                   [
                                     fun γ =>
                                       ltac:(M.monadic
-                                        (let iter :=
-                                          M.copy (|
+                                        (let~ iter :
                                             Ty.apply
                                               (Ty.path "core::ops::range::Range")
                                               []
-                                              [ Ty.path "usize" ],
-                                            γ
-                                          |) in
+                                              [ Ty.path "usize" ] :=
+                                          M.read (| γ |) in
                                         M.read (|
                                           M.loop (|
                                             Ty.tuple [],
@@ -16757,8 +16753,8 @@ Module fmt.
                   let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                   let γ0_2 := M.SubPointer.get_tuple_field (| γ, 2 |) in
                   let γ0_3 := M.SubPointer.get_tuple_field (| γ, 3 |) in
-                  let n := M.copy (| Ty.path "u128", γ0_0 |) in
-                  let exponent := M.copy (| Ty.path "usize", γ0_1 |) in
+                  let~ n : Ty.path "u128" := M.read (| γ0_0 |) in
+                  let~ exponent : Ty.path "usize" := M.read (| γ0_1 |) in
                   let trailing_zeros := M.copy (| Ty.path "usize", γ0_2 |) in
                   let added_precision := M.copy (| Ty.path "usize", γ0_3 |) in
                   M.read (|

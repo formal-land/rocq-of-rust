@@ -2,6 +2,7 @@ Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import alloy_primitives.bits.links.fixed.
 Require Import alloy_primitives.bits.address.
+Require Import core.links.array.
 Require Import core.links.borrow.
 
 Module Address.
@@ -9,7 +10,7 @@ Module Address.
 
   Parameter to_value : t -> Value.t.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "alloy_primitives::bits::address::Address";
     φ := to_value;
   }.
@@ -18,6 +19,7 @@ Module Address.
   Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
   Smpl Add apply of_ty : of_ty.
 End Address.
+Export (hints) Address.
 
 (* impl Address { *)
 Module Impl_Address.
@@ -30,13 +32,15 @@ Module Impl_Address.
       bits.address.Impl_alloy_primitives_bits_address_Address.from_word [] [] [ φ word ]
       Self.
   Admitted.
+  Global Opaque run_from_word.
 
   (* pub fn into_word(&self) -> FixedBytes<32> *)
-  Instance run_into_word (self : Ref.t Pointer.Kind.Ref Self) :
+  Instance run_into_word (self : '& Self) :
     Run.Trait
       bits.address.Impl_alloy_primitives_bits_address_Address.into_word [] [] [ φ self ]
       (FixedBytes.t {| Integer.value := 32 |}).
   Admitted.
+  Global Opaque run_into_word.
 
   (*
   pub fn create2<S, H>(&self, salt: S, init_code_hash: H) -> Self
@@ -46,9 +50,9 @@ Module Impl_Address.
       H: Borrow<[u8; 32]>,
   *)
   Instance run_create2 (S H : Set) `{Link S} `{Link H}
-    {run_Borrow_for_S : Borrow.Run S (array.t U8.t {| Integer.value := 32 |})}
-    {run_Borrow_for_H : Borrow.Run H (array.t U8.t {| Integer.value := 32 |})}
-    (self : Ref.t Pointer.Kind.Ref Self)
+    {run_Borrow_for_S : Borrow.Run S (array.t u8 {| Integer.value := 32 |})}
+    {run_Borrow_for_H : Borrow.Run H (array.t u8 {| Integer.value := 32 |})}
+    (self : '& Self)
     (salt : S)
     (init_code_hash : H) :
     Run.Trait
@@ -56,5 +60,6 @@ Module Impl_Address.
         [] [ Φ S; Φ H ] [ φ self; φ salt; φ init_code_hash ]
       Self.
   Admitted.
+  Global Opaque run_create2.
 End Impl_Address.
-Export Impl_Address.
+Export (hints) Impl_Address.

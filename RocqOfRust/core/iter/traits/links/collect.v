@@ -12,8 +12,13 @@ pub trait IntoIterator {
 }
 *)
 Module IntoIterator.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("core::iter::traits::collect::IntoIterator", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "core::iter::traits::collect::IntoIterator";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
   Module Types.
     Record t : Type := {
@@ -26,20 +31,21 @@ Module IntoIterator.
       H_IntoIter : Link types.(IntoIter);
     }.
 
-    Global Instance IsLinkItem (types : t) (H : AreLinks types) : Link types.(Item) :=
+    Instance IsLinkItem (types : t) (H : AreLinks types) : Link types.(Item) :=
       H.(H_Item _).
-    Global Instance IsLinkIntoIter (types : t) (H : AreLinks types) : Link types.(IntoIter) :=
+    Instance IsLinkIntoIter (types : t) (H : AreLinks types) : Link types.(IntoIter) :=
       H.(H_IntoIter _).
   End Types.
+  Export (hints) Types.
 
-  Definition Run_into_iter
+  Class Method_into_iter
       (Self : Set) `{Link Self}
       (types : Types.t) `{Types.AreLinks types} :
-      Set :=
-    TraitMethod.C (trait Self) "into_iter" (fun method =>
-      forall (self : Self),
-      Run.Trait method [] [] [φ self] types.(Types.IntoIter)
-    ).
+      Set := {
+    into_iter : PolymorphicFunction.t;
+    into_iter_is_method :: IsTraitMethod.C (trait Self) "into_iter" into_iter;
+    run_into_iter (self : Self) :: Run.Trait into_iter [] [] [φ self] types.(Types.IntoIter);
+  }.
 
   Class Run
       (Self : Set) `{Link Self}
@@ -53,10 +59,11 @@ Module IntoIterator.
       IsTraitAssociatedType
         "core::iter::traits::collect::IntoIterator" [] [] (Φ Self)
         "IntoIter" (Φ types.(Types.IntoIter));
-    run_Iterator_for_IntoIter : Iterator.Run types.(Types.IntoIter) types.(Types.Item);
-    run_into_iter : Run_into_iter Self types;
+    run_Iterator_for_IntoIter :: Iterator.Run types.(Types.IntoIter) types.(Types.Item);
+    method_into_iter :: Method_into_iter Self types;
   }.
 End IntoIterator.
+Export (hints) IntoIterator.
 
 (* impl<I: Iterator> IntoIterator for I *)
 Module Impl_IntoIterator_for_Iterator_I.
@@ -76,7 +83,7 @@ Module Impl_IntoIterator_for_Iterator_I.
     IntoIterator.Types.IntoIter := Self I;
   |}.
 
-  Global Instance types_AreLinks
+  Instance types_AreLinks
     (I : Set) `{Link I}
     (Item : Set) `{Link Item} :
     IntoIterator.Types.AreLinks (types I Item).
@@ -84,13 +91,14 @@ Module Impl_IntoIterator_for_Iterator_I.
     now constructor.
   Defined.
 
-  Definition run_into_iter
+  Instance method_into_iter
     (I : Set) `{Link I}
     (Item : Set) `{Link Item} :
-    IntoIterator.Run_into_iter (Self I) (types I Item).
+    IntoIterator.Method_into_iter (Self I) (types I Item).
   Proof.
     eexists.
-    { eapply IsTraitMethod.Defined.
+    { constructor.
+      eapply IsTraitMethod.Defined.
       { apply iter.traits.collect.Impl_core_iter_traits_collect_IntoIterator_where_core_iter_traits_iterator_Iterator_I_for_I.Implements. }
       { reflexivity. }
     }
@@ -101,8 +109,10 @@ Module Impl_IntoIterator_for_Iterator_I.
 
   Instance run
     (I : Set) `{Link I}
-    (Item : Set) `{Link Item} :
+    (Item : Set) `{Link Item}
+    `{!Iterator.Run I Item} :
     IntoIterator.Run (Self I) (types I Item).
   Proof.
   Admitted.
 End Impl_IntoIterator_for_Iterator_I.
+Export (hints) Impl_IntoIterator_for_Iterator_I.

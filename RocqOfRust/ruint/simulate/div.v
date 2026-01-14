@@ -5,12 +5,12 @@ Require Import ruint.links.div.
 
 Module Impl_Uint.
   Parameter wrapping_div :
-    forall {BITS LIMBS : Usize.t} (x1 x2 : lib.Uint.t BITS LIMBS),
+    forall {BITS LIMBS : usize} (x1 x2 : lib.Uint.t BITS LIMBS),
     lib.Uint.t BITS LIMBS.
 
   Lemma wrapping_div_eq
       (stack : Stack.t)
-      (BITS LIMBS : Usize.t) (x1 x2 : lib.Uint.t BITS LIMBS) :
+      (BITS LIMBS : usize) (x1 x2 : lib.Uint.t BITS LIMBS) :
     {{
       SimulateM.eval_f
         (Impl_Uint.run_wrapping_div BITS LIMBS x1 x2)
@@ -21,5 +21,4 @@ Module Impl_Uint.
       )
     }}.
   Admitted.
-  Global Opaque Impl_Uint.run_wrapping_div.
 End Impl_Uint.

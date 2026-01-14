@@ -380,8 +380,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter :=
-                              M.copy (|
+                            (let~ iter :
                                 Ty.apply
                                   (Ty.path "std::io::Lines")
                                   []
@@ -390,9 +389,8 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                       (Ty.path "std::io::buffered::bufreader::BufReader")
                                       []
                                       [ Ty.path "std::fs::File" ]
-                                  ],
-                                γ
-                              |) in
+                                  ] :=
+                              M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],

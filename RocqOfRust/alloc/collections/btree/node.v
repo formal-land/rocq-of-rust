@@ -2255,7 +2255,7 @@ Module collections.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter := M.copy (| R, γ |) in
+                            (let~ iter : R := M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],
@@ -13634,8 +13634,7 @@ Module collections.
                         ltac:(M.monadic
                           (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                           let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                          let split :=
-                            M.copy (|
+                          let~ split :
                               Ty.apply
                                 (Ty.path "alloc::collections::btree::node::SplitResult")
                                 []
@@ -13643,9 +13642,8 @@ Module collections.
                                   K;
                                   V;
                                   Ty.path "alloc::collections::btree::node::marker::LeafOrInternal"
-                                ],
-                              γ0_0
-                            |) in
+                                ] :=
+                            M.read (| γ0_0 |) in
                           let handle :=
                             M.copy (|
                               Ty.apply
@@ -21376,8 +21374,7 @@ Module collections.
                           "alloc::collections::btree::node::Handle",
                           "_marker"
                         |) in
-                      let parent_node :=
-                        M.copy (|
+                      let~ parent_node :
                           Ty.apply
                             (Ty.path "alloc::collections::btree::node::NodeRef")
                             []
@@ -21386,9 +21383,8 @@ Module collections.
                               K;
                               V;
                               Ty.path "alloc::collections::btree::node::marker::Internal"
-                            ],
-                          γ0_0
-                        |) in
+                            ] :=
+                        M.read (| γ0_0 |) in
                       let parent_idx := M.copy (| Ty.path "usize", γ0_1 |) in
                       let _marker :=
                         M.copy (|
@@ -25241,8 +25237,7 @@ Module collections.
                               "alloc::collections::btree::node::ForceResult::Internal",
                               0
                             |) in
-                          let left :=
-                            M.copy (|
+                          let~ left :
                               Ty.apply
                                 (Ty.path "alloc::collections::btree::node::NodeRef")
                                 []
@@ -25251,17 +25246,15 @@ Module collections.
                                   K;
                                   V;
                                   Ty.path "alloc::collections::btree::node::marker::Internal"
-                                ],
-                              γ1_0
-                            |) in
+                                ] :=
+                            M.read (| γ1_0 |) in
                           let γ1_0 :=
                             M.SubPointer.get_struct_tuple_field (|
                               γ0_1,
                               "alloc::collections::btree::node::ForceResult::Internal",
                               0
                             |) in
-                          let right :=
-                            M.copy (|
+                          let~ right :
                               Ty.apply
                                 (Ty.path "alloc::collections::btree::node::NodeRef")
                                 []
@@ -25270,9 +25263,8 @@ Module collections.
                                   K;
                                   V;
                                   Ty.path "alloc::collections::btree::node::marker::Internal"
-                                ],
-                              γ1_0
-                            |) in
+                                ] :=
+                            M.read (| γ1_0 |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
                               M.call_closure (|
@@ -27012,8 +27004,7 @@ Module collections.
                               "alloc::collections::btree::node::ForceResult::Internal",
                               0
                             |) in
-                          let left :=
-                            M.copy (|
+                          let~ left :
                               Ty.apply
                                 (Ty.path "alloc::collections::btree::node::NodeRef")
                                 []
@@ -27022,17 +27013,15 @@ Module collections.
                                   K;
                                   V;
                                   Ty.path "alloc::collections::btree::node::marker::Internal"
-                                ],
-                              γ1_0
-                            |) in
+                                ] :=
+                            M.read (| γ1_0 |) in
                           let γ1_0 :=
                             M.SubPointer.get_struct_tuple_field (|
                               γ0_1,
                               "alloc::collections::btree::node::ForceResult::Internal",
                               0
                             |) in
-                          let right :=
-                            M.copy (|
+                          let~ right :
                               Ty.apply
                                 (Ty.path "alloc::collections::btree::node::NodeRef")
                                 []
@@ -27041,9 +27030,8 @@ Module collections.
                                   K;
                                   V;
                                   Ty.path "alloc::collections::btree::node::marker::Internal"
-                                ],
-                              γ1_0
-                            |) in
+                                ] :=
+                            M.read (| γ1_0 |) in
                           M.read (|
                             let~ _ : Ty.tuple [] :=
                               M.call_closure (|
@@ -29155,8 +29143,7 @@ Module collections.
                                           "alloc::collections::btree::node::ForceResult::Internal",
                                           0
                                         |) in
-                                      let left :=
-                                        M.copy (|
+                                      let~ left :
                                           Ty.apply
                                             (Ty.path "alloc::collections::btree::node::NodeRef")
                                             []
@@ -29167,17 +29154,15 @@ Module collections.
                                               V;
                                               Ty.path
                                                 "alloc::collections::btree::node::marker::Internal"
-                                            ],
-                                          γ1_0
-                                        |) in
+                                            ] :=
+                                        M.read (| γ1_0 |) in
                                       let γ1_0 :=
                                         M.SubPointer.get_struct_tuple_field (|
                                           γ0_1,
                                           "alloc::collections::btree::node::ForceResult::Internal",
                                           0
                                         |) in
-                                      let right :=
-                                        M.copy (|
+                                      let~ right :
                                           Ty.apply
                                             (Ty.path "alloc::collections::btree::node::NodeRef")
                                             []
@@ -29188,9 +29173,8 @@ Module collections.
                                               V;
                                               Ty.path
                                                 "alloc::collections::btree::node::marker::Internal"
-                                            ],
-                                          γ1_0
-                                        |) in
+                                            ] :=
+                                        M.read (| γ1_0 |) in
                                       M.read (|
                                         let~ _ : Ty.tuple [] :=
                                           M.call_closure (|

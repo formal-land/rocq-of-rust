@@ -29,5 +29,4 @@ Module Impl_SpecId.
     do 2 rewrite get_discriminant_mod_256_eq.
     apply Run.Pure.
   Qed.
-  Global Opaque Impl_SpecId.run_is_enabled_in.
 End Impl_SpecId.

@@ -18,7 +18,7 @@ pub struct DenseMatrix<T, V = Vec<T>> {
 Module DenseMatrix.
   Record t {T V : Set} : Set := {
     values : V;
-    width : Usize.t;
+    width : usize;
   }.
   Arguments t : clear implicits.
 

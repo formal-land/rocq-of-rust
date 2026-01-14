@@ -1642,14 +1642,12 @@ Module mem.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (|
+                                  (let~ iter :
                                       Ty.apply
                                         (Ty.path "core::ops::range::Range")
                                         []
-                                        [ Ty.path "usize" ],
-                                      γ
-                                    |) in
+                                        [ Ty.path "usize" ] :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],
@@ -2061,8 +2059,7 @@ Module mem.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (|
+                                  (let~ iter :
                                       Ty.apply
                                         (Ty.path "core::slice::iter::IterMut")
                                         []
@@ -2071,9 +2068,8 @@ Module mem.
                                             (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                             []
                                             [ T ]
-                                        ],
-                                      γ
-                                    |) in
+                                        ] :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],
@@ -2533,8 +2529,7 @@ Module mem.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::iter::adapters::zip::Zip")
                                     []
@@ -2554,9 +2549,8 @@ Module mem.
                                         []
                                         I
                                         "IntoIter"
-                                    ],
-                                  γ
-                                |) in
+                                    ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -3949,8 +3943,7 @@ Module mem.
                                     [
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (let iter :=
-                                            M.copy (|
+                                          (let~ iter :
                                               Ty.apply
                                                 (Ty.path "core::slice::iter::IterMut")
                                                 []
@@ -3959,9 +3952,8 @@ Module mem.
                                                     (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                                     []
                                                     [ T ]
-                                                ],
-                                              γ
-                                            |) in
+                                                ] :=
+                                            M.read (| γ |) in
                                           M.read (|
                                             M.loop (|
                                               Ty.tuple [],

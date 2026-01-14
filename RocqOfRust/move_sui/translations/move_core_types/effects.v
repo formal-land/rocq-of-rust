@@ -2170,8 +2170,7 @@ Module effects.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "alloc::collections::btree::map::IntoIter")
                                     []
@@ -2179,9 +2178,8 @@ Module effects.
                                       K;
                                       Ty.apply (Ty.path "move_core_types::effects::Op") [] [ V ];
                                       Ty.path "alloc::alloc::Global"
-                                    ],
-                                  γ
-                                |) in
+                                    ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -2339,8 +2337,7 @@ Module effects.
                                                           "alloc::collections::btree::map::entry::Entry::Occupied",
                                                           0
                                                         |) in
-                                                      let entry :=
-                                                        M.copy (|
+                                                      let~ entry :
                                                           Ty.apply
                                                             (Ty.path
                                                               "alloc::collections::btree::map::entry::OccupiedEntry")
@@ -2353,9 +2350,8 @@ Module effects.
                                                                 []
                                                                 [ V ];
                                                               Ty.path "alloc::alloc::Global"
-                                                            ],
-                                                          γ0_0
-                                                        |) in
+                                                            ] :=
+                                                        M.read (| γ0_0 |) in
                                                       M.read (|
                                                         let~ r :
                                                             Ty.apply
@@ -5927,8 +5923,7 @@ Module effects.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "alloc::collections::btree::map::IntoIter")
                                       []
@@ -5936,9 +5931,8 @@ Module effects.
                                         Ty.path "move_core_types::account_address::AccountAddress";
                                         Ty.path "move_core_types::effects::AccountChangeSet";
                                         Ty.path "alloc::alloc::Global"
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -6098,8 +6092,7 @@ Module effects.
                                                             "alloc::collections::btree::map::entry::Entry::Occupied",
                                                             0
                                                           |) in
-                                                        let entry :=
-                                                          M.copy (|
+                                                        let~ entry :
                                                             Ty.apply
                                                               (Ty.path
                                                                 "alloc::collections::btree::map::entry::OccupiedEntry")
@@ -6110,9 +6103,8 @@ Module effects.
                                                                 Ty.path
                                                                   "move_core_types::effects::AccountChangeSet";
                                                                 Ty.path "alloc::alloc::Global"
-                                                              ],
-                                                            γ0_0
-                                                          |) in
+                                                              ] :=
+                                                          M.read (| γ0_0 |) in
                                                         M.read (|
                                                           let~ _ : Ty.tuple [] :=
                                                             M.match_operator (|

@@ -136,7 +136,8 @@ Module UnOp.
     M.closure (fun args =>
       match args with
       | [Value.Bool b] => M.pure (Value.Bool (negb b))
-      | [Value.Integer kind i] => M.pure (Value.Integer kind (Z.lnot i))
+      | [Value.Integer kind i] =>
+        M.pure (Value.Integer kind (Integer.normalize_wrap kind (Z.lnot i)))
       | _ => M.impossible "unexpected parameter for not"
       end
     ).

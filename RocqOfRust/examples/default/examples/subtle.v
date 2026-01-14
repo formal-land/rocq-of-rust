@@ -1002,17 +1002,15 @@ Module Impl_subtle_ConstantTimeEq_where_subtle_ConstantTimeEq_T_for_slice_T.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::iter::adapters::zip::Zip")
                                     []
                                     [
                                       Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ];
                                       Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ]
-                                    ],
-                                  γ
-                                |) in
+                                    ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],

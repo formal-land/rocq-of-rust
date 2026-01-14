@@ -10349,8 +10349,8 @@ Module instructions.
                                                       "core::option::Option::Some",
                                                       0
                                                     |) in
-                                                  let gas_limit :=
-                                                    M.copy (| Ty.path "u64", γ0_0 |) in
+                                                  let~ gas_limit : Ty.path "u64" :=
+                                                    M.read (| γ0_0 |) in
                                                   M.read (|
                                                     let~ _ : Ty.tuple [] :=
                                                       M.match_operator (|
@@ -11168,12 +11168,10 @@ Module instructions.
                                               "core::option::Option::Some",
                                               0
                                             |) in
-                                          let load :=
-                                            M.copy (|
+                                          let~ load :
                                               Ty.path
-                                                "revm_context_interface::journaled_state::AccountLoad",
-                                              γ0_0
-                                            |) in
+                                                "revm_context_interface::journaled_state::AccountLoad" :=
+                                            M.read (| γ0_0 |) in
                                           M.read (|
                                             let~ _ : Ty.tuple [] :=
                                               M.write (|
@@ -11247,8 +11245,8 @@ Module instructions.
                                                           "core::option::Option::Some",
                                                           0
                                                         |) in
-                                                      let gas_limit :=
-                                                        M.copy (| Ty.path "u64", γ0_0 |) in
+                                                      let~ gas_limit : Ty.path "u64" :=
+                                                        M.read (| γ0_0 |) in
                                                       M.read (|
                                                         let~ _ : Ty.tuple [] :=
                                                           M.match_operator (|
@@ -12256,12 +12254,10 @@ Module instructions.
                                                   "core::option::Option::Some",
                                                   0
                                                 |) in
-                                              let load :=
-                                                M.copy (|
+                                              let~ load :
                                                   Ty.path
-                                                    "revm_context_interface::journaled_state::AccountLoad",
-                                                  γ0_0
-                                                |) in
+                                                    "revm_context_interface::journaled_state::AccountLoad" :=
+                                                M.read (| γ0_0 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
                                                   M.write (|
@@ -13290,12 +13286,10 @@ Module instructions.
                                                   "core::option::Option::Some",
                                                   0
                                                 |) in
-                                              let load :=
-                                                M.copy (|
+                                              let~ load :
                                                   Ty.path
-                                                    "revm_context_interface::journaled_state::AccountLoad",
-                                                  γ0_0
-                                                |) in
+                                                    "revm_context_interface::journaled_state::AccountLoad" :=
+                                                M.read (| γ0_0 |) in
                                               M.read (|
                                                 let~ _ : Ty.tuple [] :=
                                                   M.write (|

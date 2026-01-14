@@ -10,18 +10,20 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_panic_fmt.
 
 (* pub const fn panic(expr: &'static str) -> ! *)
-Instance run_panic (expr : Ref.t Pointer.Kind.Ref string) :
+Instance run_panic (expr : '& string) :
   Run.Trait panicking.panic [] [] [φ expr] Empty_set.
 Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_panic.
 
 (* pub const fn panic_display<T: fmt::Display>(x: &T) -> ! *)
 Instance run_panic_display {T : Set} `{Link T}
-    (x : Ref.t Pointer.Kind.Ref T) :
+    (x : '& T) :
   Run.Trait
     panicking.panic_display [] [Φ T] [φ x]
     Empty_set.
@@ -29,3 +31,4 @@ Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_panic_display.

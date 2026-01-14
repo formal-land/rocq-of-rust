@@ -852,11 +852,9 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let iter :=
-                          M.copy (|
-                            Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "i32" ],
-                            γ
-                          |) in
+                        (let~ iter :
+                            Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "i32" ] :=
+                          M.read (| γ |) in
                         M.read (|
                           M.loop (|
                             Ty.tuple [],
@@ -1122,14 +1120,13 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let iter :=
-                          M.copy (|
+                        (let~ iter :
                             Ty.apply
                               (Ty.path "core::iter::adapters::enumerate::Enumerate")
                               []
-                              [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "i32" ] ],
-                            γ
-                          |) in
+                              [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "i32" ]
+                              ] :=
+                          M.read (| γ |) in
                         M.read (|
                           M.loop (|
                             Ty.tuple [],
@@ -1412,11 +1409,9 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let iter :=
-                          M.copy (|
-                            Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ Ty.path "i32" ],
-                            γ
-                          |) in
+                        (let~ iter :
+                            Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ Ty.path "i32" ] :=
+                          M.read (| γ |) in
                         M.read (|
                           M.loop (|
                             Ty.tuple [],

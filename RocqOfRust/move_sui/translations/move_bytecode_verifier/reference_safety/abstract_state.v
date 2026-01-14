@@ -3371,8 +3371,7 @@ Module reference_safety.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                     []
@@ -3382,9 +3381,8 @@ Module reference_safety.
                                         []
                                         [ Ty.path "move_binary_format::file_format::SignatureToken"
                                         ]
-                                    ],
-                                  γ
-                                |) in
+                                    ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -11777,17 +11775,15 @@ Module reference_safety.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (|
+                                  (let~ iter :
                                       Ty.apply
                                         (Ty.path "alloc::collections::btree::set::Iter")
                                         []
                                         [
                                           Ty.path
                                             "move_binary_format::file_format::StructDefinitionIndex"
-                                        ],
-                                      γ
-                                    |) in
+                                        ] :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],
@@ -12320,8 +12316,7 @@ Module reference_safety.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (|
+                                  (let~ iter :
                                       Ty.apply
                                         (Ty.path "core::iter::adapters::filter_map::FilterMap")
                                         []
@@ -12347,9 +12342,8 @@ Module reference_safety.
                                               (Ty.path "core::option::Option")
                                               []
                                               [ Ty.path "move_borrow_graph::references::RefID" ])
-                                        ],
-                                      γ
-                                    |) in
+                                        ] :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],
@@ -12956,8 +12950,7 @@ Module reference_safety.
                                                                   [
                                                                     fun γ =>
                                                                       ltac:(M.monadic
-                                                                        (let iter :=
-                                                                          M.copy (|
+                                                                        (let~ iter :
                                                                             Ty.apply
                                                                               (Ty.path
                                                                                 "alloc::collections::btree::set::Iter")
@@ -12965,9 +12958,8 @@ Module reference_safety.
                                                                               [
                                                                                 Ty.path
                                                                                   "move_borrow_graph::references::RefID"
-                                                                              ],
-                                                                            γ
-                                                                          |) in
+                                                                              ] :=
+                                                                          M.read (| γ |) in
                                                                         M.read (|
                                                                           M.loop (|
                                                                             Ty.tuple [],
@@ -13236,8 +13228,7 @@ Module reference_safety.
                                                                   [
                                                                     fun γ =>
                                                                       ltac:(M.monadic
-                                                                        (let iter :=
-                                                                          M.copy (|
+                                                                        (let~ iter :
                                                                             Ty.apply
                                                                               (Ty.path
                                                                                 "alloc::collections::btree::set::Iter")
@@ -13245,9 +13236,8 @@ Module reference_safety.
                                                                               [
                                                                                 Ty.path
                                                                                   "move_borrow_graph::references::RefID"
-                                                                              ],
-                                                                            γ
-                                                                          |) in
+                                                                              ] :=
+                                                                          M.read (| γ |) in
                                                                         M.read (|
                                                                           M.loop (|
                                                                             Ty.tuple [],
@@ -13691,17 +13681,15 @@ Module reference_safety.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (|
+                                  (let~ iter :
                                       Ty.apply
                                         (Ty.path "alloc::collections::btree::set::IntoIter")
                                         []
                                         [
                                           Ty.path "move_borrow_graph::references::RefID";
                                           Ty.path "alloc::alloc::Global"
-                                        ],
-                                      γ
-                                    |) in
+                                        ] :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],
@@ -14042,17 +14030,15 @@ Module reference_safety.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (|
+                                  (let~ iter :
                                       Ty.apply
                                         (Ty.path "core::slice::iter::Iter")
                                         []
                                         [
                                           Ty.path
                                             "move_bytecode_verifier::reference_safety::abstract_state::AbstractValue"
-                                        ],
-                                      γ
-                                    |) in
+                                        ] :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],
@@ -14593,8 +14579,7 @@ Module reference_safety.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (|
+                                  (let~ iter :
                                       Ty.apply
                                         (Ty.path "core::iter::adapters::filter_map::FilterMap")
                                         []
@@ -14616,9 +14601,8 @@ Module reference_safety.
                                               (Ty.path "core::option::Option")
                                               []
                                               [ Ty.path "move_borrow_graph::references::RefID" ])
-                                        ],
-                                      γ
-                                    |) in
+                                        ] :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],

@@ -116,11 +116,12 @@ Module slice.
                                 [
                                   fun γ =>
                                     ltac:(M.monadic
-                                      (let iter :=
-                                        M.copy (|
-                                          Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ],
-                                          γ
-                                        |) in
+                                      (let~ iter :
+                                          Ty.apply
+                                            (Ty.path "core::slice::iter::IterMut")
+                                            []
+                                            [ T ] :=
+                                        M.read (| γ |) in
                                       M.read (|
                                         M.loop (|
                                           Ty.tuple [],
@@ -302,11 +303,8 @@ Module slice.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let iter :=
-                            M.copy (|
-                              Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ],
-                              γ
-                            |) in
+                          (let~ iter : Ty.apply (Ty.path "core::slice::iter::IterMut") [] [ T ] :=
+                            M.read (| γ |) in
                           M.read (|
                             M.loop (|
                               Ty.tuple [],

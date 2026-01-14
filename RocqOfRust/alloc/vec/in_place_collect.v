@@ -816,8 +816,8 @@ Module vec.
                       γ0_1
                     |) in
                   let src_cap := M.copy (| Ty.path "usize", γ0_2 |) in
-                  let dst_buf :=
-                    M.copy (| Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ], γ0_3 |) in
+                  let~ dst_buf : Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ] :=
+                    M.read (| γ0_3 |) in
                   let dst_end := M.copy (| Ty.apply (Ty.path "*const") [] [ T ], γ0_4 |) in
                   let dst_cap := M.copy (| Ty.path "usize", γ0_5 |) in
                   M.read (|
@@ -2543,14 +2543,12 @@ Module vec.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let sink :=
-                              M.copy (|
+                            (let~ sink :
                                 Ty.apply
                                   (Ty.path "alloc::vec::in_place_drop::InPlaceDrop")
                                   []
-                                  [ T ],
-                                γ
-                              |) in
+                                  [ T ] :=
+                              M.read (| γ |) in
                             M.match_operator (|
                               Ty.apply
                                 (Ty.path "core::result::Result")
@@ -3110,14 +3108,12 @@ Module vec.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::ops::range::Range")
                                     []
-                                    [ Ty.path "usize" ],
-                                  γ
-                                |) in
+                                    [ Ty.path "usize" ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],

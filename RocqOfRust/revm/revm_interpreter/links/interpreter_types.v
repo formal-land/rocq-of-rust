@@ -1,6 +1,7 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import alloy_primitives.bits.links.address.
+Require Import alloy_primitives.bits.links.fixed.
 Require Import alloy_primitives.bytes.links.mod.
 Require Import alloy_primitives.links.aliases.
 Require Import core.links.array.
@@ -13,6 +14,7 @@ Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.interpreter_types.
 Require Import revm.revm_specification.links.hardfork.
+Require Import ruint.links.lib.
 
 (*
 pub trait StackTrait {
@@ -30,90 +32,105 @@ pub trait StackTrait {
 }
 *)
 Module StackTrait.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("revm_interpreter::interpreter_types::StackTrait", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "revm_interpreter::interpreter_types::StackTrait";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_len (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "len" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] Usize.t
-    ).
+  Class Method_len (Self : Set) `{Link Self} : Set := {
+    len : PolymorphicFunction.t;
+    len_is_method :: IsTraitMethod.C (trait Self) "len" len;
+    run_len (self : '& Self) :: Run.Trait len [] [] [ φ self ] usize;
+  }.
 
-  Definition Run_is_empty (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "is_empty" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] bool
-    ).
+  Class Method_is_empty (Self : Set) `{Link Self} : Set := {
+    is_empty : PolymorphicFunction.t;
+    is_empty_is_method :: IsTraitMethod.C (trait Self) "is_empty" is_empty;
+    run_is_empty (self : '& Self) :: Run.Trait is_empty [] [] [ φ self ] bool;
+  }.
 
-  Definition Run_push (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "push" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (value : aliases.U256.t),
-      Run.Trait method [] [] [ φ self; φ value ] bool
-    ).
+  Class Method_push (Self : Set) `{Link Self} : Set := {
+    push : PolymorphicFunction.t;
+    push_is_method :: IsTraitMethod.C (trait Self) "push" push;
+    run_push (self : '&mut Self) (value : aliases.U256.t) ::
+      Run.Trait push [] [] [ φ self; φ value ] bool;
+  }.
 
-  Definition Run_push_b256 (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "push_b256" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (value : aliases.B256.t),
-      Run.Trait method [] [] [ φ self; φ value ] bool
-    ).
+  Class Method_push_b256 (Self : Set) `{Link Self} : Set := {
+    push_b256 : PolymorphicFunction.t;
+    push_b256_is_method :: IsTraitMethod.C (trait Self) "push_b256" push_b256;
+    run_push_b256 (self : '&mut Self) (value : aliases.B256.t) ::
+      Run.Trait push_b256 [] [] [ φ self; φ value ] bool;
+  }.
 
-  Definition Run_popn (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "popn" (fun method =>
-      forall (N : Usize.t) (self : Ref.t Pointer.Kind.MutRef Self),
-      Run.Trait method [ φ N ] [] [ φ self ] (option (array.t aliases.U256.t N))
-    ).
+  Class Method_popn (Self : Set) `{Link Self} : Set := {
+    popn : PolymorphicFunction.t;
+    popn_is_method :: IsTraitMethod.C (trait Self) "popn" popn;
+    run_popn (N : usize) (self : '&mut Self) ::
+      Run.Trait popn [ φ N ] [] [ φ self ] (option (array.t aliases.U256.t N));
+  }.
 
-  Definition Run_popn_top (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "popn_top" (fun method =>
-      forall (POPN : Usize.t) (self : Ref.t Pointer.Kind.MutRef Self),
-      Run.Trait method [ φ POPN ] [] [ φ self ]
-        (option (array.t aliases.U256.t POPN * Ref.t Pointer.Kind.MutRef aliases.U256.t))
-    ).
+  Class Method_popn_top (Self : Set) `{Link Self} : Set := {
+    popn_top : PolymorphicFunction.t;
+    popn_top_is_method :: IsTraitMethod.C (trait Self) "popn_top" popn_top;
+    run_popn_top (POPN : usize) (self : '&mut Self) ::
+      Run.Trait popn_top [ φ POPN ] [] [ φ self ]
+        (option (array.t aliases.U256.t POPN * '&mut aliases.U256.t));
+  }.
 
-  Definition Run_top (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "top" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self),
-      Run.Trait method [] [ Φ aliases.U256.t ] [ φ self ] (option (Ref.t Pointer.Kind.MutRef aliases.U256.t))
-    ).
+  Class Method_top (Self : Set) `{Link Self} : Set := {
+    top : PolymorphicFunction.t;
+    top_is_method :: IsTraitMethod.C (trait Self) "top" top;
+    run_top (self : '&mut Self) ::
+      Run.Trait top [] [ Φ aliases.U256.t ] [ φ self ] (option ('&mut aliases.U256.t));
+  }.
 
-  Definition Run_pop (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "pop" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self),
-      Run.Trait method [] [ Φ aliases.U256.t ] [ φ self ] (option aliases.U256.t)
-    ).
+  Class Method_pop (Self : Set) `{Link Self} : Set := {
+    pop : PolymorphicFunction.t;
+    pop_is_method :: IsTraitMethod.C (trait Self) "pop" pop;
+    run_pop (self : '&mut Self) ::
+      Run.Trait pop [] [ Φ aliases.U256.t ] [ φ self ] (option aliases.U256.t);
+  }.
 
-  Definition Run_pop_address (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "pop_address" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self),
-      Run.Trait method [] [ Φ Address.t ] [ φ self ] (option Address.t)
-    ).
+  Class Method_pop_address (Self : Set) `{Link Self} : Set := {
+    pop_address : PolymorphicFunction.t;
+    pop_address_is_method :: IsTraitMethod.C (trait Self) "pop_address" pop_address;
+    run_pop_address (self : '&mut Self) ::
+      Run.Trait pop_address [] [ Φ Address.t ] [ φ self ] (option Address.t);
+  }.
 
-  Definition Run_exchange (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "exchange" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (n m : Usize.t),
-      Run.Trait method [] [] [ φ self; φ n; φ m ] bool
-    ).
+  Class Method_exchange (Self : Set) `{Link Self} : Set := {
+    exchange : PolymorphicFunction.t;
+    exchange_is_method :: IsTraitMethod.C (trait Self) "exchange" exchange;
+    run_exchange (self : '&mut Self) (n m : usize) ::
+      Run.Trait exchange [] [] [ φ self; φ n; φ m ] bool;
+  }.
 
-  Definition Run_dup (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "dup" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (n : Usize.t),
-      Run.Trait method [] [] [ φ self; φ n ] bool
-    ).
+  Class Method_dup (Self : Set) `{Link Self} : Set := {
+    dup : PolymorphicFunction.t;
+    dup_is_method :: IsTraitMethod.C (trait Self) "dup" dup;
+    run_dup (self : '&mut Self) (n : usize) ::
+      Run.Trait dup [] [] [ φ self; φ n ] bool;
+  }.
 
   Class Run (Self : Set) `{Link Self} : Set := {
-    len : Run_len Self;
-    is_empty : Run_is_empty Self;
-    push : Run_push Self;
-    push_b256 : Run_push_b256 Self;
-    popn : Run_popn Self;
-    popn_top : Run_popn_top Self;
-    top : Run_top Self;
-    pop : Run_pop Self;
-    pop_address : Run_pop_address Self;
-    exchange : Run_exchange Self;
-    dup : Run_dup Self;
-  }. 
+    method_len :: Method_len Self;
+    method_is_empty :: Method_is_empty Self;
+    method_push :: Method_push Self;
+    method_push_b256 :: Method_push_b256 Self;
+    method_popn :: Method_popn Self;
+    method_popn_top :: Method_popn_top Self;
+    method_top :: Method_top Self;
+    method_pop :: Method_pop Self;
+    method_pop_address :: Method_pop_address Self;
+    method_exchange :: Method_exchange Self;
+    method_dup :: Method_dup Self;
+  }.
 End StackTrait.
+Export (hints) StackTrait.
 
 (*
 pub trait MemoryTrait {
@@ -127,83 +144,83 @@ pub trait MemoryTrait {
 }
 *)
 Module MemoryTrait.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("revm_interpreter::interpreter_types::MemoryTrait", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "revm_interpreter::interpreter_types::MemoryTrait";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_set_data (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "set_data" (fun method =>
-      forall
-        (self : Ref.t Pointer.Kind.MutRef Self)
-        (memory_offset data_offset len : Usize.t)
-        (data : Ref.t Pointer.Kind.Ref (list U8.t)),
-      Run.Trait method [] [] [ φ self; φ memory_offset; φ data_offset; φ len; φ data ] unit
-    ).
+  Class Method_set_data (Self : Set) `{Link Self} : Set := {
+    set_data : PolymorphicFunction.t;
+    set_data_is_method :: IsTraitMethod.C (trait Self) "set_data" set_data;
+    run_set_data (self : '&mut Self) (memory_offset data_offset len : usize) (data : '& (list u8)) ::
+      Run.Trait set_data [] [] [ φ self; φ memory_offset; φ data_offset; φ len; φ data ] unit;
+  }.
 
-  Definition Run_set (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "set" (fun method =>
-      forall
-        (self : Ref.t Pointer.Kind.MutRef Self)
-        (memory_offset : Usize.t)
-        (data : Ref.t Pointer.Kind.Ref (list U8.t)),
-      Run.Trait method [] [] [ φ self; φ memory_offset; φ data ] unit
-    ).
+  Class Method_set (Self : Set) `{Link Self} : Set := {
+    set : PolymorphicFunction.t;
+    set_is_method :: IsTraitMethod.C (trait Self) "set" set;
+    run_set (self : '&mut Self) (memory_offset : usize) (data : '& (list u8)) ::
+      Run.Trait set [] [] [ φ self; φ memory_offset; φ data ] unit;
+  }.
 
-  Definition Run_size (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "size" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] Usize.t
-    ).
+  Class Method_size (Self : Set) `{Link Self} : Set := {
+    size : PolymorphicFunction.t;
+    size_is_method :: IsTraitMethod.C (trait Self) "size" size;
+    run_size (self : '& Self) :: Run.Trait size [] [] [ φ self ] usize;
+  }.
 
-  Definition Run_copy (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "copy" (fun method =>
-      forall
-        (self : Ref.t Pointer.Kind.MutRef Self)
-        (destination source len : Usize.t),
-      Run.Trait method [] [] [ φ self; φ destination; φ source; φ len ] unit
-    ).
+  Class Method_copy (Self : Set) `{Link Self} : Set := {
+    copy : PolymorphicFunction.t;
+    copy_is_method :: IsTraitMethod.C (trait Self) "copy" copy;
+    run_copy (self : '&mut Self) (destination source len : usize) ::
+      Run.Trait copy [] [] [ φ self; φ destination; φ source; φ len ] unit;
+  }.
 
-  Definition Run_slice (Self Synthetic : Set) `{Link Self} `{Link Synthetic} : Set :=
-    TraitMethod.C (trait Self) "slice" (fun method =>
-      forall
-        (self : Ref.t Pointer.Kind.Ref Self)
-        (range : range.Range.t Usize.t),
-      Run.Trait method [] [] [ φ self; φ range ] Synthetic
-    ).
+  Class Method_slice (Self Synthetic : Set) `{Link Self} `{Link Synthetic} : Set := {
+    slice : PolymorphicFunction.t;
+    slice_is_method :: IsTraitMethod.C (trait Self) "slice" slice;
+    run_slice (self : '& Self) (range : range.Range.t usize) ::
+      Run.Trait slice [] [] [ φ self; φ range ] Synthetic;
+  }.
 
-  Definition Run_slice_len (Self Synthetic1 : Set) `{Link Self} `{Link Synthetic1} : Set :=
-    TraitMethod.C (trait Self) "slice_len" (fun method =>
-      forall
-        (self : Ref.t Pointer.Kind.Ref Self)
-        (offset len : Usize.t),
-      Run.Trait method [] [] [ φ self; φ offset; φ len ] Synthetic1
-    ).
+  Class Method_slice_len (Self Synthetic1 : Set) `{Link Self} `{Link Synthetic1} : Set := {
+    slice_len : PolymorphicFunction.t;
+    slice_len_is_method :: IsTraitMethod.C (trait Self) "slice_len" slice_len;
+    run_slice_len (self : '& Self) (offset len : usize) ::
+      Run.Trait slice_len [] [] [ φ self; φ offset; φ len ] Synthetic1;
+  }.
 
-  Definition Run_resize (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "resize" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (new_size : Usize.t),
-      Run.Trait method [] [] [ φ self; φ new_size ] bool
-    ).
+  Class Method_resize (Self : Set) `{Link Self} : Set := {
+    resize : PolymorphicFunction.t;
+    resize_is_method :: IsTraitMethod.C (trait Self) "resize" resize;
+    run_resize (self : '&mut Self) (new_size : usize) ::
+      Run.Trait resize [] [] [ φ self; φ new_size ] bool;
+  }.
 
   Class Run (Self Synthetic Synthetic1 : Set)
       `{Link Self} `{Link Synthetic} `{Link Synthetic1} :
       Set := {
-    set_data : Run_set_data Self;
-    set : Run_set Self;
-    size : Run_size Self;
-    copy : Run_copy Self;
+    method_set_data :: Method_set_data Self;
+    method_set :: Method_set Self;
+    method_size :: Method_size Self;
+    method_copy :: Method_copy Self;
     Synthetic_IsAssociated :
       IsTraitAssociatedType "revm_interpreter::interpreter_types::MemoryTrait" [] [] (Φ Self)
       "{{synthetic}}" (Φ Synthetic);
-    run_Deref_for_Synthetic : deref.Deref.Run Synthetic (list U8.t);
-    slice : Run_slice Self Synthetic;
+    run_Deref_for_Synthetic :: deref.Deref.Run Synthetic (list u8);
+    method_slice :: Method_slice Self Synthetic;
     Synthetic1_IsAssociated :
       IsTraitAssociatedType "revm_interpreter::interpreter_types::MemoryTrait" [] [] (Φ Self)
       "{{synthetic}}'1" (Φ Synthetic1);
-    run_Deref_for_Synthetic1 : deref.Deref.Run Synthetic1 (list U8.t);
-    slice_len : Run_slice_len Self Synthetic1;
-    resize : Run_resize Self;
+    run_Deref_for_Synthetic1 :: deref.Deref.Run Synthetic1 (list u8);
+    method_slice_len :: Method_slice_len Self Synthetic1;
+    method_resize :: Method_resize Self;
   }.
 End MemoryTrait.
+Export (hints) MemoryTrait.
 
 (*
 pub trait Jumps {
@@ -215,47 +232,56 @@ pub trait Jumps {
 }
 *)
 Module Jumps.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("revm_interpreter::interpreter_types::Jumps", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "revm_interpreter::interpreter_types::Jumps";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_relative_jump (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "relative_jump" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (offset : Isize.t),
-      Run.Trait method [] [] [ φ self; φ offset ] unit
-    ).
+  Class Method_relative_jump (Self : Set) `{Link Self} : Set := {
+    relative_jump : PolymorphicFunction.t;
+    relative_jump_is_method :: IsTraitMethod.C (trait Self) "relative_jump" relative_jump;
+    run_relative_jump (self : '&mut Self) (offset : isize) ::
+      Run.Trait relative_jump [] [] [ φ self; φ offset ] unit;
+  }.
 
-  Definition Run_absolute_jump (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "absolute_jump" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (offset : Usize.t),
-      Run.Trait method [] [] [ φ self; φ offset ] unit
-    ).
+  Class Method_absolute_jump (Self : Set) `{Link Self} : Set := {
+    absolute_jump : PolymorphicFunction.t;
+    absolute_jump_is_method :: IsTraitMethod.C (trait Self) "absolute_jump" absolute_jump;
+    run_absolute_jump (self : '&mut Self) (offset : usize) ::
+      Run.Trait absolute_jump [] [] [ φ self; φ offset ] unit;
+  }.
 
-  Definition Run_is_valid_legacy_jump (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "is_valid_legacy_jump" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (offset : Usize.t),
-      Run.Trait method [] [] [ φ self; φ offset ] bool
-    ).
+  Class Method_is_valid_legacy_jump (Self : Set) `{Link Self} : Set := {
+    is_valid_legacy_jump : PolymorphicFunction.t;
+    is_valid_legacy_jump_is_method :: IsTraitMethod.C (trait Self) "is_valid_legacy_jump" is_valid_legacy_jump;
+    run_is_valid_legacy_jump (self : '&mut Self) (offset : usize) ::
+      Run.Trait is_valid_legacy_jump [] [] [ φ self; φ offset ] bool;
+  }.
 
-  Definition Run_pc (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "pc" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] Usize.t
-    ).
+  Class Method_pc (Self : Set) `{Link Self} : Set := {
+    pc : PolymorphicFunction.t;
+    pc_is_method :: IsTraitMethod.C (trait Self) "pc" pc;
+    run_pc (self : '& Self) :: Run.Trait pc [] [] [ φ self ] usize;
+  }.
 
-  Definition Run_opcode (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "opcode" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] U8.t
-    ).
+  Class Method_opcode (Self : Set) `{Link Self} : Set := {
+    opcode : PolymorphicFunction.t;
+    opcode_is_method :: IsTraitMethod.C (trait Self) "opcode" opcode;
+    run_opcode (self : '& Self) :: Run.Trait opcode [] [] [ φ self ] u8;
+  }.
 
   Class Run (Self : Set) `{Link Self} : Set := {
-    relative_jump : Run_relative_jump Self;
-    absolute_jump : Run_absolute_jump Self;
-    is_valid_legacy_jump : Run_is_valid_legacy_jump Self;
-    pc : Run_pc Self;
-    opcode : Run_opcode Self;
+    method_relative_jump :: Method_relative_jump Self;
+    method_absolute_jump :: Method_absolute_jump Self;
+    method_is_valid_legacy_jump :: Method_is_valid_legacy_jump Self;
+    method_pc :: Method_pc Self;
+    method_opcode :: Method_opcode Self;
   }.
 End Jumps.
+Export (hints) Jumps.
 
 (*
 pub trait Immediates {
@@ -269,61 +295,70 @@ pub trait Immediates {
 }
 *)
 Module Immediates.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("revm_interpreter::interpreter_types::Immediates", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "revm_interpreter::interpreter_types::Immediates";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_read_i16 (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "read_i16" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] I16.t
-    ).
+  Class Method_read_i16 (Self : Set) `{Link Self} : Set := {
+    read_i16 : PolymorphicFunction.t;
+    read_i16_is_method :: IsTraitMethod.C (trait Self) "read_i16" read_i16;
+    run_read_i16 (self : '& Self) :: Run.Trait read_i16 [] [] [ φ self ] i16;
+  }.
 
-  Definition Run_read_u16 (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "read_u16" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] U16.t
-    ).
+  Class Method_read_u16 (Self : Set) `{Link Self} : Set := {
+    read_u16 : PolymorphicFunction.t;
+    read_u16_is_method :: IsTraitMethod.C (trait Self) "read_u16" read_u16;
+    run_read_u16 (self : '& Self) :: Run.Trait read_u16 [] [] [ φ self ] u16;
+  }.
 
-  Definition Run_read_i8 (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "read_i8" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] I8.t
-    ).
+  Class Method_read_i8 (Self : Set) `{Link Self} : Set := {
+    read_i8 : PolymorphicFunction.t;
+    read_i8_is_method :: IsTraitMethod.C (trait Self) "read_i8" read_i8;
+    run_read_i8 (self : '& Self) :: Run.Trait read_i8 [] [] [ φ self ] i8;
+  }.
 
-  Definition Run_read_u8 (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "read_u8" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] U8.t
-    ).
+  Class Method_read_u8 (Self : Set) `{Link Self} : Set := {
+    read_u8 : PolymorphicFunction.t;
+    read_u8_is_method :: IsTraitMethod.C (trait Self) "read_u8" read_u8;
+    run_read_u8 (self : '& Self) :: Run.Trait read_u8 [] [] [ φ self ] u8;
+  }.
 
-  Definition Run_read_offset_i16 (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "read_offset_i16" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (offset : Isize.t),
-      Run.Trait method [] [] [ φ self; φ offset ] I16.t
-    ).
+  Class Method_read_offset_i16 (Self : Set) `{Link Self} : Set := {
+    read_offset_i16 : PolymorphicFunction.t;
+    read_offset_i16_is_method :: IsTraitMethod.C (trait Self) "read_offset_i16" read_offset_i16;
+    run_read_offset_i16 (self : '& Self) (offset : isize) ::
+      Run.Trait read_offset_i16 [] [] [ φ self; φ offset ] i16;
+  }.
 
-  Definition Run_read_offset_u16 (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "read_offset_u16" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (offset : Isize.t),
-      Run.Trait method [] [] [ φ self; φ offset ] U16.t
-    ).
+  Class Method_read_offset_u16 (Self : Set) `{Link Self} : Set := {
+    read_offset_u16 : PolymorphicFunction.t;
+    read_offset_u16_is_method :: IsTraitMethod.C (trait Self) "read_offset_u16" read_offset_u16;
+    run_read_offset_u16 (self : '& Self) (offset : isize) ::
+      Run.Trait read_offset_u16 [] [] [ φ self; φ offset ] u16;
+  }.
 
-  Definition Run_read_slice (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "read_slice" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (len : Usize.t),
-      Run.Trait method [] [] [ φ self; φ len ] (Ref.t Pointer.Kind.Ref (list U8.t))
-    ).
+  Class Method_read_slice (Self : Set) `{Link Self} : Set := {
+    read_slice : PolymorphicFunction.t;
+    read_slice_is_method :: IsTraitMethod.C (trait Self) "read_slice" read_slice;
+    run_read_slice (self : '& Self) (len : usize) ::
+      Run.Trait read_slice [] [] [ φ self; φ len ] ('& (list u8));
+  }.
 
   Class Run (Self : Set) `{Link Self} : Set := {
-    read_i16 : Run_read_i16 Self;
-    read_u16 : Run_read_u16 Self;
-    read_i8 : Run_read_i8 Self;
-    read_u8 : Run_read_u8 Self;
-    read_offset_i16 : Run_read_offset_i16 Self;
-    read_offset_u16 : Run_read_offset_u16 Self;
-    read_slice : Run_read_slice Self;
+    method_read_i16 :: Method_read_i16 Self;
+    method_read_u16 :: Method_read_u16 Self;
+    method_read_i8 :: Method_read_i8 Self;
+    method_read_u8 :: Method_read_u8 Self;
+    method_read_offset_i16 :: Method_read_offset_i16 Self;
+    method_read_offset_u16 :: Method_read_offset_u16 Self;
+    method_read_slice :: Method_read_slice Self;
   }.
 End Immediates.
+Export (hints) Immediates.
 
 (*
 pub trait LegacyBytecode {
@@ -332,26 +367,32 @@ pub trait LegacyBytecode {
 }
 *)
 Module LegacyBytecode.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("revm_interpreter::interpreter_types::LegacyBytecode", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "revm_interpreter::interpreter_types::LegacyBytecode";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_bytecode_len (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "bytecode_len" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] Usize.t
-    ).
+  Class Method_bytecode_len (Self : Set) `{Link Self} : Set := {
+    bytecode_len : PolymorphicFunction.t;
+    bytecode_len_is_method :: IsTraitMethod.C (trait Self) "bytecode_len" bytecode_len;
+    run_bytecode_len (self : '& Self) :: Run.Trait bytecode_len [] [] [ φ self ] usize;
+  }.
 
-  Definition Run_bytecode_slice (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "bytecode_slice" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref (list U8.t))
-    ).
+  Class Method_bytecode_slice (Self : Set) `{Link Self} : Set := {
+    bytecode_slice : PolymorphicFunction.t;
+    bytecode_slice_is_method :: IsTraitMethod.C (trait Self) "bytecode_slice" bytecode_slice;
+    run_bytecode_slice (self : '& Self) :: Run.Trait bytecode_slice [] [] [ φ self ] ('& (list u8));
+  }.
 
   Class Run (Self : Set) `{Link Self} : Set := {
-    bytecode_len : Run_bytecode_len Self;
-    bytecode_slice : Run_bytecode_slice Self;
+    method_bytecode_len :: Method_bytecode_len Self;
+    method_bytecode_slice :: Method_bytecode_slice Self;
   }.
 End LegacyBytecode.
+Export (hints) LegacyBytecode.
 
 (*
 pub trait EofData {
@@ -361,33 +402,40 @@ pub trait EofData {
 }
 *)
 Module EofData.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("revm_interpreter::interpreter_types::EofData", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "revm_interpreter::interpreter_types::EofData";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_data (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "data" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref (list U8.t))
-    ).
+  Class Method_data (Self : Set) `{Link Self} : Set := {
+    data : PolymorphicFunction.t;
+    data_is_method :: IsTraitMethod.C (trait Self) "data" data;
+    run_data (self : '& Self) :: Run.Trait data [] [] [ φ self ] ('& (list u8));
+  }.
 
-  Definition Run_data_slice (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "data_slice" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (offset len : Usize.t),
-      Run.Trait method [] [] [ φ self; φ offset; φ len ] (Ref.t Pointer.Kind.Ref (list U8.t))
-    ).
+  Class Method_data_slice (Self : Set) `{Link Self} : Set := {
+    data_slice : PolymorphicFunction.t;
+    data_slice_is_method :: IsTraitMethod.C (trait Self) "data_slice" data_slice;
+    run_data_slice (self : '& Self) (offset len : usize) ::
+      Run.Trait data_slice [] [] [ φ self; φ offset; φ len ] ('& (list u8));
+  }.
 
-  Definition Run_data_size (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "data_size" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] Usize.t
-    ).
+  Class Method_data_size (Self : Set) `{Link Self} : Set := {
+    data_size : PolymorphicFunction.t;
+    data_size_is_method :: IsTraitMethod.C (trait Self) "data_size" data_size;
+    run_data_size (self : '& Self) :: Run.Trait data_size [] [] [ φ self ] usize;
+  }.
 
   Class Run (Self : Set) `{Link Self} : Set := {
-    data : Run_data Self;
-    data_slice : Run_data_slice Self;
-    data_size : Run_data_size Self;
+    method_data :: Method_data Self;
+    method_data_slice :: Method_data_slice Self;
+    method_data_size :: Method_data_size Self;
   }.
 End EofData.
+Export (hints) EofData.
 
 (*
 pub trait EofContainer {
@@ -395,19 +443,26 @@ pub trait EofContainer {
 }
 *)
 Module EofContainer.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("revm_interpreter::interpreter_types::EofContainer", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "revm_interpreter::interpreter_types::EofContainer";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_eof_container (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "eof_container" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (index : Usize.t),
-      Run.Trait method [] [] [ φ self; φ index ] (option (Ref.t Pointer.Kind.Ref Bytes.t))
-    ).
+  Class Method_eof_container (Self : Set) `{Link Self} : Set := {
+    eof_container : PolymorphicFunction.t;
+    eof_container_is_method :: IsTraitMethod.C (trait Self) "eof_container" eof_container;
+    run_eof_container (self : '& Self) (index : usize) ::
+      Run.Trait eof_container [] [] [ φ self; φ index ] (option ('& Bytes.t));
+  }.
 
   Class Run (Self : Set) `{Link Self} : Set := {
-    eof_container : Run_eof_container Self;
+    method_eof_container :: Method_eof_container Self;
   }.
 End EofContainer.
+Export (hints) EofContainer.
 
 (*
 pub trait EofCodeInfo {
@@ -416,26 +471,34 @@ pub trait EofCodeInfo {
 }
 *)
 Module EofCodeInfo.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("revm_interpreter::interpreter_types::EofCodeInfo", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "revm_interpreter::interpreter_types::EofCodeInfo";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_code_section_info (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "code_section_info" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (idx : Usize.t),
-      Run.Trait method [] [] [ φ self; φ idx ] (option (Ref.t Pointer.Kind.Ref TypesSection.t))
-    ).
+  Class Method_code_section_info (Self : Set) `{Link Self} : Set := {
+    code_section_info : PolymorphicFunction.t;
+    code_section_info_is_method :: IsTraitMethod.C (trait Self) "code_section_info" code_section_info;
+    run_code_section_info (self : '& Self) (idx : usize) ::
+      Run.Trait code_section_info [] [] [ φ self; φ idx ] (option ('& TypesSection.t));
+  }.
 
-  Definition Run_code_section_pc (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "code_section_pc" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self) (idx : Usize.t),
-      Run.Trait method [] [] [ φ self; φ idx ] (option Usize.t)
-    ).
+  Class Method_code_section_pc (Self : Set) `{Link Self} : Set := {
+    code_section_pc : PolymorphicFunction.t;
+    code_section_pc_is_method :: IsTraitMethod.C (trait Self) "code_section_pc" code_section_pc;
+    run_code_section_pc (self : '& Self) (idx : usize) ::
+      Run.Trait code_section_pc [] [] [ φ self; φ idx ] (option usize);
+  }.
 
   Class Run (Self : Set) `{Link Self} : Set := {
-    code_section_info : Run_code_section_info Self;
-    code_section_pc : Run_code_section_pc Self;
+    method_code_section_info :: Method_code_section_info Self;
+    method_code_section_pc :: Method_code_section_pc Self;
   }.
 End EofCodeInfo.
+Export (hints) EofCodeInfo.
 
 (*
 pub trait ReturnData {
@@ -444,26 +507,32 @@ pub trait ReturnData {
 }
 *)
 Module ReturnData.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("revm_interpreter::interpreter_types::ReturnData", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "revm_interpreter::interpreter_types::ReturnData";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_buffer (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "buffer" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref (list U8.t))
-    ).
+  Class Method_buffer (Self : Set) `{Link Self} : Set := {
+    buffer : PolymorphicFunction.t;
+    buffer_is_method :: IsTraitMethod.C (trait Self) "buffer" buffer;
+    run_buffer (self : '& Self) :: Run.Trait buffer [] [] [ φ self ] ('& (list u8));
+  }.
 
-  Definition Run_buffer_mut (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "buffer_mut" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.MutRef Bytes.t)
-    ).
+  Class Method_buffer_mut (Self : Set) `{Link Self} : Set := {
+    buffer_mut : PolymorphicFunction.t;
+    buffer_mut_is_method :: IsTraitMethod.C (trait Self) "buffer_mut" buffer_mut;
+    run_buffer_mut (self : '&mut Self) :: Run.Trait buffer_mut [] [] [ φ self ] ('&mut Bytes.t);
+  }.
 
   Class Run (Self : Set) `{Link Self} : Set := {
-    buffer : Run_buffer Self;
-    buffer_mut : Run_buffer_mut Self;
+    method_buffer :: Method_buffer Self;
+    method_buffer_mut :: Method_buffer_mut Self;
   }.
 End ReturnData.
+Export (hints) ReturnData.
 
 (*
 pub trait InputsTrait {
@@ -474,40 +543,46 @@ pub trait InputsTrait {
 }
 *)
 Module InputsTrait.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("revm_interpreter::interpreter_types::InputsTrait", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "revm_interpreter::interpreter_types::InputsTrait";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_target_address (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "target_address" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] Address.t
-    ).
+  Class Method_target_address (Self : Set) `{Link Self} : Set := {
+    target_address : PolymorphicFunction.t;
+    target_address_is_method :: IsTraitMethod.C (trait Self) "target_address" target_address;
+    run_target_address (self : '& Self) :: Run.Trait target_address [] [] [ φ self ] Address.t;
+  }.
 
-  Definition Run_caller_address (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "caller_address" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] Address.t
-    ).
+  Class Method_caller_address (Self : Set) `{Link Self} : Set := {
+    caller_address : PolymorphicFunction.t;
+    caller_address_is_method :: IsTraitMethod.C (trait Self) "caller_address" caller_address;
+    run_caller_address (self : '& Self) :: Run.Trait caller_address [] [] [ φ self ] Address.t;
+  }.
 
-  Definition Run_input (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "input" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.Ref (list U8.t))
-    ).
+  Class Method_input (Self : Set) `{Link Self} : Set := {
+    input : PolymorphicFunction.t;
+    input_is_method :: IsTraitMethod.C (trait Self) "input" input;
+    run_input (self : '& Self) :: Run.Trait input [] [] [ φ self ] ('& (list u8));
+  }.
 
-  Definition Run_call_value (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "call_value" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] aliases.U256.t
-    ).
+  Class Method_call_value (Self : Set) `{Link Self} : Set := {
+    call_value : PolymorphicFunction.t;
+    call_value_is_method :: IsTraitMethod.C (trait Self) "call_value" call_value;
+    run_call_value (self : '& Self) :: Run.Trait call_value [] [] [ φ self ] aliases.U256.t;
+  }.
 
   Class Run (Self : Set) `{Link Self} : Set := {
-    target_address : Run_target_address Self;
-    caller_address : Run_caller_address Self;
-    input : Run_input Self;
-    call_value : Run_call_value Self;
+    method_target_address :: Method_target_address Self;
+    method_caller_address :: Method_caller_address Self;
+    method_input :: Method_input Self;
+    method_call_value :: Method_call_value Self;
   }.
 End InputsTrait.
+Export (hints) InputsTrait.
 
 (*
 pub trait SubRoutineStack {
@@ -520,54 +595,62 @@ pub trait SubRoutineStack {
 }
 *)
 Module SubRoutineStack.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("revm_interpreter::interpreter_types::SubRoutineStack", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "revm_interpreter::interpreter_types::SubRoutineStack";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_len (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "len" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] Usize.t
-    ).
+  Class Method_len (Self : Set) `{Link Self} : Set := {
+    len : PolymorphicFunction.t;
+    len_is_method :: IsTraitMethod.C (trait Self) "len" len;
+    run_len (self : '& Self) :: Run.Trait len [] [] [ φ self ] usize;
+  }.
 
-  Definition Run_is_empty (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "is_empty" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] bool
-    ).
+  Class Method_is_empty (Self : Set) `{Link Self} : Set := {
+    is_empty : PolymorphicFunction.t;
+    is_empty_is_method :: IsTraitMethod.C (trait Self) "is_empty" is_empty;
+    run_is_empty (self : '& Self) :: Run.Trait is_empty [] [] [ φ self ] bool;
+  }.
 
-  Definition Run_routine_idx (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "routine_idx" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] Usize.t
-    ).
+  Class Method_routine_idx (Self : Set) `{Link Self} : Set := {
+    routine_idx : PolymorphicFunction.t;
+    routine_idx_is_method :: IsTraitMethod.C (trait Self) "routine_idx" routine_idx;
+    run_routine_idx (self : '& Self) :: Run.Trait routine_idx [] [] [ φ self ] usize;
+  }.
 
-  Definition Run_set_routine_idx (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "set_routine_idx" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (idx : Usize.t),
-      Run.Trait method [] [] [ φ self; φ idx ] unit
-    ).
+  Class Method_set_routine_idx (Self : Set) `{Link Self} : Set := {
+    set_routine_idx : PolymorphicFunction.t;
+    set_routine_idx_is_method :: IsTraitMethod.C (trait Self) "set_routine_idx" set_routine_idx;
+    run_set_routine_idx (self : '&mut Self) (idx : usize) ::
+      Run.Trait set_routine_idx [] [] [ φ self; φ idx ] unit;
+  }.
 
-  Definition Run_push (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "push" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (old_program_counter new_idx : Usize.t),
-      Run.Trait method [] [] [ φ self; φ old_program_counter; φ new_idx ] bool
-    ).
+  Class Method_push (Self : Set) `{Link Self} : Set := {
+    push : PolymorphicFunction.t;
+    push_is_method :: IsTraitMethod.C (trait Self) "push" push;
+    run_push (self : '&mut Self) (old_program_counter new_idx : usize) ::
+      Run.Trait push [] [] [ φ self; φ old_program_counter; φ new_idx ] bool;
+  }.
 
-  Definition Run_pop (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "pop" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self),
-      Run.Trait method [] [] [ φ self ] (option Usize.t)
-    ).
+  Class Method_pop (Self : Set) `{Link Self} : Set := {
+    pop : PolymorphicFunction.t;
+    pop_is_method :: IsTraitMethod.C (trait Self) "pop" pop;
+    run_pop (self : '&mut Self) :: Run.Trait pop [] [] [ φ self ] (option usize);
+  }.
 
   Class Run (Self : Set) `{Link Self} : Set := {
-    len : Run_len Self;
-    is_empty : Run_is_empty Self;
-    routine_idx : Run_routine_idx Self;
-    set_routine_idx : Run_set_routine_idx Self;
-    push : Run_push Self;
-    pop : Run_pop Self;
+    method_len :: Method_len Self;
+    method_is_empty :: Method_is_empty Self;
+    method_routine_idx :: Method_routine_idx Self;
+    method_set_routine_idx :: Method_set_routine_idx Self;
+    method_push :: Method_push Self;
+    method_pop :: Method_pop Self;
   }.
 End SubRoutineStack.
+Export (hints) SubRoutineStack.
 
 (*
 pub trait LoopControl {
@@ -579,50 +662,55 @@ pub trait LoopControl {
 }
 *)
 Module LoopControl.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("revm_interpreter::interpreter_types::LoopControl", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "revm_interpreter::interpreter_types::LoopControl";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_set_instruction_result (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "set_instruction_result" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self) (result : InstructionResult.t),
-      Run.Trait method [] [] [ φ self; φ result ] unit
-    ).
+  Class Method_set_instruction_result (Self : Set) `{Link Self} : Set := {
+    set_instruction_result : PolymorphicFunction.t;
+    set_instruction_result_is_method :: IsTraitMethod.C (trait Self) "set_instruction_result" set_instruction_result;
+    run_set_instruction_result (self : '&mut Self) (result : InstructionResult.t) ::
+      Run.Trait set_instruction_result [] [] [ φ self; φ result ] unit;
+  }.
 
-  Definition Run_set_next_action (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "set_next_action" (fun method =>
-      forall
-        (self : Ref.t Pointer.Kind.MutRef Self)
-        (action : InterpreterAction.t)
-        (result : InstructionResult.t),
-      Run.Trait method [] [] [ φ self; φ action; φ result ] unit
-    ).
+  Class Method_set_next_action (Self : Set) `{Link Self} : Set := {
+    set_next_action : PolymorphicFunction.t;
+    set_next_action_is_method :: IsTraitMethod.C (trait Self) "set_next_action" set_next_action;
+    run_set_next_action (self : '&mut Self) (action : InterpreterAction.t) (result : InstructionResult.t) ::
+      Run.Trait set_next_action [] [] [ φ self; φ action; φ result ] unit;
+  }.
 
-  Definition Run_gas (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "gas" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self),
-      Run.Trait method [] [] [ φ self ] (Ref.t Pointer.Kind.MutRef Gas.t)
-    ).
+  Class Method_gas (Self : Set) `{Link Self} : Set := {
+    gas : PolymorphicFunction.t;
+    gas_is_method :: IsTraitMethod.C (trait Self) "gas" gas;
+    run_gas (self : '&mut Self) :: Run.Trait gas [] [] [ φ self ] ('&mut Gas.t);
+  }.
 
-  Definition Run_instruction_result (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "instruction_result" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] InstructionResult.t
-    ).
+  Class Method_instruction_result (Self : Set) `{Link Self} : Set := {
+    instruction_result : PolymorphicFunction.t;
+    instruction_result_is_method :: IsTraitMethod.C (trait Self) "instruction_result" instruction_result;
+    run_instruction_result (self : '& Self) :: Run.Trait instruction_result [] [] [ φ self ] InstructionResult.t;
+  }.
 
-  Definition Run_take_next_action (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "take_next_action" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self),
-      Run.Trait method [] [] [ φ self ] InterpreterAction.t
-    ).
+  Class Method_take_next_action (Self : Set) `{Link Self} : Set := {
+    take_next_action : PolymorphicFunction.t;
+    take_next_action_is_method :: IsTraitMethod.C (trait Self) "take_next_action" take_next_action;
+    run_take_next_action (self : '&mut Self) :: Run.Trait take_next_action [] [] [ φ self ] InterpreterAction.t;
+  }.
 
   Class Run (Self : Set) `{Link Self} : Set := {
-    set_instruction_result : Run_set_instruction_result Self;
-    set_next_action : Run_set_next_action Self;
-    gas : Run_gas Self;
-    instruction_result : Run_instruction_result Self;
-    take_next_action : Run_take_next_action Self;
+    method_set_instruction_result :: Method_set_instruction_result Self;
+    method_set_next_action :: Method_set_next_action Self;
+    method_gas :: Method_gas Self;
+    method_instruction_result :: Method_instruction_result Self;
+    method_take_next_action :: Method_take_next_action Self;
   }.
 End LoopControl.
+Export (hints) LoopControl.
 
 (*
 pub trait RuntimeFlag {
@@ -633,40 +721,46 @@ pub trait RuntimeFlag {
 }
 *)
 Module RuntimeFlag.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("revm_interpreter::interpreter_types::RuntimeFlag", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "revm_interpreter::interpreter_types::RuntimeFlag";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_is_static (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "is_static" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] bool
-    ).
+  Class Method_is_static (Self : Set) `{Link Self} : Set := {
+    is_static : PolymorphicFunction.t;
+    is_static_is_method :: IsTraitMethod.C (trait Self) "is_static" is_static;
+    run_is_static (self : '& Self) :: Run.Trait is_static [] [] [ φ self ] bool;
+  }.
 
-  Definition Run_is_eof (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "is_eof" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] bool
-    ).
+  Class Method_is_eof (Self : Set) `{Link Self} : Set := {
+    is_eof : PolymorphicFunction.t;
+    is_eof_is_method :: IsTraitMethod.C (trait Self) "is_eof" is_eof;
+    run_is_eof (self : '& Self) :: Run.Trait is_eof [] [] [ φ self ] bool;
+  }.
 
-  Definition Run_is_eof_init (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "is_eof_init" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] bool
-    ).
+  Class Method_is_eof_init (Self : Set) `{Link Self} : Set := {
+    is_eof_init : PolymorphicFunction.t;
+    is_eof_init_is_method :: IsTraitMethod.C (trait Self) "is_eof_init" is_eof_init;
+    run_is_eof_init (self : '& Self) :: Run.Trait is_eof_init [] [] [ φ self ] bool;
+  }.
 
-  Definition Run_spec_id (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "spec_id" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] SpecId.t
-    ).
+  Class Method_spec_id (Self : Set) `{Link Self} : Set := {
+    spec_id : PolymorphicFunction.t;
+    spec_id_is_method :: IsTraitMethod.C (trait Self) "spec_id" spec_id;
+    run_spec_id (self : '& Self) :: Run.Trait spec_id [] [] [ φ self ] SpecId.t;
+  }.
 
   Class Run (Self : Set) `{Link Self} : Set := {
-    is_static : Run_is_static Self;
-    is_eof : Run_is_eof Self;
-    is_eof_init : Run_is_eof_init Self;
-    spec_id : Run_spec_id Self;
+    method_is_static :: Method_is_static Self;
+    method_is_eof :: Method_is_eof Self;
+    method_is_eof_init :: Method_is_eof_init Self;
+    method_spec_id :: Method_spec_id Self;
   }.
 End RuntimeFlag.
+Export (hints) RuntimeFlag.
 
 (*
 pub trait InterpreterTypes {
@@ -698,42 +792,20 @@ Module InterpreterTypes.
     }.
 
     Class AreLinks (types : t) : Set := {
-      H_Stack : Link types.(Stack);
-      H_Memory : Link types.(Memory);
-      H_Memory_Synthetic : Link types.(Memory_Synthetic);
-      H_Memory_Synthetic1 : Link types.(Memory_Synthetic1);
-      H_Bytecode : Link types.(Bytecode);
-      H_ReturnData : Link types.(ReturnData);
-      H_Input : Link types.(Input);
-      H_SubRoutineStack : Link types.(SubRoutineStack);
-      H_Control : Link types.(Control);
-      H_RuntimeFlag : Link types.(RuntimeFlag);
-      H_Extend : Link types.(Extend);
+      H_Stack :: Link types.(Stack);
+      H_Memory :: Link types.(Memory);
+      H_Memory_Synthetic :: Link types.(Memory_Synthetic);
+      H_Memory_Synthetic1 :: Link types.(Memory_Synthetic1);
+      H_Bytecode :: Link types.(Bytecode);
+      H_ReturnData :: Link types.(ReturnData);
+      H_Input :: Link types.(Input);
+      H_SubRoutineStack :: Link types.(SubRoutineStack);
+      H_Control :: Link types.(Control);
+      H_RuntimeFlag :: Link types.(RuntimeFlag);
+      H_Extend :: Link types.(Extend);
     }.
-
-    Global Instance IsLinkStack (types : t) (H : AreLinks types) : Link types.(Stack) :=
-      H.(H_Stack _).
-    Global Instance IsLinkMemory (types : t) (H : AreLinks types) : Link types.(Memory) :=
-      H.(H_Memory _).
-    Global Instance IsLinkMemory_Synthetic (types : t) (H : AreLinks types) : Link types.(Memory_Synthetic) :=
-      H.(H_Memory_Synthetic _).
-    Global Instance IsLinkMemory_Synthetic1 (types : t) (H : AreLinks types) : Link types.(Memory_Synthetic1) :=
-      H.(H_Memory_Synthetic1 _).
-    Global Instance IsLinkBytecode (types : t) (H : AreLinks types) : Link types.(Bytecode) :=
-      H.(H_Bytecode _).
-    Global Instance IsLinkReturnData (types : t) (H : AreLinks types) : Link types.(ReturnData) :=
-      H.(H_ReturnData _).
-    Global Instance IsLinkInput (types : t) (H : AreLinks types) : Link types.(Input) :=
-      H.(H_Input _).
-    Global Instance IsLinkSubRoutineStack (types : t) (H : AreLinks types) : Link types.(SubRoutineStack) :=
-      H.(H_SubRoutineStack _).
-    Global Instance IsLinkControl (types : t) (H : AreLinks types) : Link types.(Control) :=
-      H.(H_Control _).
-    Global Instance IsLinkRuntimeFlag (types : t) (H : AreLinks types) : Link types.(RuntimeFlag) :=
-      H.(H_RuntimeFlag _).
-    Global Instance IsLinkExtend (types : t) (H : AreLinks types) : Link types.(Extend) :=
-      H.(H_Extend _).
   End Types.
+  Export (hints) Types.
 
   Class Run
       (Self : Set) `{Link Self}
@@ -743,12 +815,12 @@ Module InterpreterTypes.
       IsTraitAssociatedType
         "revm_interpreter::interpreter_types::InterpreterTypes" [] [] (Φ Self)
         "Stack" (Φ types.(Types.Stack));
-    run_StackTrait_for_Stack : StackTrait.Run types.(Types.Stack);
+    run_StackTrait_for_Stack :: StackTrait.Run types.(Types.Stack);
     Memory_IsAssociated :
       IsTraitAssociatedType
         "revm_interpreter::interpreter_types::InterpreterTypes" [] [] (Φ Self)
         "Memory" (Φ types.(Types.Memory));
-    run_MemoryTrait_for_Memory :
+    run_MemoryTrait_for_Memory ::
       MemoryTrait.Run
         types.(Types.Memory)
         types.(Types.Memory_Synthetic)
@@ -757,36 +829,37 @@ Module InterpreterTypes.
       IsTraitAssociatedType
         "revm_interpreter::interpreter_types::InterpreterTypes" [] [] (Φ Self)
         "Bytecode" (Φ types.(Types.Bytecode));
-    run_Jumps_for_Bytecode : Jumps.Run types.(Types.Bytecode);
-    run_Immediates_for_Bytecode : Immediates.Run types.(Types.Bytecode);
-    run_LegacyBytecode_for_Bytecode : LegacyBytecode.Run types.(Types.Bytecode);
-    run_EofData_for_Bytecode : EofData.Run types.(Types.Bytecode);
-    run_EofContainer_for_Bytecode : EofContainer.Run types.(Types.Bytecode);
-    run_EofCodeInfo_for_Bytecode : EofCodeInfo.Run types.(Types.Bytecode);
+    run_Jumps_for_Bytecode :: Jumps.Run types.(Types.Bytecode);
+    run_Immediates_for_Bytecode :: Immediates.Run types.(Types.Bytecode);
+    run_LegacyBytecode_for_Bytecode :: LegacyBytecode.Run types.(Types.Bytecode);
+    run_EofData_for_Bytecode :: EofData.Run types.(Types.Bytecode);
+    run_EofContainer_for_Bytecode :: EofContainer.Run types.(Types.Bytecode);
+    run_EofCodeInfo_for_Bytecode :: EofCodeInfo.Run types.(Types.Bytecode);
     ReturnData_IsAssociated :
       IsTraitAssociatedType
         "revm_interpreter::interpreter_types::InterpreterTypes" [] [] (Φ Self)
         "ReturnData" (Φ types.(Types.ReturnData));
-    run_ReturnData_for_ReturnData : ReturnData.Run types.(Types.ReturnData);
+    run_ReturnData_for_ReturnData :: ReturnData.Run types.(Types.ReturnData);
     Input_IsAssociated :
       IsTraitAssociatedType
         "revm_interpreter::interpreter_types::InterpreterTypes" [] [] (Φ Self)
         "Input" (Φ types.(Types.Input));
-    run_InputsTrait_for_Input : InputsTrait.Run types.(Types.Input);
+    run_InputsTrait_for_Input :: InputsTrait.Run types.(Types.Input);
     SubRoutineStack_IsAssociated :
       IsTraitAssociatedType
         "revm_interpreter::interpreter_types::InterpreterTypes" [] [] (Φ Self)
         "SubRoutineStack" (Φ types.(Types.SubRoutineStack));
-    run_SubRoutineStack_for_SubRoutineStack : SubRoutineStack.Run types.(Types.SubRoutineStack);
+    run_SubRoutineStack_for_SubRoutineStack :: SubRoutineStack.Run types.(Types.SubRoutineStack);
     Control_IsAssociated :
       IsTraitAssociatedType
         "revm_interpreter::interpreter_types::InterpreterTypes" [] [] (Φ Self)
         "Control" (Φ types.(Types.Control));
-    run_LoopControl_for_Control : LoopControl.Run types.(Types.Control);
+    run_LoopControl_for_Control :: LoopControl.Run types.(Types.Control);
     RuntimeFlag_IsAssociated :
       IsTraitAssociatedType
         "revm_interpreter::interpreter_types::InterpreterTypes" [] [] (Φ Self)
         "RuntimeFlag" (Φ types.(Types.RuntimeFlag));
-    run_RuntimeFlag_for_RuntimeFlag : RuntimeFlag.Run types.(Types.RuntimeFlag);
+    run_RuntimeFlag_for_RuntimeFlag :: RuntimeFlag.Run types.(Types.RuntimeFlag);
   }.
 End InterpreterTypes.
+Export (hints) InterpreterTypes.

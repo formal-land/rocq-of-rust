@@ -16,7 +16,7 @@ Module Bytes.
 
   Parameter to_value : t -> Value.t.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "bytes::bytes::Bytes";
     φ x := to_value x;
   }.
@@ -25,27 +25,30 @@ Module Bytes.
   Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
   Smpl Add apply of_ty : of_ty.
 End Bytes.
+Export (hints) Bytes.
 
 Module Impl_Bytes.
   Definition Self : Set :=
     Bytes.t.
 
   (* pub const fn len(&self) -> usize *)
-  Instance run_len (self : Ref.t Pointer.Kind.Ref Self) :
+  Instance run_len (self : '& Self) :
     Run.Trait
       bytes.Impl_bytes_bytes_Bytes.len [] [] [ φ self ]
-      Usize.t.
+      usize.
   Admitted.
+  Global Opaque run_len.
 
   (* pub fn clear(&mut self) *)
-  Instance run_clear (self : Ref.t Pointer.Kind.MutRef Self) :
+  Instance run_clear (self : '&mut Self) :
     Run.Trait bytes.Impl_bytes_bytes_Bytes.clear [] [] [φ self] unit.
   Proof.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_clear.
 End Impl_Bytes.
-Export Impl_Bytes.
+Export (hints) Impl_Bytes.
 
 (*
 impl Deref for Bytes {
@@ -55,7 +58,7 @@ Module Impl_Deref_for_Bytes.
   Definition Self : Set :=
     Bytes.t.
 
-  Instance run : Deref.Run Self (list U8.t).
+  Instance run : Deref.Run Self (list u8).
   Admitted.
 End Impl_Deref_for_Bytes.
-Export Impl_Deref_for_Bytes.
+Export (hints) Impl_Deref_for_Bytes.

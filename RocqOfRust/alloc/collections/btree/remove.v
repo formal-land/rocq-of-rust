@@ -529,8 +529,7 @@ Module collections.
                       (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                       let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                       let old_kv := M.copy (| Ty.tuple [ K; V ], γ0_0 |) in
-                      let pos :=
-                        M.copy (|
+                      let~ pos :
                           Ty.apply
                             (Ty.path "alloc::collections::btree::node::Handle")
                             []
@@ -545,9 +544,8 @@ Module collections.
                                   Ty.path "alloc::collections::btree::node::marker::Leaf"
                                 ];
                               Ty.path "alloc::collections::btree::node::marker::Edge"
-                            ],
-                          γ0_1
-                        |) in
+                            ] :=
+                        M.read (| γ0_1 |) in
                       M.read (|
                         let~ len : Ty.path "usize" :=
                           M.call_closure (|

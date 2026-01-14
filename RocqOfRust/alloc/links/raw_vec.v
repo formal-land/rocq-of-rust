@@ -8,7 +8,7 @@ Module RawVec.
 
   Parameter to_value : forall {T A : Set}, t T A -> Value.t.
 
-  Global Instance IsLink (T A : Set) `(Link T) `(Link A) : Link (t T A) := {
+  Instance IsLink (T A : Set) `(Link T) `(Link A) : Link (t T A) := {
     Φ := Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [Φ T; Φ A];
     φ := to_value;
   }.
@@ -25,6 +25,7 @@ Module RawVec.
   Defined.
   Smpl Add apply of_ty : of_ty.
 End RawVec.
+Export (hints) RawVec.
 
 Module Impl_RawVec_T_A.
   Definition Self (T A : Set) `{Link T} `{Link A} : Set :=
@@ -38,8 +39,9 @@ Module Impl_RawVec_T_A.
       (raw_vec.Impl_alloc_raw_vec_RawVec_T_A.new_in (Φ T) (Φ A)) [] [] [φ alloc]
       (Self T A).
   Admitted.
+  Global Opaque run_new_in.
 End Impl_RawVec_T_A.
-Export Impl_RawVec_T_A.
+Export (hints) Impl_RawVec_T_A.
 
 Module Impl_RawVec_T.
   Definition Self (T : Set) `{Link T} : Set :=
@@ -51,5 +53,6 @@ Module Impl_RawVec_T.
   Instance run_new {T : Set} `{Link T} :
     Run.Trait (raw_vec.Impl_alloc_raw_vec_RawVec_T_alloc_alloc_Global.new (Φ T)) [] [] [] (Self T).
   Admitted.
+  Global Opaque run_new.
 End Impl_RawVec_T.
-Export Impl_RawVec_T.
+Export (hints) Impl_RawVec_T.

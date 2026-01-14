@@ -1,0 +1,335 @@
+{#
+  Jinja macros for generating Rocq code.
+  Automatically imported as 'macros' in all templates.
+
+  Variants are specified as tuples: (name, params) or (name, params, rust_name)
+  where:
+  - name is the Rocq constructor name
+  - params is:
+    - a list of (param_name, param_type) tuples for StructTuple
+    - a dict of {param_name: param_type} for StructRecord
+  - rust_name (optional) is the Rust variant name if different from Rocq name
+
+  Example:
+    {% set variants = [
+      ("Custom", [("n", "u32")]),                    # StructTuple
+      ("InvalidArgument", []),                        # StructTuple with no params
+      ("Create2", {"salt": "U256.t"}),               # StructRecord with named field
+      ("None_", [], "None"),                          # StructTuple with different Rust name
+    ] %}
+#}
+
+{# Helper to check if variant uses StructRecord (dict) or StructTuple (list) #}
+{% macro is_record(params) %}{{ params is mapping }}{% endmacro %}
+
+{# Helper to get params as list of (name, type) tuples regardless of input format #}
+{% macro params_as_list(params) %}
+{%- if params is mapping -%}
+{{ params.items() | list }}
+{%- else -%}
+{{ params }}
+{%- endif -%}
+{% endmacro %}
+
+{# Helper to get Rust variant name (uses third element if present, else first element) #}
+{% macro rust_name(variant) %}{{ variant[2] if variant|length > 2 else variant[0] }}{% endmacro %}
+
+{# Helper to sort fields alphabetically by name (for StructRecord serialization) #}
+{# Note: Record definition and Build_t use original order, only StructRecord output is sorted #}
+
+{# Generate Inductive variant declaration #}
+{% macro inductive_variant(variant) %}
+{% set name = variant[0] %}
+{% set params = variant[1] %}
+{% set params_list = params.items() | list if params is mapping else params %}
+  | {{ name }}{% for p in params_list %} ({{ p[0] }} : {{ p[1] }}){% endfor %}
+
+{% endmacro %}
+
+{# Generate all Inductive variant declarations #}
+{% macro inductive_variants(variants) %}
+{% for variant in variants %}
+{{ inductive_variant(variant) -}}
+{% endfor %}
+{% endmacro %}
+
+{# Generate φ match case for a variant #}
+{% macro phi_case(path, variant) %}
+{% set name = variant[0] %}
+{% set params = variant[1] %}
+{% set rname = variant[2] if variant|length > 2 else name %}
+{% set params_list = params.items() | list if params is mapping else params %}
+{% set params_sorted = params_list | sort(attribute='0') if params is mapping else params_list %}
+      | {{ name }}{% for p in params_list %} {{ p[0] }}{% endfor %} =>
+{% if params is mapping %}
+          Value.StructRecord "{{ path }}::{{ rname }}" [] [] [
+{% for p in params_sorted %}            ("{{ p[0] }}", φ {{ p[0] }}){{ ";" if not loop.last else "" }}
+{% endfor %}          ]
+{% else %}
+          Value.StructTuple "{{ path }}::{{ rname }}" [] [] [{% for p in params_list %}φ {{ p[0] }}{{ "; " if not loop.last else "" }}{% endfor %}]
+{% endif %}
+{%- endmacro %}
+
+{# Generate all φ match cases #}
+{% macro phi_cases(path, variants) %}
+{% for variant in variants %}
+{{ phi_case(path, variant) -}}
+{% endfor %}
+{% endmacro %}
+
+{# Generate IsOfValueWith and IsOfValue instances for a variant #}
+{% macro variant_instances(path, variant) %}
+{% set name = variant[0] %}
+{% set params = variant[1] %}
+{% set rname = variant[2] if variant|length > 2 else name %}
+{% set params_list = params.items() | list if params is mapping else params %}
+{% set params_sorted = params_list | sort(attribute='0') if params is mapping else params_list %}
+{% if params_list %}
+  Instance IsOfValueWith_{{ name }}
+{% for p in params_sorted %}      ({{ p[0] }}' : Value.t) {H_{{ p[0] }} : OfValueWith.C ({{ p[1] }}) {{ p[0] }}'}
+{% endfor %}      :
+{% if params is mapping %}
+    OfValueWith.C t (Value.StructRecord "{{ path }}::{{ rname }}" [] [] [
+{% for p in params_sorted %}      ("{{ p[0] }}", {{ p[0] }}'){{ ";" if not loop.last else "" }}
+{% endfor %}    ]) :=
+{% else %}
+    OfValueWith.C t (Value.StructTuple "{{ path }}::{{ rname }}" [] [] [{% for p in params_list %}{{ p[0] }}'{{ "; " if not loop.last else "" }}{% endfor %}]) :=
+{% endif %}
+  {
+    value := {{ name }}
+{% for p in params_list %}      H_{{ p[0] }}.(OfValueWith.value)
+{% endfor -%}
+    ;
+    eq := ltac:(sauto lq: on);
+  }.
+
+  Instance IsOfValue_{{ name }}
+{% for p in params_sorted %}      ({{ p[0] }}' : Value.t) {H_{{ p[0] }} : OfValueWith.C ({{ p[1] }}) {{ p[0] }}'}
+{% endfor %}      :
+{% if params is mapping %}
+    OfValue.C (Value.StructRecord "{{ path }}::{{ rname }}" [] [] [
+{% for p in params_sorted %}      ("{{ p[0] }}", {{ p[0] }}'){{ ";" if not loop.last else "" }}
+{% endfor %}    ]) :=
+{% else %}
+    OfValue.C (Value.StructTuple "{{ path }}::{{ rname }}" [] [] [{% for p in params_list %}{{ p[0] }}'{{ "; " if not loop.last else "" }}{% endfor %}]) :=
+{% endif %}
+  {
+    value := {{ name }}
+{% for p in params_list %}      H_{{ p[0] }}.(OfValueWith.value)
+{% endfor -%}
+    ;
+    eq := ltac:(sauto lq: on);
+  }.
+
+{% else %}
+  Instance IsOfValueWith_{{ name }} :
+    OfValueWith.C t (Value.StructTuple "{{ path }}::{{ rname }}" [] [] []) :=
+  {
+    value := {{ name }};
+    eq := eq_refl;
+  }.
+
+  Instance IsOfValue_{{ name }} :
+    OfValue.C (Value.StructTuple "{{ path }}::{{ rname }}" [] [] []) :=
+  {
+    value := {{ name }};
+    eq := eq_refl;
+  }.
+
+{% endif %}
+{% endmacro %}
+
+{# Generate instances for all variants #}
+{% macro all_variant_instances(path, variants) %}
+{% for variant in variants %}
+{{ variant_instances(path, variant) -}}
+{% endfor %}
+{% endmacro %}
+
+{# Generate SubPointer for a single parameter of a variant #}
+{% macro subpointer(path, variant, param_index) %}
+{% set name = variant[0] %}
+{% set params = variant[1] %}
+{% set rname = variant[2] if variant|length > 2 else name %}
+{% set params_list = params.items() | list if params is mapping else params %}
+{% set param = params_list[param_index] %}
+{% if params is mapping %}
+    Definition get_{{ name }}_{{ param[0] }} : SubPointer.Runner.t t
+      (Pointer.Index.StructRecord "{{ path }}::{{ rname }}" "{{ param[0] }}") :=
+{% else %}
+    Definition get_{{ name }}_{{ param_index }} : SubPointer.Runner.t t
+      (Pointer.Index.StructTuple "{{ path }}::{{ rname }}" {{ param_index }}) :=
+{% endif %}
+    {|
+      SubPointer.Runner.projection x :=
+        match x with
+        | {{ name }}{% for p in params_list %} {{ p[0] }}{% endfor %} => Some {{ param[0] }}
+        | _ => None
+        end;
+      SubPointer.Runner.injection x y :=
+        match x with
+        | {{ name }}{% for p in params_list %} {% if loop.index0 == param_index %}_{% else %}{{ p[0] }}{% endif %}{% endfor %} => Some ({{ name }}{% for p in params_list %} {% if loop.index0 == param_index %}y{% else %}{{ p[0] }}{% endif %}{% endfor %})
+        | _ => None
+        end;
+    |}.
+
+{% if params is mapping %}
+    Lemma get_{{ name }}_{{ param[0] }}_is_valid :
+      SubPointer.Runner.Valid.t get_{{ name }}_{{ param[0] }}.
+    Proof.
+      constructor; intros; destruct a; try reflexivity; discriminate.
+    Qed.
+    Smpl Add apply get_{{ name }}_{{ param[0] }}_is_valid : run_sub_pointer.
+{% else %}
+    Lemma get_{{ name }}_{{ param_index }}_is_valid :
+      SubPointer.Runner.Valid.t get_{{ name }}_{{ param_index }}.
+    Proof.
+      constructor; intros; destruct a; try reflexivity; discriminate.
+    Qed.
+    Smpl Add apply get_{{ name }}_{{ param_index }}_is_valid : run_sub_pointer.
+{% endif %}
+{%- endmacro %}
+
+{# Generate all SubPointers for a variant (one per parameter) #}
+{% macro variant_subpointers(path, variant) %}
+{% set name = variant[0] %}
+{% set params = variant[1] %}
+{% set params_list = params.items() | list if params is mapping else params %}
+{% for param in params_list %}
+{{ subpointer(path, variant, loop.index0) }}
+{% endfor %}
+{%- endmacro %}
+
+{# Generate SubPointer module with all subpointers for all variants #}
+{% macro subpointer_module(path, variants) %}
+  Module SubPointer.
+{% for variant in variants %}{{ variant_subpointers(path, variant) }}{% endfor %}  End SubPointer.
+{%- endmacro %}
+
+{# Generate complete enum body (everything inside Module ... End) #}
+{% macro enum_body(path, variants) %}
+  Inductive t : Set :=
+{{ inductive_variants(variants) }}  .
+
+  Instance IsLink : Link t := {
+    Φ := Ty.path "{{ path }}";
+    φ x :=
+      match x with
+{{ phi_cases(path, variants) }}      end
+  }.
+
+  Instance IsOfTy : OfTy.C (Ty.path "{{ path }}") :=
+  {
+    A := t;
+    eq := eq_refl;
+  }.
+
+{{ all_variant_instances(path, variants) -}}
+{{ subpointer_module(path, variants) -}}
+{% endmacro %}
+
+{# ============== RECORD/STRUCT MACROS ============== #}
+
+{# Generate Record field declarations #}
+{% macro record_fields(fields) %}
+{% for f in fields %}
+    {{ f[0] }} : {{ f[1] }};
+{% endfor %}
+{% endmacro %}
+
+{# Generate φ for record fields #}
+{% macro record_phi_fields(fields) %}
+{% for f in fields %}
+        ("{{ f[0] }}", φ x.({{ f[0] }})){{ ";" if not loop.last else "" }}
+{% endfor -%}
+{% endmacro %}
+
+{# Generate of_value instance parameters #}
+{% macro record_of_value_instance_params(fields) %}
+{% for f in fields %}
+      ({{ f[0] }}' : Value.t) {H_{{ f[0] }} : OfValueWith.C ({{ f[1] }}) {{ f[0] }}'}
+{% endfor %}
+{% endmacro %}
+
+{% macro record_value_fields(fields) %}
+{% for f in fields %}
+      ("{{ f[0] }}", {{ f[0] }}'){{ ";" if not loop.last else "" }}
+{% endfor -%}
+{% endmacro %}
+
+{% macro record_build_value(fields) %}
+Build_t
+{% for f in fields %}      H_{{ f[0] }}.(OfValueWith.value){{ "" if loop.last else "" }}
+{% endfor -%}
+{% endmacro %}
+
+{# Generate SubPointer for a record field #}
+{% macro record_subpointer(path, field, is_last) %}
+    Definition get_{{ field[0] }} : SubPointer.Runner.t t
+      (Pointer.Index.StructRecord "{{ path }}" "{{ field[0] }}") :=
+    {|
+      SubPointer.Runner.projection x := Some x.({{ field[0] }});
+      SubPointer.Runner.injection x y := Some (x <| {{ field[0] }} := y |>);
+    |}.
+
+    Lemma get_{{ field[0] }}_is_valid :
+      SubPointer.Runner.Valid.t get_{{ field[0] }}.
+    Proof.
+      now constructor.
+    Qed.
+    Smpl Add apply get_{{ field[0] }}_is_valid : run_sub_pointer.
+{% if not is_last %}
+
+{% endif %}
+{%- endmacro %}
+
+{# Generate SubPointer module for record #}
+{% macro record_subpointer_module(path, fields) %}
+  Module SubPointer.
+{% for f in fields %}
+{{ record_subpointer(path, f, loop.last) -}}
+{% endfor %}
+  End SubPointer.
+{%- endmacro %}
+
+{# Generate complete record body (everything inside Module ... End) #}
+{# fields: list of (name, type) tuples in declaration order #}
+{# StructRecord serialization uses alphabetically sorted fields #}
+{% macro record_body(path, fields) %}
+{% set fields_sorted = fields | sort(attribute='0') %}
+  Record t : Set := {
+{{ record_fields(fields) }}  }.
+
+  Instance IsLink : Link t := {
+    Φ := Ty.path "{{ path }}";
+    φ x :=
+      Value.StructRecord "{{ path }}" [] [] [
+{{ record_phi_fields(fields_sorted) }}      ];
+  }.
+
+  Instance IsOfTy : OfTy.C (Ty.path "{{ path }}") :=
+  {
+    A := t;
+    eq := eq_refl;
+  }.
+
+  Instance IsOfValueWith
+{{ record_of_value_instance_params(fields_sorted) }}      :
+    OfValueWith.C t (Value.StructRecord "{{ path }}" [] [] [
+{{ record_value_fields(fields_sorted) }}    ]) :=
+  {
+    value := {{ record_build_value(fields) }};
+    eq := ltac:(sauto lq: on);
+  }.
+
+  Instance IsOfValue
+{{ record_of_value_instance_params(fields_sorted) }}      :
+    OfValue.C (Value.StructRecord "{{ path }}" [] [] [
+{{ record_value_fields(fields_sorted) }}    ]) :=
+  {
+    value := {{ record_build_value(fields) }};
+    eq := ltac:(sauto lq: on);
+  }.
+
+{{ record_subpointer_module(path, fields) -}}
+{% endmacro %}

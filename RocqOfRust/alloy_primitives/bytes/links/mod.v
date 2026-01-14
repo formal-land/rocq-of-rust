@@ -15,7 +15,7 @@ Module Bytes.
 
   Parameter to_value : t -> Value.t.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "alloy_primitives::bytes_::Bytes";
     φ := to_value;
   }.
@@ -26,51 +26,45 @@ Module Bytes.
   Defined.
   Smpl Add apply of_ty : of_ty.
 End Bytes.
+Export (hints) Bytes.
 
 Module Impl_Clone_for_Bytes.
   Definition Self : Set :=
     Bytes.t.
 
-  Definition run_clone : Clone.Run_clone Self.
+  Instance method_clone : Clone.Method_clone Self.
   Proof.
     eexists.
-    { eapply IsTraitMethod.Defined.
+    { constructor.
+      eapply IsTraitMethod.Defined.
       { apply bytes_.Impl_core_clone_Clone_for_alloy_primitives_bytes__Bytes.Implements. }
       { reflexivity. }
     }
-    { constructor.
-      run_symbolic.
-      admit.
-    }
+    { admit. }
   Admitted.
 
-  Instance run : Clone.Run Self := {
-    Clone.clone := run_clone;
-  }.
+  Instance run : Clone.Run Self := {}.
 End Impl_Clone_for_Bytes.
+Export (hints) Impl_Clone_for_Bytes.
 
 Module Impl_Default_for_Bytes.
   Definition Self : Set :=
     Bytes.t.
 
-  Definition run_default : Default.Run_default Self.
+  Instance method_default : Default.Method_default Self.
   Proof.
     eexists.
-    { eapply IsTraitMethod.Defined.
+    { constructor.
+      eapply IsTraitMethod.Defined.
       { apply bytes_.Impl_core_default_Default_for_alloy_primitives_bytes__Bytes.Implements. }
       { reflexivity. }
     }
-    { constructor.
-      run_symbolic.
-      admit.
-    }
+    { admit. }
   Admitted.
 
-  Instance run : Default.Run Self := {
-    Default.default := run_default;
-  }.
+  Instance run : Default.Run Self := {}.
 End Impl_Default_for_Bytes.
-Export Impl_Default_for_Bytes.
+Export (hints) Impl_Default_for_Bytes.
 
 (* impl Deref for Bytes *)
 Module Impl_Deref_for_Bytes.
@@ -80,7 +74,7 @@ Module Impl_Deref_for_Bytes.
   Instance run : Deref.Run Self bytes.Bytes.t.
   Admitted.
 End Impl_Deref_for_Bytes.
-Export Impl_Deref_for_Bytes.
+Export (hints) Impl_Deref_for_Bytes.
 
 (* impl DerefMut for Bytes *)
 Module Impl_DerefMut_for_Bytes.
@@ -90,7 +84,7 @@ Module Impl_DerefMut_for_Bytes.
   Instance run : DerefMut.Run Self bytes.Bytes.t.
   Admitted.
 End Impl_DerefMut_for_Bytes.
-Export Impl_DerefMut_for_Bytes.
+Export (hints) Impl_DerefMut_for_Bytes.
 
 Module Impl_Bytes.
   Definition Self : Set :=
@@ -102,23 +96,25 @@ Module Impl_Bytes.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_new.
 
   (* pub fn copy_from_slice(data: &[u8]) -> Self *)
-  Instance run_copy_from_slice (data : Ref.t Pointer.Kind.Ref (list U8.t)) :
+  Instance run_copy_from_slice (data : '& (list u8)) :
     Run.Trait bytes_.Impl_alloy_primitives_bytes__Bytes.copy_from_slice [] [] [ φ data ] Self.
   Proof.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_copy_from_slice.
 End Impl_Bytes.
-Export Impl_Bytes.
+Export (hints) Impl_Bytes.
 
 (* impl From<Vec<u8>> for Bytes *)
 Module Impl_From_Vec_u8_for_Bytes.
   Definition Self : Set :=
     Bytes.t.
 
-  Instance run : From.Run Self (Vec.t U8.t Global.t).
+  Instance run : From.Run Self (Vec.t u8 Global.t).
   Admitted.
 End Impl_From_Vec_u8_for_Bytes.
-Export Impl_From_Vec_u8_for_Bytes.
+Export (hints) Impl_From_Vec_u8_for_Bytes.

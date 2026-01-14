@@ -1,7 +1,7 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.lib.proofs.lib.
 Require Import links.M.
-Require Import simulations.integer.
+Require Import simulations_legacy.integer.
 
 Module U64.
   Lemma checked_add_is_valid (a b : Z)

@@ -13,8 +13,9 @@ Module MaybeUninit.
 
   Parameter to_value : forall {T : Set}, t T -> Value.t.
 
-  Global Instance IsLink (T : Set) `{Link T} : Link (t T) := {
+  Instance IsLink (T : Set) `{Link T} : Link (t T) := {
     Φ := Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ Φ T ];
     φ x := to_value x;
   }.
 End MaybeUninit.
+Export (hints) MaybeUninit.

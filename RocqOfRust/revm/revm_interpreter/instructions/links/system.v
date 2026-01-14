@@ -10,6 +10,7 @@ Require Import core.convert.links.num.
 Require Import core.intrinsics.links.mod.
 Require Import core.links.array.
 Require Import core.links.cmp.
+Require Import core.links.option.
 Require Import core.links.panicking.
 Require Import core.links.result.
 Require Import core.ops.links.range.
@@ -22,6 +23,7 @@ Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.instructions.system.
 Require Import revm.revm_interpreter.interpreter.links.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_primitives.links.lib.
@@ -39,8 +41,8 @@ Instance run_keccak256
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.system.keccak256 [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -52,9 +54,10 @@ Proof.
   destruct run_MemoryTrait_for_Memory.
   destruct run_Deref_for_Synthetic1.
   destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
-  destruct (Impl_AsRef_for_Slice.run U8.t).
+  destruct (Impl_AsRef_for_Slice.run u8).
   run_symbolic.
 Defined.
+Global Opaque run_keccak256.
 
 (*
 pub fn address<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -66,8 +69,8 @@ Instance run_address
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.system.address [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -80,6 +83,7 @@ Proof.
   destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
   run_symbolic.
 Defined.
+Global Opaque run_address.
 
 (*
 pub fn caller<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -91,8 +95,8 @@ Instance run_caller
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.system.caller [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -105,6 +109,7 @@ Proof.
   destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
   run_symbolic.
 Defined.
+Global Opaque run_caller.
 
 (*
 pub fn codesize<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -116,8 +121,8 @@ Instance run_codesize
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   {run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types}
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.system.codesize [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -129,6 +134,7 @@ Proof.
   destruct run_LegacyBytecode_for_Bytecode.
   run_symbolic.
 Defined.
+Global Opaque run_codesize.
 
 (*
 pub fn memory_resize(
@@ -141,12 +147,12 @@ Instance run_memory_resize
   {WIRE : Set} `{Link WIRE}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   {run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types}
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
   (memory_offset : aliases.U256.t)
-  (len : Usize.t) :
+  (len : usize) :
   Run.Trait
     instructions.system.memory_resize [] [ Φ WIRE ] [ φ interpreter; φ memory_offset; φ len ]
-    (option Usize.t).
+    (option usize).
 Proof.
   constructor.
   destruct run_InterpreterTypes_for_WIRE.
@@ -154,6 +160,7 @@ Proof.
   destruct run_MemoryTrait_for_Memory.
   run_symbolic.
 Defined.
+Global Opaque run_memory_resize.
 
 (*
 pub fn codecopy<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -165,8 +172,8 @@ Instance run_codecopy
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.system.codecopy [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -180,6 +187,7 @@ Proof.
   destruct Impl_TryFrom_u64_for_usize.run.
   run_symbolic.
 Defined.
+Global Opaque run_codecopy.
 
 (*
 pub fn calldataload<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -191,8 +199,8 @@ Instance run_calldataload
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.system.calldataload [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -208,6 +216,7 @@ Proof.
   destruct Impl_Ord_for_usize.run.
   run_symbolic.
 Defined.
+Global Opaque run_calldataload.
 
 (*
 pub fn calldatasize<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -219,8 +228,8 @@ Instance run_calldatasize
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.system.calldatasize [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -232,6 +241,7 @@ Proof.
   destruct run_InputsTrait_for_Input.
   run_symbolic.
 Defined.
+Global Opaque run_calldatasize.
 
 (*
 pub fn callvalue<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -243,8 +253,8 @@ Instance run_callvalue
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.system.callvalue [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -256,6 +266,7 @@ Proof.
   destruct run_InputsTrait_for_Input.
   run_symbolic.
 Defined.
+Global Opaque run_callvalue.
 
 (*
 pub fn calldatacopy<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -267,8 +278,8 @@ Instance run_calldatacopy
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.system.calldatacopy [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -282,6 +293,7 @@ Proof.
   destruct Impl_TryFrom_u64_for_usize.run.
   run_symbolic.
 Defined.
+Global Opaque run_calldatacopy.
 
 (*
 pub fn returndatasize<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -293,8 +305,8 @@ Instance run_returndatasize
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.system.returndatasize [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -307,6 +319,7 @@ Proof.
   destruct run_ReturnData_for_ReturnData.
   run_symbolic.
 Defined.
+Global Opaque run_returndatasize.
 
 (*
 pub fn returndatacopy<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -318,8 +331,8 @@ Instance run_returndatacopy
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.system.returndatacopy [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -334,7 +347,8 @@ Proof.
   destruct Impl_TryFrom_u64_for_usize.run.
   run_symbolic.
 Defined.
-
+Global Opaque run_returndatacopy.
+(* TODO: fix, probably with better links inference
 (*
 pub fn returndataload<WIRE: InterpreterTypes, H: Host + ?Sized>(
     interpreter: &mut Interpreter<WIRE>,
@@ -345,8 +359,8 @@ Instance run_returndataload
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.system.returndataload [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -363,18 +377,18 @@ Proof.
   destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
   destruct (Impl_From_Array_u8_N_for_FixedBytes_N.run {| Integer.value := 32 |}).
   destruct (Impl_IndexMut_for_Array.run
-    U8.t
-    (RangeTo.t Usize.t)
+    u8
+    (RangeTo.t usize)
     {| Integer.value := 32 |}
-    (list U8.t)
+    (list u8)
   ). {
     apply Impl_IndexMut_for_Slice.run.
     apply Impl_SliceIndex_for_RangeTo.run.
   }
   destruct (Impl_Index_for_Slice.run
-    U8.t
-    (Range.t Usize.t)
-    (Index_Output := list U8.t)
+    u8
+    (Range.t usize)
+    (Index_Output := list u8)
   ). {
     apply Impl_SliceIndex_for_Range.run.
   }
@@ -384,7 +398,8 @@ Proof.
   }
   run_symbolic.
 Defined.
-
+Global Opaque run_returndataload.
+*)
 (*
 pub fn gas<WIRE: InterpreterTypes, H: Host + ?Sized>(
     interpreter: &mut Interpreter<WIRE>,
@@ -395,8 +410,8 @@ Instance run_gas
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.system.gas [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
@@ -407,3 +422,4 @@ Proof.
   destruct run_LoopControl_for_Control.
   run_symbolic.
 Defined.
+Global Opaque run_gas.

@@ -9,39 +9,51 @@ Require Import core.clone.
     }
 *)
 Module Clone.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("core::clone::Clone", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "core::clone::Clone";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_clone (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "clone" (fun method =>
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-      Run.Trait method [] [] [ φ self ] Self
-    ).
+  Class Method_clone (Self : Set) `{Link Self} : Set := {
+    clone : PolymorphicFunction.t;
+    clone_is_method :: IsTraitMethod.C (trait Self) "clone" clone;
+    run_clone (self : '& Self) :: Run.Trait clone [] [] [ φ self ] Self;
+  }.
 
   Class Run (Self : Set) `{Link Self} : Set := {
-    clone : Run_clone Self;
+    method_clone :: Method_clone Self;
     (* TODO: add [clone_from] *)
   }.
 End Clone.
+Export (hints) Clone.
 
 Module Impl_Clone_for_bool.
   Definition Self : Set :=
     bool.
 
-  Definition run_clone : clone.Clone.Run_clone bool.
+  Instance run_clone (self : '& bool) :
+    Run.Trait clone.clone.impls.Impl_core_clone_Clone_for_bool.clone
+      [] [] [ φ self ]
+      bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+
+  Instance method_clone : Clone.Method_clone bool.
   Proof.
     eexists.
-    { eapply IsTraitMethod.Defined.
+    { constructor.
+      eapply IsTraitMethod.Defined.
       { apply clone.impls.Impl_core_clone_Clone_for_bool.Implements. }
       { reflexivity. }
     }
-    { constructor.
-      run_symbolic.
-    }
+    { typeclasses eauto. }
   Defined.
 
-
-  Instance run : clone.Clone.Run bool := {
-    Clone.clone := run_clone;
-  }.
+  Instance run : Clone.Run bool := {}.
 End Impl_Clone_for_bool.
+Export (hints) Impl_Clone_for_bool.

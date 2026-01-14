@@ -1,5 +1,6 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
+Require Import alloc.links.alloc.
 Require Import alloc.links.boxed.
 Require Import alloc.links.slice.
 Require Import alloy_primitives.bits.links.address.
@@ -16,6 +17,7 @@ Require Import core.links.panicking.
 Require Import core.links.result.
 Require Import core.num.links.mod.
 Require Import core.ops.links.control_flow.
+Require Import core.ops.links.deref.
 Require Import core.ops.links.range.
 Require Import core.slice.links.iter.
 Require Import revm.revm_bytecode.links.eof.
@@ -27,7 +29,9 @@ Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_interpreter.interpreter_action.links.eof_create_inputs.
 Require Import revm.revm_interpreter.interpreter.links.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
+Require Import revm.revm_interpreter.links.interpreter_action.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.instructions.contract.links.call_helpers.
 Require Import revm.revm_interpreter.instructions.contract.
@@ -48,26 +52,19 @@ Instance run_eofcreate
   {WIRE H : Set} `{Link WIRE} `{Link H}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (_host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (_host : '&mut H) :
   Run.Trait
     instructions.contract.eofcreate [] [ Φ WIRE; Φ H ] [ φ interpreter; φ _host ]
     unit.
 Proof.
   constructor.
   destruct run_InterpreterTypes_for_WIRE eqn:?.
-  destruct run_StackTrait_for_Stack.
   destruct run_MemoryTrait_for_Memory.
-  destruct run_LoopControl_for_Control.
-  destruct run_Immediates_for_Bytecode.
-  destruct run_Jumps_for_Bytecode.
-  destruct run_EofContainer_for_Bytecode.
-  destruct run_InputsTrait_for_Input.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
   destruct Impl_Clone_for_Bytes.run.
-  destruct Impl_Default_for_Bytes.run.
   destruct links.mod.Impl_Deref_for_Bytes.run.
   destruct (Impl_Into_for_From_T.run Impl_From_Vec_u8_for_Bytes.run).
   destruct run_Deref_for_Synthetic.
   run_symbolic.
 Defined.
+Global Opaque run_eofcreate.

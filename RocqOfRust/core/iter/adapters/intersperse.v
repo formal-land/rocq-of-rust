@@ -2691,7 +2691,7 @@ Module iter.
                                 [
                                   fun γ =>
                                     ltac:(M.monadic
-                                      (let accum := M.copy (| B, γ |) in
+                                      (let~ accum : B := M.read (| γ |) in
                                       M.match_operator (|
                                         B,
                                         M.alloc (|

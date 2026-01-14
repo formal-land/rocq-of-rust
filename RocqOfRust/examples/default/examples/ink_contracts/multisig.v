@@ -1766,14 +1766,12 @@ Module Impl_multisig_Multisig.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let iter :=
-                            M.copy (|
+                          (let~ iter :
                               Ty.apply
                                 (Ty.path "core::slice::iter::Iter")
                                 []
-                                [ Ty.path "multisig::AccountId" ],
-                              γ
-                            |) in
+                                [ Ty.path "multisig::AccountId" ] :=
+                            M.read (| γ |) in
                           M.read (|
                             M.loop (|
                               Ty.tuple [],
@@ -2980,11 +2978,9 @@ Module Impl_multisig_Multisig.
                 [
                   fun γ =>
                     ltac:(M.monadic
-                      (let iter :=
-                        M.copy (|
-                          Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u32" ],
-                          γ
-                        |) in
+                      (let~ iter :
+                          Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u32" ] :=
+                        M.read (| γ |) in
                       M.read (|
                         M.loop (|
                           Ty.tuple [],
@@ -4749,14 +4745,12 @@ Module Impl_multisig_Multisig.
                                 [
                                   fun γ =>
                                     ltac:(M.monadic
-                                      (let iter :=
-                                        M.copy (|
+                                      (let~ iter :
                                           Ty.apply
                                             (Ty.path "core::slice::iter::Iter")
                                             []
-                                            [ Ty.path "multisig::AccountId" ],
-                                          γ
-                                        |) in
+                                            [ Ty.path "multisig::AccountId" ] :=
+                                        M.read (| γ |) in
                                       M.read (|
                                         M.loop (|
                                           Ty.tuple [],

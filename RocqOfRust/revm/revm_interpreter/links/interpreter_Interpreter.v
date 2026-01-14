@@ -88,7 +88,7 @@ Module Interpreter.
     Lemma get_bytecode_is_valid
         {WIRE : Set} `{Link WIRE}
         {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types} :
-      SubPointer.Runner.Valid.t get_bytecode.
+      SubPointer.Runner.Valid.t (get_bytecode (WIRE := WIRE) (WIRE_types := WIRE_types)).
     Proof. now constructor. Qed.
     Smpl Add apply get_bytecode_is_valid : run_sub_pointer.
 
@@ -106,7 +106,7 @@ Module Interpreter.
     Lemma get_stack_is_valid
         {WIRE : Set} `{Link WIRE}
         {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types} :
-      SubPointer.Runner.Valid.t get_stack.
+      SubPointer.Runner.Valid.t (get_stack (WIRE := WIRE) (WIRE_types := WIRE_types)).
     Proof. now constructor. Qed.
     Smpl Add apply get_stack_is_valid : run_sub_pointer.
 
@@ -124,7 +124,7 @@ Module Interpreter.
     Lemma get_return_data_is_valid
         {WIRE : Set} `{Link WIRE}
         {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types} :
-      SubPointer.Runner.Valid.t get_return_data.
+      SubPointer.Runner.Valid.t (get_return_data (WIRE := WIRE) (WIRE_types := WIRE_types)).
     Proof. now constructor. Qed.
     Smpl Add apply get_return_data_is_valid : run_sub_pointer.
 
@@ -142,7 +142,7 @@ Module Interpreter.
     Lemma get_memory_is_valid
         {WIRE : Set} `{Link WIRE}
         {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types} :
-      SubPointer.Runner.Valid.t get_memory.
+      SubPointer.Runner.Valid.t (get_memory (WIRE := WIRE) (WIRE_types := WIRE_types)).
     Proof. now constructor. Qed.
     Smpl Add apply get_memory_is_valid : run_sub_pointer.
 
@@ -160,7 +160,7 @@ Module Interpreter.
     Lemma get_input_is_valid
         {WIRE : Set} `{Link WIRE}
         {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types} :
-      SubPointer.Runner.Valid.t get_input.
+      SubPointer.Runner.Valid.t (get_input (WIRE := WIRE) (WIRE_types := WIRE_types)).
     Proof. now constructor. Qed.
     Smpl Add apply get_input_is_valid : run_sub_pointer.
 
@@ -178,7 +178,7 @@ Module Interpreter.
     Lemma get_sub_routine_is_valid
         {WIRE : Set} `{Link WIRE}
         {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types} :
-      SubPointer.Runner.Valid.t get_sub_routine.
+      SubPointer.Runner.Valid.t (get_sub_routine (WIRE := WIRE) (WIRE_types := WIRE_types)).
     Proof. now constructor. Qed.
     Smpl Add apply get_sub_routine_is_valid : run_sub_pointer.
 
@@ -196,7 +196,7 @@ Module Interpreter.
     Lemma get_control_is_valid
         {WIRE : Set} `{Link WIRE}
         {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types} :
-      SubPointer.Runner.Valid.t get_control.
+      SubPointer.Runner.Valid.t (get_control (WIRE := WIRE) (WIRE_types := WIRE_types)).
     Proof. now constructor. Qed.
     Smpl Add apply get_control_is_valid : run_sub_pointer.
 
@@ -214,7 +214,7 @@ Module Interpreter.
     Lemma get_runtime_flag_is_valid
         {WIRE : Set} `{Link WIRE}
         {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types} :
-      SubPointer.Runner.Valid.t get_runtime_flag.
+      SubPointer.Runner.Valid.t (get_runtime_flag (WIRE := WIRE) (WIRE_types := WIRE_types)).
     Proof. now constructor. Qed.
     Smpl Add apply get_runtime_flag_is_valid : run_sub_pointer.
 
@@ -232,7 +232,7 @@ Module Interpreter.
     Lemma get_extend_is_valid
         {WIRE : Set} `{Link WIRE}
         {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types} :
-      SubPointer.Runner.Valid.t get_extend.
+      SubPointer.Runner.Valid.t (get_extend (WIRE := WIRE) (WIRE_types := WIRE_types)).
     Proof. now constructor. Qed.
     Smpl Add apply get_extend_is_valid : run_sub_pointer.
   End SubPointer.

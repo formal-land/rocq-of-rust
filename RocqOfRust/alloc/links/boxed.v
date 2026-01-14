@@ -5,13 +5,13 @@ Require Import alloc.links.alloc.
 
 Module Box.
   Record t {T A : Set} : Set := {
-    value : list T;
+    value : T;
   }.
   Arguments t : clear implicits.
 
   Parameter to_value : forall {T A : Set}, t T A -> Value.t.
 
-  Global Instance IsLink (T A : Set) `{Link T} `{Link A} : Link (t T A) := {
+  Instance IsLink (T A : Set) `{Link T} `{Link A} : Link (t T A) := {
     Φ :=
       Ty.apply (Ty.path "alloc::boxed::Box") [] [ Φ T; Φ A ];
     φ := to_value;
@@ -28,12 +28,13 @@ Module Box.
   Defined.
   Smpl Add eapply of_ty : of_ty.
 End Box.
+Export (hints) Box.
 
 Module Impl_Box.
   Definition Self (T : Set) : Set :=
     Box.t T Global.t.
 
-  Instance run_new (T : Set) `{Link T} (x : T) :
+  Instance run_new {T : Set} `{Link T} (x : T) :
     Run.Trait
       (boxed.Impl_alloc_boxed_Box_T_alloc_alloc_Global.new (Φ T)) [] [] [ φ x ]
       (Self T).
@@ -41,5 +42,6 @@ Module Impl_Box.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_new.
 End Impl_Box.
-Export Impl_Box.
+Export (hints) Impl_Box.

@@ -1,6 +1,7 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import alloy_primitives.bytes.links.mod.
+Require Import core.links.array.
 Require Import revm_interpreter.interpreter.links.shared_memory.
 Require Import revm_interpreter.interpreter.links.stack.
 Require Import revm_interpreter.links.gas.
@@ -11,6 +12,7 @@ Require Import revm_interpreter.links.table.
 Require Import revm_interpreter.interpreter.
 
 Require Export revm.revm_interpreter.links.interpreter_Interpreter.
+Require Export revm.revm_interpreter.links.interpreter_InterpreterResult.
 
 (* impl<IW: InterpreterTypes> Interpreter<IW> { *)
 Module Impl_Interpreter.
@@ -31,9 +33,9 @@ Module Impl_Interpreter.
       {IW_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks IW_types}
       {run_InterpreterTypes_for_IW : InterpreterTypes.Run IW IW_types}
       {run_CustomInstruction_for_FN : CustomInstruction.Run FN IW IW_types H}
-      (self : Ref.t Pointer.Kind.MutRef (Self IW run_InterpreterTypes_for_IW))
-      (instruction_table : Ref.t Pointer.Kind.Ref (array.t FN {| Integer.value := 256 |}))
-      (host : Ref.t Pointer.Kind.MutRef H) :
+      (self : '&mut (Self IW run_InterpreterTypes_for_IW))
+      (instruction_table : '& (array.t FN {| Integer.value := 256 |}))
+      (host : '&mut H) :
     Run.Trait
       (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.step (Φ IW))
         []
@@ -42,11 +44,10 @@ Module Impl_Interpreter.
       unit.
   Proof.
     constructor.
-    destruct run_InterpreterTypes_for_IW.
-    destruct run_Jumps_for_Bytecode.
     destruct run_CustomInstruction_for_FN.
     run_symbolic.
   Defined.
+  Global Opaque run_step.
 
   (*
   pub fn run<FN, H: Host>(
@@ -62,9 +63,9 @@ Module Impl_Interpreter.
       {IW_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks IW_types}
       {run_InterpreterTypes_for_IW : InterpreterTypes.Run IW IW_types}
       {run_CustomInstruction_for_FN : CustomInstruction.Run FN IW IW_types H}
-      (self : Ref.t Pointer.Kind.MutRef (Self IW run_InterpreterTypes_for_IW))
-      (instruction_table : Ref.t Pointer.Kind.Ref (array.t FN {| Integer.value := 256 |}))
-      (host : Ref.t Pointer.Kind.MutRef H) :
+      (self : '&mut (Self IW run_InterpreterTypes_for_IW))
+      (instruction_table : '& (array.t FN {| Integer.value := 256 |}))
+      (host : '&mut H) :
     Run.Trait
       (interpreter.Impl_revm_interpreter_interpreter_Interpreter_IW.run (Φ IW))
         []
@@ -79,4 +80,6 @@ Module Impl_Interpreter.
     (* now eapply run_step.
   Defined. *)
   Admitted.
+  Global Opaque run_run.
 End Impl_Interpreter.
+Export (hints) Impl_Interpreter.

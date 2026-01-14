@@ -90,7 +90,7 @@ eval $(opam env --switch=rocq-of-rust)
 
 Add the repository with Rocq packages:
 ```sh
-opam repo add rocq-released https://rocq.inria.fr/opam/released
+opam repo add rocq-released https://rocq-prover.org/opam/released
 ```
 
 Go to the directory with Rocq files:
@@ -117,8 +117,7 @@ follow the belows:
 1. Install WSL 2 by [the official tutorial](https://learn.microsoft.com/en-us/windows/wsl/install) with a proper Linux distribution
 2. Install [Rocq](https://rocq.inria.fr/download) in WSL 2
 3. Install [VSCode](https://code.visualstudio.com/), its [WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) 
-extension and its [Rocq](https://marketplace.visualstudio.com/items?itemName=ruoz.rocq) 
-extension
+extension and a Rocq extension of your choice.
 4. Follow the [official guide](https://code.visualstudio.com/docs/remote/wsl) 
 to run the Rocq project in WSL environment. Specifically:
    1. With an WSL terminal, enter `code .` at the project root that 

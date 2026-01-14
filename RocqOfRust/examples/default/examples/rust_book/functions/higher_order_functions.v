@@ -144,11 +144,9 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                   [
                     fun γ =>
                       ltac:(M.monadic
-                        (let iter :=
-                          M.copy (|
-                            Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ Ty.path "u32" ],
-                            γ
-                          |) in
+                        (let~ iter :
+                            Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ Ty.path "u32" ] :=
+                          M.read (| γ |) in
                         M.read (|
                           M.loop (|
                             Ty.tuple [],

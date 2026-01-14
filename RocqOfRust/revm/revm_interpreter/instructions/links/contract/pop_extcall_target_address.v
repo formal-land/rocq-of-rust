@@ -29,6 +29,7 @@ Require Import revm.revm_interpreter.interpreter_action.links.call_inputs.
 Require Import revm.revm_interpreter.interpreter_action.links.eof_create_inputs.
 Require Import revm.revm_interpreter.interpreter.links.shared_memory.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.instructions.contract.links.call_helpers.
@@ -49,7 +50,7 @@ Instance run_pop_extcall_target_address
   {WIRE : Set} `{Link WIRE}
   {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types)) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types)) :
   Run.Trait
     instructions.contract.pop_extcall_target_address [] [ Φ WIRE ] [ φ interpreter ]
     (option Address.t).
@@ -59,23 +60,24 @@ Proof.
   destruct run_StackTrait_for_Stack.
   destruct run_LoopControl_for_Control.
   destruct Impl_From_U256_for_FixedBytes_32.run.
-  destruct (Impl_Iterator_for_Iter.run U8.t).
-  destruct (Impl_Index_for_FixedBytes_N.run {| Integer.value := 32 |} (RangeTo.t Usize.t)).
+  destruct (Impl_Iterator_for_Iter.run u8).
+  destruct (Impl_Index_for_FixedBytes_N.run {| Integer.value := 32 |} (RangeTo.t usize)).
   run_symbolic.
   match goal with
-  | |- context[M.closure ?closure] =>
+  | |- context[Value.Closure (existS (_, _) ?closure)] =>
     set (any_callback := closure)
   end.
   assert (run_any_callback :
-    forall (i : Ref.t Pointer.Kind.Ref U8.t),
+    forall (i : '& u8),
     Run.Trait (fun _ _ => any_callback) [] [] [φ i] bool
   ). {
     intros.
     constructor.
     run_symbolic.
   }
-  change (M.closure any_callback) with (φ (Function1.of_run run_any_callback)).
-  generalize any; clear; intros [? ? run_any]; cbn in *.
+  progress change (Value.Closure _) with (φ (Function1.of_run run_any_callback)).
+  destruct method_any as [? ? run_any]; cbn in *.
   epose proof (run_any' := run_any _ _ _ (Function1.of_run run_any_callback) _ _ _).
   typeclasses eauto.
 Defined.
+Global Opaque run_pop_extcall_target_address.

@@ -1230,14 +1230,12 @@ Module absint.
                                               [
                                                 fun γ =>
                                                   ltac:(M.monadic
-                                                    (let iter :=
-                                                      M.copy (|
+                                                    (let~ iter :
                                                         Ty.apply
                                                           (Ty.path "core::slice::iter::Iter")
                                                           []
-                                                          [ Ty.path "u16" ],
-                                                        γ
-                                                      |) in
+                                                          [ Ty.path "u16" ] :=
+                                                      M.read (| γ |) in
                                                     M.read (|
                                                       M.loop (|
                                                         Ty.tuple [],
@@ -2821,8 +2819,7 @@ Module absint.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "alloc::boxed::Box")
                                       []
@@ -2830,9 +2827,8 @@ Module absint.
                                         Ty.dyn
                                           [ ("core::iter::traits::iterator::Iterator::Trait", []) ];
                                         Ty.path "alloc::alloc::Global"
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],

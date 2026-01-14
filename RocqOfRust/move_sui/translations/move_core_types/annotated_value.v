@@ -9234,8 +9234,7 @@ Module annotated_value.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                       []
@@ -9247,9 +9246,8 @@ Module annotated_value.
                                             Ty.path
                                               "move_core_types::annotated_value::MoveFieldLayout"
                                           ]
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -11315,17 +11313,15 @@ Module annotated_value.
                                   [
                                     fun γ =>
                                       ltac:(M.monadic
-                                        (let iter :=
-                                          M.copy (|
+                                        (let~ iter :
                                             Ty.apply
                                               (Ty.path "core::slice::iter::Iter")
                                               []
                                               [
                                                 Ty.path
                                                   "move_core_types::annotated_value::MoveValue"
-                                              ],
-                                            γ
-                                          |) in
+                                              ] :=
+                                          M.read (| γ |) in
                                         M.read (|
                                           M.loop (|
                                             Ty.tuple [],
@@ -12074,8 +12070,7 @@ Module annotated_value.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
@@ -12085,9 +12080,8 @@ Module annotated_value.
                                             Ty.path "move_core_types::identifier::Identifier";
                                             Ty.path "move_core_types::annotated_value::MoveValue"
                                           ]
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -15288,15 +15282,13 @@ Module annotated_value.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
                                       [ Ty.path "move_core_types::annotated_value::MoveFieldLayout"
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -17082,17 +17074,15 @@ Module annotated_value.
                                   [
                                     fun γ =>
                                       ltac:(M.monadic
-                                        (let iter :=
-                                          M.copy (|
+                                        (let~ iter :
                                             Ty.apply
                                               (Ty.path "core::slice::iter::Iter")
                                               []
                                               [
                                                 Ty.path
                                                   "move_core_types::annotated_value::MoveValue"
-                                              ],
-                                            γ
-                                          |) in
+                                              ] :=
+                                          M.read (| γ |) in
                                         M.read (|
                                           M.loop (|
                                             Ty.tuple [],
@@ -17756,8 +17746,7 @@ Module annotated_value.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "core::slice::iter::Iter")
                                       []
@@ -17767,9 +17756,8 @@ Module annotated_value.
                                             Ty.path "move_core_types::identifier::Identifier";
                                             Ty.path "move_core_types::annotated_value::MoveValue"
                                           ]
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],

@@ -9,46 +9,53 @@ Require Import core.default.
     }
 *)
 Module Default.
-  Definition trait (Self : Set) `{Link Self} : TraitMethod.Header.t :=
-    ("core::default::Default", [], [], Φ Self).
+  Definition trait (Self : Set) `{Link Self} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "core::default::Default";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
-  Definition Run_default (Self : Set) `{Link Self} : Set :=
-    TraitMethod.C (trait Self) "default" (fun method =>
-      Run.Trait method [] [] [] Self
-    ).
+  Class Method_default (Self : Set) `{Link Self} : Set := {
+    default : PolymorphicFunction.t;
+    default_is_method :: IsTraitMethod.C (trait Self) "default" default;
+    run_default :: Run.Trait default [] [] [] Self;
+  }.
 
   Class Run (Self : Set) `{Link Self} : Set := {
-    default : Run_default Self;
+    method_default :: Method_default Self;
   }.
 End Default.
+Export (hints) Default.
 
 Module Impl_Default_for_unit.
   Definition Self : Set := unit.
 
-  Definition run_default : Default.Run_default Self.
+  Instance method_default : Default.Method_default Self.
   Proof.
     eexists.
-    { eapply IsTraitMethod.Defined.
+    { constructor.
+      eapply IsTraitMethod.Defined.
       { apply default.Impl_core_default_Default_for_Tuple_.Implements. }
       { reflexivity. }
     }
     { constructor.
       run_symbolic.
-  }
+    }
   Defined.
 
-  Instance run : Default.Run Self := {
-    Default.default := run_default;
-  }.
+  Instance run : Default.Run Self := {}.
 End Impl_Default_for_unit.
 
 Module Impl_Default_for_bool.
   Definition Self : Set := bool.
 
-  Definition run_default : Default.Run_default Self.
+  Instance method_default : Default.Method_default Self.
   Proof.
     eexists.
-    { eapply IsTraitMethod.Defined.
+    { constructor.
+      eapply IsTraitMethod.Defined.
       { apply default.Impl_core_default_Default_for_bool.Implements. }
       { reflexivity. }
     }
@@ -57,16 +64,14 @@ Module Impl_Default_for_bool.
     }
   Defined.
 
-  Instance run : Default.Run Self := {
-    Default.default := run_default;
-  }.
+  Instance run : Default.Run Self := {}.
 End Impl_Default_for_bool.
-Export Impl_Default_for_bool.
+Export (hints) Impl_Default_for_bool.
 
 Module Impl_Default_for_char.
   (* TODO *)
 End Impl_Default_for_char.
-Export Impl_Default_for_char.
+Export (hints) Impl_Default_for_char.
 
 Module Impl_Default_for_integer.
   Definition Self (kind : IntegerKind.t) : Set :=
@@ -109,10 +114,11 @@ Module Impl_Default_for_integer.
     | IntegerKind.Usize => default.Impl_core_default_Default_for_usize.Implements
     end.
 
-  Definition run_default (kind : IntegerKind.t) : Default.Run_default (Self kind).
+  Instance method_default (kind : IntegerKind.t) : Default.Method_default (Self kind).
   Proof.
     eexists.
-    { eapply IsTraitMethod.Defined.
+    { constructor.
+      eapply IsTraitMethod.Defined.
       { apply implements_of_integer_kind. }
       { reflexivity. }
     }
@@ -121,8 +127,6 @@ Module Impl_Default_for_integer.
     }
   Defined.
 
-  Instance run (kind : IntegerKind.t) : Default.Run (Self kind) := {
-    Default.default := run_default kind;
-  }.
+  Instance run (kind : IntegerKind.t) : Default.Run (Self kind) := {}.
 End Impl_Default_for_integer.
-Export Impl_Default_for_integer.
+Export (hints) Impl_Default_for_integer.

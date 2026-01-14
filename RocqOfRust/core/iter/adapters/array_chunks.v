@@ -2345,8 +2345,7 @@ Module iter.
                                           "core::result::Result::Ok",
                                           0
                                         |) in
-                                      let chunk :=
-                                        M.copy (|
+                                      let~ chunk :
                                           Ty.apply
                                             (Ty.path "array")
                                             [ N ]
@@ -2357,9 +2356,8 @@ Module iter.
                                                 []
                                                 I
                                                 "Item"
-                                            ],
-                                          γ0_0
-                                        |) in
+                                            ] :=
+                                        M.read (| γ0_0 |) in
                                       M.read (|
                                         let~ _ : Ty.tuple [] :=
                                           M.call_closure (|

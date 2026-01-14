@@ -519,14 +519,12 @@ Module str.
                                   [
                                     fun γ =>
                                       ltac:(M.monadic
-                                        (let iter :=
-                                          M.copy (|
+                                        (let~ iter :
                                             Ty.apply
                                               (Ty.path "core::slice::iter::Chunks")
                                               []
-                                              [ Ty.path "usize" ],
-                                            γ
-                                          |) in
+                                              [ Ty.path "usize" ] :=
+                                          M.read (| γ |) in
                                         M.read (|
                                           M.loop (|
                                             Ty.tuple [],
@@ -847,8 +845,7 @@ Module str.
                                                                                 [
                                                                                   fun γ =>
                                                                                     ltac:(M.monadic
-                                                                                      (let iter :=
-                                                                                        M.copy (|
+                                                                                      (let~ iter :
                                                                                           Ty.apply
                                                                                             (Ty.path
                                                                                               "core::slice::iter::Iter")
@@ -866,7 +863,8 @@ Module str.
                                                                                                   Ty.path
                                                                                                     "usize"
                                                                                                 ]
-                                                                                            ],
+                                                                                            ] :=
+                                                                                        M.read (|
                                                                                           γ
                                                                                         |) in
                                                                                       M.read (|
@@ -1081,9 +1079,8 @@ Module str.
                                                                                                                 fun
                                                                                                                     γ =>
                                                                                                                   ltac:(M.monadic
-                                                                                                                    (let
-                                                                                                                          iter :=
-                                                                                                                      M.copy (|
+                                                                                                                    (let~
+                                                                                                                          iter :
                                                                                                                         Ty.apply
                                                                                                                           (Ty.path
                                                                                                                             "core::slice::iter::Iter")
@@ -1091,7 +1088,8 @@ Module str.
                                                                                                                           [
                                                                                                                             Ty.path
                                                                                                                               "usize"
-                                                                                                                          ],
+                                                                                                                          ] :=
+                                                                                                                      M.read (|
                                                                                                                         γ
                                                                                                                       |) in
                                                                                                                     M.read (|
@@ -1425,9 +1423,8 @@ Module str.
                                                                                                 fun
                                                                                                     γ =>
                                                                                                   ltac:(M.monadic
-                                                                                                    (let
-                                                                                                          iter :=
-                                                                                                      M.copy (|
+                                                                                                    (let~
+                                                                                                          iter :
                                                                                                         Ty.apply
                                                                                                           (Ty.path
                                                                                                             "core::slice::iter::Iter")
@@ -1435,7 +1432,8 @@ Module str.
                                                                                                           [
                                                                                                             Ty.path
                                                                                                               "usize"
-                                                                                                          ],
+                                                                                                          ] :=
+                                                                                                      M.read (|
                                                                                                         γ
                                                                                                       |) in
                                                                                                     M.read (|

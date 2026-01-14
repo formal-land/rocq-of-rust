@@ -5,7 +5,7 @@ Require Import plonky3.commit_539bbc84.air.links.air.
 
 (* pub type BusIndex = u16; *)
 Module BusIndex.
-  Definition t : Set := U16.t.
+  Definition t : Set := u16.
 End BusIndex.
 
 (*
@@ -31,7 +31,7 @@ Module InteractionBuilder.
       (types : AirBuilder.AssociatedTypes.t) `{AirBuilder.AssociatedTypes.AreLinks types} :
       Set :=
     TraitMethod.C (trait Self) "push_interaction" (fun method =>
-      forall (self : Ref.t Pointer.Kind.MutRef Self),
+      forall (self : '&mut Self),
       Run.Trait method [] [] [ φ self ] types.(AirBuilder.AssociatedTypes.Expr)
     ). *)
 

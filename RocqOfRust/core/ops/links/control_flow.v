@@ -14,7 +14,7 @@ Module ControlFlow.
   | Break (b : B).
   Arguments t : clear implicits.
 
-  Global Instance IsLink (B C : Set) `{Link B} `{Link C} : Link (t B C) := {
+  Instance IsLink (B C : Set) `{Link B} `{Link C} : Link (t B C) := {
     Φ := Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [Φ B; Φ C];
     φ x := match x with
     | Continue c => Value.StructTuple "core::ops::control_flow::ControlFlow::Continue" [] [Φ B; Φ C] [φ c]
@@ -129,3 +129,4 @@ Module ControlFlow.
     Smpl Add apply get_Break_0_is_valid : run_sub_pointer.
   End SubPointer.
 End ControlFlow.
+Export (hints) ControlFlow.

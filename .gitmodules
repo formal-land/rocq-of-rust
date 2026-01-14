@@ -22,3 +22,9 @@
 [submodule "third-party/anza-xyz-pinocchio"]
 	path = third-party/anza-xyz-pinocchio
 	url = https://github.com/anza-xyz/pinocchio.git
+[submodule "third-party/solana-program-token"]
+	path = third-party/solana-program-token
+	url = https://github.com/solana-program/token.git
+[submodule "third-party/anza-xyz-solana-sdk"]
+	path = third-party/anza-xyz-solana-sdk
+	url = https://github.com/anza-xyz/solana-sdk.git

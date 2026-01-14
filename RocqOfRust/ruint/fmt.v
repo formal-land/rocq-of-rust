@@ -395,14 +395,12 @@ Module fmt.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (|
+                                  (let~ iter :
                                       Ty.apply
                                         (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                         []
-                                        [ Ty.associated_unknown ],
-                                      γ
-                                    |) in
+                                        [ Ty.associated_unknown ] :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],
@@ -1229,14 +1227,12 @@ Module fmt.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (|
+                                  (let~ iter :
                                       Ty.apply
                                         (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                         []
-                                        [ Ty.associated_unknown ],
-                                      γ
-                                    |) in
+                                        [ Ty.associated_unknown ] :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],
@@ -2005,14 +2001,12 @@ Module fmt.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (|
+                                  (let~ iter :
                                       Ty.apply
                                         (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                         []
-                                        [ Ty.associated_unknown ],
-                                      γ
-                                    |) in
+                                        [ Ty.associated_unknown ] :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],
@@ -2781,14 +2775,12 @@ Module fmt.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (|
+                                  (let~ iter :
                                       Ty.apply
                                         (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                         []
-                                        [ Ty.associated_unknown ],
-                                      γ
-                                    |) in
+                                        [ Ty.associated_unknown ] :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],
@@ -3557,14 +3549,12 @@ Module fmt.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (|
+                                  (let~ iter :
                                       Ty.apply
                                         (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                         []
-                                        [ Ty.associated_unknown ],
-                                      γ
-                                    |) in
+                                        [ Ty.associated_unknown ] :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],

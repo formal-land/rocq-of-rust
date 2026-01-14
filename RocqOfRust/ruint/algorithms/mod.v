@@ -600,8 +600,7 @@ Module algorithms.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::iter::adapters::rev::Rev")
                                     []
@@ -610,9 +609,8 @@ Module algorithms.
                                         (Ty.path "core::ops::range::Range")
                                         []
                                         [ Ty.path "usize" ]
-                                    ],
-                                  γ
-                                |) in
+                                    ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],

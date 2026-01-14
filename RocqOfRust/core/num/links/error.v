@@ -8,7 +8,7 @@ Module TryFromIntError.
 
   Parameter to_value : t -> Value.t.
 
-  Global Instance IsLink : Link t := {
+  Instance IsLink : Link t := {
     Φ := Ty.path "core::num::error::TryFromIntError";
     φ := to_value;
   }.
@@ -17,3 +17,4 @@ Module TryFromIntError.
   Proof. eapply OfTy.Make with (A := t); reflexivity. Defined.
   Smpl Add apply of_ty : of_ty.
 End TryFromIntError.
+Export (hints) TryFromIntError.

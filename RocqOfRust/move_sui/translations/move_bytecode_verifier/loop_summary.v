@@ -3142,17 +3142,15 @@ Module loop_summary.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
+                                (let~ iter :
                                     Ty.apply
                                       (Ty.path "alloc::vec::into_iter::IntoIter")
                                       []
                                       [
                                         Ty.path "move_bytecode_verifier::loop_summary::NodeId";
                                         Ty.path "alloc::alloc::Global"
-                                      ],
-                                    γ
-                                  |) in
+                                      ] :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],
@@ -3564,14 +3562,12 @@ Module loop_summary.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter :=
-                              M.copy (|
+                            (let~ iter :
                                 Ty.apply
                                   (Ty.path "alloc::collections::btree::set::Iter")
                                   []
-                                  [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ],
-                                γ
-                              |) in
+                                  [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ] :=
+                              M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],

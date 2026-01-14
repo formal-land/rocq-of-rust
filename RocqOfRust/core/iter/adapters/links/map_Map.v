@@ -7,7 +7,7 @@ Module Map.
 
   Parameter to_value : forall (I F : Set), t I F -> Value.t.
 
-  Global Instance IsLink (I F : Set) `{Link I} `{Link F}: Link (t I F) := {
+  Instance IsLink (I F : Set) `{Link I} `{Link F}: Link (t I F) := {
     Φ := Ty.apply (Ty.path "core::iter::adapters::map::Map") [] [Φ I; Φ F];
     φ := to_value I F;
   }.
@@ -23,3 +23,4 @@ Module Map.
   Defined.
   Smpl Add unshelve eapply of_ty : of_ty.
 End Map.
+Export (hints) Map.

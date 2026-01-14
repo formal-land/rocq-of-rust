@@ -1,0 +1,19 @@
+{# Template for Ordering links file #}
+Require Import RocqOfRust.RocqOfRust.
+Require Import links.M.
+
+(*
+    pub enum Ordering {
+        Less = -1,
+        Equal = 0,
+        Greater = 1,
+    }
+*)
+Module Ordering.
+{{ macros.enum_body("core::cmp::Ordering", [
+  ("Less", []),
+  ("Equal", []),
+  ("Greater", []),
+]) }}
+End Ordering.
+Export (hints) Ordering.

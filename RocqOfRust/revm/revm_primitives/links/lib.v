@@ -9,8 +9,9 @@ Require Import revm.revm_primitives.lib.
 Instance run_KECCAK_EMPTY :
   Run.Trait
     value_KECCAK_EMPTY [] [] []
-    (Ref.t Pointer.Kind.Raw aliases.B256.t).
+    ('* aliases.B256.t).
 Proof.
   constructor.
   run_symbolic.
 Admitted.
+Global Opaque run_KECCAK_EMPTY.

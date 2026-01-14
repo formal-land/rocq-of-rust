@@ -9436,14 +9436,12 @@ Module rc.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter :=
-                              M.copy (|
+                            (let~ iter :
                                 Ty.apply
                                   (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                   []
-                                  [ impl_Iterator_Item___T_ ],
-                                γ
-                              |) in
+                                  [ impl_Iterator_Item___T_ ] :=
+                              M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],

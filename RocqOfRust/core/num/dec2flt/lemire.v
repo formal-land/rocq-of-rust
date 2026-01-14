@@ -1367,8 +1367,8 @@ Module num.
                               ltac:(M.monadic
                                 (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
                                 let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                                let first_lo := M.copy (| Ty.path "u64", γ0_0 |) in
-                                let first_hi := M.copy (| Ty.path "u64", γ0_1 |) in
+                                let~ first_lo : Ty.path "u64" := M.read (| γ0_0 |) in
+                                let~ first_hi : Ty.path "u64" := M.read (| γ0_1 |) in
                                 M.read (|
                                   let~ _ : Ty.tuple [] :=
                                     M.match_operator (|

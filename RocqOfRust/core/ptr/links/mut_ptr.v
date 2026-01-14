@@ -5,7 +5,7 @@ Require Import core.links.option.
 Require Import core.mem.links.maybe_uninit.
 
 Module Impl_pointer_mut_T.
-  Definition Self (T : Set) `{Link T} : Set := Ref.t Pointer.Kind.MutPointer T.
+  Definition Self (T : Set) `{Link T} : Set := '*mut T.
 
   (* pub const fn is_null(self) -> bool *)
   Instance run_is_null
@@ -16,6 +16,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_is_null.
 
   (* pub const fn cast<U>(self) -> *mut U *)
   Instance run_cast
@@ -27,39 +28,43 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_cast.
 
   (* pub const fn with_addr(self, addr: usize) -> Self *)
   Instance run_with_addr
       (T : Set) `{Link T}
       (self : Self T)
-      (addr : Usize.t) :
+      (addr : usize) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.with_addr (Φ T)) [] [] [ φ self; φ addr ] (Self T).
   Proof.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_with_addr.
 
   (* pub const unsafe fn as_mut<'a>(self) -> Option<&'a mut T> *)
   Instance run_as_mut
       (T : Set) `{Link T}
       (self : Self T) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.as_mut (Φ T)) [] [] [ φ self ]
-      (option (Ref.t Pointer.Kind.MutRef T)).
+      (option ('&mut T)).
   Proof.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_as_mut.
 
   (* pub const unsafe fn as_uninit_mut<'a>(self) -> Option<&'a mut MaybeUninit<T>> *)
   Instance run_as_uninit_mut
       (T : Set) `{Link T}
       (self : Self T) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.as_uninit_mut (Φ T)) [] [] [ φ self ]
-      (option (Ref.t Pointer.Kind.MutRef (maybe_uninit.MaybeUninit.t T))).
+      (option ('&mut (maybe_uninit.MaybeUninit.t T))).
   Proof.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_as_uninit_mut.
 
   (* pub const fn guaranteed_eq(self, other: *mut T) -> Option<bool> *)
   Instance run_guaranteed_eq
@@ -72,6 +77,7 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_guaranteed_eq.
 
   (* pub const fn guaranteed_ne(self, other: *mut T) -> Option<bool> *)
   Instance run_guaranteed_ne
@@ -84,139 +90,152 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_guaranteed_ne.
 
   (* pub const unsafe fn offset(self, count: isize) -> *mut T *)
   Instance run_offset
       (T : Set) `{Link T}
       (self : Self T)
-      (count : Isize.t) :
+      (count : isize) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.offset (Φ T)) [] [] [ φ self; φ count ] (Self T).
   Proof.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_offset.
 
   (* pub const fn wrapping_offset(self, count: isize) -> *mut T *)
   Instance run_wrapping_offset
       (T : Set) `{Link T}
       (self : Self T)
-      (count : Isize.t) :
+      (count : isize) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.wrapping_offset (Φ T)) [] [] [ φ self; φ count ] (Self T).
   Proof.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_wrapping_offset.
 
   (* pub const fn wrapping_byte_offset(self, count: isize) -> *mut T *)
   Instance run_wrapping_byte_offset
       (T : Set) `{Link T}
       (self : Self T)
-      (count : Isize.t) :
+      (count : isize) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.wrapping_byte_offset (Φ T)) [] [] [ φ self; φ count ] (Self T).
   Proof.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_wrapping_byte_offset.
 
   (* pub fn mask(self, mask: usize) -> *mut T *)
   Instance run_mask
       (T : Set) `{Link T}
       (self : Self T)
-      (mask : Usize.t) :
+      (mask : usize) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.mask (Φ T)) [] [] [ φ self; φ mask ] (Self T).
   Proof.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_mask.
 
   (* pub const unsafe fn as_mut_unchecked<'a>(self) -> &'a mut T *)
   Instance run_as_mut_unchecked
       (T : Set) `{Link T}
       (self : Self T) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.as_mut_unchecked (Φ T)) [] [] [ φ self ]
-      (Ref.t Pointer.Kind.MutRef T).
+      ('&mut T).
   Proof.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_as_mut_unchecked.
 
   (* pub const unsafe fn add(self, count: usize) -> Self *)
   Instance run_add
       (T : Set) `{Link T}
       (self : Self T)
-      (count : Usize.t) :
+      (count : usize) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.add (Φ T)) [] [] [ φ self; φ count ] (Self T).
   Proof.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_add.
 
   (* pub const fn wrapping_add(self, count: usize) -> Self *)
   Instance run_wrapping_add
       (T : Set) `{Link T}
       (self : Self T)
-      (count : Usize.t) :
+      (count : usize) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.wrapping_add (Φ T)) [] [] [ φ self; φ count ] (Self T).
   Proof.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_wrapping_add.
 
   (* pub const unsafe fn sub(self, count: usize) -> Self *)
   Instance run_sub
       (T : Set) `{Link T}
       (self : Self T)
-      (count : Usize.t) :
+      (count : usize) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.sub (Φ T)) [] [] [ φ self; φ count ] (Self T).
   Proof.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_sub.
 
   (* pub const fn wrapping_sub(self, count: usize) -> Self *)
   Instance run_wrapping_sub
       (T : Set) `{Link T}
       (self : Self T)
-      (count : Usize.t) :
+      (count : usize) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.wrapping_sub (Φ T)) [] [] [ φ self; φ count ] (Self T).
   Proof.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_wrapping_sub.
 
   (* pub const fn addr(self) -> usize *)
   Instance run_addr
       (T : Set) `{Link T}
       (self : Self T) :
-    Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.addr (Φ T)) [] [] [ φ self ] Usize.t.
+    Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.addr (Φ T)) [] [] [ φ self ] usize.
   Proof.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_addr.
 
   (* pub const fn cast_const(self) -> *const T *)
   Instance run_cast_const
       (T : Set) `{Link T}
       (self : Self T) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.cast_const (Φ T)) [] [] [ φ self ]
-      (Ref.t Pointer.Kind.ConstPointer T).
+      ('*const T).
   Proof.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_cast_const.
 
   (* pub const fn with_metadata_of<U>(self, val: *mut U) -> *mut U *)
   Instance run_with_metadata_of
       (T : Set) `{Link T}
       (U : Set) `{Link U}
       (self : Self T)
-      (val : Ref.t Pointer.Kind.MutPointer U) :
+      (val : '*mut U) :
     Run.Trait (ptr.mut_ptr.Impl_pointer_mut_T.with_metadata_of (Φ T)) [] [Φ U] [ φ self; φ val ]
-      (Ref.t Pointer.Kind.MutPointer U).
+      ('*mut U).
   Proof.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_with_metadata_of.
 
   (* pub const unsafe fn write(self, val: T) *)
   Instance run_write
@@ -233,8 +252,8 @@ Module Impl_pointer_mut_T.
   Instance run_write_bytes
       (T : Set) `{Link T}
       (self : Self T)
-      (val : U8.t)
-      (count : Usize.t) :
+      (val : u8)
+      (count : usize) :
     Run.Trait
       (ptr.mut_ptr.Impl_pointer_mut_T.write_bytes (Φ T)) [] [] [ φ self; φ val; φ count ]
       unit.
@@ -242,5 +261,6 @@ Module Impl_pointer_mut_T.
     constructor.
     run_symbolic.
   Admitted.
+  Global Opaque run_write_bytes.
 End Impl_pointer_mut_T.
-Export Impl_pointer_mut_T.
+Export (hints) Impl_pointer_mut_T.

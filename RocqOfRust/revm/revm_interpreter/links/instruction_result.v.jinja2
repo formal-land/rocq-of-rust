@@ -1,0 +1,118 @@
+{# Template for InstructionResult links file #}
+Require Import RocqOfRust.RocqOfRust.
+Require Import RocqOfRust.links.M.
+Require Import revm.revm_interpreter.instruction_result.
+
+Module InstructionResult.
+{{ macros.enum_body("revm_interpreter::instruction_result::InstructionResult", [
+  ("Continue", []),
+  ("Stop", []),
+  ("Return", []),
+  ("SelfDestruct", []),
+  ("ReturnContract", []),
+  ("Revert", []),
+  ("CallTooDeep", []),
+  ("OutOfFunds", []),
+  ("CreateInitCodeStartingEF00", []),
+  ("InvalidEOFInitCode", []),
+  ("InvalidExtDelegateCallTarget", []),
+  ("CallOrCreate", []),
+  ("OutOfGas", []),
+  ("MemoryOOG", []),
+  ("MemoryLimitOOG", []),
+  ("PrecompileOOG", []),
+  ("InvalidOperandOOG", []),
+  ("ReentrancySentryOOG", []),
+  ("OpcodeNotFound", []),
+  ("CallNotAllowedInsideStatic", []),
+  ("StateChangeDuringStaticCall", []),
+  ("InvalidFEOpcode", []),
+  ("InvalidJump", []),
+  ("NotActivated", []),
+  ("StackUnderflow", []),
+  ("StackOverflow", []),
+  ("OutOfOffset", []),
+  ("CreateCollision", []),
+  ("OverflowPayment", []),
+  ("PrecompileError", []),
+  ("NonceOverflow", []),
+  ("CreateContractSizeLimit", []),
+  ("CreateContractStartingWithEF", []),
+  ("CreateInitCodeSizeLimit", []),
+  ("FatalExternalError", []),
+  ("ReturnContractInNotInitEOF", []),
+  ("EOFOpcodeDisabledInLegacy", []),
+  ("SubRoutineStackOverflow", []),
+  ("EofAuxDataOverflow", []),
+  ("EofAuxDataTooSmall", []),
+  ("InvalidEXTCALLTarget", []),
+]) }}
+End InstructionResult.
+Export (hints) InstructionResult.
+
+Module Impl_InstructionResult.
+  Definition Self : Set :=
+    InstructionResult.t.
+
+  (* pub const fn is_ok(self) -> bool *)
+  Instance run_is_ok (self : Self) :
+    Run.Trait
+      instruction_result.Impl_revm_interpreter_instruction_result_InstructionResult.is_ok
+        [] [] [ φ self ]
+      bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_is_ok.
+
+  (* pub const fn is_ok_or_revert(self) -> bool *)
+  Instance run_is_ok_or_revert (self : Self) :
+    Run.Trait
+      instruction_result.Impl_revm_interpreter_instruction_result_InstructionResult.is_ok_or_revert
+        [] [] [ φ self ]
+      bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_is_ok_or_revert.
+
+  (* pub const fn is_continue(self) -> bool *)
+  Instance run_is_continue (self : Self) :
+    Run.Trait
+      instruction_result.Impl_revm_interpreter_instruction_result_InstructionResult.is_continue
+        [] [] [ φ self ]
+      bool.
+  Proof.
+    (* This is the only one that is fast in this file, for some reasons! *)
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_is_continue.
+
+  (* pub const fn is_revert(self) -> bool *)
+  Instance run_is_revert (self : Self) :
+    Run.Trait
+      instruction_result.Impl_revm_interpreter_instruction_result_InstructionResult.is_revert
+        [] [] [ φ self ]
+      bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_is_revert.
+
+  (* pub const fn is_error(self) -> bool *)
+  Instance run_is_error (self : Self) :
+    Run.Trait
+      instruction_result.Impl_revm_interpreter_instruction_result_InstructionResult.is_error
+        [] [] [ φ self ]
+      bool.
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+  Global Opaque run_is_error.
+End Impl_InstructionResult.
+Export (hints) Impl_InstructionResult.

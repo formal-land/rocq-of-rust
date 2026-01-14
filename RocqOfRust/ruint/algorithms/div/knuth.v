@@ -528,8 +528,7 @@ Module algorithms.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let iter :=
-                            M.copy (|
+                          (let~ iter :
                               Ty.apply
                                 (Ty.path "core::iter::adapters::rev::Rev")
                                 []
@@ -538,9 +537,8 @@ Module algorithms.
                                     (Ty.path "core::ops::range::RangeInclusive")
                                     []
                                     [ Ty.path "usize" ]
-                                ],
-                              γ
-                            |) in
+                                ] :=
+                            M.read (| γ |) in
                           M.read (|
                             M.loop (|
                               Ty.tuple [],
@@ -914,7 +912,7 @@ Module algorithms.
                                                         M.SubPointer.get_tuple_field (| γ, 0 |) in
                                                       let γ0_1 :=
                                                         M.SubPointer.get_tuple_field (| γ, 1 |) in
-                                                      let q := M.copy (| Ty.path "u64", γ0_0 |) in
+                                                      let~ q : Ty.path "u64" := M.read (| γ0_0 |) in
                                                       let r := M.copy (| Ty.path "u128", γ0_1 |) in
                                                       M.read (|
                                                         let~ borrow : Ty.path "u64" :=
@@ -2514,8 +2512,7 @@ Module algorithms.
                                     [
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (let iter :=
-                                            M.copy (|
+                                          (let~ iter :
                                               Ty.apply
                                                 (Ty.path "core::iter::adapters::rev::Rev")
                                                 []
@@ -2524,9 +2521,8 @@ Module algorithms.
                                                     (Ty.path "core::ops::range::RangeInclusive")
                                                     []
                                                     [ Ty.path "usize" ]
-                                                ],
-                                              γ
-                                            |) in
+                                                ] :=
+                                            M.read (| γ |) in
                                           M.read (|
                                             M.loop (|
                                               Ty.tuple [],
@@ -3118,10 +3114,10 @@ Module algorithms.
                                                                                           γ,
                                                                                           1
                                                                                         |) in
-                                                                                      let q :=
-                                                                                        M.copy (|
+                                                                                      let~ q :
                                                                                           Ty.path
-                                                                                            "u64",
+                                                                                            "u64" :=
+                                                                                        M.read (|
                                                                                           γ0_0
                                                                                         |) in
                                                                                       let r :=

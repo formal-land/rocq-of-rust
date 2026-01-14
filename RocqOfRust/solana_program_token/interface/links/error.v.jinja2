@@ -1,0 +1,63 @@
+{# Template for TokenError links file #}
+Require Import RocqOfRust.RocqOfRust.
+Require Import RocqOfRust.links.M.
+Require Import anza_xyz_solana_sdk.program_error.links.lib.
+Require Import core.convert.links.mod.
+Require Import solana_program_token.interface.error.
+
+(*
+  pub enum TokenError {
+      NotRentExempt,
+      InsufficientFunds,
+      InvalidMint,
+      MintMismatch,
+      OwnerMismatch,
+      FixedSupply,
+      AlreadyInUse,
+      InvalidNumberOfProvidedSigners,
+      InvalidNumberOfRequiredSigners,
+      UninitializedState,
+      NativeNotSupported,
+      NonNativeHasBalance,
+      InvalidInstruction,
+      InvalidState,
+      Overflow,
+      AuthorityTypeNotSupported,
+      MintCannotFreeze,
+      AccountFrozen,
+      MintDecimalsMismatch,
+      NonNativeNotSupported,
+  }
+*)
+Module TokenError.
+{{ macros.enum_body("spl_token_interface::error::TokenError", [
+  ("NotRentExempt", []),
+  ("InsufficientFunds", []),
+  ("InvalidMint", []),
+  ("MintMismatch", []),
+  ("OwnerMismatch", []),
+  ("FixedSupply", []),
+  ("AlreadyInUse", []),
+  ("InvalidNumberOfProvidedSigners", []),
+  ("InvalidNumberOfRequiredSigners", []),
+  ("UninitializedState", []),
+  ("NativeNotSupported", []),
+  ("NonNativeHasBalance", []),
+  ("InvalidInstruction", []),
+  ("InvalidState", []),
+  ("Overflow", []),
+  ("AuthorityTypeNotSupported", []),
+  ("MintCannotFreeze", []),
+  ("AccountFrozen", []),
+  ("MintDecimalsMismatch", []),
+  ("NonNativeNotSupported", []),
+]) }}
+End TokenError.
+Export (hints) TokenError.
+
+(* impl From<TokenError> for ProgramError *)
+Module Impl_From_TokenError_for_ProgramError.
+  Instance run : From.Run ProgramError.t TokenError.t.
+  Admitted.
+End Impl_From_TokenError_for_ProgramError.
+Export (hints) Impl_From_TokenError_for_ProgramError.

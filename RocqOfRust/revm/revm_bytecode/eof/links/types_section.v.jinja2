@@ -1,0 +1,14 @@
+{# Template for TypesSection links file #}
+Require Import RocqOfRust.RocqOfRust.
+Require Import links.M.
+Require alloc.links.alloc.
+Require alloc.vec.links.mod.
+
+Module TypesSection.
+{{ macros.record_body("revm_bytecode::eof::types_section::TypesSection", [
+  ("inputs", "u8"),
+  ("outputs", "u8"),
+  ("max_stack_size", "u16"),
+]) }}
+End TypesSection.
+Export (hints) TypesSection.

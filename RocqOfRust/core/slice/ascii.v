@@ -1827,8 +1827,8 @@ Module slice.
                                     [
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (let iter :=
-                                            M.copy (| Ty.path "core::ascii::EscapeDefault", γ |) in
+                                          (let~ iter : Ty.path "core::ascii::EscapeDefault" :=
+                                            M.read (| γ |) in
                                           M.read (|
                                             M.loop (|
                                               Ty.tuple [],
@@ -3030,8 +3030,8 @@ Module slice.
                                     [
                                       fun γ =>
                                         ltac:(M.monadic
-                                          (let iter :=
-                                            M.copy (| Ty.path "core::ascii::EscapeDefault", γ |) in
+                                          (let~ iter : Ty.path "core::ascii::EscapeDefault" :=
+                                            M.read (| γ |) in
                                           M.read (|
                                             M.loop (|
                                               Ty.tuple [],

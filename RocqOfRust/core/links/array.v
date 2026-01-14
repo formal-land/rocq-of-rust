@@ -70,19 +70,19 @@ Module ArrayPairs.
     end.
 End ArrayPairs.
 
-Record t {A : Set} {length : Usize.t} : Set := {
+Record t {A : Set} {length : usize} : Set := {
   value : ArrayPairs.t A (Z.to_nat length.(Integer.value));
 }.
 Arguments t : clear implicits.
 
-Global Instance IsLink (A : Set) (length : Usize.t) `{Link A} : Link (t A length) := {
+Instance IsLink (A : Set) (length : usize) `{Link A} : Link (t A length) := {
   Φ :=
     Ty.apply (Ty.path "array") [ φ length ] [ Φ A ];
   φ x :=
     Value.Array (ArrayPairs.to_values x.(value));
 }.
 
-Definition of_ty (length' : Value.t) (length : Usize.t) (A' : Ty.t):
+Definition of_ty (length' : Value.t) (length : usize) (A' : Ty.t):
   length' = φ length ->
   OfTy.t A' ->
   OfTy.t (Ty.apply (Ty.path "array") [ length' ] [ A' ]).
@@ -300,7 +300,7 @@ Defined.
 Smpl Add apply of_value_repeat : of_value.
 
 Module SubPointer.
-  Definition get_index (A : Set) `{Link A} (length : Usize.t) (index : Z) :
+  Definition get_index (A : Set) `{Link A} (length : usize) (index : Z) :
     SubPointer.Runner.t (t A length) (Pointer.Index.Array index) :=
   {|
     SubPointer.Runner.projection x :=
@@ -312,7 +312,7 @@ Module SubPointer.
       end;
   |}.
 
-  Lemma get_index_is_valid {A : Set} `{Link A} {length : Usize.t} (index : Z) :
+  Lemma get_index_is_valid {A : Set} `{Link A} {length : usize} (index : Z) :
     SubPointer.Runner.Valid.t (get_index A length index).
   Proof.
   Admitted.
@@ -321,7 +321,7 @@ End SubPointer.
 
 (** The pointer coercions are intrinsic functions, so we need to admit them here. *)
 Instance run_pointer_coercion_unsize_array_to_slice
-    (T : Set) `{Link T} (N : Usize.t)
+    (T : Set) `{Link T} (N : usize)
     (pointer_kind : Pointer.Kind.t) :
   let Source : Set := Ref.t pointer_kind (array.t T N) in
   let Target : Set := Ref.t pointer_kind (list T) in
@@ -332,3 +332,4 @@ Instance run_pointer_coercion_unsize_array_to_slice
     [ φ source ]
     Target.
 Admitted.
+Global Opaque run_pointer_coercion_unsize_array_to_slice.

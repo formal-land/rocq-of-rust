@@ -23778,11 +23778,9 @@ Module file_format.
                           [
                             fun γ =>
                               ltac:(M.monadic
-                                (let iter :=
-                                  M.copy (|
-                                    Ty.path "move_binary_format::file_format::AbilitySetIterator",
-                                    γ
-                                  |) in
+                                (let~ iter :
+                                    Ty.path "move_binary_format::file_format::AbilitySetIterator" :=
+                                  M.read (| γ |) in
                                 M.read (|
                                   M.loop (|
                                     Ty.tuple [],

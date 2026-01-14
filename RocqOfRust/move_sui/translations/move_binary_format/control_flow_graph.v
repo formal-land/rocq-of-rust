@@ -785,11 +785,12 @@ Module control_flow_graph.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter :=
-                              M.copy (|
-                                Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                                γ
-                              |) in
+                            (let~ iter :
+                                Ty.apply
+                                  (Ty.path "core::ops::range::Range")
+                                  []
+                                  [ Ty.path "usize" ] :=
+                              M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],
@@ -992,11 +993,12 @@ Module control_flow_graph.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter :=
-                              M.copy (|
-                                Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                                γ
-                              |) in
+                            (let~ iter :
+                                Ty.apply
+                                  (Ty.path "core::ops::range::Range")
+                                  []
+                                  [ Ty.path "usize" ] :=
+                              M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],
@@ -1822,14 +1824,12 @@ Module control_flow_graph.
                                               [
                                                 fun γ =>
                                                   ltac:(M.monadic
-                                                    (let iter :=
-                                                      M.copy (|
+                                                    (let~ iter :
                                                         Ty.apply
                                                           (Ty.path "core::slice::iter::Iter")
                                                           []
-                                                          [ Ty.path "u16" ],
-                                                        γ
-                                                      |) in
+                                                          [ Ty.path "u16" ] :=
+                                                      M.read (| γ |) in
                                                     M.read (|
                                                       M.loop (|
                                                         Ty.tuple [],
@@ -2222,8 +2222,7 @@ Module control_flow_graph.
                                           "alloc::collections::btree::map::entry::Entry::Occupied",
                                           0
                                         |) in
-                                      let entry :=
-                                        M.copy (|
+                                      let~ entry :
                                           Ty.apply
                                             (Ty.path
                                               "alloc::collections::btree::map::entry::OccupiedEntry")
@@ -2233,9 +2232,8 @@ Module control_flow_graph.
                                               Ty.path
                                                 "move_binary_format::control_flow_graph::new::Exploration";
                                               Ty.path "alloc::alloc::Global"
-                                            ],
-                                          γ0_0
-                                        |) in
+                                            ] :=
+                                        M.read (| γ0_0 |) in
                                       M.match_operator (|
                                         Ty.tuple [],
                                         M.alloc (|
@@ -2770,17 +2768,15 @@ Module control_flow_graph.
                       [
                         fun γ =>
                           ltac:(M.monadic
-                            (let iter :=
-                              M.copy (|
+                            (let~ iter :
                                 Ty.apply
                                   (Ty.path "alloc::collections::btree::map::Iter")
                                   []
                                   [
                                     Ty.path "u16";
                                     Ty.path "move_binary_format::control_flow_graph::BasicBlock"
-                                  ],
-                                γ
-                              |) in
+                                  ] :=
+                              M.read (| γ |) in
                             M.read (|
                               M.loop (|
                                 Ty.tuple [],
@@ -3793,14 +3789,12 @@ Module control_flow_graph.
                                       [
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (let iter :=
-                                              M.copy (|
+                                            (let~ iter :
                                                 Ty.apply
                                                   (Ty.path "core::slice::iter::Iter")
                                                   []
-                                                  [ Ty.path "u16" ],
-                                                γ
-                                              |) in
+                                                  [ Ty.path "u16" ] :=
+                                              M.read (| γ |) in
                                             M.read (|
                                               M.loop (|
                                                 Ty.tuple [],

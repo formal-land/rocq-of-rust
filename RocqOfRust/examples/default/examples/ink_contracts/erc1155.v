@@ -2933,8 +2933,7 @@ Module Impl_erc1155_Erc1155_for_erc1155_Contract.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::iter::adapters::zip::Zip")
                                     []
@@ -2947,9 +2946,8 @@ Module Impl_erc1155_Erc1155_for_erc1155_Contract.
                                         (Ty.path "core::slice::iter::Iter")
                                         []
                                         [ Ty.path "u128" ]
-                                    ],
-                                  γ
-                                |) in
+                                    ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -3184,8 +3182,7 @@ Module Impl_erc1155_Erc1155_for_erc1155_Contract.
                         [
                           fun γ =>
                             ltac:(M.monadic
-                              (let iter :=
-                                M.copy (|
+                              (let~ iter :
                                   Ty.apply
                                     (Ty.path "core::iter::adapters::zip::Zip")
                                     []
@@ -3198,9 +3195,8 @@ Module Impl_erc1155_Erc1155_for_erc1155_Contract.
                                         (Ty.path "core::slice::iter::Iter")
                                         []
                                         [ Ty.path "u128" ]
-                                    ],
-                                  γ
-                                |) in
+                                    ] :=
+                                M.read (| γ |) in
                               M.read (|
                                 M.loop (|
                                   Ty.tuple [],
@@ -3493,14 +3489,12 @@ Module Impl_erc1155_Erc1155_for_erc1155_Contract.
                     [
                       fun γ =>
                         ltac:(M.monadic
-                          (let iter :=
-                            M.copy (|
+                          (let~ iter :
                               Ty.apply
                                 (Ty.path "core::slice::iter::Iter")
                                 []
-                                [ Ty.path "erc1155::AccountId" ],
-                              γ
-                            |) in
+                                [ Ty.path "erc1155::AccountId" ] :=
+                            M.read (| γ |) in
                           M.read (|
                             M.loop (|
                               Ty.tuple [],
@@ -3611,14 +3605,12 @@ Module Impl_erc1155_Erc1155_for_erc1155_Contract.
                                                   [
                                                     fun γ =>
                                                       ltac:(M.monadic
-                                                        (let iter :=
-                                                          M.copy (|
+                                                        (let~ iter :
                                                             Ty.apply
                                                               (Ty.path "core::slice::iter::Iter")
                                                               []
-                                                              [ Ty.path "u128" ],
-                                                            γ
-                                                          |) in
+                                                              [ Ty.path "u128" ] :=
+                                                          M.read (| γ |) in
                                                         M.read (|
                                                           M.loop (|
                                                             Ty.tuple [],

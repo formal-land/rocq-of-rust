@@ -3,56 +3,61 @@ Require Import RocqOfRust.links.M.
 Require Import plonky3.commit_539bbc84.keccak_air.lib.
 
 (* pub const NUM_ROUNDS: usize = 24; *)
-Definition NUM_ROUNDS : Usize.t :=
+Definition NUM_ROUNDS : usize :=
   {| Integer.value := 24 |}.
 
 Instance run_value_NUM_ROUNDS :
-  Run.Trait lib.value_NUM_ROUNDS [] [] [] (Ref.t Pointer.Kind.Raw Usize.t).
+  Run.Trait lib.value_NUM_ROUNDS [] [] [] ('* usize).
 Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_value_NUM_ROUNDS.
 
 (* const BITS_PER_LIMB: usize = 16; *)
-Definition BITS_PER_LIMB : Usize.t :=
+Definition BITS_PER_LIMB : usize :=
   {| Integer.value := 16 |}.
 
 Instance run_value_BITS_PER_LIMB :
-  Run.Trait lib.value_BITS_PER_LIMB [] [] [] (Ref.t Pointer.Kind.Raw Usize.t).
+  Run.Trait lib.value_BITS_PER_LIMB [] [] [] ('* usize).
 Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_value_BITS_PER_LIMB.
 
 (* pub const U64_LIMBS: usize = 64 / BITS_PER_LIMB; *)
-Definition U64_LIMBS : Usize.t :=
+Definition U64_LIMBS : usize :=
   {| Integer.value := 64 / BITS_PER_LIMB.(Integer.value) |}.
 
 Instance run_value_U64_LIMBS :
-  Run.Trait lib.value_U64_LIMBS [] [] [] (Ref.t Pointer.Kind.Raw Usize.t).
+  Run.Trait lib.value_U64_LIMBS [] [] [] ('* usize).
 Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_value_U64_LIMBS.
 
 (* const RATE_BITS: usize = 1088; *)
-Definition RATE_BITS : Usize.t :=
+Definition RATE_BITS : usize :=
   {| Integer.value := 1088 |}.
 
 Instance run_value_RATE_BITS :
-  Run.Trait lib.value_RATE_BITS [] [] [] (Ref.t Pointer.Kind.Raw Usize.t).
+  Run.Trait lib.value_RATE_BITS [] [] [] ('* usize).
 Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_value_RATE_BITS.
 
 (* const RATE_LIMBS: usize = RATE_BITS / BITS_PER_LIMB; *)
-Definition RATE_LIMBS : Usize.t :=
+Definition RATE_LIMBS : usize :=
   {| Integer.value := RATE_BITS.(Integer.value) / BITS_PER_LIMB.(Integer.value) |}.
 
 Instance run_value_RATE_LIMBS :
-  Run.Trait lib.value_RATE_LIMBS [] [] [] (Ref.t Pointer.Kind.Raw Usize.t).
+  Run.Trait lib.value_RATE_LIMBS [] [] [] ('* usize).
 Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_value_RATE_LIMBS.

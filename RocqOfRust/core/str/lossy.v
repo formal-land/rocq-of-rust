@@ -707,8 +707,8 @@ Module str.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (| Ty.path "core::str::lossy::Utf8Chunks", γ |) in
+                                  (let~ iter : Ty.path "core::str::lossy::Utf8Chunks" :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],
@@ -839,12 +839,10 @@ Module str.
                                                                   [
                                                                     fun γ =>
                                                                       ltac:(M.monadic
-                                                                        (let iter :=
-                                                                          M.copy (|
+                                                                        (let~ iter :
                                                                             Ty.path
-                                                                              "core::str::iter::CharIndices",
-                                                                            γ
-                                                                          |) in
+                                                                              "core::str::iter::CharIndices" :=
+                                                                          M.read (| γ |) in
                                                                         M.read (|
                                                                           M.loop (|
                                                                             Ty.tuple [],
@@ -1331,11 +1329,11 @@ Module str.
                                                                                                                   fun
                                                                                                                       γ =>
                                                                                                                     ltac:(M.monadic
-                                                                                                                      (let
-                                                                                                                            iter :=
-                                                                                                                        M.copy (|
+                                                                                                                      (let~
+                                                                                                                            iter :
                                                                                                                           Ty.path
-                                                                                                                            "core::char::EscapeDebug",
+                                                                                                                            "core::char::EscapeDebug" :=
+                                                                                                                        M.read (|
                                                                                                                           γ
                                                                                                                         |) in
                                                                                                                       M.read (|
@@ -1992,15 +1990,13 @@ Module str.
                                                           [
                                                             fun γ =>
                                                               ltac:(M.monadic
-                                                                (let iter :=
-                                                                  M.copy (|
+                                                                (let~ iter :
                                                                     Ty.apply
                                                                       (Ty.path
                                                                         "core::slice::iter::Iter")
                                                                       []
-                                                                      [ Ty.path "u8" ],
-                                                                    γ
-                                                                  |) in
+                                                                      [ Ty.path "u8" ] :=
+                                                                  M.read (| γ |) in
                                                                 M.read (|
                                                                   M.loop (|
                                                                     Ty.tuple [],

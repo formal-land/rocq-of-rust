@@ -17,7 +17,7 @@ Module Range.
   }.
   Arguments t : clear implicits.
 
-  Global Instance IsLink (Idx : Set) `{Link Idx} : Link (t Idx) := {
+  Instance IsLink (Idx : Set) `{Link Idx} : Link (t Idx) := {
     Φ :=
       Ty.apply (Ty.path "core::ops::range::Range") [] [ Φ Idx ];
     φ x :=
@@ -27,48 +27,41 @@ Module Range.
       ];
   }.
 
-  Definition of_ty (Idx_ty : Ty.t) :
-    OfTy.t Idx_ty ->
-    OfTy.t (Ty.apply (Ty.path "core::ops::range::Range") [] [ Idx_ty ]).
-  Proof.
-    intros [Idx].
-    eapply OfTy.Make with (A := t Idx).
-    subst.
-    reflexivity.
-  Defined.
-  Smpl Add eapply of_ty : of_ty.
+  Instance IsOfTy (Idx' : Ty.t) {H_Idx : OfTy.C Idx'} :
+    OfTy.C (Ty.apply (Ty.path "core::ops::range::Range") [] [ Idx' ]) :=
+  {
+    A := t H_Idx.(OfTy.A);
+    eq := ltac:(sauto lq: on);
+  }.
 
-  Lemma of_value_with {Idx : Set} `{Link Idx} Idx'
-      (start : Idx) start'
-      (end_ : Idx) end_' :
-    Idx' = Φ Idx ->
-    start' = φ start ->
-    end_' = φ end_ ->
-    Value.StructRecord "core::ops::range::Range" [] [Idx'] [
+  Instance IsOfValueWith
+      (Idx : Set) `{Link Idx}
+      (start' : Value.t) {H_start : OfValueWith.C (Idx) start'}
+      (end_' : Value.t) {H_end_ : OfValueWith.C (Idx) end_'} :
+    OfValueWith.C (t Idx) (Value.StructRecord "core::ops::range::Range" [] [Φ Idx] [
       ("end_", end_');
       ("start", start')
-    ] =
-    φ (Build_t Idx start end_).
-  Proof. now intros; subst. Qed.
-  Smpl Add eapply of_value_with : of_value.
+    ]) :=
+  {
+    value := Build_t Idx H_start.(OfValueWith.value) H_end_.(OfValueWith.value);
+    eq := ltac:(sauto lq: on);
+  }.
 
-  Definition of_value Idx' start' end_'
-      (H_Idx : OfTy.t Idx')
-      (start end_ : OfTy.get_Set H_Idx) :
-    start' = φ start ->
-    end_' = φ end_ ->
-    OfValue.t (Value.StructRecord "core::ops::range::Range" [] [Idx'] [
+  Instance IsOfValue
+      (Idx' : Ty.t) {H_Idx : OfTy.C Idx'}
+      (start' : Value.t) {H_start : OfValueWith.C H_Idx.(OfTy.A) start'}
+      (end_' : Value.t) {H_end_ : OfValueWith.C H_Idx.(OfTy.A) end_'} :
+    OfValue.C (Value.StructRecord "core::ops::range::Range" [] [Idx'] [
       ("end_", end_');
       ("start", start')
-    ]).
-  Proof.
-    intros.
-    destruct H_Idx as [Idx].
-    eapply OfValue.Make with (A := t Idx) (value := Build_t Idx start end_).
-    now subst.
-  Defined.
-  Smpl Add unshelve eapply of_value : of_value.
+    ]) :=
+  {
+    A := t H_Idx.(OfTy.A);
+    value := Build_t H_Idx.(OfTy.A) H_start.(OfValueWith.value) H_end_.(OfValueWith.value);
+    eq := ltac:(sauto lq: on);
+  }.
 End Range.
+Export (hints) Range.
 
 Module Impl_Clone_for_Range.
   Definition Self (Idx : Set) : Set :=
@@ -77,20 +70,21 @@ Module Impl_Clone_for_Range.
   Instance run (Idx : Set) `{Link Idx} : Clone.Run (Self Idx).
   Admitted.
 End Impl_Clone_for_Range.
-Export Impl_Clone_for_Range.
+Export (hints) Impl_Clone_for_Range.
 
 Module Impl_Range.
   Definition Self (Idx : Set) : Set :=
     Range.t Idx.
 
   (* pub fn is_empty(&self) -> bool *)
-  Instance run_is_empty {Idx : Set} `{Link Idx} (self : Ref.t Pointer.Kind.Ref (Self Idx)) :
+  Instance run_is_empty {Idx : Set} `{Link Idx} (self : '& (Self Idx)) :
     Run.Trait
       (ops.range.Impl_core_ops_range_Range_Idx.is_empty (Φ Idx)) [] [] [ φ self ]
       bool.
   Admitted.
+  Global Opaque run_is_empty.
 End Impl_Range.
-Export Impl_Range.
+Export (hints) Impl_Range.
 
 (*
   pub enum Bound<T> {
@@ -131,33 +125,38 @@ End Bound.
   }
 *)
 Module RangeBounds.
-  Definition trait (Self T : Set) `{Link Self} `{Link T} : TraitMethod.Header.t :=
-    ("core::ops::RangeBounds", [], [Φ T], Φ Self).
+  Definition trait (Self T : Set) `{Link Self} `{Link T} : TraitHeader.t :=
+    {|
+      TraitHeader.trait_name := "core::ops::RangeBounds";
+      TraitHeader.trait_consts := [];
+      TraitHeader.trait_tys := [Φ T];
+      TraitHeader.self_ty := Φ Self;
+    |}.
 
   Definition Run_start_bound (Self : Set) `{Link Self} 
       (T : Set) `{Link T} : Set :=
     {start_bound @
-      IsTraitMethod.t "core::ops::RangeBounds" [] [] (Φ Self) "start_bound" start_bound *
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-        {{ start_bound [] [] [φ self] 🔽 Bound.t (Ref.t Pointer.Kind.Ref T) }}
+      IsTraitMethod.t (trait Self T) "start_bound" start_bound *
+      forall (self : '& Self),
+        {{ start_bound [] [] [φ self] 🔽 Bound.t ('& T) }}
     }.
 
   Definition Run_end_bound (Self : Set) `{Link Self} 
       (T : Set) `{Link T} : Set :=
     {end_bound @
-      IsTraitMethod.t "core::ops::RangeBounds" [] [] (Φ Self) "end_bound" end_bound *
-      forall (self : Ref.t Pointer.Kind.Ref Self),
-        {{ end_bound [] [] [φ self] 🔽 Bound.t (Ref.t Pointer.Kind.Ref T) }}
+      IsTraitMethod.t (trait Self T) "end_bound" end_bound *
+      forall (self : '& Self),
+        {{ end_bound [] [] [φ self] 🔽 Bound.t ('& T) }}
     }.
 
   Definition Run_contains (Self : Set) `{Link Self} 
       (T : Set) `{Link T}  : Set :=
     {contains @
-      IsTraitMethod.t "core::ops::RangeBounds" [] [] (Φ Self) "contains" contains *
+      IsTraitMethod.t (trait Self T) "contains" contains *
       forall 
-          (self : Ref.t Pointer.Kind.Ref Self)
+          (self : '& Self)
           (U : Set) `(Link U)
-          (item : Ref.t Pointer.Kind.Ref U)
+          (item : '& U)
           (run_Ord_for_T : PartialOrd.Run T T)
           (run_Ord_for_U : PartialOrd.Run U U),
         {{ contains [] [] [φ self; φ item] 🔽 bool }}
@@ -166,8 +165,8 @@ Module RangeBounds.
   Definition Run_is_empty (Self : Set) `{Link Self} 
       (T : Set) `{Link T} : Set :=
     {is_empty @ 
-      IsTraitMethod.t "core::ops::RangeBounds" [] [] (Φ Self) "is_empty" is_empty *
-      forall (self : Ref.t Pointer.Kind.Ref Self)
+      IsTraitMethod.t (trait Self T) "is_empty" is_empty *
+      forall (self : '& Self)
           (run_Ord_for_T : PartialOrd.Run T T),
         {{ is_empty [] [] [φ self] 🔽 bool }}
     }.
@@ -180,7 +179,7 @@ Module RangeBounds.
     is_empty : Run_is_empty Self T;
   }.
 End RangeBounds.
-Export RangeBounds.
+Export (hints) RangeBounds.
 
 (*
 pub struct RangeTo<Idx> {
@@ -231,4 +230,4 @@ Module RangeTo.
   Defined.
   Smpl Add unshelve eapply of_value : of_value.
 End RangeTo.
-Export RangeTo.
+Export (hints) RangeTo.

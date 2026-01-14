@@ -24,14 +24,13 @@ Module Impl_MemoryGas.
   Proof.
     apply Run.Pure.
   Qed.
-  Global Opaque Impl_MemoryGas.run_new.
 End Impl_MemoryGas.
 
 Module Impl_Gas.
   Definition Self : Set :=
     Gas.t.
 
-  Definition new (limit : U64.t) : Self :=
+  Definition new (limit : u64) : Self :=
     {|
       Gas.limit := limit;
       Gas.remaining := limit;
@@ -39,7 +38,7 @@ Module Impl_Gas.
       Gas.memory := Impl_MemoryGas.new;
     |}.
 
-  Lemma new_eq (limit : U64.t) :
+  Lemma new_eq (limit : u64) :
     {{
       SimulateM.eval_f (Impl_Gas.run_new limit) []%stack 🌲
       (Output.Success (new limit), []%stack)
@@ -52,14 +51,13 @@ Module Impl_Gas.
     cbn.
     apply Run.Pure.
   Qed.
-  Global Opaque Impl_Gas.run_new.
 
   (*
       pub const fn limit(&self) -> u64 {
           self.limit
       }
   *)
-  Definition limit (self : Self) : U64.t :=
+  Definition limit (self : Self) : u64 :=
     self.(Gas.limit).
 
   Lemma limit_eq (self : Self) :
@@ -71,18 +69,17 @@ Module Impl_Gas.
       (Output.Success (limit self), [self]%stack)
     }}.
   Proof.
-    cbn.
-    repeat get_can_access.
+    with_strategy transparent [Impl_Gas.run_limit] cbn.
+    progress repeat get_can_access.
     apply Run.Pure.
   Qed.
-  Global Opaque Impl_Gas.run_limit.
 
   (*
       pub fn erase_cost(&mut self, returned: u64) {
           self.remaining += returned;
       }
   *)
-  Definition erase_cost (self : Self) (returned : U64.t) : Self :=
+  Definition erase_cost (self : Self) (returned : u64) : Self :=
     {|
       Gas.limit := self.(Gas.limit);
       Gas.remaining :=
@@ -94,7 +91,7 @@ Module Impl_Gas.
       Gas.memory := self.(Gas.memory);
     |}.
 
-  Lemma erase_cost_eq (self : Self) (returned : U64.t) :
+  Lemma erase_cost_eq (self : Self) (returned : u64) :
     let ref_self := {|
       Ref.core := Ref.Core.Mutable (A := Self) 0%nat [] φ Some (fun _ => Some)
     |} in
@@ -103,8 +100,8 @@ Module Impl_Gas.
       (Output.Success tt, [erase_cost self returned]%stack)
     }}.
   Proof.
-    cbn.
-    repeat get_can_access.
+    with_strategy transparent [Impl_Gas.run_erase_cost] cbn.
+    progress repeat get_can_access.
     eapply Run.Call. {
       apply Run.Pure.
     }
@@ -112,12 +109,11 @@ Module Impl_Gas.
     repeat get_can_access.
     apply Run.Pure.
   Qed.
-  Global Opaque Impl_Gas.run_erase_cost.
 
-  Parameter u64_overflowing_sub : forall (self other : U64.t), U64.t * bool.
+  Parameter u64_overflowing_sub : forall (self other : u64), u64 * bool.
 
   Axiom u64_overflowing_sub_eq :
-    forall (stack : Stack.t) (self other : U64.t),
+    forall (stack : Stack.t) (self other : u64),
     {{
       SimulateM.eval_f (core.num.links.mod.Impl_u64.run_overflowing_sub self other) stack 🌲
       (Output.Success (u64_overflowing_sub self other), stack)
@@ -133,7 +129,7 @@ Module Impl_Gas.
         success
     }
   *)
-  Definition record_cost (self : Self) (cost : U64.t) : option Self :=
+  Definition record_cost (self : Self) (cost : u64) : option Self :=
     let (remaining, overflow) := u64_overflowing_sub self.(Gas.remaining) cost in
     let success := negb overflow in
     if success then
@@ -142,14 +138,14 @@ Module Impl_Gas.
       None.
 
   Lemma record_cost_eq
-      {WIRE H : Set} `{Link WIRE} `{Link H}
+      {WIRE : Set} `{Link WIRE}
       {WIRE_types : InterpreterTypes.Types.t} `{InterpreterTypes.Types.AreLinks WIRE_types}
       (interpreter : Interpreter.t WIRE WIRE_types)
-      (_host : H)
       (gas_stub : RefStub.t WIRE_types.(InterpreterTypes.Types.Control) Gas.t)
-      (cost : U64.t) :
-    let ref_interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types) := make_ref 0 in
-    let ref_control : Ref.t Pointer.Kind.MutRef _ := {| Ref.core :=
+      (cost : u64)
+      (stack : Stack.t) :
+    let ref_interpreter : '&mut (Interpreter.t WIRE WIRE_types) := make_ref 0 in
+    let ref_control : '&mut _ := {| Ref.core :=
         SubPointer.Runner.apply
           ref_interpreter.(Ref.core)
           Interpreter.SubPointer.get_control
@@ -158,7 +154,7 @@ Module Impl_Gas.
     let gas := gas_stub.(RefStub.projection) interpreter.(Interpreter.control) in
     let result := record_cost gas cost in
     {{
-      SimulateM.eval_f (Impl_Gas.run_record_cost ref_self cost) [interpreter; _host]%stack 🌲
+      SimulateM.eval_f (Impl_Gas.run_record_cost ref_self cost) (interpreter :: stack)%stack 🌲
       (
         Output.Success (
           match result with
@@ -166,25 +162,26 @@ Module Impl_Gas.
           | Some _ => true
           end
         ),
-        [
-          interpreter <| Interpreter.control :=
+        (
+          (interpreter <| Interpreter.control :=
             match result with
             | None => interpreter.(Interpreter.control)
             | Some gas => gas_stub.(RefStub.injection) interpreter.(Interpreter.control) gas
             end
-          |>;
-          _host
-        ]%stack
+          |>) :: stack
+        )%stack
       )
     }}.
   Proof.
     intros.
-    unfold record_cost in *; cbn.
+    apply Run.remove_extra_stack1.
+    unfold record_cost in *.
+    with_strategy transparent [Impl_Gas.run_record_cost] cbn.
     progress repeat get_can_access.
     eapply Run.Call. {
       apply u64_overflowing_sub_eq.
     }
-    destruct u64_overflowing_sub as [remaining overflow] eqn:H_u64_overflowing_sub_eq.
+    destruct u64_overflowing_sub as [remaining overflow].
     eapply Run.Call. {
       apply Run.Pure.
     }
@@ -192,9 +189,8 @@ Module Impl_Gas.
     eapply Run.Call. {
       apply Run.Pure.
     }
-    destruct negb eqn:?; cbn; progress repeat get_can_access.
+    destruct negb; cbn; progress repeat get_can_access.
     { apply Run.Pure. }
     { apply Run.Pure. }
   Qed.
-  Global Opaque Impl_Gas.run_record_cost.
 End Impl_Gas.

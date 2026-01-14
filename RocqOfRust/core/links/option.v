@@ -10,7 +10,7 @@ Require Import core.ops.links.function.
 Require Import core.ops.links.try_trait.
 
 Module Option.
-  Global Instance IsLink (A : Set) `{Link A} : Link (option A) := {
+  Instance IsLink (A : Set) `{Link A} : Link (option A) := {
     Φ := Ty.apply (Ty.path "core::option::Option") [] [Φ A];
     φ x :=
       match x with
@@ -88,6 +88,7 @@ Module Option.
     Smpl Add apply get_Some_0_is_valid : run_sub_pointer.
   End SubPointer.
 End Option.
+Export (hints) Option.
 
 (* const fn unwrap_failed() -> ! *)
 Instance run_unwrap_failed :
@@ -98,9 +99,10 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_unwrap_failed.
 
 (* const fn expect_failed(msg: &str) -> ! *)
-Instance run_expect_failed (msg : Ref.t Pointer.Kind.Ref string) :
+Instance run_expect_failed (msg : '& string) :
   Run.Trait
     option.expect_failed [] [] [ φ msg ]
     Empty_set.
@@ -108,6 +110,7 @@ Proof.
   constructor.
   run_symbolic.
 Defined.
+Global Opaque run_expect_failed.
 
 Module Impl_Option.
   Definition Self (T : Set) `{Link T} : Set := option T.
@@ -133,6 +136,7 @@ Module Impl_Option.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_ok_or.
 
   (* pub const fn unwrap(self) -> T *)
   Instance run_unwrap {T : Set} `{Link T}
@@ -144,6 +148,7 @@ Module Impl_Option.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_unwrap.
 
   (* pub const unsafe fn unwrap_unchecked(self) -> T *)
   Instance run_unwrap_unchecked {T : Set} `{Link T}
@@ -155,6 +160,7 @@ Module Impl_Option.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_unwrap_unchecked.
 
   (*
     pub fn unwrap_or_default(self) -> T
@@ -162,16 +168,16 @@ Module Impl_Option.
         T: Default,
   *)
   Instance run_unwrap_or_default {T : Set} `{Link T}
-      {run_Default_for_T : Default.Run T}
+      `{!Default.Run T}
       (self : Self T) :
     Run.Trait
       (option.Impl_core_option_Option_T.unwrap_or_default (Φ T)) [] [] [ φ self ]
       T.
   Proof.
     constructor.
-    destruct run_Default_for_T.
     run_symbolic.
   Defined.
+  Global Opaque run_unwrap_or_default.
 
   (* pub fn unwrap_or(self, default: T) -> T *)
   Instance run_unwrap_or {T : Set} `{Link T}
@@ -183,10 +189,11 @@ Module Impl_Option.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_unwrap_or.
 
   (* pub const fn expect(self, msg: &str) -> T *)
   Instance run_expect {T : Set} `{Link T}
-      (self : Self T) (msg : Ref.t Pointer.Kind.Ref string) :
+      (self : Self T) (msg : '& string) :
     Run.Trait
       (option.Impl_core_option_Option_T.expect (Φ T)) [] [] [ φ self; φ msg ]
       T.
@@ -194,8 +201,9 @@ Module Impl_Option.
     constructor.
     run_symbolic.
   Defined.
+  Global Opaque run_expect.
 End Impl_Option.
-Export Impl_Option.
+Export (hints) Impl_Option.
 
 (* impl<T> ops::Try for Option<T> *)
 Module Impl_Try_for_Option.
@@ -219,7 +227,7 @@ Module Impl_Try_for_Option.
   Instance run (T : Set) `{Link T} : Try.Run (Self T) (Types T).
   Admitted.
 End Impl_Try_for_Option.
-Export Impl_Try_for_Option.
+Export (hints) Impl_Try_for_Option.
 
 (* impl<T> ops::FromResidual<Option<convert::Infallible>> for Option<T> *)
 Module Impl_FromResidual_Infallible_for_Option.
@@ -229,4 +237,4 @@ Module Impl_FromResidual_Infallible_for_Option.
   Instance run (T : Set) `{Link T} : FromResidual.Run (Self T) (option Infallible.t).
   Admitted.
 End Impl_FromResidual_Infallible_for_Option.
-Export Impl_FromResidual_Infallible_for_Option.
+Export (hints) Impl_FromResidual_Infallible_for_Option.

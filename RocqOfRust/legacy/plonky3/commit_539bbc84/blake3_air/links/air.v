@@ -34,7 +34,7 @@ Module Impl_Blake3Air.
   Instance run_generate_trace_rows
     {F : Set} `{Link F} 
     {run_PrimeField64_for_F : PrimeField64.Run F}
-    (self : Ref.t Pointer.Kind.Ref Self) (num_hashes : Usize.t) (extra_capacity_bits : Usize.t) :
+    (self : '& Self) (num_hashes : usize) (extra_capacity_bits : usize) :
     Run.Trait
       blake3_air.air.air.Impl_p3_blake3_air_air_Blake3Air.generate_trace_rows [] [ Φ F ] [ φ self; φ num_hashes; φ extra_capacity_bits ]
       (RowMajorMatrix.t F).
@@ -44,6 +44,7 @@ Module Impl_Blake3Air.
     run_symbolic.
     (* "rand_core::SeedableRng::seed_from_u64" *)
   Admitted.
+  Global Opaque run_generate_trace_rows.
 
   (* 
   fn quarter_round_function<AB: AirBuilder>(
@@ -56,9 +57,9 @@ Module Impl_Blake3Air.
     {AB : Set} `{Link AB}
     {AB_types : AirBuilder.AssociatedTypes.t} `{AirBuilder.AssociatedTypes.AreLinks AB_types}
     {run_AirBuilder_for_AB : AirBuilder.Run AB AB_types}
-    (self : Ref.t Pointer.Kind.Ref Self) 
-    (builder : Ref.t Pointer.Kind.MutRef AB) 
-    (trace : Ref.t Pointer.Kind.Ref (QuarterRound.t 
+    (self : '& Self) 
+    (builder : '&mut AB) 
+    (trace : '& (QuarterRound.t 
       AB_types.(AirBuilder.AssociatedTypes.Var) AB_types.(AirBuilder.AssociatedTypes.Expr)))
     :
     Run.Trait
@@ -75,6 +76,7 @@ Module Impl_Blake3Air.
     (* p3_air::utils::add2 *)
     (* p3_air::utils::xor_32_shift *)
   Admitted.
+  Global Opaque run_quarter_round_function.
 
   (* 
   const fn full_round_to_column_quarter_round<'a, T: Copy, U>(
@@ -87,11 +89,11 @@ Module Impl_Blake3Air.
   *)
   Instance run_full_round_to_column_quarter_round
     {T U : Set} `{Link T} `{Link U}
-    (self : Ref.t Pointer.Kind.Ref Self) 
-    (input : Ref.t Pointer.Kind.Ref (Blake3State.t T))
-    (round_data : Ref.t Pointer.Kind.Ref (FullRound.t T))
-    (m_vector : Ref.t Pointer.Kind.Ref (array.t (array.t U {| Integer.value := 2 |}) {| Integer.value := 16 |}))
-    (index : Usize.t)
+    (self : '& Self) 
+    (input : '& (Blake3State.t T))
+    (round_data : '& (FullRound.t T))
+    (m_vector : '& (array.t (array.t U {| Integer.value := 2 |}) {| Integer.value := 16 |}))
+    (index : usize)
     :
     Run.Trait
       blake3_air.air.air.Impl_p3_blake3_air_air_Blake3Air.full_round_to_column_quarter_round [] [ Φ T; Φ U ] 
@@ -103,6 +105,7 @@ Module Impl_Blake3Air.
     (* p3_blake3_air::columns::Blake3State::row0
     Seems like Coq cannot recognize our current definition in struct is a link... *)
   Admitted.
+  Global Opaque run_full_round_to_column_quarter_round.
 
   (* 
   const fn full_round_to_diagonal_quarter_round<'a, T: Copy, U>(
@@ -114,10 +117,10 @@ Module Impl_Blake3Air.
   *)
   Instance run_full_round_to_diagonal_quarter_round
     {T U : Set} `{Link T}  `{Link U}
-    (self : Ref.t Pointer.Kind.Ref Self) 
-    (round_data : Ref.t Pointer.Kind.Ref (FullRound.t T))
-    (m_vector : Ref.t Pointer.Kind.Ref (array.t (array.t U {| Integer.value := 2 |}) {| Integer.value := 16 |}))
-    (index : Usize.t)
+    (self : '& Self) 
+    (round_data : '& (FullRound.t T))
+    (m_vector : '& (array.t (array.t U {| Integer.value := 2 |}) {| Integer.value := 16 |}))
+    (index : usize)
     :
     Run.Trait
       blake3_air.air.air.Impl_p3_blake3_air_air_Blake3Air.full_round_to_diagonal_quarter_round [] [ Φ T; Φ U ] 
@@ -128,6 +131,7 @@ Module Impl_Blake3Air.
     run_symbolic.
     (* Stuck at using FullRound::state_middle? *)
   Admitted.
+  Global Opaque run_full_round_to_diagonal_quarter_round.
 
   (* 
   fn verify_round<AB: AirBuilder>(
@@ -142,11 +146,11 @@ Module Impl_Blake3Air.
     {AB : Set} `{Link AB}
     {AB_types : AirBuilder.AssociatedTypes.t} `{AirBuilder.AssociatedTypes.AreLinks AB_types}
     {run_AirBuilder_for_AB : AirBuilder.Run AB AB_types}
-    (self : Ref.t Pointer.Kind.Ref Self) 
-    (builder : Ref.t Pointer.Kind.MutRef AB) 
-    (input : Ref.t Pointer.Kind.Ref (Blake3State.t (AB_types.(AirBuilder.AssociatedTypes.Var))))
-    (round_data : Ref.t Pointer.Kind.Ref (FullRound.t (AB_types.(AirBuilder.AssociatedTypes.Var))))
-    (m_vector : Ref.t Pointer.Kind.Ref
+    (self : '& Self) 
+    (builder : '&mut AB) 
+    (input : '& (Blake3State.t (AB_types.(AirBuilder.AssociatedTypes.Var))))
+    (round_data : '& (FullRound.t (AB_types.(AirBuilder.AssociatedTypes.Var))))
+    (m_vector : '&
       (array.t (array.t (AB_types.(AirBuilder.AssociatedTypes.Expr)) {| Integer.value := 2 |}) {| Integer.value := 16 |}))
     :
     Run.Trait
@@ -161,6 +165,7 @@ Module Impl_Blake3Air.
     `Impl_Air_for_Blake3Air` *)
     run_symbolic.
   Admitted.
+  Global Opaque run_verify_round.
 End Impl_Blake3Air.
 
 (* impl<F> BaseAir<F> for Blake3Air { *)

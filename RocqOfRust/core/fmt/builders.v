@@ -317,14 +317,12 @@ Module fmt.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (|
+                                  (let~ iter :
                                       Ty.apply
                                         (Ty.path "core::str::iter::SplitInclusive")
                                         []
-                                        [ Ty.path "char" ],
-                                      γ
-                                    |) in
+                                        [ Ty.path "char" ] :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],
@@ -7233,16 +7231,14 @@ Module fmt.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (|
+                                  (let~ iter :
                                       Ty.associated_in_trait
                                         "core::iter::traits::collect::IntoIterator"
                                         []
                                         []
                                         I
-                                        "IntoIter",
-                                      γ
-                                    |) in
+                                        "IntoIter" :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],
@@ -8397,16 +8393,14 @@ Module fmt.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (|
+                                  (let~ iter :
                                       Ty.associated_in_trait
                                         "core::iter::traits::collect::IntoIterator"
                                         []
                                         []
                                         I
-                                        "IntoIter",
-                                      γ
-                                    |) in
+                                        "IntoIter" :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],
@@ -12151,16 +12145,14 @@ Module fmt.
                             [
                               fun γ =>
                                 ltac:(M.monadic
-                                  (let iter :=
-                                    M.copy (|
+                                  (let~ iter :
                                       Ty.associated_in_trait
                                         "core::iter::traits::collect::IntoIterator"
                                         []
                                         []
                                         I
-                                        "IntoIter",
-                                      γ
-                                    |) in
+                                        "IntoIter" :=
+                                    M.read (| γ |) in
                                   M.read (|
                                     M.loop (|
                                       Ty.tuple [],

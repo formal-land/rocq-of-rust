@@ -15,6 +15,7 @@ Require Import revm.revm_context_interface.transaction.links.transaction_type.
 Require Import revm.revm_interpreter.gas.links.constants.
 Require Import revm.revm_interpreter.instructions.tx_info.
 Require Import revm.revm_interpreter.links.gas.
+Require Import revm.revm_interpreter.links.instruction_result.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_specification.links.hardfork.
@@ -32,8 +33,8 @@ Instance run_gasprice
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   (H_types : Host.Types.t) `{Host.Types.AreLinks H_types}
   (run_Host_for_H : Host.Run H H_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (host : '&mut H) :
   Run.Trait
     instructions.tx_info.gasprice [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -49,6 +50,7 @@ Proof.
   destruct run_Transaction_for_Transaction.
   run_symbolic.
 Defined.
+Global Opaque run_gasprice.
 
 (*
 pub fn origin<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -62,8 +64,8 @@ Instance run_origin
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   (H_types : Host.Types.t) `{Host.Types.AreLinks H_types}
   (run_Host_for_H : Host.Run H H_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (host : '&mut H) :
   Run.Trait
     instructions.tx_info.origin [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -78,6 +80,7 @@ Proof.
   run_symbolic.
   (* dyn type *)
 Admitted.
+Global Opaque run_origin.
 
 (*
 pub fn blob_hash<WIRE: InterpreterTypes, H: Host + ?Sized>(
@@ -91,8 +94,8 @@ Instance run_blob_hash
   (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
   (H_types : Host.Types.t) `{Host.Types.AreLinks H_types}
   (run_Host_for_H : Host.Run H H_types)
-  (interpreter : Ref.t Pointer.Kind.MutRef (Interpreter.t WIRE WIRE_types))
-  (host : Ref.t Pointer.Kind.MutRef H) :
+  (interpreter : '&mut (Interpreter.t WIRE WIRE_types))
+  (host : '&mut H) :
   Run.Trait
     instructions.tx_info.blob_hash [] [ Φ WIRE; Φ H ] [ φ interpreter; φ host ]
     unit.
@@ -127,3 +130,4 @@ Proof.
         generalize Transaction_IsAssociated; clear; intros.
       } *)
 Admitted.
+Global Opaque run_blob_hash.

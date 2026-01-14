@@ -13,10 +13,11 @@ pub fn generate_trace_rows<F: PrimeField64>(
 (* Instance run_generate_trace_rows
   {F : Set} `{Link F}
   {run_PrimeField64_for_F : PrimeField64.Run F}
-  (inputs : array.t U32.t {| Integer.value := 2 |})
-  (extra_capacity_bits : Usize.t) :
+  (inputs : array.t u32 {| Integer.value := 2 |})
+  (extra_capacity_bits : usize) :
   Run.Trait
     generation.generate_trace_rows [] [ Φ F ] [ φ inputs; φ extra_capacity_bits ]
     RowMajorMatrix.t F.
 Proof.
-Admitted. *)
+Admitted.
+Global Opaque run_generate_trace_rows. *)

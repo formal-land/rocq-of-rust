@@ -1108,7 +1108,7 @@ Module signature.
                         "alloy_primitives::signature::parity::Parity::Eip155",
                         0
                       |) in
-                    let v := M.copy (| Ty.path "u64", γ0_0 |) in
+                    let~ v : Ty.path "u64" := M.read (| γ0_0 |) in
                     M.read (|
                       let~ _ : Ty.tuple [] :=
                         M.match_operator (|
