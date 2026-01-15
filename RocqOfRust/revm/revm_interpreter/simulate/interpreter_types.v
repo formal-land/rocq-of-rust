@@ -631,7 +631,7 @@ Module StackTrait.
     popn_top (POPN : usize) (self : Self) :
       option (array.t aliases.U256.t POPN * RefStub.t Self aliases.U256.t) * Self;
     (* fn top(&mut self) -> Option<&mut U256>; *)
-    top (self : Self) : option (RefStub.t Self aliases.U256.t) * Self;
+    top (self : Self) : option (RefStub.t Self aliases.U256.t);
     (* fn pop(&mut self) -> Option<U256>; *)
     pop (self : Self) : option aliases.U256.t * Self;
     (* fn pop_address(&mut self) -> Option<Address>; *)
@@ -779,9 +779,8 @@ Module StackTrait.
             ref_interpreter.(Ref.core)
             Interpreter.SubPointer.get_stack
         |} in
-        let result_self := I.(top) interpreter.(Interpreter.stack) in
         let result :=
-          match fst result_self with
+          match I.(top) interpreter.(Interpreter.stack) with
           | Some stub => Some (RefStub.apply ref_self stub)
           | None => None
           end in
@@ -791,7 +790,7 @@ Module StackTrait.
             (interpreter :: stack_rest)%stack 🌲
           (
             Output.Success result,
-            (interpreter <| Interpreter.stack := snd result_self |> :: stack_rest)%stack
+            (interpreter :: stack_rest)%stack
           )
         }};
       pop
