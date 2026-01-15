@@ -1,8 +1,9 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import RocqOfRust.simulate.M.
-Require Import alloy_primitives.links.aliases.
+Require Import RocqOfRust.lib.simulate.lib.
 Require Import core.links.array.
+Require Import core.simulate.cmp.
 Require Import revm.revm_context_interface.links.host.
 Require Import revm.revm_interpreter.gas.simulate.constants.
 Require Import revm.revm_interpreter.instructions.links.bitwise.
@@ -12,9 +13,9 @@ Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
 Require Import revm.revm_interpreter.simulate.gas.
 Require Import revm.revm_interpreter.simulate.interpreter_types.
+Require Import ruint.links.lib.
 Require Import ruint.simulate.cmp.
-
-Parameter U256_lt : aliases.U256.t -> aliases.U256.t -> aliases.U256.t.
+Require Import ruint.simulate.from.
 
 Definition lt
     {WIRE : Set} `{Link WIRE}
@@ -26,7 +27,11 @@ Definition lt
   popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
     let '{| ArrayPair.x := op1 |} := arr.(array.value) in
     let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
-    let result := U256_lt op1 op2 in
+    let result :=
+      if PartialOrd.lt op1 op2 then
+        {| Uint.value := 1 |}
+      else
+        {| Uint.value := 0 |} in
     let stack :=
       top.(RefStub.injection)
         interpreter.(Interpreter.stack) result in
@@ -59,4 +64,24 @@ Lemma lt_eq
     )
   }}.
 Proof.
-Admitted.
+  intros.
+  unfold lt.
+  gas_macro_eq InterpreterTypesEq.
+  popn_top_macro_eq InterpreterTypesEq.
+  cbn.
+  eapply Run.Call. {
+    setoid_rewrite (Impl_PartialOrd_for_Uint.Eq.I).(PartialOrd.Eq.lt).
+    get_can_access.
+    apply Run.Pure.
+  }
+  cbn.
+  eapply Run.Call. {
+    apply Impl_Uint.from_eq.
+    { typeclasses eauto. }
+    { easy. }
+  }
+  cbn.
+  get_can_access.
+  cbn.
+  apply Run.PureEq; repeat f_equal.
+Qed.

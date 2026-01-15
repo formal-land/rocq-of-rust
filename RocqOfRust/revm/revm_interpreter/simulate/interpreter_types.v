@@ -1497,20 +1497,21 @@ Module InterpreterTypes.
         (run_InterpreterTypes_for_WIRE : InterpreterTypes.Run WIRE WIRE_types)
         (I : C WIRE_types) :
         Prop := {
-      StackTrait_for_Stack : StackTrait.Eq.t WIRE I.(StackTrait_for_Stack);
-      MemoryTrait_for_Memory : MemoryTrait.Eq.t WIRE I.(MemoryTrait_for_Memory);
-      Jumps_for_Bytecode : Jumps.Eq.t WIRE I.(Jumps_for_Bytecode);
-      Immediates_for_Bytecode : Immediates.Eq.t WIRE I.(Immediates_for_Bytecode);
-      LegacyBytecode_for_Bytecode : LegacyBytecode.Eq.t WIRE I.(LegacyBytecode_for_Bytecode);
-      EofData_for_Bytecode : EofData.Eq.t WIRE I.(EofData_for_Bytecode);
-      EofContainer_for_Bytecode : EofContainer.Eq.t WIRE I.(EofContainer_for_Bytecode);
-      EofCodeInfo_for_Bytecode : EofCodeInfo.Eq.t WIRE I.(EofCodeInfo_for_Bytecode);
+      StackTrait_for_Stack :: StackTrait.Eq.t WIRE I.(StackTrait_for_Stack);
+      MemoryTrait_for_Memory :: MemoryTrait.Eq.t WIRE I.(MemoryTrait_for_Memory);
+      Jumps_for_Bytecode :: Jumps.Eq.t WIRE I.(Jumps_for_Bytecode);
+      Immediates_for_Bytecode :: Immediates.Eq.t WIRE I.(Immediates_for_Bytecode);
+      LegacyBytecode_for_Bytecode :: LegacyBytecode.Eq.t WIRE I.(LegacyBytecode_for_Bytecode);
+      EofData_for_Bytecode :: EofData.Eq.t WIRE I.(EofData_for_Bytecode);
+      EofContainer_for_Bytecode :: EofContainer.Eq.t WIRE I.(EofContainer_for_Bytecode);
+      EofCodeInfo_for_Bytecode :: EofCodeInfo.Eq.t WIRE I.(EofCodeInfo_for_Bytecode);
       ReturnData_for_ReturnData : ReturnData.Eq.t WIRE I.(ReturnData_for_ReturnData);
-      InputsTrait_for_Input : InputTraits.Eq.t WIRE I.(InputsTrait_for_Input);
-      SubRoutineStack_for_SubRoutineStack : SubRoutineStack.Eq.t WIRE I.(SubRoutineStack_for_SubRoutineStack);
-      LoopControl_for_Control : LoopControl.Eq.t WIRE I.(LoopControl_for_Control);
-      RuntimeFlag_for_RuntimeFlag : RuntimeFlag.Eq.t WIRE I.(RuntimeFlag_for_RuntimeFlag);
+      InputsTrait_for_Input :: InputTraits.Eq.t WIRE I.(InputsTrait_for_Input);
+      SubRoutineStack_for_SubRoutineStack :: SubRoutineStack.Eq.t WIRE I.(SubRoutineStack_for_SubRoutineStack);
+      LoopControl_for_Control :: LoopControl.Eq.t WIRE I.(LoopControl_for_Control);
+      RuntimeFlag_for_RuntimeFlag :: RuntimeFlag.Eq.t WIRE I.(RuntimeFlag_for_RuntimeFlag);
     }.
   End Eq.
+  Export (hints) Eq.
 End InterpreterTypes.
 Export (hints) InterpreterTypes.

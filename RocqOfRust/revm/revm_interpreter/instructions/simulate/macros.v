@@ -47,10 +47,12 @@ Definition gas_macro {WIRE K : Set} `{Link WIRE}
     k interpreter
   end.
 
-Ltac gas_macro_eq H gas set_instruction_result :=
+Ltac gas_macro_eq InterpreterTypesEq :=
   unfold gas_macro;
   eapply Run.Call; [
-    apply gas
+    apply InterpreterTypesEq
+      .(InterpreterTypes.Eq.LoopControl_for_Control)
+      .(LoopControl.Eq.gas)
   |];
   try (eapply Run.Call; [
     apply Run.Pure
@@ -64,12 +66,15 @@ Ltac gas_macro_eq H gas set_instruction_result :=
       apply Run.Pure
     |]
   );
+  cbn;
   [|
     eapply Run.Call; [
       apply Run.Pure
     |];
     eapply Run.Call; [
-      apply (set_instruction_result _ _ instruction_result.InstructionResult.OutOfGas)
+      apply InterpreterTypesEq
+        .(InterpreterTypes.Eq.LoopControl_for_Control)
+        .(LoopControl.Eq.set_instruction_result)
     |];
     apply Run.Pure
   ].
@@ -100,18 +105,18 @@ Definition popn_macro {WIRE K : Set} `{Link WIRE}
       k_exit interpreter
     end.
 
-Ltac popn_macro_eq H IInterpreterTypes popn set_instruction_result :=
+Ltac popn_macro_eq InterpreterTypesEq :=
   unfold popn_macro;
   eapply Run.Call; [
-    apply popn
+    apply InterpreterTypesEq
+      .(InterpreterTypes.Eq.StackTrait_for_Stack)
+      .(StackTrait.Eq.popn)
   |];
-  destruct IInterpreterTypes.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.popn) as [[|] ?]; cbn; [|
+  destruct _.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.popn) as [[|] ?]; cbn; [|
     eapply Run.Call; [
-      apply (set_instruction_result
-        _
-        _
-        instruction_result.InstructionResult.StackUnderflow
-      )
+      apply InterpreterTypesEq
+        .(InterpreterTypes.Eq.LoopControl_for_Control)
+        .(LoopControl.Eq.set_instruction_result)
     |];
     cbn;
     apply Run.Pure
@@ -152,22 +157,22 @@ Definition popn_top_macro {WIRE K : Set} `{Link WIRE}
     k_exit interpreter
   end.
 
-Ltac popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result :=
+Ltac popn_top_macro_eq InterpreterTypesEq :=
   unfold popn_top_macro;
   eapply Run.Call; [
     apply Run.Pure
   |];
   eapply Run.Call; [
-    apply popn_top
+    apply InterpreterTypesEq
+      .(InterpreterTypes.Eq.StackTrait_for_Stack)
+      .(StackTrait.Eq.popn_top)
   |];
-  destruct IInterpreterTypes.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.popn_top) as [[[? ?]|] ?];
+  destruct _.(InterpreterTypes.StackTrait_for_Stack).(StackTrait.popn_top) as [[[? ?]|] ?];
   [|
     eapply Run.Call; [
-      apply (set_instruction_result
-        _
-        _
-        instruction_result.InstructionResult.StackUnderflow
-      )
+      apply InterpreterTypesEq
+        .(InterpreterTypes.Eq.LoopControl_for_Control)
+        .(LoopControl.Eq.set_instruction_result)
     |];
     apply Run.Pure
   ].
@@ -202,10 +207,12 @@ Definition check_macro {WIRE K : Set} `{Link WIRE}
         <| Interpreter.control := control |> in
     k_exit interpreter.
 
-Ltac check_macro_eq spec_id set_instruction_result :=
+Ltac check_macro_eq InterpreterTypesEq :=
   unfold check_macro; cbn;
   eapply Run.Call; [
-    apply spec_id
+    apply InterpreterTypesEq
+      .(InterpreterTypes.Eq.RuntimeFlag_for_RuntimeFlag)
+      .(RuntimeFlag.Eq.spec_id)
   |];
   cbn;
   eapply Run.Call; [
@@ -222,7 +229,9 @@ Ltac check_macro_eq spec_id set_instruction_result :=
   cbn;
   destruct Impl_SpecId.is_enabled_in; cbn; [|
     eapply Run.Call; [
-      apply (set_instruction_result _ _ instruction_result.InstructionResult.NotActivated)
+      apply InterpreterTypesEq
+        .(InterpreterTypes.Eq.LoopControl_for_Control)
+        .(LoopControl.Eq.set_instruction_result)
     |];
     cbn;
     apply Run.Pure

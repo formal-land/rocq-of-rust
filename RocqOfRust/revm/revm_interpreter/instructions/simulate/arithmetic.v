@@ -52,10 +52,8 @@ Lemma add_eq
   }}.
 Proof.
   intros.
-  destruct InterpreterTypesEq as [[] [] [] [] [] [] [] [] [] [] [] [] []].
-  cbn.
-  gas_macro_eq H gas set_instruction_result.
-  popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result.
+  gas_macro_eq InterpreterTypesEq.
+  popn_top_macro_eq InterpreterTypesEq.
   get_can_access.
   eapply Run.Call. {
     apply Impl_Uint.wrapping_add_eq.
@@ -99,10 +97,8 @@ Lemma mul_eq
   }}.
 Proof.
   intros.
-  destruct InterpreterTypesEq as [[] [] [] [] [] [] [] [] [] [] [] [] []].
-  cbn.
-  gas_macro_eq H gas set_instruction_result.
-  popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result.
+  gas_macro_eq InterpreterTypesEq.
+  popn_top_macro_eq InterpreterTypesEq.
   get_can_access.
   eapply Run.Call. {
     apply Impl_Uint.wrapping_mul_eq.
@@ -146,10 +142,8 @@ Lemma sub_eq
   }}.
 Proof.
   intros.
-  destruct InterpreterTypesEq as [[] [] [] [] [] [] [] [] [] [] [] [] []].
-  cbn.
-  gas_macro_eq H gas set_instruction_result.
-  popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result.
+  gas_macro_eq InterpreterTypesEq.
+  popn_top_macro_eq InterpreterTypesEq.
   get_can_access.
   eapply Run.Call. {
     apply Impl_Uint.wrapping_sub_eq.
@@ -197,12 +191,10 @@ Lemma div_eq
   }}.
 Proof.
   intros.
-  destruct InterpreterTypesEq as [[] [] [] [] [] [] [] [] [] [] [] [] []].
+  gas_macro_eq InterpreterTypesEq.
+  popn_top_macro_eq InterpreterTypesEq.
   cbn.
-  gas_macro_eq H gas set_instruction_result.
-  popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result.
-  cbn.
-  eapply Run.Call; cbn. {
+  eapply Run.Call. {
     setoid_rewrite (
       Impl_Uint.is_zero_like
         _

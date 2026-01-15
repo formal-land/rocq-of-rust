@@ -124,11 +124,9 @@ Lemma static_call_eq
   }}.
 Proof.
   intros.
-  destruct InterpreterTypesEq as [[] [] [] [] [] [] [] [] [] [] [] [] []].
-  destruct HostEq as [].
   unfold static_call; cbn.
-  check_macro_eq spec_id set_instruction_result.
-  popn_macro_eq H IInterpreterTypes popn set_instruction_result.
+  check_macro_eq InterpreterTypesEq.
+  popn_macro_eq InterpreterTypesEq.
   eapply Run.Call. {
     apply Impl_From_U256_for_FixedBytes_32.from_eq.
   }
@@ -153,11 +151,11 @@ Proof.
     [| apply Run.Pure].
   get_can_access.
   eapply Run.Call. {
-    apply load_account_delegated.
+    apply HostEq.
   }
-  destruct IHost.(Host.load_account_delegated) as [[load|] ?host]. 2: {
+  destruct _.(Host.load_account_delegated) as [[load|] ?host]. 2: {
     eapply Run.Call. {
-      apply set_instruction_result.
+      apply InterpreterTypesEq.
     }
     apply Run.Pure.
   }
@@ -169,7 +167,7 @@ Proof.
     apply call_helpers.calc_call_gas_eq.
   }
   destruct call_helpers.calc_call_gas as [[gas_limit|] ?interpreter]; cbn; [|apply Run.Pure].
-  gas_macro_eq H gas set_instruction_result.
+  gas_macro_eq InterpreterTypesEq.
   cbn.
   eapply Run.Call. {
     apply Run.Pure.
@@ -177,7 +175,7 @@ Proof.
   cbn.
   get_can_access.
   eapply Run.Call. {
-    apply target_address.
+    apply InterpreterTypesEq.
   }
   cbn.
   get_can_access.
@@ -191,7 +189,7 @@ Proof.
   cbn.
   fold @SimulateM.let_.
   eapply Run.Call. {
-    apply set_next_action.
+    apply InterpreterTypesEq.
   }
   cbn.
   apply Run.PureEq; repeat f_equal.

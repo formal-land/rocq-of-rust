@@ -91,7 +91,7 @@ Module UintTryFrom_T_for_Uint_where_TryFrom.
     Uint.t BITS LIMBS.
 
   Instance run_uint_try_from {BITS LIMBS : usize} {T : Set} `{Link T}
-      `{!TryFrom.Run (Self BITS LIMBS) T (ToUintError.t (Self BITS LIMBS))}
+      `{run : !TryFrom.Run (Self BITS LIMBS) T (ToUintError.t (Self BITS LIMBS))}
       (value : T) :
     Run.Trait
       (from.Impl_ruint_from_UintTryFrom_where_core_convert_TryFrom_ruint_Uint_BITS_LIMBS_T_T_for_ruint_Uint_BITS_LIMBS.uint_try_from (φ BITS) (φ LIMBS) (Φ T))
@@ -99,8 +99,9 @@ Module UintTryFrom_T_for_Uint_where_TryFrom.
       (Result.t (Self BITS LIMBS) (ToUintError.t (Self BITS LIMBS))).
   Proof.
     constructor.
+    destruct run.
     run_symbolic.
-  Admitted.
+  Defined.
   Global Opaque run_uint_try_from.
 
   Instance method_uint_try_from {BITS LIMBS : usize} {T : Set} `{Link T}
@@ -116,7 +117,7 @@ Module UintTryFrom_T_for_Uint_where_TryFrom.
     { apply run_uint_try_from. }
   Defined.
 
-  Instance run (BITS LIMBS : usize) (T : Set) `{Link T}
+  Instance run {BITS LIMBS : usize} {T : Set} `{Link T}
       `{!TryFrom.Run (Self BITS LIMBS) T (ToUintError.t (Self BITS LIMBS))} :
     UintTryFrom.Run (Self BITS LIMBS) T :=
   {}.
@@ -635,7 +636,7 @@ Module Impl_Uint.
     constructor.
     destruct run_UintTryFrom_for_Self.
     run_symbolic.
-  Admitted.
+  Defined.
   Global Opaque run_from.
 End Impl_Uint.
 Export (hints) Impl_Uint.
