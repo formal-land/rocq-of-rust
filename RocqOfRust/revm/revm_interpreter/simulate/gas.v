@@ -1,6 +1,7 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import links.M.
 Require Import simulate.M.
+Require Import core.num.simulate.mod.
 Require Import revm.revm_interpreter.links.gas.
 Require Import revm.revm_interpreter.links.interpreter.
 Require Import revm.revm_interpreter.links.interpreter_types.
@@ -110,15 +111,6 @@ Module Impl_Gas.
     apply Run.Pure.
   Qed.
 
-  Parameter u64_overflowing_sub : forall (self other : u64), u64 * bool.
-
-  Axiom u64_overflowing_sub_eq :
-    forall (stack : Stack.t) (self other : u64),
-    {{
-      SimulateM.eval_f (core.num.links.mod.Impl_u64.run_overflowing_sub self other) stack 🌲
-      (Output.Success (u64_overflowing_sub self other), stack)
-    }}.
-
   (*
       pub fn record_cost(&mut self, cost: u64) -> bool {
         let (remaining, overflow) = self.remaining.overflowing_sub(cost);
@@ -130,7 +122,7 @@ Module Impl_Gas.
     }
   *)
   Definition record_cost (self : Self) (cost : u64) : option Self :=
-    let (remaining, overflow) := u64_overflowing_sub self.(Gas.remaining) cost in
+    let (remaining, overflow) := Impl_u64.overflowing_sub self.(Gas.remaining) cost in
     let success := negb overflow in
     if success then
       Some (self <| Gas.remaining := remaining |>)
@@ -173,24 +165,27 @@ Module Impl_Gas.
       )
     }}.
   Proof.
-    intros.
+    Opaque Impl_u64.overflowing_sub.
     apply Run.remove_extra_stack1.
-    unfold record_cost in *.
-    with_strategy transparent [Impl_Gas.run_record_cost] cbn.
+    with_strategy transparent [Impl_Gas.run_record_cost] (
+      unfold record_cost;
+      cbn
+    ).
     progress repeat get_can_access.
     eapply Run.Call. {
-      apply u64_overflowing_sub_eq.
+      apply Impl_u64.overflowing_sub_eq.
     }
-    destruct u64_overflowing_sub as [remaining overflow].
+    destruct Impl_u64.overflowing_sub as [remaining overflow].
     eapply Run.Call. {
       apply Run.Pure.
     }
-    cbn; repeat progress get_can_access.
+    repeat progress get_can_access.
     eapply Run.Call. {
       apply Run.Pure.
     }
-    destruct negb; cbn; progress repeat get_can_access.
+    destruct (negb overflow); cbn; progress repeat get_can_access.
     { apply Run.Pure. }
     { apply Run.Pure. }
+    Transparent Impl_u64.overflowing_sub.
   Qed.
 End Impl_Gas.

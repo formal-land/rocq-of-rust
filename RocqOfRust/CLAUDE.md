@@ -316,3 +316,114 @@ Require Import core.ops.links.deref.  (* For Deref/DerefMut *)
 6. **Global Opaque**: Mark instances as opaque after definition to prevent unfolding: `Global Opaque run_function_name.`
 
 7. **Type paths**: The Rust path format is `crate_name::module::Type` with `::` separators.
+
+8. **Polymorphic types in Jinja templates**: Keep polymorphic types (like `ToUintError<T>`) manual in links files with comment `(* Note: ... is polymorphic, kept manually for now *)` rather than generating them with Jinja macros.
+
+## Simulate Files
+
+Simulate files (in `simulate/` subdirectories) provide pure Rocq definitions and proofs that relate symbolic execution to pure functional specifications.
+
+### Directory Structure
+
+```
+some_crate/
+  lib.v              # Generated Rocq code from Rust
+  links/
+    lib.v            # Links file with Run instances
+  simulate/
+    lib.v            # Simulate file with pure definitions and _eq lemmas
+```
+
+### Basic Structure for Simulate Proofs
+
+For arithmetic/bitwise operations in the EVM interpreter, follow the pattern in `revm/revm_interpreter/instructions/simulate/arithmetic.v`:
+
+```coq
+Require Import RocqOfRust.simulate.M.
+Require Import revm.revm_interpreter.instructions.simulate.macros.
+
+(* Pure definition of the operation *)
+Definition add ... :=
+  gas_macro interpreter constants.VERYLOW id (fun interpreter =>
+  popn_top_macro interpreter {| Integer.value := 1 |} id (fun arr top interpreter =>
+    let '{| ArrayPair.x := op1 |} := arr.(array.value) in
+    let op2 := top.(RefStub.projection) interpreter.(Interpreter.stack) in
+    let stack :=
+      top.(RefStub.injection)
+        interpreter.(Interpreter.stack) (Impl_Uint.wrapping_add op1 op2) in
+    interpreter
+      <| Interpreter.stack := stack |>
+  )).
+
+(* Proof that symbolic execution matches pure definition *)
+Lemma add_eq ... :
+  {{ SimulateM.eval_f (run_add ...) ... 🌲 (Output.Success tt, [...]) }}.
+Proof.
+  intros.
+  destruct InterpreterTypesEq as [[] [] [] [] [] [] [] [] [] [] [] [] []].
+  cbn.
+  gas_macro_eq H gas set_instruction_result.
+  popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result.
+  get_can_access.
+  eapply Run.Call. { apply Impl_Uint.wrapping_add_eq. }
+  get_can_access.
+  apply Run.Pure.
+Qed.
+```
+
+### Key Tactics for Simulate Proofs
+
+1. **`gas_macro_eq H gas set_instruction_result`**: Handles gas recording, creates branches for OutOfGas case
+2. **`popn_top_macro_eq H IInterpreterTypes popn_top set_instruction_result`**: Handles stack pop operations, creates branches for StackUnderflow case
+3. **`get_can_access`**: Handles reference access operations
+4. **`eapply Run.Call. { apply SomeModule.some_eq. }`**: Handles method calls with their corresponding `_eq` lemmas
+5. **`apply Run.Pure`**: Finalizes the proof when no more operations remain
+
+### The `_eq` Lemma Pattern
+
+For each pure operation used in simulate definitions, create an `_eq` lemma in the corresponding simulate file:
+
+```coq
+(* In ruint/simulate/add.v *)
+Definition wrapping_add {BITS LIMBS : usize} (x1 x2 : lib.Uint.t BITS LIMBS) :
+    lib.Uint.t BITS LIMBS :=
+  {| lib.Uint.value := (x1.(lib.Uint.value) + x2.(lib.Uint.value)) mod (2 ^ BITS.(Integer.value)) |}.
+
+Lemma wrapping_add_eq (stack : Stack.t)
+    (BITS LIMBS : usize) (x1 x2 : lib.Uint.t BITS LIMBS) :
+  {{
+    SimulateM.eval_f
+      (Impl_Uint.run_wrapping_add BITS LIMBS x1 x2)
+      stack 🌲
+    (
+      Output.Success (wrapping_add x1 x2),
+      stack
+    )
+  }}.
+Admitted.
+```
+
+### Macros in `macros.v`
+
+The file `revm/revm_interpreter/instructions/simulate/macros.v` defines:
+
+- **`gas_macro`**: Pure definition for gas handling (branches on record_cost result)
+- **`popn_macro`**: Pure definition for popping N values from stack
+- **`popn_top_macro`**: Pure definition for popping N values and getting a mutable reference to top
+- **`check_macro`**: Pure definition for spec ID checking
+
+Each macro has a corresponding `_eq` tactic (e.g., `gas_macro_eq`) that handles the proof obligations.
+
+### Debugging Simulate Proofs
+
+When a proof gets stuck:
+1. Copy-paste the macro definition inline to see what's happening
+2. Check that the `destruct InterpreterTypesEq` pattern matches the current typeclass structure
+3. Verify that all necessary `_eq` lemmas exist for operations used in the definition
+4. The `[|` selector in tactics means: first branch before `[|`, second branch after - useful for understanding branching in macros
+
+### Important Notes for Simulate Files
+
+1. **destruct is only for traits**: Only use `destruct` for trait instances, not for regular function instances
+2. **Use Qed for `_eq` lemmas**: The `_eq` lemmas are in Prop, so use `Qed` (not `Defined`)
+3. **Always use -j3**: When compiling with make, always use `make -j3` for parallel compilation

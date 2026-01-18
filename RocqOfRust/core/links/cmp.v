@@ -25,13 +25,13 @@ Module PartialEq.
   Class Method_eq (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
     eq : PolymorphicFunction.t;
     eq_is_method :: IsTraitMethod.C (trait Self Rhs) "eq" eq;
-    run_eq (self other : '& Self) :: Run.Trait eq [] [] [ φ self; φ other ] bool;
+    run_eq (self : '& Self) (other : '& Rhs) :: Run.Trait eq [] [] [ φ self; φ other ] bool;
   }.
 
   Class Method_ne (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
     ne : PolymorphicFunction.t;
     ne_is_method :: IsTraitMethod.C (trait Self Rhs) "ne" ne;
-    run_ne (self other : '& Self) :: Run.Trait ne [] [] [ φ self; φ other ] bool;
+    run_ne (self : '& Self) (other : '& Rhs) :: Run.Trait ne [] [] [ φ self; φ other ] bool;
   }.
 
   Class Run (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
@@ -308,32 +308,32 @@ Module PartialOrd.
   Class Method_partial_cmp (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
     partial_cmp : PolymorphicFunction.t;
     partial_cmp_is_method :: IsTraitMethod.C (trait Self Rhs) "partial_cmp" partial_cmp;
-    run_partial_cmp (self other : '& Self) ::
+    run_partial_cmp (self : '& Self) (other : '& Rhs) ::
       Run.Trait partial_cmp [] [] [ φ self; φ other ] (option Ordering.t);
   }.
 
   Class Method_lt (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
     lt : PolymorphicFunction.t;
     lt_is_method :: IsTraitMethod.C (trait Self Rhs) "lt" lt;
-    run_lt (self other : '& Self) :: Run.Trait lt [] [] [ φ self; φ other ] bool;
+    run_lt (self : '& Self) (other : '& Rhs) :: Run.Trait lt [] [] [ φ self; φ other ] bool;
   }.
 
   Class Method_le (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
     le : PolymorphicFunction.t;
     le_is_method :: IsTraitMethod.C (trait Self Rhs) "le" le;
-    run_le (self other : '& Self) :: Run.Trait le [] [] [ φ self; φ other ] bool;
+    run_le (self : '& Self) (other : '& Rhs) :: Run.Trait le [] [] [ φ self; φ other ] bool;
   }.
 
   Class Method_gt (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
     gt : PolymorphicFunction.t;
     gt_is_method :: IsTraitMethod.C (trait Self Rhs) "gt" gt;
-    run_gt (self other : '& Self) :: Run.Trait gt [] [] [ φ self; φ other ] bool;
+    run_gt (self : '& Self) (other : '& Rhs) :: Run.Trait gt [] [] [ φ self; φ other ] bool;
   }.
 
   Class Method_ge (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
     ge : PolymorphicFunction.t;
     ge_is_method :: IsTraitMethod.C (trait Self Rhs) "ge" ge;
-    run_ge (self other : '& Self) :: Run.Trait ge [] [] [ φ self; φ other ] bool;
+    run_ge (self : '& Self) (other : '& Rhs) :: Run.Trait ge [] [] [ φ self; φ other ] bool;
   }.
 
   Class Run (Self Rhs : Set) `{Link Self} `{Link Rhs} : Set := {
