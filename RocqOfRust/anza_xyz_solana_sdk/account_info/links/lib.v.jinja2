@@ -1,0 +1,63 @@
+{# Template for AccountInfo links file #}
+Require Import RocqOfRust.RocqOfRust.
+Require Import RocqOfRust.links.M.
+Require Import alloc.links.alloc.
+Require Import alloc.links.rc.
+Require Import anza_xyz_solana_sdk.account_info.lib.
+Require Import anza_xyz_solana_sdk.address.links.lib.
+Require Import anza_xyz_solana_sdk.program_error.links.lib.
+Require Import core.cell.links.mod.
+Require Import core.links.result.
+
+Instance run_MAX_PERMITTED_DATA_INCREASE :
+  Run.Trait
+    lib.value_MAX_PERMITTED_DATA_INCREASE [] [] []
+    ('* usize).
+Proof.
+  constructor.
+  run_symbolic.
+Defined.
+Global Opaque run_MAX_PERMITTED_DATA_INCREASE.
+
+(*
+  pub struct AccountInfo<'a> {
+    pub key: &'a Pubkey,
+    pub lamports: Rc<RefCell<&'a mut u64>>,
+    pub data: Rc<RefCell<&'a mut [u8]>>,
+    pub owner: &'a Pubkey,
+    pub _unused: u64,
+    pub is_signer: bool,
+    pub is_writable: bool,
+    pub executable: bool,
+  }
+*)
+Module AccountInfo.
+{{ macros.record_body("solana_account_info::AccountInfo", [
+  ("key", "'& Address.t"),
+  ("lamports", "Rc.t (RefCell.t ('&mut u64)) Global.t"),
+  ("data", "Rc.t (RefCell.t ('&mut (list u8))) Global.t"),
+  ("owner", "'& Address.t"),
+  ("_unused", "u64"),
+  ("is_signer", "bool"),
+  ("is_writable", "bool"),
+  ("executable", "bool"),
+]) }}
+End AccountInfo.
+Export (hints) AccountInfo.
+
+(*
+  pub fn next_account_info<'a, 'b, I: Iterator<Item = &'a AccountInfo<'b>>>(
+      iter: &mut I,
+  ) -> Result<I::Item, ProgramError>
+*)
+Instance run_next_account_info
+    (I : Set) `{Link I}
+    (iter : '&mut I) :
+  Run.Trait
+    lib.next_account_info [] [Φ I] [φ iter]
+    (Result.t ('& AccountInfo.t) ProgramError.t).
+Proof.
+  constructor.
+  run_symbolic.
+Admitted.
+Global Opaque run_next_account_info.
